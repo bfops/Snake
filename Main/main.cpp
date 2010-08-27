@@ -2,23 +2,54 @@
 #include <boost/date_time.hpp>
 #include <SDL/SDL.h>
 
-using namespace boost;
+#include "Snake.hpp"
 
-static void MakeWindow();
+using namespace boost;
+using namespace std;
+
+static bool successful_sdl_setup();
+static SDL_Surface* make_window();
 
 int main()
 {
-	MakeWindow();
-	SDL_Delay(2000);
+	// TODO: throw exception instead of return value
+	if(!successful_sdl_setup())
+	{
+		cout << SDL_GetError() << "\n";
 
-	SDL_Quit();
-	return 0;
+		exit(0);
+	}
+
+	// TODO: custom window class
+	SDL_Surface* window = make_window();
+
+	Snake player;
+	// game loop
+	for(;;)
+	{
+		// TODO: interrupt handle
+		player.GetInput();
+		// TODO: pass deltaT
+		player.Update();
+		player.Draw(window);
+
+		if(player.IsDead())
+			break;
+
+		this_thread::sleep(posix_time::millisec(50));
+	}
+
+	exit(0);
 }
 
-void MakeWindow()
+bool successful_sdl_setup()
 {
-	SDL_Surface* screen;
-	SDL_Init(SDL_INIT_EVERYTHING);
-	screen = SDL_SetVideoMode(1024, 768, 32, SDL_SWSURFACE);
-	SDL_Flip(screen);
+	atexit(SDL_Quit);
+
+	const unsigned int SDLSubsystems = SDL_INIT_VIDEO;
+	return (SDL_Init(SDLSubsystems) == 0);
+}
+SDL_Surface* make_window()
+{
+	return SDL_SetVideoMode(800, 600, 32, SDL_SWSURFACE);
 }
