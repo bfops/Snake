@@ -9,6 +9,7 @@ set(Boost_USE_MULTITHREADED ON)
 set(BOOST_PACKAGES filesystem date_time program_options serialization signals thread system regex)
 
 find_package(Boost ${BOOST_VERSION} REQUIRED COMPONENTS ${BOOST_PACKAGES})
+link_directories(${Boost_LIBRARY_DIRS})
 include_directories(${Boost_INCLUDE_DIR})
 
 add_definitions(
