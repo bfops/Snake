@@ -17,7 +17,7 @@ link_directories(${Boost_LIBRARY_DIRS})
 add_definitions(
 	-pipe -ansi -fsigned-char -fno-nonansi-builtins
 	-fno-operator-names -fno-rtti -Werror -Wfatal-errors
-	-Wno-long-long -static # -pedantic -pedantic-errors -Wall -Wextra
+	-Wno-long-long -static -pedantic -pedantic-errors -Wall #-Wextra
 )
 
 add_subdirectory(Main)
