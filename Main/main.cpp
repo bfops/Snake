@@ -20,7 +20,7 @@ int main()
 		exit(0);
 	}
 
-	// TODO: custom window class
+	// TODO: wrap SDL_Surface* in custom class (will also handle errors in Surface allocation)
 	SDL_Surface* window = make_window();
 
 	Snake player;
@@ -51,5 +51,6 @@ bool successful_sdl_setup()
 }
 SDL_Surface* make_window()
 {
-	return SDL_SetVideoMode(800, 600, 32, SDL_SWSURFACE);
+	// TODO: check for errors (NULL return)
+	return SDL_SetVideoMode(800, 600, 0, SDL_ANYFORMAT | SDL_SWSURFACE | SDL_DOUBLEBUF);
 }
