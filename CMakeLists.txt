@@ -10,9 +10,8 @@ set(BOOST_PACKAGES filesystem date_time program_options serialization signals th
 
 find_package(Boost ${BOOST_VERSION} REQUIRED COMPONENTS ${BOOST_PACKAGES})
 find_package(SDL)
-find_package(PTHREAD)
 include_directories(${Boost_INCLUDE_DIR} ${SDL_INCLUDE_DIR})
-link_directories(${Boost_LIBRARY_DIRS})
+link_directories(${Boost_LIBRARY_DIRS})# ${SDL_INCLUDE_DIR})
 
 add_definitions(
 	-pipe -ansi -fsigned-char -fno-nonansi-builtins

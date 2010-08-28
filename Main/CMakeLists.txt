@@ -5,6 +5,5 @@ add_executable(GingerbreadPrototype
 
 target_link_libraries(GingerbreadPrototype
 	${Boost_LIBRARIES}
-	${pthread}
 	${SDL_LIBRARY}
 )
