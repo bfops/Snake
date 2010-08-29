@@ -1,6 +1,7 @@
 add_executable(GingerbreadPrototype
 	main.cpp
 	Snake.cpp
+	Screen.cpp
 )
 
 target_link_libraries(GingerbreadPrototype

@@ -1,8 +1,11 @@
-#ifndef __SNAKE__
-#define __SNAKE__
+#ifndef __Snake__
+#define __Snake__
 
 #include <vector>
 #include <SDL/SDL.h>
+
+#include "Point.hpp"
+#include "Screen.hpp"
 
 class Snake
 {
@@ -16,11 +19,15 @@ private:
 	};
 	unsigned int length;
 	std::vector<Direction> path;
+	Point coordinate;
 
 public:
+	Snake();
+
+	void Reset();
 	void GetInput();
 	void Update();
-	void Draw(SDL_Surface* target) const;
+	void Draw(Screen& target) const;
 	bool IsDead() const;
 };
 
