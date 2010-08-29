@@ -25,6 +25,7 @@ private:
 	Path path;
 	Point location;
 	Color24 color;
+	Screen* screen;
 
 public:
 	Snake();
@@ -32,7 +33,8 @@ public:
 	void Reset();
 	void GetInput();
 	void Update();
-	void Draw(Screen& target) const;
+	void SetRenderTarget(Screen& target);
+	void Draw() const;
 	bool IsDead() const;
 };
 

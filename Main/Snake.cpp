@@ -1,3 +1,4 @@
+#include "Common.hpp"
 #include "Screen.hpp"
 #include "Snake.hpp"
 
@@ -11,7 +12,7 @@ using namespace std;
 const Snake::Direction Snake::directions[] = {left, right, up, down};
 
 Snake::Snake() :
-	color(0, 255, 0)
+	color(0, 255, 0), screen(NULL)
 {
 	Reset();
 }
@@ -21,7 +22,7 @@ void Snake::Reset()
 	length = 1;
 	path = vector<Direction>();
 	// give it a random starting direction
-	path.push_back(directions[rand() % 4]);
+	path.push_back(directions[rand() % countof(directions)]);
 }
 void Snake::GetInput()
 {
@@ -29,9 +30,28 @@ void Snake::GetInput()
 }
 void Snake::Update()
 {
-	assert(!"Snake::Update");
+	assert(*path.begin() == up || *path.begin() == down || *path.begin() == right || *path.begin() == left);
+	switch(*path.begin())
+	{
+		case left:
+			--location.x;
+			break;
+		case right:
+			++location.x;
+			break;
+		case up:
+			--location.y;
+			break;
+		case down:
+			++location.y;
+			break;
+	}
 }
-void Snake::Draw(Screen& target) const
+void Snake::SetRenderTarget(Screen& target)
+{
+	screen = &target;
+}
+void Snake::Draw() const
 {
 	class Block
 	{
@@ -64,7 +84,9 @@ void Snake::Draw(Screen& target) const
 		}
 	};
 
-	Block currentBlock(Point(location.x, location.y), target.blockWidth);
+	assert(screen != nullptr);
+
+	Block currentBlock(Point(location.x, location.y), screen->blockWidth);
 	for(Path::const_iterator i = path.begin(); i != path.end(); ++i)
 	{
 		if(i != path.begin())
@@ -81,11 +103,14 @@ void Snake::Draw(Screen& target) const
 				++currentBlock.index.x;
 		}
 		// TODO: check for errors here
-		SDL_FillRect(target.GetSurface(), currentBlock.GetRect(target), SDL_MapRGB(target.GetSurface()->format, color.red, color.green, color.blue));
+		SDL_FillRect(screen->GetSurface(), currentBlock.GetRect(*screen), SDL_MapRGB(screen->GetSurface()->format, color.red, color.green, color.blue));
 	}
 }
 bool Snake::IsDead() const
 {
-	assert(!"Snake::Dead");
-	return false;
+	assert(screen != nullptr);
+	// TODO: add self-collision detection
+
+	// basic screen bounds check
+	return (location.x < 0 || location.y < 0 || location.x > screen->bottomRight.x || location.y > screen->bottomRight.y);
 }
