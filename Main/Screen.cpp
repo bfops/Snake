@@ -1,8 +1,14 @@
+#include <cassert>
+
 #include "Screen.hpp"
 
 Screen::Screen(size_t _width, size_t _height) :
-	width(_width), height(_height)
+	width(_width), height(_height), bgColor(0, 0, 0), blockWidth(20), bottomRight(width / blockWidth, height / blockWidth)
 {
+	// the blocks should fit evenly into the screen with no leftover space
+	assert((width % blockWidth) == (height % blockWidth) && (width % blockWidth) == 0);
+	// there should be a "center" block in both dimensions
+	assert((bottomRight.x % 2) == (bottomRight.y % 2) && (bottomRight.x % 2) == 0);
 	// TODO: check for errors in return value
 	screen = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE | SDL_DOUBLEBUF);
 }
@@ -24,4 +30,12 @@ Point Screen::ResolveIndex(Point p) const
 void Screen::Update()
 {
 	SDL_UpdateRect(screen, 0, 0, 0, 0);
+}
+void Screen::Clear()
+{
+	SDL_Rect blank;
+	blank.x = blank.y = 0;
+	blank.w = width;
+	blank.h = height;
+	SDL_FillRect(screen, &blank, SDL_MapRGB(screen->format, bgColor.red, bgColor.green, bgColor.blue));
 }

@@ -3,6 +3,7 @@
 
 #include <SDL/SDL.h>
 
+#include "Color24.hpp"
 #include "Point.hpp"
 
 class Screen
@@ -12,8 +13,12 @@ private:
 
 	const size_t width;
 	const size_t height;
+
+	Color24 bgColor;
+
 public:
-	static const size_t blockWidth = 20;
+	const size_t blockWidth;
+	const Point bottomRight;
 
 	Screen(size_t width, size_t height);
 
@@ -22,6 +27,7 @@ public:
 
 	Point ResolveIndex(const Point p) const;
 	void Update();
+	void Clear();
 };
 
 #endif
