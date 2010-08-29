@@ -3,7 +3,7 @@
 #include "Screen.hpp"
 
 Screen::Screen(size_t _width, size_t _height) :
-	width(_width), height(_height), bgColor(0, 0, 0), blockWidth(20), bottomRight(width / blockWidth, height / blockWidth)
+	width(_width), height(_height), bgColor(0, 0, 0), blockWidth(15), bottomRight(width / blockWidth, height / blockWidth)
 {
 	// the blocks should fit evenly into the screen with no leftover space
 	assert((width % blockWidth) == (height % blockWidth) && (width % blockWidth) == 0);
