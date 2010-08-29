@@ -3,10 +3,10 @@
 
 struct Point
 {
-	unsigned int x, y;
+	int x, y;
 
 	Point();
-	Point(unsigned int, unsigned int);
+	Point(int, int);
 };
 
 #endif
