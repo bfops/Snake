@@ -51,6 +51,14 @@ void Snake::SetRenderTarget(Screen& target)
 {
 	screen = &target;
 }
+void Snake::Center()
+{
+	// the snake can only be centered if you know how big the screen is
+	assert(screen != nullptr);
+
+	location.x = screen->bottomRight.x / 2;
+	location.y = screen->bottomRight.y / 2;
+}
 void Snake::Draw() const
 {
 	class Block

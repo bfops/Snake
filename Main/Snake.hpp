@@ -34,6 +34,7 @@ public:
 	void GetInput();
 	void Update();
 	void SetRenderTarget(Screen& target);
+	void Center();
 	void Draw() const;
 	bool IsDead() const;
 };
