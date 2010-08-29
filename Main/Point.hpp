@@ -4,6 +4,9 @@
 struct Point
 {
 	unsigned int x, y;
+
+	Point();
+	Point(unsigned int, unsigned int);
 };
 
 #endif

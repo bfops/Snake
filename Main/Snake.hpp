@@ -4,6 +4,7 @@
 #include <vector>
 #include <SDL/SDL.h>
 
+#include "Color24.hpp"
 #include "Point.hpp"
 #include "Screen.hpp"
 
@@ -17,9 +18,13 @@ private:
 		up,
 		down
 	};
+	typedef std::vector<Direction> Path;
+	const static Direction directions[];
+
 	unsigned int length;
-	std::vector<Direction> path;
-	Point coordinate;
+	Path path;
+	Point location;
+	Color24 color;
 
 public:
 	Snake();

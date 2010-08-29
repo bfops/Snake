@@ -1,7 +1,9 @@
 add_executable(GingerbreadPrototype
+	Color24.cpp
 	main.cpp
-	Snake.cpp
+	Point.cpp
 	Screen.cpp
+	Snake.cpp
 )
 
 target_link_libraries(GingerbreadPrototype

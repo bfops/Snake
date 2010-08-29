@@ -9,6 +9,7 @@ using namespace boost;
 using namespace std;
 
 static bool successful_sdl_setup();
+static bool quit_called();
 
 int main()
 {
@@ -20,7 +21,6 @@ int main()
 		exit(0);
 	}
 
-	// TODO: wrap SDL_Surface* in custom class (will also handle errors in Surface allocation)
 	Screen screen(800, 600);
 	Snake player;
 
@@ -33,7 +33,10 @@ int main()
 		player.Update();
 		player.Draw(screen);
 
-		if(player.IsDead())
+		// TODO: pass deltaT
+		screen.Update();
+
+		if(player.IsDead() || quit_called())
 			break;
 
 		this_thread::sleep(posix_time::millisec(50));
@@ -48,4 +51,9 @@ bool successful_sdl_setup()
 
 	const unsigned int SDLSubsystems = SDL_INIT_VIDEO;
 	return (SDL_Init(SDLSubsystems) == 0);
+}
+bool quit_called()
+{
+	SDL_Event event;
+	return (SDL_PollEvent(&event) != 0 && event.type == SDL_QUIT);
 }

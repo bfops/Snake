@@ -3,6 +3,8 @@
 
 #include <SDL/SDL.h>
 
+#include "Point.hpp"
+
 class Screen
 {
 private:
@@ -11,11 +13,15 @@ private:
 	const size_t width;
 	const size_t height;
 public:
-	static const size_t blockSize = 50;
+	static const size_t blockWidth = 20;
 
 	Screen(size_t width, size_t height);
 
-	operator SDL_Surface*();
+	SDL_Surface* GetSurface();
+	const SDL_Surface* GetSurface() const;
+
+	Point ResolveIndex(const Point p) const;
+	void Update();
 };
 
 #endif
