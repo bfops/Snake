@@ -1,3 +1,5 @@
+#include <ctime>
+
 #include <boost/thread.hpp>
 #include <boost/date_time.hpp>
 #include <SDL/SDL.h>
@@ -13,6 +15,9 @@ static bool quit_called();
 
 int main()
 {
+	// initialize random seed
+	srand(time(NULL));
+
 	// TODO: throw exception instead of return value
 	if(!successful_sdl_setup())
 	{
@@ -21,23 +26,30 @@ int main()
 		exit(0);
 	}
 
-	Screen screen(800, 600);
+	Screen screen(810, 600);
 	Snake player;
+	player.SetRenderTarget(screen);
+	player.Center();
+
+	// TODO: use more interrupts rather than loops
+	// TODO: use timer rather than loop cycles
+	// TODO: pass deltaT to update functions
 
 	// game loop
-	for(;;)
+	while(!quit_called())
 	{
-		// TODO: interrupt handle
+		screen.Clear();
 		player.GetInput();
-		// TODO: pass deltaT
 		player.Update();
-		player.Draw(screen);
+		player.Draw();
 
-		// TODO: pass deltaT
 		screen.Update();
 
-		if(player.IsDead() || quit_called())
+		if(player.IsDead())
+		{
+			cout << "You lose!\n";
 			break;
+		}
 
 		this_thread::sleep(posix_time::millisec(50));
 	}
