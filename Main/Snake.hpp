@@ -5,6 +5,7 @@
 #include <SDL/SDL.h>
 
 #include "Color24.hpp"
+#include "Common.hpp"
 #include "Point.hpp"
 #include "Screen.hpp"
 #include "Timer.hpp"
@@ -19,16 +20,18 @@ private:
 		up,
 		down
 	};
-	typedef std::vector<Direction> Path;
 	const static Direction directions[];
+	typedef std::vector<Point> Path;
 
 	unsigned int length;
+	Direction direction;
 	Path path;
-	Point location;
+	Path::iterator head;
 	Color24 color;
 	Screen* screen;
 
-	Timer timer;
+	Timer moveTimer;
+	Timer growTimer;
 
 public:
 	Snake();

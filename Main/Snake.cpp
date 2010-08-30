@@ -13,17 +13,20 @@ using namespace std;
 const Snake::Direction Snake::directions[] = {left, right, up, down};
 
 Snake::Snake() :
-	color(0, 255, 0), screen(NULL), timer()
+color(0, 255, 0), screen(NULL)
 {
 	Reset();
 }
 
 void Snake::Reset()
 {
+	// reset to one segment
 	length = 1;
-	path = vector<Direction>();
+	path = Path();
+	path.push_back(Point());
+	head = path.begin();
 	// give it a random starting direction
-	path.push_back(directions[rand() % countof(directions)]);
+	direction = directions[rand() % countof(directions)];
 }
 void Snake::GetInput()
 {
@@ -31,26 +34,31 @@ void Snake::GetInput()
 }
 void Snake::Update()
 {
-	assert(*path.begin() == up || *path.begin() == down || *path.begin() == right || *path.begin() == left);
+	assert(direction == up || direction == down || direction == right || direction == left);
 
 	// TODO: use different snake speeds
-	if(timer.ResetIfHasElapsed(125))
+	if(moveTimer.ResetIfHasElapsed(125))
 	{
-		switch(*path.begin())
+		switch(direction)
 		{
 			case left:
-				--location.x;
+				--head->x;
 				break;
 			case right:
-				++location.x;
+				++head->x;
 				break;
 			case up:
-				--location.y;
+				--head->y;
 				break;
 			case down:
-				++location.y;
+				++head->y;
 				break;
 		}
+	}
+	if(growTimer.ResetIfHasElapsed(4000))
+	{
+		++length;
+		path.push_back(*path.rbegin());
 	}
 }
 void Snake::SetRenderTarget(Screen& target)
@@ -59,63 +67,51 @@ void Snake::SetRenderTarget(Screen& target)
 }
 void Snake::Center()
 {
-	// the snake can only be centered if you know how big the screen is
+	// the snake can't be screen-centered w/o a screen
 	assert(screen != nullptr);
 
-	location.x = screen->bottomRight.x / 2;
-	location.y = screen->bottomRight.y / 2;
+	head->x = screen->bottomRight.x / 2;
+	head->y = screen->bottomRight.y / 2;
 }
 void Snake::Draw() const
 {
 	class Block
 	{
-	private:
-		mutable SDL_Rect rect;
+		private:
+			mutable SDL_Rect rect;
 
-	public:
-		Point index;
+		public:
+			Point index;
 
-		Block(Point _index, unsigned short width) :
+			Block(Point _index, unsigned short width) :
 			rect()
-		{
-			index.x = _index.x;
-			index.y = _index.y;
-			rect.h = width;
-			rect.w = width;
-		}
+			{
+				index.x = _index.x;
+				index.y = _index.y;
+				rect.h = width;
+				rect.w = width;
+			}
 
-		const SDL_Rect* GetRect(const Screen& target) const
-		{
-			Point screenIndex = target.ResolveIndex(index);
-			rect.x = screenIndex.x;
-			rect.y = screenIndex.y;
+			const SDL_Rect* GetRect(const Screen& target) const
+			{
+				Point screenIndex = target.ResolveIndex(index);
+				rect.x = screenIndex.x;
+				rect.y = screenIndex.y;
 
-			return &rect;
-		}
-		SDL_Rect* GetRect(const Screen& target)
-		{
-			return const_cast<SDL_Rect*>(const_cast<const Block*>(this)->GetRect(target));
-		}
+				return &rect;
+			}
+			SDL_Rect* GetRect(const Screen& target)
+			{
+				return const_cast<SDL_Rect*>(const_cast<const Block*>(this)->GetRect(target));
+			}
 	};
 
 	assert(screen != nullptr);
 
-	Block currentBlock(Point(location.x, location.y), screen->blockWidth);
+	Block currentBlock(Point(), screen->blockWidth);
 	for(Path::const_iterator i = path.begin(); i != path.end(); ++i)
 	{
-		if(i != path.begin())
-		{
-			assert(*i == up || *i == down || *i == right || *i == left);
-
-			if(*i == up)
-				--currentBlock.index.y;
-			else if(*i == down)
-				++currentBlock.index.y;
-			else if(*i == left)
-				--currentBlock.index.x;
-			else
-				++currentBlock.index.x;
-		}
+		currentBlock.index = *i;
 		// TODO: check for errors here
 		SDL_FillRect(screen->GetSurface(), currentBlock.GetRect(*screen), SDL_MapRGB(screen->GetSurface()->format, color.red, color.green, color.blue));
 	}
@@ -126,5 +122,6 @@ bool Snake::IsDead() const
 	// TODO: add self-collision detection
 
 	// basic screen bounds check
-	return (location.x < 0 || location.y < 0 || location.x > screen->bottomRight.x || location.y > screen->bottomRight.y);
+	return (head->x < 0 || head->x > screen->bottomRight.x
+		 || head->y < 0 || head->y > screen->bottomRight.y);
 }
