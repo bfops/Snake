@@ -4,6 +4,7 @@ add_executable(GingerbreadPrototype
 	Point.cpp
 	Screen.cpp
 	Snake.cpp
+	Timer.cpp
 )
 
 target_link_libraries(GingerbreadPrototype
