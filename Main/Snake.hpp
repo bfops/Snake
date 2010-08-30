@@ -7,6 +7,7 @@
 #include "Color24.hpp"
 #include "Point.hpp"
 #include "Screen.hpp"
+#include "Timer.hpp"
 
 class Snake
 {
@@ -26,6 +27,8 @@ private:
 	Point location;
 	Color24 color;
 	Screen* screen;
+
+	Timer timer;
 
 public:
 	Snake();

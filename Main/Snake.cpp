@@ -1,18 +1,19 @@
-#include "Common.hpp"
-#include "Screen.hpp"
-#include "Snake.hpp"
-
 #include <cassert>
 #include <cstdlib>
 
 #include <SDL/SDL.h>
+
+#include "Common.hpp"
+#include "Screen.hpp"
+#include "Snake.hpp"
+#include "Timer.hpp"
 
 using namespace std;
 
 const Snake::Direction Snake::directions[] = {left, right, up, down};
 
 Snake::Snake() :
-	color(0, 255, 0), screen(NULL)
+	color(0, 255, 0), screen(NULL), timer()
 {
 	Reset();
 }
@@ -31,20 +32,25 @@ void Snake::GetInput()
 void Snake::Update()
 {
 	assert(*path.begin() == up || *path.begin() == down || *path.begin() == right || *path.begin() == left);
-	switch(*path.begin())
+
+	// TODO: use different snake speeds
+	if(timer.ResetIfHasElapsed(125))
 	{
-		case left:
-			--location.x;
-			break;
-		case right:
-			++location.x;
-			break;
-		case up:
-			--location.y;
-			break;
-		case down:
-			++location.y;
-			break;
+		switch(*path.begin())
+		{
+			case left:
+				--location.x;
+				break;
+			case right:
+				++location.x;
+				break;
+			case up:
+				--location.y;
+				break;
+			case down:
+				++location.y;
+				break;
+		}
 	}
 }
 void Snake::SetRenderTarget(Screen& target)
