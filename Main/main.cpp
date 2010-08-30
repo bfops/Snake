@@ -1,11 +1,12 @@
 #include <ctime>
 
-#include <boost/thread.hpp>
 #include <boost/date_time.hpp>
+#include <boost/thread.hpp>
 #include <SDL/SDL.h>
 
 #include "Screen.hpp"
 #include "Snake.hpp"
+#include "Timer.hpp"
 
 using namespace boost;
 using namespace std;
@@ -32,14 +33,12 @@ int main()
 	player.Center();
 
 	// TODO: use more interrupts rather than loops
-	// TODO: use timer rather than loop cycles
-	// TODO: pass deltaT to update functions
-
 	// game loop
 	while(!quit_called())
 	{
 		screen.Clear();
 		player.GetInput();
+
 		player.Update();
 		player.Draw();
 
