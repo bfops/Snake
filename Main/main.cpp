@@ -4,6 +4,7 @@
 #include <boost/thread.hpp>
 #include <SDL/SDL.h>
 
+#include "Common.hpp"
 #include "Screen.hpp"
 #include "Snake.hpp"
 #include "Timer.hpp"
