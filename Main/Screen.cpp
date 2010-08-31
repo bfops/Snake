@@ -16,7 +16,7 @@ Screen::Screen(size_t _width, size_t _height) :
 template <typename T>
 static T* fix_refcount(T* x)
 {
-	++x->refcount;
+	++(x->refcount);
 	return x;
 }
 
