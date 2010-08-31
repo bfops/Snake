@@ -10,7 +10,7 @@ Screen::Screen(size_t _width, size_t _height) :
 	// there should be a "center" block in both dimensions
 	assert((bottomRight.x % 2) == (bottomRight.y % 2) && (bottomRight.x % 2) == 0);
 	// TODO: check for errors in return value
-	screen = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE | SDL_DOUBLEBUF);
+	screen = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE);
 }
 
 const SDL_Surface* Screen::GetSurface() const
@@ -29,7 +29,8 @@ Point Screen::ResolveIndex(Point p) const
 }
 void Screen::Update()
 {
-	SDL_UpdateRect(screen, 0, 0, 0, 0);
+	// TODO: check return value
+	SDL_Flip(screen);
 }
 void Screen::Clear()
 {
