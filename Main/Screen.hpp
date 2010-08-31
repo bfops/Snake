@@ -23,7 +23,6 @@ public:
 	Screen(size_t width, size_t height);
 
 	SDL_Surface* GetSurface();
-	const SDL_Surface* GetSurface() const;
 
 	Point ResolveIndex(const Point p) const;
 	void Update();

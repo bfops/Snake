@@ -13,20 +13,10 @@ Screen::Screen(size_t _width, size_t _height) :
 	screen = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE);
 }
 
-template <typename T>
-static T* fix_refcount(T* x)
-{
-	++(x->refcount);
-	return x;
-}
-
-const SDL_Surface* Screen::GetSurface() const
-{
-	return fix_refcount(screen);
-}
 SDL_Surface* Screen::GetSurface()
 {
-	return fix_refcount(screen);
+	++(screen->refcount);
+	return screen;
 }
 
 Point Screen::ResolveIndex(Point p) const
