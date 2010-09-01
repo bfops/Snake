@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 2.8)
 project(gingerbread)
 
 set(BOOST_VERSION 1.37.0)
-#set(Boost_USE_STATIC_LIBS ON)
-#set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_MULTITHREADED ON)
 
 set(BOOST_PACKAGES filesystem date_time program_options serialization signals thread system regex)
 
