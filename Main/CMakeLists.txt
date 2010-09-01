@@ -3,6 +3,7 @@ add_executable(GingerbreadPrototype
 	main.cpp
 	Point.cpp
 	Screen.cpp
+	SDL.cpp
 	Snake.cpp
 	Timer.cpp
 )
