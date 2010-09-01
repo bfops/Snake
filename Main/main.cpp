@@ -1,4 +1,5 @@
 #include <ctime>
+#include <cstdio>
 
 #include <boost/date_time.hpp>
 #include <boost/thread.hpp>
@@ -14,12 +15,14 @@ using namespace std;
 
 static bool quit_called();
 
+#define FPS 60
+
 int main()
 {
 	// initialize random seed
 	srand(time(NULL));
 
-	Screen screen(810, 600);
+	Screen screen(800, 600);
 	Snake player;
 	player.SetRenderTarget(screen);
 	player.Center();
@@ -38,11 +41,11 @@ int main()
 
 		if(player.IsDead())
 		{
-			cout << "You lose!\n";
+			printf("You lose!\n");
 			break;
 		}
 
-		this_thread::sleep(posix_time::millisec(50));
+		this_thread::sleep(posix_time::millisec(1000/FPS));
 	}
 
 	return 0;
