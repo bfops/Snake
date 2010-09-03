@@ -28,7 +28,7 @@ int main()
 		exit(0);
 	}
 
-	Screen screen(810, 600);
+	Screen screen(810, 600, 54, 40);
 	Snake player;
 	player.SetRenderTarget(screen);
 	player.Center();
