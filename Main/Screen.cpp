@@ -36,3 +36,14 @@ void Screen::Clear()
 	blank.h = height;
 	SDL_FillRect(screen, &blank, SDL_MapRGB(screen->format, bgColor.red, bgColor.green, bgColor.blue));
 }
+void Screen::DrawRect(const Point& loc, const Color24& color)
+{
+	SDL_Rect rect;
+	rect.h = rect.w = blockWidth;
+	Point realIndex = ResolveIndex(loc);
+	rect.x = realIndex.x;
+	rect.y = realIndex.y;
+
+	// TODO: check for errors here
+	SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, color.red, color.green, color.blue));
+}

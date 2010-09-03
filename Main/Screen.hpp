@@ -27,6 +27,7 @@ public:
 	Point ResolveIndex(const Point p) const;
 	void Update();
 	void Clear();
+	void DrawRect(const Point& location, const Color24& color);
 };
 
 #endif

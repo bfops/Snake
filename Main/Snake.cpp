@@ -82,45 +82,11 @@ void Snake::Center()
 }
 void Snake::Draw() const
 {
-	class Block
-	{
-		private:
-			mutable SDL_Rect rect;
-
-		public:
-			Point index;
-
-			Block(Point _index, unsigned short width) :
-			rect()
-			{
-				index.x = _index.x;
-				index.y = _index.y;
-				rect.h = width;
-				rect.w = width;
-			}
-
-			const SDL_Rect* GetRect(const Screen& target) const
-			{
-				Point screenIndex = target.ResolveIndex(index);
-				rect.x = screenIndex.x;
-				rect.y = screenIndex.y;
-
-				return &rect;
-			}
-			SDL_Rect* GetRect(const Screen& target)
-			{
-				return const_cast<SDL_Rect*>(const_cast<const Block*>(this)->GetRect(target));
-			}
-	};
-
 	assert(screen != nullptr);
 
-	Block currentBlock(Point(), screen->blockWidth);
 	for(Path::const_iterator i = path.begin(); i != path.end(); ++i)
 	{
-		currentBlock.index = *i;
-		// TODO: check for errors here
-		SDL_FillRect(screen->GetSurface(), currentBlock.GetRect(*screen), SDL_MapRGB(screen->GetSurface()->format, color.red, color.green, color.blue));
+		screen->DrawRect(*i, color);
 	}
 }
 bool Snake::IsDead() const
