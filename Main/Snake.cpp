@@ -39,26 +39,28 @@ void Snake::Update()
 	// TODO: use different snake speeds
 	if(moveTimer.ResetIfHasElapsed(125))
 	{
-		// basically move each element to the position of the element ahead of it
-		for(Path::iterator i = path.begin(); i != path.end() - 1;)
-		{
-			*(i++) = *i;
-		}
+		// only the head and tail need to be moved!
+		// The body might as well be stationary
+
+		Point headPoint = *head;
 		switch(direction)
 		{
 			case left:
-				--head->x;
+				--headPoint.x;
 				break;
 			case right:
-				++head->x;
+				++headPoint.x;
 				break;
 			case up:
-				--head->y;
+				--headPoint.y;
 				break;
 			case down:
-				++head->y;
+				++headPoint.y;
 				break;
 		}
+		path.push_front(headPoint);
+		path.pop_back();
+		head = path.begin();
 	}
 	if(growTimer.ResetIfHasElapsed(4000))
 	{

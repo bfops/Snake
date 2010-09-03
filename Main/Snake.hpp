@@ -1,7 +1,7 @@
 #ifndef __Snake__
 #define __Snake__
 
-#include <vector>
+#include <deque>
 #include <SDL/SDL.h>
 
 #include "Color24.hpp"
@@ -21,7 +21,7 @@ private:
 		down
 	};
 	const static Direction directions[];
-	typedef std::vector<Point> Path;
+	typedef std::deque<Point> Path;
 
 	unsigned int length;
 	Direction direction;
