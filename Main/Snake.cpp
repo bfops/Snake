@@ -39,6 +39,11 @@ void Snake::Update()
 	// TODO: use different snake speeds
 	if(moveTimer.ResetIfHasElapsed(125))
 	{
+		// basically move each element to the position of the element ahead of it
+		for(Path::iterator i = path.begin(); i != path.end() - 1;)
+		{
+			*(i++) = *i;
+		}
 		switch(direction)
 		{
 			case left:
