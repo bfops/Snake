@@ -39,21 +39,28 @@ void Snake::Update()
 	// TODO: use different snake speeds
 	if(moveTimer.ResetIfHasElapsed(125))
 	{
+		// only the head and tail need to be moved!
+		// The body might as well be stationary
+
+		Point headPoint = *head;
 		switch(direction)
 		{
 			case left:
-				--head->x;
+				--headPoint.x;
 				break;
 			case right:
-				++head->x;
+				++headPoint.x;
 				break;
 			case up:
-				--head->y;
+				--headPoint.y;
 				break;
 			case down:
-				++head->y;
+				++headPoint.y;
 				break;
 		}
+		path.push_front(headPoint);
+		path.pop_back();
+		head = path.begin();
 	}
 	if(growTimer.ResetIfHasElapsed(4000))
 	{
@@ -75,45 +82,11 @@ void Snake::Center()
 }
 void Snake::Draw() const
 {
-	class Block
-	{
-		private:
-			mutable SDL_Rect rect;
-
-		public:
-			Point index;
-
-			Block(Point _index, unsigned short width) :
-			rect()
-			{
-				index.x = _index.x;
-				index.y = _index.y;
-				rect.h = width;
-				rect.w = width;
-			}
-
-			const SDL_Rect* GetRect(const Screen& target) const
-			{
-				Point screenIndex = target.ResolveIndex(index);
-				rect.x = screenIndex.x;
-				rect.y = screenIndex.y;
-
-				return &rect;
-			}
-			SDL_Rect* GetRect(const Screen& target)
-			{
-				return const_cast<SDL_Rect*>(const_cast<const Block*>(this)->GetRect(target));
-			}
-	};
-
 	assert(screen != nullptr);
 
-	Block currentBlock(Point(), screen->blockWidth);
 	for(Path::const_iterator i = path.begin(); i != path.end(); ++i)
 	{
-		currentBlock.index = *i;
-		// TODO: check for errors here
-		SDL_FillRect(screen->GetSurface(), currentBlock.GetRect(*screen), SDL_MapRGB(screen->GetSurface()->format, color.red, color.green, color.blue));
+		screen->DrawRect(*i, color);
 	}
 }
 bool Snake::IsDead() const

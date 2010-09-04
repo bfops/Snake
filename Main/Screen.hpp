@@ -13,21 +13,21 @@ private:
 
 	const size_t width;
 	const size_t height;
+	const size_t blockWidth;
 
 	Color24 bgColor;
 
 public:
-	const size_t blockWidth;
 	const Point bottomRight;
 
-	Screen(size_t width, size_t height);
+	Screen(size_t width, size_t height, size_t horizontalBlocks, size_t verticalBlocks);
 
 	SDL_Surface* GetSurface();
-	const SDL_Surface* GetSurface() const;
 
 	Point ResolveIndex(const Point p) const;
 	void Update();
 	void Clear();
+	void DrawRect(const Point& location, const Color24& color);
 };
 
 #endif

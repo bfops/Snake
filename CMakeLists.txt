@@ -15,9 +15,9 @@ include_directories(${Boost_INCLUDE_DIR} ${SDL_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})# ${SDL_INCLUDE_DIR})
 
 add_definitions(
-	-pipe -ansi -fsigned-char -fno-nonansi-builtins
-	-fno-operator-names -fno-rtti -Werror -Wfatal-errors
-	-Wno-long-long -static -pedantic -pedantic-errors -Wall #-Wextra
+	-pipe -std=c++0x -fsigned-char -fno-nonansi-builtins
+	-fno-operator-names -Werror -Wfatal-errors
+	-Wno-long-long -static -pedantic -pedantic-errors -Wall
 )
 
 add_subdirectory(Main)
