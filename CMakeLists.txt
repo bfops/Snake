@@ -15,7 +15,7 @@ include_directories(${Boost_INCLUDE_DIR} ${SDL_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})# ${SDL_INCLUDE_DIR})
 
 add_definitions(
-	-pipe -std=c++0x -fsigned-char -fno-nonansi-builtins
+	-pipe -fsigned-char -fno-nonansi-builtins
 	-fno-operator-names -Werror -Wfatal-errors
 	-Wno-long-long -static -pedantic -pedantic-errors -Wall
 )
