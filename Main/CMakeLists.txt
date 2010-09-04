@@ -2,6 +2,7 @@ add_executable(GingerbreadPrototype
 	Color24.cpp
 	main.cpp
 	Point.cpp
+	Physics.cpp
 	Screen.cpp
 	Snake.cpp
 	Timer.cpp
