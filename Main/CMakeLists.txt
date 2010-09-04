@@ -4,6 +4,7 @@ add_executable(GingerbreadPrototype
 	Point.cpp
 	Physics.cpp
 	Screen.cpp
+	SDL.cpp
 	Snake.cpp
 	Timer.cpp
 )
