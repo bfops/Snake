@@ -15,7 +15,8 @@ using namespace std;
 
 static bool quit_called();
 
-#define FPS 60
+// TODO: fetch this dynamically
+const unsigned int FPS = 60;
 
 int main()
 {
