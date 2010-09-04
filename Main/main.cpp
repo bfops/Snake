@@ -42,11 +42,11 @@ int main()
 
 		if(player.IsDead())
 		{
-			printf("You lose!\n");
+			cout << "You lose!\n";
 			break;
 		}
 
-		this_thread::sleep(posix_time::millisec(1000/FPS));
+		this_thread::sleep(posix_time::millisec(1000 / FPS));
 	}
 
 	return 0;
