@@ -23,7 +23,7 @@ int main()
 	// initialize random seed
 	srand(time(NULL));
 
-	Screen screen(800, 600, 54, 40);
+	Screen screen(810, 600, 54, 40);
 	Snake player;
 	player.SetRenderTarget(screen);
 	player.Center();
