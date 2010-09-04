@@ -4,10 +4,10 @@
 #include <deque>
 #include <SDL/SDL.h>
 
-#include "Color24.hpp"
 #include "Common.hpp"
 #include "Point.hpp"
 #include "Screen.hpp"
+#include "SnakeSegment.hpp"
 #include "Timer.hpp"
 
 class Snake
@@ -21,13 +21,12 @@ private:
 		down
 	};
 	const static Direction directions[];
-	typedef std::deque<Point> Path;
+	typedef std::vector<SnakeSegment> Path;
 
 	unsigned int length;
 	Direction direction;
 	Path path;
 	Path::iterator head;
-	Color24 color;
 	Screen* screen;
 
 	Timer moveTimer;

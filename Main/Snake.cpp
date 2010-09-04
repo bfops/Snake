@@ -13,7 +13,7 @@ using namespace std;
 const Snake::Direction Snake::directions[] = {left, right, up, down};
 
 Snake::Snake() :
-color(0, 255, 0), screen(NULL)
+	screen(NULL)
 {
 	Reset();
 }
@@ -23,7 +23,7 @@ void Snake::Reset()
 	// reset to one segment
 	length = 1;
 	path = Path();
-	path.push_back(Point());
+	path.push_back(SnakeSegment());
 	head = path.begin();
 	// give it a random starting direction
 	direction = directions[rand() % countof(directions)];
@@ -39,28 +39,32 @@ void Snake::Update()
 	// TODO: use different snake speeds
 	if(moveTimer.ResetIfHasElapsed(125))
 	{
-		// only the head and tail need to be moved!
-		// The body might as well be stationary
+		if(length > path.size())
+		{
+			path.push_back(SnakeSegment());
+		}
 
-		Point headPoint = *head;
+		// rather than moving each tile individually, simply
+		// make each one take the place of the one in front
+		for(Path::iterator i = path.begin(); i != path.end() - 1; ++i)
+		{
+			(i + 1)->location = i->location;
+		}
 		switch(direction)
 		{
 			case left:
-				--headPoint.x;
+				--head->location.x;
 				break;
 			case right:
-				++headPoint.x;
+				++head->location.x;
 				break;
 			case up:
-				--headPoint.y;
+				--head->location.y;
 				break;
 			case down:
-				++headPoint.y;
+				++head->location.y;
 				break;
 		}
-		path.push_front(headPoint);
-		path.pop_back();
-		head = path.begin();
 	}
 	if(growTimer.ResetIfHasElapsed(4000))
 	{
@@ -77,8 +81,8 @@ void Snake::Center()
 	// the snake can't be screen-centered w/o a screen
 	assert(screen != nullptr);
 
-	head->x = screen->bottomRight.x / 2;
-	head->y = screen->bottomRight.y / 2;
+	head->location.x = screen->bottomRight.x / 2;
+	head->location.y = screen->bottomRight.y / 2;
 }
 void Snake::Draw() const
 {
@@ -86,7 +90,7 @@ void Snake::Draw() const
 
 	for(Path::const_iterator i = path.begin(); i != path.end(); ++i)
 	{
-		screen->DrawRect(*i, color);
+		screen->DrawRect(i->location, i->color);
 	}
 }
 bool Snake::IsDead() const
@@ -95,6 +99,6 @@ bool Snake::IsDead() const
 	// TODO: add self-collision detection
 
 	// basic screen bounds check
-	return (head->x < 0 || head->x > screen->bottomRight.x
-		 || head->y < 0 || head->y > screen->bottomRight.y);
+	return (head->location.x < 0 || head->location.x > screen->bottomRight.x
+		 || head->location.y < 0 || head->location.y > screen->bottomRight.y);
 }
