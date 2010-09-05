@@ -20,11 +20,12 @@ namespace PhysicsWorld
 
 	void AddObject(WorldObject& obj)
 	{
-		// this should get optimized out in released build
+		#ifdef NDEBUG
 		for(PhysicsObjectList::iterator i = objects.begin(); i != objects.end(); ++i)
 		{
 			assert(*i != &obj);
 		}
+		#endif
 		objects.push_back(&obj);
 	}
 	void RemoveObject(WorldObject& obj)
