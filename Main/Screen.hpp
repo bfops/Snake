@@ -24,7 +24,7 @@ public:
 
 	SDL_Surface* GetSurface();
 
-	Point ResolveIndex(const Point) const;
+	Point ResolveIndex(const Point blockIndex) const;
 	void Update();
 	void Clear();
 	void DrawRect(const Point& location, const Color24& color);

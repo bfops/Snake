@@ -10,7 +10,7 @@ private:
 	bool dead;
 
 public:
-	friend class Snake;
+	SnakeSegment();
 
 	void CollisionHandler(const WorldObject&);
 	ObjectType GetObjectType() const;

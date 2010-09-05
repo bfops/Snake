@@ -2,6 +2,12 @@
 
 #include "SnakeSegment.hpp"
 
+SnakeSegment::SnakeSegment()
+{
+	height = 1;
+	width = 1;
+}
+
 void SnakeSegment::CollisionHandler(const WorldObject& obj)
 {
 	WorldObject::ObjectType type = obj.GetObjectType();
