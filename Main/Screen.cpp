@@ -1,10 +1,16 @@
 #include <cassert>
 
+#include "Physics.hpp"
 #include "Screen.hpp"
+#include "Wall.hpp"
 
 Screen::Screen(size_t _width, size_t _height, size_t xBlocks, size_t yBlocks) :
 	width(_width), height(_height), blockWidth(width / xBlocks), bgColor(0, 0, 0), bottomRight(xBlocks, yBlocks)
 {
+	// TODO: change so that black bars are used as buffers
+	// if blocks don't fit. Block size is determined by
+	// MIN(width / xBlocks, height / yBlocks)
+
 	// the blocks should fit evenly into the screen with no leftover space
 	assert((width % xBlocks) == 0 && (height % yBlocks) == 0);
 	// there should be a "center" block in both dimensions
