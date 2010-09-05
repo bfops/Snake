@@ -10,6 +10,7 @@
 #include "SnakeSegment.hpp"
 #include "Timer.hpp"
 
+// TODO: make death semantics prettier
 class Snake
 {
 private:

@@ -4,6 +4,7 @@
 #include <SDL/SDL.h>
 
 #include "Common.hpp"
+#include "Physics.hpp"
 #include "Screen.hpp"
 #include "Snake.hpp"
 #include "Timer.hpp"
@@ -20,11 +21,18 @@ Snake::Snake() :
 
 void Snake::Reset()
 {
+	// remove snake from physics world
+	for(Path::iterator currentSegment = path.begin(); currentSegment != path.end(); ++currentSegment)
+	{
+		PhysicsWorld::RemoveObject(*currentSegment);
+	}
+
 	// reset to one segment
 	length = 1;
 	path = Path();
 	path.push_back(SnakeSegment());
 	head = path.begin();
+	PhysicsWorld::AddObject(*head);
 	// give it a random starting direction
 	direction = directions[rand() % countof(directions)];
 }
@@ -45,6 +53,8 @@ void Snake::Update()
 		if(length > path.size())
 		{
 			path.push_back(SnakeSegment());
+			// add the new segment to the physical world
+			PhysicsWorld::AddObject(*path.rbegin());
 		}
 
 		// rather than moving each tile individually, simply
