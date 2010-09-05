@@ -28,6 +28,8 @@ int main()
 	player.SetRenderTarget(screen);
 	player.Center();
 
+	SDL_ShowCursor(SDL_DISABLE);
+
 	// TODO: use more interrupts rather than loops
 	// game loop
 	while(!quit_called())
