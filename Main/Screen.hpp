@@ -5,6 +5,7 @@
 
 #include "Color24.hpp"
 #include "Point.hpp"
+#include "Wall.hpp"
 
 class Screen
 {
@@ -16,6 +17,8 @@ private:
 	const size_t blockWidth;
 
 	Color24 bgColor;
+
+	Wall walls[4];
 
 public:
 	const Point bottomRight;
