@@ -10,7 +10,6 @@ class WorldObject
 public:
 	enum ObjectType
 	{
-		generic,
 		snake,
 		wall,
 		food
@@ -19,7 +18,7 @@ public:
 	Point location;
 	size_t height, width;
 
-	virtual ObjectType GetObjectType() const;
+	virtual ObjectType GetObjectType() const = 0;
 	virtual void CollisionHandler(const WorldObject& colidee) = 0;
 };
 

@@ -10,6 +10,7 @@ public:
 	friend class Snake;
 
 	void CollisionHandler(const WorldObject&);
+	ObjectType GetObjectType() const;
 };
 
 #endif

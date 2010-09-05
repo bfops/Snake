@@ -8,7 +8,6 @@ add_executable(GingerbreadPrototype
 	Snake.cpp
 	SnakeSegment.cpp
 	Timer.cpp
-	WorldObject.cpp
 )
 
 target_link_libraries(GingerbreadPrototype

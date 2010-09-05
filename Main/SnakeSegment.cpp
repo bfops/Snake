@@ -14,3 +14,7 @@ void SnakeSegment::CollisionHandler(const WorldObject& obj)
 		assert(!"Food unimplemented");
 	}
 }
+WorldObject::ObjectType SnakeSegment::GetObjectType() const
+{
+	return snake;
+}
