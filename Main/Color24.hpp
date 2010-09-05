@@ -1,6 +1,8 @@
 #ifndef __Color__
 #define __Color__
 
+#include "SDL/SDL.h"
+
 struct Color24
 {
 	union
@@ -21,6 +23,8 @@ struct Color24
 
 	Color24();
 	Color24(unsigned short red, unsigned short green, unsigned short blue);
+
+	Uint32 GetRGBMap(SDL_Surface*) const;
 };
 
 #endif
