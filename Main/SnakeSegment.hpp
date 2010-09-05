@@ -6,11 +6,16 @@
 
 class SnakeSegment : public WorldObject
 {
+private:
+	bool dead;
+
 public:
 	friend class Snake;
 
 	void CollisionHandler(const WorldObject&);
 	ObjectType GetObjectType() const;
+
+	bool IsDead() const;
 };
 
 #endif

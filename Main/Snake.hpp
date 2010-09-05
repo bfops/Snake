@@ -34,6 +34,8 @@ private:
 	Timer moveTimer;
 	Timer growTimer;
 
+	bool dead;
+
 public:
 	Snake();
 

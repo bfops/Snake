@@ -39,6 +39,9 @@ void Snake::Update()
 	// TODO: use different snake speeds
 	if(moveTimer.ResetIfHasElapsed(125))
 	{
+		// TODO: discuss deque hack (only move head & tail)
+		// if it's still feasible later
+
 		if(length > path.size())
 		{
 			path.push_back(SnakeSegment());
@@ -48,8 +51,14 @@ void Snake::Update()
 		// make each one take the place of the one in front
 		for(Path::iterator i = path.begin(); i != path.end() - 1; ++i)
 		{
+			if(i->IsDead())
+				dead = true;
+
 			(i + 1)->location = i->location;
 		}
+		if(path.rbegin()->IsDead())
+			dead = true;
+
 		switch(direction)
 		{
 			case left:
@@ -95,10 +104,5 @@ void Snake::Draw() const
 }
 bool Snake::IsDead() const
 {
-	assert(screen != nullptr);
-	// TODO: add self-collision detection
-
-	// basic screen bounds check
-	return (head->location.x < 0 || head->location.x > screen->bottomRight.x
-		 || head->location.y < 0 || head->location.y > screen->bottomRight.y);
+	return dead;
 }
