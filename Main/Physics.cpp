@@ -33,6 +33,7 @@ namespace PhysicsWorld
 	}
 	void Update()
 	{
+		// TODO: only check those that have moved
 		for(PhysicsObjectList::iterator i = objects.begin(); i != objects.end(); ++i)
 		{
 			PhysicsObjectList::iterator j = i;

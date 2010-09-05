@@ -8,7 +8,7 @@
 #include "Common.hpp"
 #include "Screen.hpp"
 #include "Snake.hpp"
-#include "Timer.hpp"
+#include "Physics.hpp"
 
 using namespace boost;
 using namespace std;
@@ -36,8 +36,9 @@ int main()
 		player.GetInput();
 
 		player.Update();
-		player.Draw();
+		PhysicsWorld::Update();
 
+		player.Draw();
 		screen.Update();
 
 		if(player.IsDead())
