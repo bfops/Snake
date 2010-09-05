@@ -6,14 +6,13 @@
 #include <SDL/SDL.h>
 
 #include "Common.hpp"
+#include "Event.hpp"
 #include "Screen.hpp"
 #include "Snake.hpp"
 #include "Physics.hpp"
 
 using namespace boost;
 using namespace std;
-
-static bool quit_called();
 
 // TODO: fetch this dynamically
 const unsigned int FPS = 60;
@@ -22,9 +21,15 @@ int main()
 {
 	// initialize random seed
 	srand(time(NULL));
+	SDL_SetEventFilter(Event::Handler);
 
 	Screen screen(810, 600, 54, 40);
+
+	bool quit = false;
 	Snake player;
+
+	Event::RegisterPlayer(player);
+	Event::RegisterQuitter(quit);
 
 	// TODO: abstract this block out
 	Wall walls[] = {
@@ -33,7 +38,7 @@ int main()
 		Wall(Point(0, 0), screen.bottomRight.x, 1),
 		Wall(Point(0, screen.bottomRight.y - 1), screen.bottomRight.x, 1)
 	};
-	for(int i = countof(walls) - 1; i >= 0; --i)
+	for(unsigned int i = 0; i < countof(walls); ++i)
 	{
 		PhysicsWorld::AddObject(walls[i]);
 	}
@@ -45,13 +50,13 @@ int main()
 
 	// TODO: use more interrupts rather than loops
 	// game loop
-	while(!quit_called())
+	while(!quit)
 	{
 		player.Update();
 		PhysicsWorld::Update();
 
 		screen.Clear();
-		for(int i = countof(walls); i >= 0; --i)
+		for(unsigned int i = 0; i < countof(walls); ++i)
 			screen.Draw(walls[i], walls[i].color);
 		player.Draw();
 		screen.Update();
@@ -67,10 +72,3 @@ int main()
 
 	return 0;
 }
-
-bool quit_called()
-{
-	SDL_Event event;
-	return (SDL_PollEvent(&event) != 0 && event.type == SDL_QUIT);
-}
-

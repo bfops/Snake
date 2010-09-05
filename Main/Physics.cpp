@@ -11,7 +11,6 @@ namespace PhysicsWorld
 	{
 		typedef list<WorldObject*> PhysicsObjectList;
 		list<WorldObject*> objects;
-
 	}
 	static bool IsCollide(const WorldObject&, const WorldObject&);
 	static bool IsWithinBounds(const WorldObject&, const WorldObject&, int Point::* element, size_t WorldObject::* dimension);
