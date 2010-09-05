@@ -47,12 +47,14 @@ int main()
 	// game loop
 	while(!quit_called())
 	{
-		screen.Clear();
 		player.GetInput();
 
 		player.Update();
 		PhysicsWorld::Update();
 
+		screen.Clear();
+		for(int i = countof(walls) - 1; i >= 0; --i)
+			screen.Draw(walls[i], walls[i].color);
 		player.Draw();
 		screen.Update();
 
