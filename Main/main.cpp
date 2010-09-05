@@ -21,7 +21,12 @@ int main()
 {
 	// initialize random seed
 	srand(time(NULL));
+	// TODO: make event filters work!
+	// they only seem to get called when SDL_PollEvent
+	// is called, which makes it an exercise in futility
+	// because then all events are removed from te queue anyway
 	SDL_SetEventFilter(Event::Handler);
+	SDL_ShowCursor(SDL_DISABLE);
 
 	Screen screen(810, 600, 54, 40);
 
@@ -46,12 +51,11 @@ int main()
 	player.SetRenderTarget(screen);
 	player.Center();
 
-	SDL_ShowCursor(SDL_DISABLE);
-
 	// TODO: use more interrupts rather than loops
 	// game loop
 	while(!quit)
 	{
+		SDL_PollEvent(NULL);
 		player.Update();
 		PhysicsWorld::Update();
 
@@ -63,7 +67,7 @@ int main()
 
 		if(player.IsDead())
 		{
-			cout << "You lose!\n";
+			printf("You lose!\n");
 			break;
 		}
 

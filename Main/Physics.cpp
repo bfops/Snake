@@ -34,16 +34,17 @@ namespace PhysicsWorld
 	void Update()
 	{
 		// TODO: only check those that have moved
-		for(PhysicsObjectList::iterator i = objects.begin(); i != objects.end(); ++i)
+		for(PhysicsObjectList::iterator collider = objects.begin(); collider != objects.end(); ++collider)
 		{
-			PhysicsObjectList::iterator j = i;
-			++j;
-			for(; j != objects.end(); ++j)
+			PhysicsObjectList::iterator collidee = collider;
+			++collidee;
+			for(PhysicsObjectList::iterator end = objects.end(); collidee != end; ++collidee)
 			{
-				if(IsCollide(**i, **j))
+				if(IsCollide(**collider, **collidee))
 				{
-					(*i)->CollisionHandler(**j);
-					(*j)->CollisionHandler(**i);
+					#error commenting out code below stops segfaults
+					(*collider)->CollisionHandler(*collidee);
+					(*collidee)->CollisionHandler(*collider);
 				}
 			}
 		}

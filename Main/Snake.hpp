@@ -23,10 +23,10 @@ private:
 	Color24 color;
 	Screen* screen;
 
+	static const unsigned int defaultLength = 3;
 	unsigned int length;
 	Direction direction;
 	Path path;
-	Path::iterator head;
 
 	Timer moveTimer;
 	Timer growTimer;

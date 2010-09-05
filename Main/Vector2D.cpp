@@ -1,5 +1,7 @@
 #include "Vector2D.hpp"
 
+using namespace std;
+
 Vector2D::Vector2D() :
 	x(0), y(0)
 {

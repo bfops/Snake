@@ -1,5 +1,4 @@
 #include <cassert>
-#include <cstdlib>
 
 #include <SDL/SDL.h>
 
@@ -31,13 +30,11 @@ void Snake::Reset()
 		PhysicsWorld::RemoveObject(*currentSegment);
 	}
 
-	// reset to one segment
-	length = 1;
+	length = defaultLength;
 	path = Path();
 	path.push_back(SnakeSegment());
 
-	head = path.begin();
-	PhysicsWorld::AddObject(*head);
+	PhysicsWorld::AddObject(*path.begin());
 
 	// give it a random starting direction
 	const static Direction directions[] = {left, right, up, down};
@@ -61,7 +58,7 @@ void Snake::Update()
 	// TODO: use different snake speeds
 	if(moveTimer.ResetIfHasElapsed(125))
 	{
-		// TODO: discuss deque hack (only move head & tail)
+		// TODO: discuss deque hack (only move path.begin() & tail)
 		// if it's still feasible later
 
 		if(length > path.size())
@@ -73,17 +70,19 @@ void Snake::Update()
 
 		// rather than moving each tile individually, simply
 		// make each one take the place of the one in front
-		for(Path::iterator i = path.begin(); i != path.end() - 1; ++i)
+		for(Path::reverse_iterator i = path.rbegin() + 1, end = path.rend(); i != end; ++i)
 		{
 			if(i->IsDead())
 				dead = true;
 
-			(i + 1)->location = i->location;
+			Path::reverse_iterator last = i;
+			--last;
+			last->location = i->location;
 		}
 		if(path.rbegin()->IsDead())
 			dead = true;
 
-		apply_direction(*head, direction);
+		apply_direction(*path.begin(), direction);
 	}
 	if(growTimer.ResetIfHasElapsed(4000))
 	{
@@ -100,8 +99,8 @@ void Snake::Center()
 	// the snake can't be screen-centered w/o a screen
 	assert(screen != nullptr);
 
-	head->location.x = screen->bottomRight.x / 2;
-	head->location.y = screen->bottomRight.y / 2;
+	path.begin()->location.x = screen->bottomRight.x / 2;
+	path.begin()->location.y = screen->bottomRight.y / 2;
 }
 void Snake::Draw() const
 {

@@ -10,6 +10,7 @@ add_executable(GingerbreadPrototype
 	Timer.cpp
 	Vector2D.cpp
 	Wall.cpp
+	WorldObject.cpp
 )
 
 target_link_libraries(GingerbreadPrototype

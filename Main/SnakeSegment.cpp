@@ -9,9 +9,10 @@ SnakeSegment::SnakeSegment() :
 	width = 1;
 }
 
-void SnakeSegment::CollisionHandler(const WorldObject& obj)
+void SnakeSegment::CollisionHandler(const WorldObject* obj)
 {
-	WorldObject::ObjectType type = obj.GetObjectType();
+	printf("SnakeSegment::CollisionHandler\n");
+	WorldObject::ObjectType type = obj->GetObjectType();
 	if(type == WorldObject::snake || type == WorldObject::wall)
 	{
 		dead = true;
