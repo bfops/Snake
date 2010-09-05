@@ -6,6 +6,7 @@
 #include "Color24.hpp"
 #include "Point.hpp"
 #include "Wall.hpp"
+#include "WorldObject.hpp"
 
 class Screen
 {
@@ -30,7 +31,7 @@ public:
 	Point ResolveIndex(const Point blockIndex) const;
 	void Update();
 	void Clear();
-	void DrawRect(const Point& location, const Color24& color);
+	void Draw(const WorldObject& object, const Color24& color);
 };
 
 #endif

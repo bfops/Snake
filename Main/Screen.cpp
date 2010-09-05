@@ -50,12 +50,7 @@ void Screen::Update()
 	// draw walls
 	for(int i = countof(walls) - 1; i >= 0; --i)
 	{
-		SDL_Rect wall;
-		wall.x = walls[i].location.x;
-		wall.y = walls[i].location.y;
-		wall.h = walls[i].height;
-		wall.w = walls[i].width;
-		SDL_FillRect(screen, &wall, walls[i].color.GetRGBMap(screen));
+		Draw(walls[i], walls[i].color);
 	}
 
 	// TODO: check return value
@@ -69,14 +64,15 @@ void Screen::Clear()
 	blank.h = height;
 	SDL_FillRect(screen, &blank, bgColor.GetRGBMap(screen));
 }
-void Screen::DrawRect(const Point& loc, const Color24& color)
+void Screen::Draw(const WorldObject& obj, const Color24& color)
 {
 	SDL_Rect rect;
-	rect.h = rect.w = blockWidth;
-	Point realIndex = ResolveIndex(loc);
+	rect.w = obj.width * blockWidth;
+	rect.h = obj.height * blockWidth;
+	Point realIndex = ResolveIndex(obj.location);
 	rect.x = realIndex.x;
 	rect.y = realIndex.y;
 
 	// TODO: check for errors here
-	SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, color.red, color.green, color.blue));
+	SDL_FillRect(screen, &rect, color.GetRGBMap(screen));
 }

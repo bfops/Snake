@@ -109,7 +109,7 @@ void Snake::Draw() const
 
 	for(Path::const_iterator i = path.begin(); i != path.end(); ++i)
 	{
-		screen->DrawRect(i->location, color);
+		screen->Draw(*i, color);
 	}
 }
 bool Snake::IsDead() const
