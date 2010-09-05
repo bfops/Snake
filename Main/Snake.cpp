@@ -21,6 +21,7 @@ Snake::Snake() :
 
 void Snake::Reset()
 {
+	dead = false;
 	// remove snake from physics world
 	for(Path::iterator currentSegment = path.begin(); currentSegment != path.end(); ++currentSegment)
 	{

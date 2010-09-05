@@ -2,7 +2,8 @@
 
 #include "SnakeSegment.hpp"
 
-SnakeSegment::SnakeSegment()
+SnakeSegment::SnakeSegment() :
+	dead(false)
 {
 	height = 1;
 	width = 1;
