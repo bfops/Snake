@@ -1,9 +1,5 @@
-#include "SDL.hpp"
-
 #include <SDL/SDL.h>
 #include <stdexcept>
-
-namespace {
 
 struct SDLInitializer
 {
@@ -17,8 +13,4 @@ struct SDLInitializer
 	{
 		SDL_Quit();
 	}
-};
-
-}
-
-static SDLInitializer initializer;
+} static init;
