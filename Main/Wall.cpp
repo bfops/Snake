@@ -1,9 +1,11 @@
 #include "Wall.hpp"
 
-Wall::Wall()
+Wall::Wall() :
+	color(255, 0, 0)
 {
 }
-Wall::Wall(Point loc, size_t w, size_t h)
+Wall::Wall(Point loc, size_t w, size_t h) :
+	color(255, 0, 0)
 {
 	location = loc;
 	width = w;
