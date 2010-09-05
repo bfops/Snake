@@ -23,11 +23,13 @@ private:
 	const static Direction directions[];
 	typedef std::vector<SnakeSegment> Path;
 
+	Color24 color;
+	Screen* screen;
+
 	unsigned int length;
 	Direction direction;
 	Path path;
 	Path::iterator head;
-	Screen* screen;
 
 	Timer moveTimer;
 	Timer growTimer;

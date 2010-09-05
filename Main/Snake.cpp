@@ -13,7 +13,7 @@ using namespace std;
 const Snake::Direction Snake::directions[] = {left, right, up, down};
 
 Snake::Snake() :
-	screen(NULL)
+	color(0, 255, 0), screen(NULL)
 {
 	Reset();
 }
@@ -90,7 +90,7 @@ void Snake::Draw() const
 
 	for(Path::const_iterator i = path.begin(); i != path.end(); ++i)
 	{
-		screen->DrawRect(i->location, i->color);
+		screen->DrawRect(i->location, color);
 	}
 }
 bool Snake::IsDead() const
