@@ -25,6 +25,19 @@ int main()
 
 	Screen screen(810, 600, 54, 40);
 	Snake player;
+
+	// TODO: abstract this block out
+	Wall walls[] = {
+		Wall(Point(0, 0), 1, screen.bottomRight.y),
+		Wall(Point(screen.bottomRight.x - 1, 0), 1, screen.bottomRight.y),
+		Wall(Point(0, 0), screen.bottomRight.x, 1),
+		Wall(Point(0, screen.bottomRight.y - 1), screen.bottomRight.x, 1)
+	};
+	for(int i = countof(walls) - 1; i >= 0; --i)
+	{
+		PhysicsWorld::AddObject(walls[i]);
+	}
+
 	player.SetRenderTarget(screen);
 	player.Center();
 

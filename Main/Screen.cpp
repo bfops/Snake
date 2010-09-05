@@ -22,17 +22,6 @@ Screen::Screen(size_t _width, size_t _height, size_t xBlocks, size_t yBlocks) :
 
 	// TODO: check for errors in return value
 	screen = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE);
-
-	// TODO: format this code nicely
-	walls[0] = Wall(Point(0, 0), 1, yBlocks);
-	walls[1] = Wall(Point(xBlocks - 1, 0), 1, yBlocks);
-	walls[2] = Wall(Point(0, 0), xBlocks, 1);
-	walls[3] = Wall(Point(0, yBlocks - 1), xBlocks, 1);
-
-	for(int i = countof(walls) - 1; i >= 0; --i)
-	{
-		PhysicsWorld::AddObject(walls[i]);
-	}
 }
 
 SDL_Surface* Screen::GetSurface()
@@ -47,12 +36,6 @@ Point Screen::ResolveIndex(Point p) const
 }
 void Screen::Update()
 {
-	// draw walls
-	for(int i = countof(walls) - 1; i >= 0; --i)
-	{
-		Draw(walls[i], walls[i].color);
-	}
-
 	// TODO: check return value
 	SDL_Flip(screen);
 }

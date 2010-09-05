@@ -19,8 +19,6 @@ private:
 
 	Color24 bgColor;
 
-	Wall walls[4];
-
 public:
 	const Point bottomRight;
 
