@@ -1,12 +1,8 @@
 #ifndef __Point__
 #define __Point__
 
-struct Point
-{
-	int x, y;
+#include "Vector2D.hpp"
 
-	Point();
-	Point(int, int);
-};
+typedef Vector2D Point;
 
 #endif

@@ -11,7 +11,10 @@
 
 using namespace std;
 
-const Snake::Direction Snake::directions[] = {left, right, up, down};
+const Snake::Direction Snake::right(1, 0);
+const Snake::Direction Snake::left(-1, 0);
+const Snake::Direction Snake::up(0, -1);
+const Snake::Direction Snake::down(0, 1);
 
 Snake::Snake() :
 	color(0, 255, 0), screen(NULL)
@@ -32,14 +35,24 @@ void Snake::Reset()
 	length = 1;
 	path = Path();
 	path.push_back(SnakeSegment());
+
 	head = path.begin();
 	PhysicsWorld::AddObject(*head);
+
 	// give it a random starting direction
+	const static Direction directions[] = {left, right, up, down};
 	direction = directions[rand() % countof(directions)];
 }
-void Snake::GetInput()
+void Snake::ChangeDirection(Snake::Direction newDirection)
 {
-	assert(!"Snake::GetInput");
+	if(newDirection != -direction)
+		direction = newDirection;
+}
+
+static void apply_direction(SnakeSegment& segment, const Vector2D& direction)
+{
+	segment.location.x += direction.x;
+	segment.location.y += direction.y;
 }
 void Snake::Update()
 {
@@ -70,21 +83,7 @@ void Snake::Update()
 		if(path.rbegin()->IsDead())
 			dead = true;
 
-		switch(direction)
-		{
-			case left:
-				--head->location.x;
-				break;
-			case right:
-				++head->location.x;
-				break;
-			case up:
-				--head->location.y;
-				break;
-			case down:
-				++head->location.y;
-				break;
-		}
+		apply_direction(*head, direction);
 	}
 	if(growTimer.ResetIfHasElapsed(4000))
 	{

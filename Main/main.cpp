@@ -47,13 +47,11 @@ int main()
 	// game loop
 	while(!quit_called())
 	{
-		player.GetInput();
-
 		player.Update();
 		PhysicsWorld::Update();
 
 		screen.Clear();
-		for(int i = countof(walls) - 1; i >= 0; --i)
+		for(int i = countof(walls); i >= 0; --i)
 			screen.Draw(walls[i], walls[i].color);
 		player.Draw();
 		screen.Update();
@@ -75,3 +73,4 @@ bool quit_called()
 	SDL_Event event;
 	return (SDL_PollEvent(&event) != 0 && event.type == SDL_QUIT);
 }
+
