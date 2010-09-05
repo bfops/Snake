@@ -8,6 +8,7 @@ add_executable(GingerbreadPrototype
 	Snake.cpp
 	SnakeSegment.cpp
 	Timer.cpp
+	Wall.cpp
 )
 
 target_link_libraries(GingerbreadPrototype
