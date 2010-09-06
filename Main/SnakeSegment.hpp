@@ -13,7 +13,7 @@ public:
 	SnakeSegment();
 
 	ObjectType GetObjectType() const;
-	void CollisionHandler(const WorldObject*);
+	void CollisionHandler(const WorldObject&);
 
 	bool IsDead() const;
 };

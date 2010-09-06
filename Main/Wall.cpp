@@ -17,7 +17,7 @@ WorldObject::ObjectType Wall::GetObjectType() const
 {
 	return wall;
 }
-void Wall::CollisionHandler(const WorldObject* obj)
+void Wall::CollisionHandler(const WorldObject& obj)
 {
 	printf("Wall::CollisionHandler\n");
 }

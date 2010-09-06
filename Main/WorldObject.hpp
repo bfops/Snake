@@ -16,12 +16,12 @@ public:
 	};
 
 	Point location;
-	size_t height, width;
+	unsigned int height, width;
 
 	virtual ~WorldObject();
 
 	virtual ObjectType GetObjectType() const = 0;
-	virtual void CollisionHandler(const WorldObject* colidee) = 0;
+	virtual void CollisionHandler(const WorldObject& colidee) = 0;
 };
 
 #endif
