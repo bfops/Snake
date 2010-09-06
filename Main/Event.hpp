@@ -1,5 +1,4 @@
-#ifndef __Event__
-#define __Event__
+#pragma once
 
 #include <SDL/SDL_events.h>
 
@@ -11,5 +10,3 @@ namespace Event
 	void RegisterPlayer(Snake& player);
 	void RegisterQuitter(bool& quitter);
 }
-
-#endif

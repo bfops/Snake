@@ -11,6 +11,8 @@
 #include "Snake.hpp"
 #include "Physics.hpp"
 
+#include "Wall.hpp"
+
 using namespace boost;
 using namespace std;
 

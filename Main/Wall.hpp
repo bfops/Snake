@@ -1,5 +1,4 @@
-#ifndef __Wall__
-#define __Wall__
+#pragma once
 
 #include "Color24.hpp"
 #include "Point.hpp"
@@ -16,5 +15,3 @@ public:
 	ObjectType GetObjectType() const;
 	void CollisionHandler(const WorldObject&);
 };
-
-#endif

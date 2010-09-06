@@ -1,9 +1,8 @@
 #include <cassert>
 #include <list>
 
+#include "custom_algorithm.hpp"
 #include "Physics.hpp"
-
-#include <algorithm>
 
 using namespace std;
 
@@ -14,10 +13,11 @@ namespace PhysicsWorld
 		typedef vector<WorldObject*> PhysicsObjectList;
 		PhysicsObjectList objects;
 	}
-	static bool IsCollide(const WorldObject&, const WorldObject&);
-	static bool IsWithinBounds(int obj1Location, int obj2Location, unsigned int obj2Dimension);
-	static bool IsLeftWithinBounds(const WorldObject&, const WorldObject&);
-	static bool IsTopWithinBounds(const WorldObject&, const WorldObject&);
+	static bool IsCollide(WorldObject&, WorldObject&);
+	//static bool IsCollide(const WorldObject&, const WorldObject&);
+	//static bool IsWithinBounds(int obj1Location, int obj2Location, unsigned int obj2Dimension);
+	//static bool IsLeftWithinBounds(const WorldObject&, const WorldObject&);
+	//static bool IsTopWithinBounds(const WorldObject&, const WorldObject&);
 
 	static bool object_exists(const WorldObject& obj)
 	{
@@ -30,21 +30,8 @@ namespace PhysicsWorld
 	}
 	void RemoveObject(WorldObject& obj)
 	{
-		for(PhysicsObjectList::iterator i = objects.begin(), end = objects.end(); i != end; ++i)
-		{
-			if(*i == &obj)
-			{
-				// sexy removal hack.
-				// it's linear-time either way,
-				// but this is faster in practice
-				swap(*i, *objects.rbegin());
-				objects.pop_back();
-
-				return;
-			}
-		}
-
-		// TODO: throw errors at this point
+		// TODO: throw errors if the object cannot be found.
+		unordered_find_and_remove(objects, &obj);
 	}
 	void Update()
 	{
@@ -76,11 +63,11 @@ namespace PhysicsWorld
 	{
 		return IsWithinBounds(obj1.location.x, obj2.location.x, obj2.width);
 	}
-	static bool IsTopWithinBounds(const WorldObject& obj1, const WorldObject& obj2)
+	static bool IsTopWithinBounds(WorldObject& obj1, WorldObject& obj2)
 	{
 		return IsWithinBounds(obj1.location.y, obj2.location.y, obj2.height);
 	}
-	static bool IsCollide(const WorldObject& obj1, const WorldObject& obj2)
+	static bool IsCollide(WorldObject& obj1, WorldObject& obj2)
 	{
 		return (
 			(IsTopWithinBounds(obj1, obj2) || IsTopWithinBounds(obj2, obj1))

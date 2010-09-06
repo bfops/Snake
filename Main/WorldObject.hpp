@@ -1,5 +1,4 @@
-#ifndef __WorldObject__
-#define __WorldObject__
+#pragma once
 
 #include <cstdlib>
 
@@ -23,5 +22,3 @@ public:
 	virtual ObjectType GetObjectType() const = 0;
 	virtual void CollisionHandler(const WorldObject& colidee) = 0;
 };
-
-#endif

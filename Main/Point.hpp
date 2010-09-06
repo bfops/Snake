@@ -1,8 +1,5 @@
-#ifndef __Point__
-#define __Point__
+#pragma once
 
 #include "Vector2D.hpp"
 
 typedef Vector2D Point;
-
-#endif

@@ -2,8 +2,6 @@
 #include "Event.hpp"
 #include "Snake.hpp"
 
-#include <iostream>
-
 namespace Event {
 
 namespace

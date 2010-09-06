@@ -1,5 +1,4 @@
-#ifndef __Screen__
-#define __Screen__
+#pragma once
 
 #include <SDL/SDL.h>
 
@@ -31,5 +30,3 @@ public:
 	void Clear();
 	void Draw(const WorldObject& object, const Color24& color);
 };
-
-#endif

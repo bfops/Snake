@@ -1,5 +1,4 @@
-#ifndef __Color__
-#define __Color__
+#pragma once
 
 #include "SDL/SDL.h"
 
@@ -26,5 +25,3 @@ struct Color24
 
 	Uint32 GetRGBMap(SDL_Surface*) const;
 };
-
-#endif

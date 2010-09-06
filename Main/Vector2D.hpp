@@ -1,5 +1,4 @@
-#ifndef __Vector2D__
-#define __Vector2D__
+#pragma once
 
 struct Vector2D
 {
@@ -13,5 +12,3 @@ public:
 	bool operator==(const Vector2D&) const;
 	bool operator!=(const Vector2D&) const;
 };
-
-#endif

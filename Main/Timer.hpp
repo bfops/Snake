@@ -1,5 +1,4 @@
-#ifndef __Timer__
-#define __Timer__
+#pragma once
 
 #include "boost/date_time.hpp"
 
@@ -17,5 +16,3 @@ public:
 	// Returns whether or not the timer was reset.
 	bool ResetIfHasElapsed(unsigned int ms);
 };
-
-#endif

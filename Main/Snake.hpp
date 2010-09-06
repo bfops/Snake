@@ -1,5 +1,4 @@
-#ifndef __Snake__
-#define __Snake__
+#pragma once
 
 #include <deque>
 #include <SDL/SDL.h>
@@ -44,5 +43,3 @@ public:
 	void Draw() const;
 	bool IsDead() const;
 };
-
-#endif

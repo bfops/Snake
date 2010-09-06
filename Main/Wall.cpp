@@ -1,5 +1,6 @@
-#include "Wall.hpp"
 #include <cstdio>
+
+#include "Wall.hpp"
 
 Wall::Wall() :
 	color(255, 0, 0)

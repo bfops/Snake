@@ -1,5 +1,4 @@
-#ifndef __SnakeSegment__
-#define __SnakeSegment__
+#pragma once
 
 #include "Color24.hpp"
 #include "WorldObject.hpp"
@@ -17,5 +16,3 @@ public:
 
 	bool IsDead() const;
 };
-
-#endif
