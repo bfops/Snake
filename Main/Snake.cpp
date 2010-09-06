@@ -8,6 +8,8 @@
 #include "Snake.hpp"
 #include "Timer.hpp"
 
+#include <boost/random.hpp>
+
 using namespace std;
 
 const Snake::Direction Snake::right(1, 0);
@@ -38,7 +40,8 @@ void Snake::Reset()
 
 	// give it a random starting direction
 	const static Direction directions[] = {left, right, up, down};
-	direction = directions[rand() % countof(directions)];
+	boost::uint32_t randomNumber = boost::minstd_rand(boost::int32_t(time(NULL)))();
+	direction = directions[randomNumber % countof(directions)];
 }
 void Snake::ChangeDirection(Snake::Direction newDirection)
 {
