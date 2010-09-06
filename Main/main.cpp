@@ -19,8 +19,6 @@ const unsigned int FPS = 60;
 
 int main()
 {
-	// initialize random seed
-	srand(time(NULL));
 	// TODO: make event filters work!
 	// they only seem to get called when SDL_PollEvent
 	// is called, which makes it an exercise in futility
