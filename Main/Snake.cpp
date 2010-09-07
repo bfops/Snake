@@ -1,5 +1,6 @@
 #include <cassert>
 
+#include <boost/random.hpp>
 #include <SDL/SDL.h>
 
 #include "Common.hpp"
@@ -7,8 +8,6 @@
 #include "Screen.hpp"
 #include "Snake.hpp"
 #include "Timer.hpp"
-
-#include <boost/random.hpp>
 
 using namespace std;
 
@@ -23,20 +22,35 @@ Snake::Snake() :
 	Reset();
 }
 
+void Snake::AddSegment()
+{
+	// vectors move their elements when they are modified.
+	// therefore, all elements must be removed and re-added
+
+	for(Path::iterator segmentToRemove = path.begin(), end = path.end();
+		segmentToRemove != end;
+		++segmentToRemove)
+	{
+		PhysicsWorld::RemoveObject(*segmentToRemove);
+	}
+
+	path.push_back(SnakeSegment());
+
+	for(Path::iterator segmentToAdd = path.begin(), end = path.end();
+		segmentToAdd != end;
+		++segmentToAdd)
+	{
+		PhysicsWorld::AddObject(*segmentToAdd);
+	}
+}
 void Snake::Reset()
 {
 	dead = false;
-	// remove snake from physics world
-	for(Path::iterator currentSegment = path.begin(); currentSegment != path.end(); ++currentSegment)
-	{
-		PhysicsWorld::RemoveObject(*currentSegment);
-	}
 
 	length = defaultLength;
 	path = Path();
-	path.push_back(SnakeSegment());
-
-	PhysicsWorld::AddObject(*path.begin());
+	// give it a head!
+	AddSegment();
 
 	// give it a random starting direction
 	const static Direction directions[] = {left, right, up, down};
@@ -66,9 +80,7 @@ void Snake::Update()
 
 		if(length > path.size())
 		{
-			path.push_back(SnakeSegment());
-			// add the new segment to the physical world
-			PhysicsWorld::AddObject(*path.rbegin());
+			AddSegment();
 		}
 
 		// rather than moving each tile individually, simply
@@ -90,7 +102,7 @@ void Snake::Update()
 	if(growTimer.ResetIfHasElapsed(4000))
 	{
 		++length;
-		path.push_back(*path.rbegin());
+		AddSegment();
 	}
 }
 void Snake::SetRenderTarget(Screen& target)

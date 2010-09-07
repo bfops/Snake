@@ -32,6 +32,8 @@ private:
 
 	bool dead;
 
+	void AddSegment();
+
 public:
 	Snake();
 

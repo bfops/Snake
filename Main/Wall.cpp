@@ -1,5 +1,3 @@
-#include <cstdio>
-
 #include "Wall.hpp"
 
 Wall::Wall() :
@@ -20,5 +18,4 @@ WorldObject::ObjectType Wall::GetObjectType() const
 }
 void Wall::CollisionHandler(const WorldObject& obj)
 {
-	printf("Wall::CollisionHandler\n");
 }

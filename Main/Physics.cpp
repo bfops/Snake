@@ -1,4 +1,5 @@
 #include <cassert>
+#include <cstdio>
 #include <list>
 
 #include "custom_algorithm.hpp"
@@ -13,11 +14,10 @@ namespace PhysicsWorld
 		typedef vector<WorldObject*> PhysicsObjectList;
 		PhysicsObjectList objects;
 	}
-	static bool IsCollide(WorldObject&, WorldObject&);
-	//static bool IsCollide(const WorldObject&, const WorldObject&);
-	//static bool IsWithinBounds(int obj1Location, int obj2Location, unsigned int obj2Dimension);
-	//static bool IsLeftWithinBounds(const WorldObject&, const WorldObject&);
-	//static bool IsTopWithinBounds(const WorldObject&, const WorldObject&);
+	static bool IsCollide(const WorldObject&, const WorldObject&);
+	static bool IsWithinBounds(int obj1Location, int obj2Location, unsigned int obj2Dimension);
+	static bool IsLeftWithinBounds(const WorldObject&, const WorldObject&);
+	static bool IsTopWithinBounds(const WorldObject&, const WorldObject&);
 
 	static bool object_exists(const WorldObject& obj)
 	{
@@ -26,11 +26,15 @@ namespace PhysicsWorld
 	void AddObject(WorldObject& obj)
 	{
 		assert(!object_exists(obj));
+
+		printf("Type %u object added: 0x%X\n", obj.GetObjectType(), (unsigned int)(unsigned long long)&obj);
 		objects.push_back(&obj);
 	}
 	void RemoveObject(WorldObject& obj)
 	{
-		// TODO: throw errors if the object cannot be found.
+		printf("Type %u object removed: 0x%X\n", obj.GetObjectType(), (unsigned int)(unsigned long long)&obj);
+
+		assert(object_exists(obj));
 		unordered_find_and_remove(objects, &obj);
 	}
 	void Update()
@@ -63,11 +67,11 @@ namespace PhysicsWorld
 	{
 		return IsWithinBounds(obj1.location.x, obj2.location.x, obj2.width);
 	}
-	static bool IsTopWithinBounds(WorldObject& obj1, WorldObject& obj2)
+	static bool IsTopWithinBounds(const WorldObject& obj1, const WorldObject& obj2)
 	{
 		return IsWithinBounds(obj1.location.y, obj2.location.y, obj2.height);
 	}
-	static bool IsCollide(WorldObject& obj1, WorldObject& obj2)
+	static bool IsCollide(const WorldObject& obj1, const WorldObject& obj2)
 	{
 		return (
 			(IsTopWithinBounds(obj1, obj2) || IsTopWithinBounds(obj2, obj1))

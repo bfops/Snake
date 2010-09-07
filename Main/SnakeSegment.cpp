@@ -1,7 +1,12 @@
 #include <cassert>
 
+#include "Physics.hpp"
 #include "SnakeSegment.hpp"
 
+// TODO: the segments shouldn't be responsible
+// for their Physics handling, but if they're
+// not, then vector allocations cause the
+// pointers in the physics world to be invalid.
 SnakeSegment::SnakeSegment() :
 	dead(false)
 {
@@ -11,12 +16,10 @@ SnakeSegment::SnakeSegment() :
 
 void SnakeSegment::CollisionHandler(const WorldObject& obj)
 {
-	printf("SnakeSegment::CollisionHandler\n");
 	WorldObject::ObjectType type = obj.GetObjectType();
 	if(type == WorldObject::snake || type == WorldObject::wall)
 	{
 		dead = true;
-		printf("Deaded!\n");
 	}
 	else if(type == WorldObject::food)
 	{
