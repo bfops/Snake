@@ -21,7 +21,6 @@ private:
 
 	Color24 color;
 
-	static const unsigned int defaultLength = 3;
 	unsigned int length;
 	Direction direction;
 	Path path;

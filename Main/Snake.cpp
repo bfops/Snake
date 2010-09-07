@@ -50,6 +50,11 @@ void Snake::AddTailSegment(Point location)
 }
 void Snake::Reset(Point headLocation)
 {
+	#ifdef NDEBUG
+	const unsigned int defaultLength = 3;
+	#else
+	const unsigned int defaultLength = 15;
+	#endif
 	dead = false;
 
 	length = defaultLength;
@@ -82,6 +87,7 @@ void Snake::Update()
 	{
 		++length;
 	}
+	// in Hertz
 	const unsigned int movementFrequency = 8;
 	// TODO: use different snake speeds
 	if(moveTimer.ResetIfHasElapsed(1000 / movementFrequency))
@@ -91,7 +97,13 @@ void Snake::Update()
 
 		if(length > path.size())
 		{
+			#ifndef NDEBUG
+			printf("Growing...\n");
+			#endif
 			AddTailSegment(Point());
+			#ifndef NDEBUG
+			printf("Done growing\n");
+			#endif
 		}
 
 		// move each tile to the location of the next tile in line

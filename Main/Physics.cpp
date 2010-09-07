@@ -27,12 +27,16 @@ namespace PhysicsWorld
 	{
 		assert(!object_exists(obj));
 
-		printf("Type %u object added: 0x%X\n", obj.GetObjectType(), (unsigned int)(unsigned long long)&obj);
+		#ifndef NDEBUG
+		printf("Type %u object added: %p12\n", obj.GetObjectType(), (void*)&obj);
+		#endif
 		objects.push_back(&obj);
 	}
 	void RemoveObject(WorldObject& obj)
 	{
-		printf("Type %u object removed: 0x%X\n", obj.GetObjectType(), (unsigned int)(unsigned long long)&obj);
+		#ifndef NDEBUG
+		printf("Type %u object removed: %p12\n", obj.GetObjectType(), (void*)&obj);
+		#endif
 
 		assert(object_exists(obj));
 		unordered_find_and_remove(objects, &obj);
@@ -46,13 +50,17 @@ namespace PhysicsWorld
 
 			for(++collidee; collidee != end; ++collidee)
 			{
-				WorldObject* c1 = *collider;
-				WorldObject* c2 = *collidee;
-
-				if(IsCollide(*c1, *c2))
+				if(IsCollide(**collider, **collidee))
 				{
-					c1->CollisionHandler(*c2);
-					c2->CollisionHandler(*c1);
+					#ifndef NDEBUG
+					if((*collider)->GetObjectType() != 1 || (*collidee)->GetObjectType() != 1)
+						printf("Collision between %p12 [(%i,%i) %ux%u] and %p12 [(%i,%i) %ux%u]\n",
+							(void*)*collider, (*collider)->location.x, (*collider)->location.y, (*collider)->width, (*collider)->height,
+							(void*)*collidee, (*collidee)->location.x, (*collidee)->location.y, (*collidee)->width, (*collidee)->height
+						);
+					#endif
+					(*collider)->CollisionHandler(**collidee);
+					(*collidee)->CollisionHandler(**collider);
 				}
 			}
 		}
@@ -61,7 +69,7 @@ namespace PhysicsWorld
 	// TODO: try with member pointers
 	static bool IsWithinBounds(int obj1Location, int obj2Location, unsigned int dimension)
 	{
-		return((obj1Location >= obj2Location) && (obj1Location <= (int)(obj2Location + dimension)));
+		return((obj1Location >= obj2Location) && (obj1Location < (int)(obj2Location + dimension)));
 	}
 	static bool IsLeftWithinBounds(const WorldObject& obj1, const WorldObject& obj2)
 	{
