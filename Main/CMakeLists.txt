@@ -1,5 +1,6 @@
 add_executable(GingerbreadPrototype
 	Color24.cpp
+	Common.cpp
 	Event.cpp
 	main.cpp
 	Physics.cpp
