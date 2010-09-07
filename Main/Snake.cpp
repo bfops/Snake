@@ -55,7 +55,6 @@ void Snake::Reset(Point headLocation)
 	#else
 	const unsigned int defaultLength = 15;
 	#endif
-	dead = false;
 
 	length = defaultLength;
 	path = Path();
@@ -113,14 +112,9 @@ void Snake::Update()
 			currentSegment != head;
 			++currentSegment)
 		{
-			if(currentSegment->IsDead())
-				dead = true;
-
 			Path::reverse_iterator lastSegment = currentSegment - 1;
 			lastSegment->location = currentSegment->location;
 		}
-		if(path.rbegin()->IsDead())
-			dead = true;
 
 		apply_direction(*path.begin(), direction);
 	}
@@ -134,5 +128,10 @@ void Snake::Draw(Screen& target) const
 }
 bool Snake::IsDead() const
 {
-	return dead;
+	for(Path::const_iterator i = path.begin(), end = path.end(); i != end; ++i)
+	{
+		if(i->IsDead())
+			return true;
+	}
+	return false;
 }

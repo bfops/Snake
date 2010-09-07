@@ -28,8 +28,6 @@ private:
 	Timer moveTimer;
 	Timer growTimer;
 
-	bool dead;
-
 	void AddTailSegment(Point location);
 
 public:
