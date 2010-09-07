@@ -54,8 +54,14 @@ int main()
 	while(!quit)
 	{
 		SDL_PollEvent(NULL);
+
+		DebugOutput("Updating player...\n");
 		player.Update();
+		DebugOutput("Done updating player\n");
+
+		DebugOutput("Updating PhysicsWorld...\n");
 		PhysicsWorld::Update();
+		DebugOutput("Done updating PhysicsWorld\n");
 
 		screen.Clear();
 		for(unsigned int i = 0; i < countof(walls); ++i)

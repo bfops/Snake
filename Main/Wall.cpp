@@ -1,3 +1,4 @@
+#include "Common.hpp"
 #include "Wall.hpp"
 
 Wall::Wall() :

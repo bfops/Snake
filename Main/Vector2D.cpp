@@ -1,3 +1,4 @@
+#include "Common.hpp"
 #include "Vector2D.hpp"
 
 using namespace std;

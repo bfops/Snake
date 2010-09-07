@@ -1,8 +1,9 @@
 #include <cassert>
-#include <cstdio>
 #include <list>
 
 #include "custom_algorithm.hpp"
+
+#include "Common.hpp"
 #include "Physics.hpp"
 
 using namespace std;
@@ -27,16 +28,12 @@ namespace PhysicsWorld
 	{
 		assert(!object_exists(obj));
 
-		#ifndef NDEBUG
-		printf("Type %u object added: %p12\n", obj.GetObjectType(), (void*)&obj);
-		#endif
+		DebugOutput("Type %u object added: %p12\n", obj.GetObjectType(), (void*)&obj);
 		objects.push_back(&obj);
 	}
 	void RemoveObject(WorldObject& obj)
 	{
-		#ifndef NDEBUG
-		printf("Type %u object removed: %p12\n", obj.GetObjectType(), (void*)&obj);
-		#endif
+		DebugOutput("Type %u object removed: %p12\n", obj.GetObjectType(), (void*)&obj);
 
 		assert(object_exists(obj));
 		unordered_find_and_remove(objects, &obj);
@@ -52,13 +49,12 @@ namespace PhysicsWorld
 			{
 				if(IsCollide(**collider, **collidee))
 				{
-					#ifndef NDEBUG
 					if((*collider)->GetObjectType() != 1 || (*collidee)->GetObjectType() != 1)
-						printf("Collision between %p12 [(%i,%i) %ux%u] and %p12 [(%i,%i) %ux%u]\n",
+						DebugOutput("Collision between %p12 [(%i,%i) %ux%u] and %p12 [(%i,%i) %ux%u]\n",
 							(void*)*collider, (*collider)->location.x, (*collider)->location.y, (*collider)->width, (*collider)->height,
 							(void*)*collidee, (*collidee)->location.x, (*collidee)->location.y, (*collidee)->width, (*collidee)->height
 						);
-					#endif
+
 					(*collider)->CollisionHandler(**collidee);
 					(*collidee)->CollisionHandler(**collider);
 				}

@@ -96,13 +96,9 @@ void Snake::Update()
 
 		if(length > path.size())
 		{
-			#ifndef NDEBUG
-			printf("Growing...\n");
-			#endif
+			DebugOutput("Adding new segment (%u)\n", path.size() + 1);
 			AddTailSegment(Point());
-			#ifndef NDEBUG
-			printf("Done growing\n");
-			#endif
+			DebugOutput("New segment added\n");
 		}
 
 		// move each tile to the location of the next tile in line

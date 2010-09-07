@@ -1,6 +1,8 @@
 #include <SDL/SDL.h>
 #include <stdexcept>
 
+#include "Common.hpp"
+
 struct SDLInitializer
 {
 	SDLInitializer()
