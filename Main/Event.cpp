@@ -4,13 +4,10 @@
 
 namespace Event {
 
-namespace
-{
-	Snake* player;
-	bool* quit;
-}
+namespace {
+Snake* player;
+bool* quit;
 
-// TODO: write nicer initializer
 struct Initializer
 {
 	Initializer()
@@ -18,7 +15,8 @@ struct Initializer
 		player = nullptr;
 		quit = nullptr;
 	}
-} static init;
+} init;
+}
 
 static int key_handler(SDLKey sym)
 {

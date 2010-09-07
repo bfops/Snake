@@ -3,6 +3,7 @@
 
 #include "Common.hpp"
 
+namespace {
 struct SDLInitializer
 {
 	SDLInitializer()
@@ -15,4 +16,5 @@ struct SDLInitializer
 	{
 		SDL_Quit();
 	}
-} static init;
+} init;
+}

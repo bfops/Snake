@@ -4,6 +4,7 @@
 #include <SDL/SDL.h>
 
 #include "Common.hpp"
+#include "DebugLogger.hpp"
 #include "Physics.hpp"
 #include "Point.hpp"
 #include "Screen.hpp"
@@ -96,9 +97,12 @@ void Snake::Update()
 
 		if(length > path.size())
 		{
-			DebugOutput("Adding new segment (%u)\n", path.size() + 1);
-			AddTailSegment(Point());
-			DebugOutput("New segment added\n");
+			DebugLogger::Log("Adding new segment (%u)\n", path.size() + 1);
+			{
+				DebugLogger::Indent indent;
+				AddTailSegment(Point());
+			}
+			DebugLogger::Log("New segment added\n");
 		}
 
 		// move each tile to the location of the next tile in line

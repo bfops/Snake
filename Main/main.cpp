@@ -6,6 +6,7 @@
 #include <SDL/SDL.h>
 
 #include "Common.hpp"
+#include "DebugLogger.hpp"
 #include "Event.hpp"
 #include "Screen.hpp"
 #include "Snake.hpp"
@@ -55,13 +56,13 @@ int main()
 	{
 		SDL_PollEvent(NULL);
 
-		DebugOutput("Updating player...\n");
+		DebugLogger::Log("Updating player...\n");
 		player.Update();
-		DebugOutput("Done updating player\n");
+		DebugLogger::Log("Done updating player\n");
 
-		DebugOutput("Updating PhysicsWorld...\n");
+		DebugLogger::Log("Updating PhysicsWorld...\n");
 		PhysicsWorld::Update();
-		DebugOutput("Done updating PhysicsWorld\n");
+		DebugLogger::Log("Done updating PhysicsWorld\n");
 
 		screen.Clear();
 		for(unsigned int i = 0; i < countof(walls); ++i)
