@@ -12,18 +12,18 @@ class Screen
 private:
 	SDL_Surface* screen;
 
-	const size_t width;
-	const size_t height;
-	const size_t blockWidth;
+	const unsigned int width, height;
+	const unsigned int xBlocks, yBlocks;
+	const unsigned int blockWidth;
 
 	Color24 bgColor;
 
 public:
-	const Point bottomRight;
-
-	Screen(size_t width, size_t height, size_t horizontalBlocks, size_t verticalBlocks);
+	Screen(unsigned int width, unsigned int height, unsigned int horizontalBlocks, unsigned int verticalBlocks);
 
 	SDL_Surface* GetSurface();
+	Point GetCenter() const;
+	Point GetBlockBounds() const;
 
 	Point ResolveIndex(const Point blockIndex) const;
 	void Update();

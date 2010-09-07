@@ -12,7 +12,6 @@ SnakeSegment::SnakeSegment() :
 {
 	height = 1;
 	width = 1;
-	location = Vector2D(-1, -1);
 }
 
 void SnakeSegment::CollisionHandler(const WorldObject& obj)

@@ -5,6 +5,7 @@
 
 #include "Common.hpp"
 #include "Physics.hpp"
+#include "Point.hpp"
 #include "Screen.hpp"
 #include "Snake.hpp"
 #include "Timer.hpp"
@@ -16,16 +17,18 @@ const Snake::Direction Snake::left(-1, 0);
 const Snake::Direction Snake::up(0, -1);
 const Snake::Direction Snake::down(0, 1);
 
-Snake::Snake() :
-	color(0, 255, 0), screen(NULL)
+Snake::Snake(Point loc) :
+	color(0, 255, 0)
 {
-	Reset();
+	Reset(loc);
 }
 
-void Snake::AddSegment()
+void Snake::AddTailSegment(Point location)
 {
 	// vectors move their elements when they are modified.
 	// therefore, all elements must be removed and re-added
+	// to the Physics World, because otherwise its pointers
+	// will be invalid.
 
 	for(Path::iterator segmentToRemove = path.begin(), end = path.end();
 		segmentToRemove != end;
@@ -34,7 +37,9 @@ void Snake::AddSegment()
 		PhysicsWorld::RemoveObject(*segmentToRemove);
 	}
 
-	path.push_back(SnakeSegment());
+	SnakeSegment newSegment;
+	newSegment.location = location;
+	path.push_back(newSegment);
 
 	for(Path::iterator segmentToAdd = path.begin(), end = path.end();
 		segmentToAdd != end;
@@ -43,14 +48,14 @@ void Snake::AddSegment()
 		PhysicsWorld::AddObject(*segmentToAdd);
 	}
 }
-void Snake::Reset()
+void Snake::Reset(Point headLocation)
 {
 	dead = false;
 
 	length = defaultLength;
 	path = Path();
 	// give it a head!
-	AddSegment();
+	AddTailSegment(headLocation);
 
 	// give it a random starting direction
 	const static Direction directions[] = {left, right, up, down};
@@ -72,58 +77,47 @@ void Snake::Update()
 {
 	assert(direction == up || direction == down || direction == right || direction == left);
 
+	const unsigned int growthPeriod = 4000;
+	if(growTimer.ResetIfHasElapsed(growthPeriod))
+	{
+		++length;
+	}
+	const unsigned int movementFrequency = 8;
 	// TODO: use different snake speeds
-	if(moveTimer.ResetIfHasElapsed(125))
+	if(moveTimer.ResetIfHasElapsed(1000 / movementFrequency))
 	{
 		// TODO: discuss deque hack (only move path.begin() & tail)
 		// if it's still feasible later
 
 		if(length > path.size())
 		{
-			AddSegment();
+			AddTailSegment(Point());
 		}
 
-		// rather than moving each tile individually, simply
-		// make each one take the place of the one in front
-		for(Path::reverse_iterator i = path.rbegin() + 1, end = path.rend(); i != end; ++i)
+		// move each tile to the location of the next tile in line
+		// the magic +1 is since the tail segment has nothing to which
+		// to pass its location
+		for(Path::reverse_iterator currentSegment = path.rbegin() + 1, head = path.rend();
+			currentSegment != head;
+			++currentSegment)
 		{
-			if(i->IsDead())
+			if(currentSegment->IsDead())
 				dead = true;
 
-			Path::reverse_iterator last = i;
-			--last;
-			last->location = i->location;
+			Path::reverse_iterator lastSegment = currentSegment - 1;
+			lastSegment->location = currentSegment->location;
 		}
 		if(path.rbegin()->IsDead())
 			dead = true;
 
 		apply_direction(*path.begin(), direction);
 	}
-	if(growTimer.ResetIfHasElapsed(4000))
-	{
-		++length;
-		AddSegment();
-	}
 }
-void Snake::SetRenderTarget(Screen& target)
+void Snake::Draw(Screen& target) const
 {
-	screen = &target;
-}
-void Snake::Center()
-{
-	// the snake can't be screen-centered w/o a screen
-	assert(screen != nullptr);
-
-	path.begin()->location.x = screen->bottomRight.x / 2;
-	path.begin()->location.y = screen->bottomRight.y / 2;
-}
-void Snake::Draw() const
-{
-	assert(screen != nullptr);
-
 	for(Path::const_iterator i = path.begin(); i != path.end(); ++i)
 	{
-		screen->Draw(*i, color);
+		target.Draw(*i, color);
 	}
 }
 bool Snake::IsDead() const

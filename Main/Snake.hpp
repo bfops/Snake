@@ -20,7 +20,6 @@ private:
 	typedef std::vector<SnakeSegment> Path;
 
 	Color24 color;
-	Screen* screen;
 
 	static const unsigned int defaultLength = 3;
 	unsigned int length;
@@ -32,16 +31,14 @@ private:
 
 	bool dead;
 
-	void AddSegment();
+	void AddTailSegment(Point location);
 
 public:
-	Snake();
+	Snake(Point headLocation);
 
-	void Reset();
+	void Reset(Point headLocation);
 	void ChangeDirection(Direction);
 	void Update();
-	void SetRenderTarget(Screen& target);
-	void Center();
-	void Draw() const;
+	void Draw(Screen& target) const;
 	bool IsDead() const;
 };

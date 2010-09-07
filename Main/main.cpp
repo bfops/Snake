@@ -29,27 +29,25 @@ int main()
 	SDL_ShowCursor(SDL_DISABLE);
 
 	Screen screen(810, 600, 54, 40);
+	Point screenBounds = screen.GetBlockBounds();
 
 	bool quit = false;
-	Snake player;
+	Snake player(screen.GetCenter());
 
 	Event::RegisterPlayer(player);
 	Event::RegisterQuitter(quit);
 
 	// TODO: abstract this block out
 	Wall walls[] = {
-		Wall(Point(0, 0), 1, screen.bottomRight.y),
-		Wall(Point(screen.bottomRight.x - 1, 0), 1, screen.bottomRight.y),
-		Wall(Point(0, 0), screen.bottomRight.x, 1),
-		Wall(Point(0, screen.bottomRight.y - 1), screen.bottomRight.x, 1)
+		Wall(Point(0, 0), 1, screenBounds.y),
+		Wall(Point(screenBounds.x - 1, 0), 1, screenBounds.y),
+		Wall(Point(0, 0), screenBounds.x, 1),
+		Wall(Point(0, screenBounds.y - 1), screenBounds.x, 1)
 	};
 	for(unsigned int i = 0; i < countof(walls); ++i)
 	{
 		PhysicsWorld::AddObject(walls[i]);
 	}
-
-	player.SetRenderTarget(screen);
-	player.Center();
 
 	// TODO: use more interrupts rather than loops
 	// game loop
@@ -62,7 +60,7 @@ int main()
 		screen.Clear();
 		for(unsigned int i = 0; i < countof(walls); ++i)
 			screen.Draw(walls[i], walls[i].color);
-		player.Draw();
+		player.Draw(screen);
 		screen.Update();
 
 		if(player.IsDead())
