@@ -19,7 +19,7 @@ const Snake::Direction Snake::up(0, -1);
 const Snake::Direction Snake::down(0, 1);
 
 Snake::Snake(Point loc) :
-	color(0, 255, 0)
+	headColor(160, 160, 160), bodyColor(0, 255, 0)
 {
 	Reset(loc);
 }
@@ -69,6 +69,10 @@ void Snake::Reset(Point headLocation)
 }
 void Snake::ChangeDirection(Snake::Direction newDirection)
 {
+	// TODO: if players enter two directions before
+	// the snake moves, they can turn backwards (i.e. death).
+	// Fix.
+
 	if(newDirection != -direction)
 		direction = newDirection;
 }
@@ -121,9 +125,14 @@ void Snake::Update()
 }
 void Snake::Draw(Screen& target) const
 {
-	for(Path::const_iterator i = path.begin(); i != path.end(); ++i)
+	// TODO: fix failing when there are no segments!
+	Path::const_iterator i = path.begin();
+	target.Draw(*i, headColor);
+	++i;
+
+	for(Path::const_iterator end = path.end(); i != end; ++i)
 	{
-		target.Draw(*i, color);
+		target.Draw(*i, bodyColor);
 	}
 }
 bool Snake::IsDead() const
