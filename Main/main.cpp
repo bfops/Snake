@@ -22,15 +22,11 @@ const unsigned int FPS = 60;
 
 int main()
 {
-	// TODO: make event filters work!
-	// they only seem to get called when SDL_PollEvent
-	// is called, which makes it an exercise in futility
-	// because then all events are removed from te queue anyway
 	SDL_SetEventFilter(Event::Handler);
 	SDL_ShowCursor(SDL_DISABLE);
 
-	Screen screen(810, 600, 54, 40);
-	Point screenBounds = screen.GetBlockBounds();
+	Point screenBounds(800, 600);
+	Screen screen(screenBounds.x, screenBounds.y);
 
 	bool quit = false;
 	Snake player(screen.GetCenter());
@@ -38,12 +34,13 @@ int main()
 	Event::RegisterPlayer(player);
 	Event::RegisterQuitter(quit);
 
-	// TODO: abstract this block out
+	// TODO: abstract wall init code out
+	const unsigned int wallThickness = 10;
 	Wall walls[] = {
-		Wall(Point(0, 0), 1, screenBounds.y),
-		Wall(Point(screenBounds.x - 1, 0), 1, screenBounds.y),
-		Wall(Point(0, 0), screenBounds.x, 1),
-		Wall(Point(0, screenBounds.y - 1), screenBounds.x, 1)
+		Wall(Point(0, 0), wallThickness, screenBounds.y),
+		Wall(Point(screenBounds.x - wallThickness, 0), wallThickness, screenBounds.y),
+		Wall(Point(0, 0), screenBounds.x, wallThickness),
+		Wall(Point(0, screenBounds.y - wallThickness), screenBounds.x, wallThickness)
 	};
 	for(unsigned int i = 0; i < countof(walls); ++i)
 	{

@@ -11,8 +11,8 @@
 SnakeSegment::SnakeSegment() :
 	dead(false)
 {
-	height = 1;
-	width = 1;
+	height = 15;
+	width = 15;
 }
 
 void SnakeSegment::CollisionHandler(const WorldObject& obj)

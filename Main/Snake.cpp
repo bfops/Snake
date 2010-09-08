@@ -77,10 +77,10 @@ void Snake::ChangeDirection(Snake::Direction newDirection)
 		direction = newDirection;
 }
 
-static void apply_direction(SnakeSegment& segment, const Vector2D& direction)
+static void apply_direction(SnakeSegment& segment, const Vector2D& direction, const unsigned int scale)
 {
-	segment.location.x += direction.x;
-	segment.location.y += direction.y;
+	segment.location.x += direction.x * scale;
+	segment.location.y += direction.y * scale;
 }
 void Snake::Update()
 {
@@ -96,8 +96,7 @@ void Snake::Update()
 	// TODO: use different snake speeds
 	if(moveTimer.ResetIfHasElapsed(1000 / movementFrequency))
 	{
-		// TODO: discuss deque hack (only move path.begin() & tail)
-		// if it's still feasible later
+		// TODO: allow for moving in smaller increments
 
 		if(length > path.size())
 		{
@@ -120,7 +119,7 @@ void Snake::Update()
 			lastSegment->location = currentSegment->location;
 		}
 
-		apply_direction(*path.begin(), direction);
+		apply_direction(*path.begin(), direction, path.begin()->width);
 	}
 }
 void Snake::Draw(Screen& target) const

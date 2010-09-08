@@ -6,21 +6,9 @@
 #include "Screen.hpp"
 #include "Wall.hpp"
 
-Screen::Screen(unsigned int _width, unsigned int _height, unsigned int _xBlocks, unsigned int _yBlocks) :
-	width(_width), height(_height), xBlocks(_xBlocks), yBlocks(_yBlocks), blockWidth(width / xBlocks),
-	bgColor(0, 0, 0)
+Screen::Screen(unsigned int _width, unsigned int _height) :
+	width(_width), height(_height), bgColor(0, 0, 0)
 {
-	// TODO: change so that black bars are used as buffers
-	// if blocks don't fit. Block size is determined by
-	// MIN(width / xBlocks, height / yBlocks)
-
-	// the blocks should fit evenly into the screen with no leftover space
-	assert((width % xBlocks) == 0 && (height % yBlocks) == 0);
-	// there should be a "center" block in both dimensions
-	assert((xBlocks % 2) == 0 && (yBlocks % 2) == 0);
-	// blocks should be square, not rectangular
-	assert(blockWidth == (height / yBlocks));
-
 	// TODO: check for errors in return value
 	screen = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE);
 }
@@ -32,17 +20,13 @@ SDL_Surface* Screen::GetSurface()
 }
 Point Screen::GetCenter() const
 {
-	return Point(xBlocks / 2, yBlocks / 2);
+	return Point(width / 2, height / 2);
 }
-Point Screen::GetBlockBounds() const
+Point Screen::GetBounds() const
 {
-	return Point(xBlocks, yBlocks);
+	return Point(width, height);
 }
 
-Point Screen::ResolveIndex(Point p) const
-{
-	return Point(blockWidth * p.x, blockWidth * p.y);
-}
 void Screen::Update()
 {
 	// TODO: check return value
@@ -59,11 +43,10 @@ void Screen::Clear()
 void Screen::Draw(const WorldObject& obj, const Color24& color)
 {
 	SDL_Rect rect;
-	rect.w = obj.width * blockWidth;
-	rect.h = obj.height * blockWidth;
-	Point realIndex = ResolveIndex(obj.location);
-	rect.x = realIndex.x;
-	rect.y = realIndex.y;
+	rect.w = obj.width;
+	rect.h = obj.height;
+	rect.x = obj.location.x;
+	rect.y = obj.location.y;
 
 	// TODO: check for errors here
 	SDL_FillRect(screen, &rect, color.GetRGBMap(screen));
