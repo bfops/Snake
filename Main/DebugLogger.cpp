@@ -1,6 +1,7 @@
 #include <cassert>
 #include <cstdarg>
 
+#include "Common.hpp"
 #include "DebugLogger.hpp"
 
 namespace DebugLogger {
