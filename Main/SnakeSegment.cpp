@@ -24,6 +24,7 @@ void SnakeSegment::CollisionHandler(const WorldObject& obj)
 	}
 	else if(type == WorldObject::food)
 	{
+		// TODO: food
 		assert(!"Food unimplemented");
 	}
 }

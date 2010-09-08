@@ -20,8 +20,12 @@ using namespace std;
 // TODO: fetch this dynamically
 const unsigned int FPS = 60;
 
+// TODO: pause functionality
 int main()
 {
+	// TODO: start screen
+	// TODO: procedurally-generated adventure mode
+
 	SDL_SetEventFilter(Event::Handler);
 	SDL_ShowCursor(SDL_DISABLE);
 

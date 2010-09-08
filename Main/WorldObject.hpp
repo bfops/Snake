@@ -4,6 +4,9 @@
 
 #include "Point.hpp"
 
+// TODO: use sprites
+// TODO: make this be a generic object for
+// both Physics and Graphics worlds
 class WorldObject
 {
 public:

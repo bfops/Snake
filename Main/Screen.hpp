@@ -7,6 +7,7 @@
 #include "Wall.hpp"
 #include "WorldObject.hpp"
 
+// TODO: make graphics world
 class Screen
 {
 private:
