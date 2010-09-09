@@ -18,7 +18,7 @@ Vector2D Vector2D::operator-() const
 }
 bool Vector2D::operator==(const Vector2D& obj) const
 {
-	return ((x == obj.x) || (y == obj.y));
+	return ((x == obj.x) && (y == obj.y));
 }
 bool Vector2D::operator!=(const Vector2D& obj) const
 {
