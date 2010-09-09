@@ -22,5 +22,5 @@ bool Vector2D::operator==(const Vector2D& obj) const
 }
 bool Vector2D::operator!=(const Vector2D& obj) const
 {
-	return !operator==(obj);
+	return !(*this == obj);
 }
