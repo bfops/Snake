@@ -1,4 +1,6 @@
 #include <cassert>
+#include <stdexcept>
+#include <string>
 
 #include "Common.hpp"
 #include "Physics.hpp"
@@ -6,11 +8,18 @@
 #include "Screen.hpp"
 #include "Wall.hpp"
 
+using namespace std;
+
 Screen::Screen(unsigned int _width, unsigned int _height) :
 	width(_width), height(_height), bgColor(0, 0, 0)
 {
-	// TODO: check for errors in return value
 	screen = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE);
+	if(screen == NULL)
+	{
+		string error = "Error creating screen: ";
+		error += SDL_GetError();
+		throw runtime_error(error.c_str());
+	}
 }
 
 SDL_Surface* Screen::GetSurface()
@@ -29,8 +38,12 @@ Point Screen::GetBounds() const
 
 void Screen::Update()
 {
-	// TODO: check return value
-	SDL_Flip(screen);
+	if(SDL_Flip(screen) == -1)
+	{
+		string error = "Error updating screen: ";
+		error += SDL_GetError();
+		throw runtime_error(error.c_str());
+	}
 }
 void Screen::Clear()
 {
@@ -48,6 +61,10 @@ void Screen::Draw(const WorldObject& obj, const Color24& color)
 	rect.x = obj.location.x;
 	rect.y = obj.location.y;
 
-	// TODO: check for errors here
-	SDL_FillRect(screen, &rect, color.GetRGBMap(screen));
+	if(SDL_FillRect(screen, &rect, color.GetRGBMap(screen)) == -1)
+	{
+		string error = "Error drawing to screen: ";
+		error += SDL_GetError();
+		throw runtime_error(error.c_str());
+	}
 }

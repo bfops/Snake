@@ -63,7 +63,6 @@ void Update()
 	}
 }
 
-// TODO: try with member pointers
 static bool IsWithinBounds(int obj1Location, int obj2Location, unsigned int dimension)
 {
 	return((obj1Location >= obj2Location) && (obj1Location < (int)(obj2Location + dimension)));

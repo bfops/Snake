@@ -51,6 +51,12 @@ void Snake::AddTailSegment(Point location)
 }
 void Snake::Reset(Point headLocation)
 {
+	moveTimer.Reset();
+	growTimer.Reset();
+	speedupTimer.Reset();
+
+	speed = 100;
+
 	#ifdef NDEBUG
 	const unsigned int defaultLength = 44;
 	#else
@@ -132,6 +138,12 @@ static void apply_direction(Point& location, const Vector2D& direction)
 }
 void Snake::Update()
 {
+	const unsigned int speedupPeriod = 10000;
+	while(speedupTimer.ResetIfHasElapsed(speedupPeriod))
+	{
+		speed += 20;
+	}
+
 	const unsigned int growthPeriod = 4000;
 	while(growTimer.ResetIfHasElapsed(growthPeriod))
 	{
@@ -139,10 +151,8 @@ void Snake::Update()
 		const unsigned int growthAmount = 15;
 		length += growthAmount;
 	}
-	// in Hertz
-	const unsigned int movementFrequency = 128;
-	// TODO: use different snake speeds
-	while(moveTimer.ResetIfHasElapsed(1000 / movementFrequency))
+
+	while(moveTimer.ResetIfHasElapsed(1000 / speed))
 	{
 		if(length > path.size())
 		{

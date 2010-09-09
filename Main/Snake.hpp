@@ -11,7 +11,6 @@
 #include "Timer.hpp"
 #include "Vector2D.hpp"
 
-// TODO: make death semantics prettier
 class Snake
 {
 public:
@@ -27,8 +26,11 @@ private:
 	unsigned int length;
 	Path path;
 
+	unsigned int speed;
+
 	Timer moveTimer;
 	Timer growTimer;
+	Timer speedupTimer;
 
 	void AddTailSegment(Point location);
 
