@@ -22,7 +22,9 @@ template <typename _T>
 bool unordered_find_and_remove(std::vector<_T>& v, const _T& val)
 {
 	typename std::vector<_T>::iterator loc = std::find(v.begin(), v.end(), val);
-	unordered_remove(v, loc);
+	if(loc == v.end())
+		return false;
 
-	return loc != v.end();
+	unordered_remove(v, loc);
+	return true;
 }
