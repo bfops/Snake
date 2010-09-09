@@ -26,6 +26,8 @@ int main()
 	// TODO: start screen
 	// TODO: procedurally-generated adventure mode
 
+	const char windowTitle = "Rewritable's Snake";
+	SDL_WM_SetCaption(windowTitle, windowTitle);
 	SDL_SetEventFilter(Event::Handler);
 	SDL_ShowCursor(SDL_DISABLE);
 
