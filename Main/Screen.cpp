@@ -53,18 +53,3 @@ void Screen::Clear()
 	blank.h = height;
 	SDL_FillRect(screen, &blank, bgColor.GetRGBMap(screen));
 }
-void Screen::Draw(const WorldObject& obj, const Color24& color)
-{
-	SDL_Rect rect;
-	rect.w = obj.width;
-	rect.h = obj.height;
-	rect.x = obj.location.x;
-	rect.y = obj.location.y;
-
-	if(SDL_FillRect(screen, &rect, color.GetRGBMap(screen)) == -1)
-	{
-		string error = "Error drawing to screen: ";
-		error += SDL_GetError();
-		throw runtime_error(error.c_str());
-	}
-}

@@ -20,8 +20,6 @@ public:
 private:
 	typedef std::vector<SnakeSegment> Path;
 
-	Color24 headColor, bodyColor;
-
 	Direction direction;
 	unsigned int length;
 	Path path;

@@ -20,6 +20,6 @@ public:
 	void CollisionHandler(const WorldObject&);
 
 	bool IsDead() const;
-	bool HasEaten() const;
+	bool HasEaten();
 };
 

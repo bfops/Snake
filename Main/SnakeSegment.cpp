@@ -38,7 +38,11 @@ bool SnakeSegment::IsDead() const
 {
 	return dead;
 }
-bool SnakeSegment::HasEaten() const
+// as soon as the information's gotten,
+// pretend the segment's no longer eaten
+bool SnakeSegment::HasEaten()
 {
-	return eaten;
+	bool retval = eaten;
+	eaten = false;
+	return retval;
 }

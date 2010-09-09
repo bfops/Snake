@@ -4,8 +4,6 @@
 
 #include "Color24.hpp"
 #include "Point.hpp"
-#include "Wall.hpp"
-#include "WorldObject.hpp"
 
 // TODO: make graphics world
 class Screen
@@ -26,5 +24,4 @@ public:
 
 	void Update();
 	void Clear();
-	void Draw(const WorldObject& object, const Color24& color);
 };

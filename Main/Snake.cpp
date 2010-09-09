@@ -3,6 +3,7 @@
 #include <boost/random.hpp>
 #include <SDL/SDL.h>
 
+#include "Color24.hpp"
 #include "Common.hpp"
 #include "DebugLogger.hpp"
 #include "Physics.hpp"
@@ -18,8 +19,10 @@ const Snake::Direction Snake::left(-1, 0);
 const Snake::Direction Snake::up(0, -1);
 const Snake::Direction Snake::down(0, 1);
 
-Snake::Snake(Point loc) :
-	headColor(160, 160, 160), bodyColor(0, 255, 0)
+Color24 headColor(160, 160, 160);
+Color24 bodyColor(0, 255, 0);
+
+Snake::Snake(Point loc)
 {
 	Reset(loc);
 }
@@ -31,22 +34,33 @@ void Snake::AddTailSegment(Point location)
 	// to the Physics World, because otherwise its pointers
 	// will be invalid.
 
-	for(Path::iterator segmentToRemove = path.begin(), end = path.end();
-	segmentToRemove != end;
-	++segmentToRemove)
+	if(path.size() > 0)
 	{
-		PhysicsWorld::RemoveObject(*segmentToRemove);
+		PhysicsWorld::Remove(*path.begin());
+		if(path.size() > 1)
+			PhysicsWorld::RemoveGroup(*(path.begin() + 1));
 	}
 
 	SnakeSegment newSegment;
 	newSegment.location = location;
 	path.push_back(newSegment);
 
-	for(Path::iterator segmentToAdd = path.begin(), end = path.end();
-	segmentToAdd != end;
-	++segmentToAdd)
+	PhysicsWorld::PhysicsGroup bodyGroup;
+	for(Path::iterator segmentToAdd = path.begin() + 1, end = path.end(); segmentToAdd != end; ++segmentToAdd)
 	{
-		PhysicsWorld::AddObject(*segmentToAdd);
+		bodyGroup.push_back(&*segmentToAdd);
+	}
+	PhysicsWorld::Add(bodyGroup);
+	PhysicsWorld::Add(*path.begin());
+
+	const unsigned int headLength = 15;
+	if(path.size() <= headLength)
+	{
+		path.rbegin()->color = headColor;
+	}
+	else
+	{
+		path.rbegin()->color = bodyColor;
 	}
 }
 void Snake::Grow()
@@ -177,24 +191,17 @@ void Snake::Update()
 		// each segment assumes the properties of the one in front of it
 		for(Path::reverse_iterator i = path.rbegin(), end = path.rend() - 1; i != end; ++i)
 		{
-			*i = *(i + 1);
+			i->width = (i + 1)->width;
+			i->height = (i + 1)->height;
+			i->location = (i + 1)->location;
 		}
 		apply_direction(path.begin()->location, direction);
 	}
 }
 void Snake::Draw(Screen& target) const
 {
-	const unsigned int headSize = max(path.begin()->width, path.begin()->height);
-
-	// color the first n segments the color of the head
-	unsigned int n = 0;
-	for(Path::const_iterator i = path.begin(), end = path.end(); i != end; ++i, ++n)
-	{
-		if(n < headSize)
-			target.Draw(*i, headColor);
-		else
-			target.Draw(*i, bodyColor);
-	}
+	for(Path::const_iterator i = path.begin(), end = path.end(); i != end; ++i)
+		i->Draw(target);
 }
 bool Snake::IsDead() const
 {

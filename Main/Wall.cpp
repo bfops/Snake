@@ -1,13 +1,15 @@
+#include "Color24.hpp"
 #include "Common.hpp"
 #include "Wall.hpp"
 
-Wall::Wall() :
-	color(255, 0, 0)
+Color24 defaultColor(255, 0, 0);
+Wall::Wall()
 {
+	color = defaultColor;
 }
-Wall::Wall(Point loc, size_t w, size_t h) :
-	color(255, 0, 0)
+Wall::Wall(Point loc, size_t w, size_t h)
 {
+	color = defaultColor;
 	location = loc;
 	width = w;
 	height = h;

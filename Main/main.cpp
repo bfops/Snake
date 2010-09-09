@@ -48,10 +48,12 @@ int main()
 		Wall(Point(0, 0), screenBounds.x, wallThickness),
 		Wall(Point(0, screenBounds.y - wallThickness), screenBounds.x, wallThickness)
 	};
+	PhysicsWorld::PhysicsGroup wallGroup;
 	for(unsigned int i = 0; i < countof(walls); ++i)
 	{
-		PhysicsWorld::AddObject(walls[i]);
+		wallGroup.push_back(&walls[i]);
 	}
+	PhysicsWorld::Add(wallGroup);
 
 	// TODO: use more interrupts rather than loops
 	// game loop
@@ -69,7 +71,7 @@ int main()
 
 		screen.Clear();
 		for(unsigned int i = 0; i < countof(walls); ++i)
-			screen.Draw(walls[i], walls[i].color);
+			walls[i].Draw(screen);
 		player.Draw(screen);
 		screen.Update();
 

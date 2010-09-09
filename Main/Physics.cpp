@@ -12,8 +12,8 @@ using namespace std;
 namespace PhysicsWorld {
 
 namespace {
-typedef vector<WorldObject*> PhysicsObjectList;
-PhysicsObjectList objects;
+typedef vector<PhysicsGroup> PhysicsObjectList;
+PhysicsObjectList groups;
 }
 
 static bool IsCollide(const WorldObject&, const WorldObject&);
@@ -23,42 +23,93 @@ static bool IsTopWithinBounds(const WorldObject&, const WorldObject&);
 
 static bool object_exists(const WorldObject& obj)
 {
-	return std::find(objects.begin(), objects.end(), &obj) != objects.end();
+	for(PhysicsObjectList::iterator i = groups.begin(), end = groups.end(); i != end; ++i)
+	{
+		if(std::find(i->begin(), i->end(), &obj) != i->end())
+			return true;
+	}
+	return false;
 }
-void AddObject(WorldObject& obj)
+static bool any_objects_exist(const PhysicsGroup& group)
+{
+	for(PhysicsGroup::const_iterator i = group.begin(), end = group.end(); i != end; ++i)
+	{
+		if(object_exists(**i))
+			return true;
+	}
+	return false;
+}
+void Add(WorldObject& obj)
 {
 	assert(!object_exists(obj));
 
+	PhysicsGroup group;
+	group.push_back(&obj);
+	groups.push_back(group);
+
 	DebugLogger::Log("Type %u object added: %p12\n", obj.GetObjectType(), (void*)&obj);
-	objects.push_back(&obj);
 }
-void RemoveObject(WorldObject& obj)
+void Add(PhysicsGroup& group)
 {
-	DebugLogger::Log("Type %u object removed: %p12\n", obj.GetObjectType(), (void*)&obj);
+	assert(!any_objects_exist(group));
 
-	assert(object_exists(obj));
-	unordered_find_and_remove(objects, &obj);
+	groups.push_back(group);
+
+	// TODO: output group members
+	DebugLogger::Log("Object group added!\n");
 }
-void Update()
+void Remove(WorldObject& obj)
 {
-	// TODO: only check those that have moved
-	for(PhysicsObjectList::iterator collider = objects.begin(), end = objects.end(); collider != end; ++collider)
+	for(PhysicsObjectList::iterator group = groups.begin(), end = groups.end(); group != end; ++group)
 	{
-		PhysicsObjectList::iterator collidee = collider;
-
-		for(++collidee; collidee != end; ++collidee)
+		if(unordered_find_and_remove(*group, &obj))
+		{
+			if(group->size() == 0)
+				unordered_remove(groups, group);
+			DebugLogger::Log("Type %u object removed: %p12\n", obj.GetObjectType(), (void*)&obj);
+			return;
+		}
+	}
+	assert(!"Invalid object specified");
+}
+void RemoveGroup(WorldObject& obj)
+{
+	for(PhysicsObjectList::iterator group = groups.begin(), end = groups.end(); group != end; ++group)
+	{
+		if(find(group->begin(), group->end(), &obj) != group->end())
+		{
+			unordered_remove(groups, group);
+			return;
+		}
+	}
+	assert(!"Invalid group specified");
+}
+static void collide_with_other_groups(PhysicsObjectList::iterator startGroup, PhysicsGroup::iterator collider)
+{
+	for(PhysicsObjectList::iterator group = startGroup + 1, lastGroup = groups.end(); group != lastGroup; ++group)
+	{
+		for(PhysicsGroup::iterator collidee = group->begin(), end = group->end(); collidee != end; ++collidee)
 		{
 			if(IsCollide(**collider, **collidee))
 			{
-				if((*collider)->GetObjectType() != 1 || (*collidee)->GetObjectType() != 1)
-					DebugLogger::Log("Collision between %p12 [(%i,%i) %ux%u] and %p12 [(%i,%i) %ux%u]\n",
-						(void*)*collider, (*collider)->location.x, (*collider)->location.y, (*collider)->width, (*collider)->height,
-						(void*)*collidee, (*collidee)->location.x, (*collidee)->location.y, (*collidee)->width, (*collidee)->height
-					);
+				DebugLogger::Log("Collision between %p12 [(%i,%i) %ux%u] and %p12 [(%i,%i) %ux%u]\n",
+					(void*)*collider, (*collider)->location.x, (*collider)->location.y, (*collider)->width, (*collider)->height,
+					(void*)*collidee, (*collidee)->location.x, (*collidee)->location.y, (*collidee)->width, (*collidee)->height
+				);
 
 				(*collider)->CollisionHandler(**collidee);
 				(*collidee)->CollisionHandler(**collider);
 			}
+		}
+	}
+}
+void Update()
+{
+	for(PhysicsObjectList::iterator group = groups.begin(), lastGroup = groups.end() - 1; group != lastGroup; ++group)
+	{
+		for(PhysicsGroup::iterator collider = group->begin(), end = group->end(); collider != end; ++collider)
+		{
+			collide_with_other_groups(group, collider);
 		}
 	}
 }
