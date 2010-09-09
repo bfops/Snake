@@ -49,6 +49,12 @@ void Snake::AddTailSegment(Point location)
 		PhysicsWorld::AddObject(*segmentToAdd);
 	}
 }
+void Snake::Grow()
+{
+	const unsigned int growthAmount = 30;
+	length += growthAmount;
+}
+
 void Snake::Reset(Point headLocation)
 {
 	moveTimer.Reset();
@@ -138,6 +144,10 @@ static void apply_direction(Point& location, const Vector2D& direction)
 }
 void Snake::Update()
 {
+	for(Path::iterator i = path.begin(), end = path.end(); i != end; ++i)
+		if(i->HasEaten())
+			Grow();
+
 	const unsigned int speedupPeriod = 10000;
 	while(speedupTimer.ResetIfHasElapsed(speedupPeriod))
 	{

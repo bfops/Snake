@@ -33,6 +33,7 @@ private:
 	Timer speedupTimer;
 
 	void AddTailSegment(Point location);
+	void Grow();
 
 public:
 	Snake(Point headLocation);
