@@ -12,8 +12,8 @@ struct Initializer
 {
 	Initializer()
 	{
-		player = nullptr;
-		quit = nullptr;
+		player = NULL;
+		quit = NULL;
 	}
 } init;
 }
