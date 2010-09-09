@@ -1,6 +1,8 @@
 #pragma once
 
 #include <deque>
+#include <vector>
+
 #include <SDL/SDL.h>
 
 #include "Common.hpp"
@@ -21,8 +23,8 @@ private:
 
 	Color24 headColor, bodyColor;
 
-	unsigned int length;
 	Direction direction;
+	unsigned int length;
 	Path path;
 
 	Timer moveTimer;

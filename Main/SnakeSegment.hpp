@@ -16,3 +16,4 @@ public:
 
 	bool IsDead() const;
 };
+
