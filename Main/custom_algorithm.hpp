@@ -3,6 +3,9 @@
 
 #include <vector>
 #include <algorithm>
+#include <functional>
+
+#include <boost/bind/bind.hpp>
 
 // Removes an element _i_ from a vector _v_ in constant time. The only caveat
 // is that the order of the vector will not necessarily be maintained.
@@ -29,22 +32,18 @@ bool unordered_find_and_remove(std::vector<_T>& v, const _T& val)
 	return true;
 }
 
+// Returns true iff predicate(element) returns true for every element in the
+// interval [begin, end).
 template <typename IterType, typename PredType>
 bool all(IterType begin, IterType end, PredType predicate)
 {
-	for(; begin != end; ++begin)
-		if(!predicate(*begin))
-			return false;
-
-	return true;
+	return std::find_if(begin, end, std::unary_negate<PredType>(predicate)) == end;
 }
 
+// Returns true iff predicate(element) returns true for any element in the
+// interval [begin, end).
 template <typename IterType, typename PredType>
 bool any(IterType begin, IterType end, PredType predicate)
 {
-	for(; begin != end; ++begin)
-		if(predicate(*begin))
-			return true;
-
-	return false;
+	return std::find_if(begin, end, predicate) != end;
 }
