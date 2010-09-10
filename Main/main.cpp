@@ -9,12 +9,10 @@
 #include "Common.hpp"
 #include "Logger.hpp"
 #include "Event.hpp"
-#include "Graphics.hpp"
 #include "Screen.hpp"
 #include "Snake.hpp"
-#include "Physics.hpp"
-
 #include "Wall.hpp"
+#include "World.hpp"
 
 using namespace boost;
 using namespace std;
@@ -36,15 +34,8 @@ static void main_loop(Screen& screen, Snake& player, const Walls& walls)
 	{
 		SDL_PollEvent(NULL);
 		player.Update();
-		PhysicsWorld::Update();
 
-		screen.Clear();
-
-		for(Walls::const_iterator wall = walls.begin(), end = walls.end(); wall != end; ++wall)
-			wall->Draw(screen);
-
-		player.Draw(screen);
-		screen.Update();
+		World::Update(screen);
 
 		this_thread::sleep(posix_time::millisec(1000 / FPS));
 	}

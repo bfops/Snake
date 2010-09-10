@@ -6,7 +6,6 @@
 #include "Color24.hpp"
 #include "Common.hpp"
 #include "Logger.hpp"
-#include "Physics.hpp"
 #include "Point.hpp"
 #include "Screen.hpp"
 #include "Snake.hpp"

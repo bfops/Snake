@@ -4,7 +4,7 @@
 #include "Food.hpp"
 #include "WorldObject.hpp"
 
-class SnakeSegment : public WorldObject
+class SnakeSegment : public World::WorldObject
 {
 private:
 	bool dead;

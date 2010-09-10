@@ -2,10 +2,8 @@ add_executable(GingerbreadPrototype
 	Color24.cpp
 	Event.cpp
 	Food.cpp
-	Graphics.cpp
 	Logger.cpp
 	main.cpp
-	Physics.cpp
 	Screen.cpp
 	SDL.cpp
 	Snake.cpp
@@ -13,7 +11,7 @@ add_executable(GingerbreadPrototype
 	Timer.cpp
 	Vector2D.cpp
 	Wall.cpp
-	WorldObject.cpp
+	World.cpp
 )
 
 target_link_libraries(GingerbreadPrototype

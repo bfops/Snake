@@ -1,7 +1,6 @@
 #include <cassert>
 
 #include "Common.hpp"
-#include "Physics.hpp"
 #include "SnakeSegment.hpp"
 
 SnakeSegment::SnakeSegment() :

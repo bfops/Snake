@@ -1,20 +1,55 @@
+#include "World.hpp"
+#include "WorldObject.hpp"
+
+#include <vector>
 #include <boost/bind/bind.hpp>
-#include <cassert>
-#include <list>
 
 #include "custom_algorithm.hpp"
-
-#include "Common.hpp"
 #include "Logger.hpp"
-#include "Physics.hpp"
 
 using namespace std;
 
-static Logger::Handle logger = Logger::RequestHandle("PhysicsWorld");
+namespace World {
+namespace {
+namespace GraphicsWorld {
+namespace {
+typedef vector<const WorldObject*> GraphicsObjectList;
+GraphicsObjectList objects;
+}
+
+void Add(const WorldObject& object)
+{
+	if(find(objects.begin(), objects.end(), &object) != objects.end())
+		assert(!"Adding pre-added thing!");
+
+	objects.push_back(&object);
+}
+void Remove(const WorldObject& object)
+{
+	if(!unordered_find_and_remove(objects, &object))
+		// TODO: FIX TO LOGGER!
+	assert(!"Removed invalid thing");
+}
+
+// TODO: just move the damn screen in?
+void Update(Screen& target)
+{
+	target.Clear();
+
+	for(GraphicsObjectList::iterator i = objects.begin(), end = objects.end(); i != end; ++i)
+		(*i)->Draw(target);
+
+	target.Update();
+}
+}
 
 namespace PhysicsWorld {
-
 namespace {
+Logger::Handle logger = Logger::RequestHandle("PhysicsWorld");
+// URGENT TODO: nicer abstraction.
+// Allocate a PhysicsGroup, and then you can add
+// things already in the world to that group
+typedef std::vector<WorldObject*> PhysicsGroup;
 typedef vector<PhysicsGroup> PhysicsObjectList;
 PhysicsObjectList groups;
 }
@@ -127,5 +162,81 @@ static bool IsCollide(const WorldObject& obj1, const WorldObject& obj2)
 		(IsTopWithinBounds(obj1, obj2) || IsTopWithinBounds(obj2, obj1))
 		&& (IsLeftWithinBounds(obj1, obj2) || IsLeftWithinBounds(obj2, obj1))
 	);
+}
+}
+}
+
+void Update(Screen& target)
+{
+	PhysicsWorld::Update();
+	GraphicsWorld::Update(target);
+}
+
+WorldObject::WorldObject(ObjectType _type) :
+inPhysics(false), inGraphics(false), type(_type)
+{
+}
+WorldObject::WorldObject(const WorldObject& obj) :
+inPhysics(obj.inPhysics), inGraphics(obj.inGraphics),
+location(obj.location), width(obj.width), height(obj.height), color(obj.color)
+{
+	if(inPhysics)
+		PhysicsWorld::Add(*this);
+	if(inGraphics)
+		GraphicsWorld::Add(*this);
+}
+WorldObject::~WorldObject()
+{
+	if(inPhysics)
+		PhysicsWorld::Remove(*this);
+	if(inGraphics)
+		GraphicsWorld::Remove(*this);
+}
+
+void WorldObject::AddToWorld()
+{
+	// TODO: get mad if they're doin it wrong
+
+	if(!inPhysics)
+		PhysicsWorld::Add(*this);
+
+	if(!inGraphics)
+		GraphicsWorld::Add(*this);
+
+	inPhysics = inGraphics = true;
+}
+void WorldObject::RemoveFromWorld()
+{
+	// TODO: get mad if they're doin it wrong
+
+	if(inPhysics)
+		PhysicsWorld::Remove(*this);
+
+	if(inGraphics)
+		GraphicsWorld::Remove(*this);
+
+	inPhysics = inGraphics = false;
+}
+
+WorldObject::ObjectType WorldObject::GetObjectType() const
+{
+	return type;
+}
+void WorldObject::Draw(Screen& target) const
+{
+	SDL_Surface* surface = target.GetSurface();
+
+	SDL_Rect rect;
+	rect.w = width;
+	rect.h = height;
+	rect.x = location.x;
+	rect.y = location.y;
+
+	if(SDL_FillRect(surface, &rect, color.GetRGBMap(surface)) == -1)
+	{
+		string error = "Error drawing to screen: ";
+		error += SDL_GetError();
+		throw runtime_error(error.c_str());
+	}
 }
 }

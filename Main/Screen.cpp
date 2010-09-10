@@ -1,11 +1,11 @@
+#include "Screen.hpp"
+
 #include <cassert>
 #include <stdexcept>
 #include <string>
 
 #include "Common.hpp"
-#include "Physics.hpp"
 #include "Point.hpp"
-#include "Screen.hpp"
 #include "Wall.hpp"
 
 using namespace std;

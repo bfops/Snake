@@ -3,7 +3,7 @@
 #include "Point.hpp"
 #include "WorldObject.hpp"
 
-class Wall : public WorldObject
+class Wall : public World::WorldObject
 {
 public:
 	Wall();
