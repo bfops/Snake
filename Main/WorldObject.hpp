@@ -17,8 +17,7 @@ namespace World
 		};
 
 	protected:
-		bool inPhysics;
-		bool inGraphics;
+		bool inWorld;
 		ObjectType type;
 
 	public:

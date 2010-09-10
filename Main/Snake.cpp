@@ -4,7 +4,6 @@
 #include <SDL/SDL.h>
 
 #include "Snake.hpp"
-
 #include "Color24.hpp"
 #include "Common.hpp"
 #include "Logger.hpp"
@@ -67,7 +66,7 @@ void Snake::Reset(Point headLocation)
 #endif
 
 	length = defaultLength;
-	path = Path();
+	path.clear();
 	AddTailSegment(headLocation);
 
 	// give it a random starting direction
