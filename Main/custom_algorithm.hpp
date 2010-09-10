@@ -35,7 +35,7 @@ bool unordered_find_and_remove(std::vector<_T>& v, const _T& val)
 // Returns true iff predicate(element) returns true for every element in the
 // interval [begin, end).
 template <typename IterType, typename PredType>
-bool all(IterType begin, IterType end, PredType predicate)
+inline bool all(IterType begin, IterType end, PredType predicate)
 {
 	return std::find_if(begin, end, std::unary_negate<PredType>(predicate)) == end;
 }
@@ -43,7 +43,7 @@ bool all(IterType begin, IterType end, PredType predicate)
 // Returns true iff predicate(element) returns true for any element in the
 // interval [begin, end).
 template <typename IterType, typename PredType>
-bool any(IterType begin, IterType end, PredType predicate)
+inline bool any(IterType begin, IterType end, PredType predicate)
 {
 	return std::find_if(begin, end, predicate) != end;
 }
