@@ -25,11 +25,8 @@ static Walls make_walls(Point screenBounds);
 const unsigned int FPS = 60;
 
 // TODO: use more interrupts rather than loops
-static void main_loop(Screen& screen, Snake& player, const Walls& walls)
+static void main_loop(Screen& screen, Snake& player, const Walls& walls, bool& quit)
 {
-	Logger::Handle logger = Logger::RequestHandle("main_loop()");
-	bool quit = false;
-
 	while(!quit && !player.IsDead())
 	{
 		SDL_PollEvent(NULL);
@@ -39,8 +36,6 @@ static void main_loop(Screen& screen, Snake& player, const Walls& walls)
 
 		this_thread::sleep(posix_time::millisec(1000 / FPS));
 	}
-
-	logger.Fatal("You lose!");
 }
 
 // TODO: pause functionality
@@ -59,14 +54,18 @@ int main()
 	Screen screen(800, 600);
 	Walls walls = make_walls(screen.GetBounds());
 
-	bool quit = false;
 	logger.Debug("Creating player");
 	Snake player(screen.GetCenter());
+	bool quit = false;
 
 	Event::RegisterPlayer(player);
 	Event::RegisterQuitter(quit);
 
-	main_loop(screen, player, walls);
+	while(!quit)
+	{
+		main_loop(screen, player, walls, quit);
+		player.Reset(screen.GetCenter());
+	}
 
 	return 0;
 }
