@@ -6,8 +6,7 @@
 #include "Point.hpp"
 #include "Screen.hpp"
 
-// TODO: make this be a generic object for
-// both Physics and Graphics worlds
+// URGENT TODO: Group GraphicsWorld and PhysicsWorld in World
 class WorldObject
 {
 public:
@@ -20,6 +19,7 @@ public:
 
 protected:
 	bool inPhysics;
+	bool inGraphics;
 	ObjectType type;
 
 public:

@@ -1,38 +1,59 @@
 #include <stdexcept>
 #include <string>
 
+#include "WorldObject.hpp"
+
 #include "Common.hpp"
 #include "DebugLogger.hpp"
+#include "Graphics.hpp"
 #include "Physics.hpp"
-#include "WorldObject.hpp"
 
 using namespace std;
 
 WorldObject::WorldObject(ObjectType _type) :
-	inPhysics(false), type(_type)
+	inPhysics(false), inGraphics(false), type(_type)
 {
 }
 WorldObject::WorldObject(const WorldObject& obj) :
-	inPhysics(obj.inPhysics), location(obj.location), width(obj.width), height(obj.height), color(obj.color)
+	inPhysics(obj.inPhysics), inGraphics(obj.inGraphics),
+	location(obj.location), width(obj.width), height(obj.height), color(obj.color)
 {
 	if(inPhysics)
 		PhysicsWorld::Add(*this);
+	if(inGraphics)
+		GraphicsWorld::Add(*this);
 }
 WorldObject::~WorldObject()
 {
 	if(inPhysics)
 		PhysicsWorld::Remove(*this);
+	if(inGraphics)
+		GraphicsWorld::Remove(*this);
 }
 
 void WorldObject::AddToWorld()
 {
-	PhysicsWorld::Add(*this);
-	inPhysics = true;
+	// TODO: get mad if they're doin it wrong
+
+	if(!inPhysics)
+		PhysicsWorld::Add(*this);
+
+	if(!inGraphics)
+		GraphicsWorld::Add(*this);
+
+	inPhysics = inGraphics = true;
 }
 void WorldObject::RemoveFromWorld()
 {
-	PhysicsWorld::Remove(*this);
-	inPhysics = false;
+	// TODO: get mad if they're doin it wrong
+
+	if(inPhysics)
+		PhysicsWorld::Remove(*this);
+
+	if(inGraphics)
+		GraphicsWorld::Remove(*this);
+
+	inPhysics = inGraphics = false;
 }
 
 WorldObject::ObjectType WorldObject::GetObjectType() const

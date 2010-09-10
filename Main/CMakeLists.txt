@@ -3,6 +3,7 @@ add_executable(GingerbreadPrototype
 	DebugLogger.cpp
 	Event.cpp
 	Food.cpp
+	Graphics.cpp
 	main.cpp
 	Physics.cpp
 	Screen.cpp

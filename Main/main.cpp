@@ -8,6 +8,7 @@
 #include "Common.hpp"
 #include "DebugLogger.hpp"
 #include "Event.hpp"
+#include "Graphics.hpp"
 #include "Screen.hpp"
 #include "Snake.hpp"
 #include "Physics.hpp"
@@ -51,19 +52,10 @@ int main()
 	{
 		SDL_PollEvent(NULL);
 
-		DebugLogger::Log("Updating player...\n");
 		player.Update();
-		DebugLogger::Log("Done updating player\n");
 
-		DebugLogger::Log("Updating PhysicsWorld...\n");
 		PhysicsWorld::Update();
-		DebugLogger::Log("Done updating PhysicsWorld\n");
-
-		screen.Clear();
-		for(vector<Wall>::iterator wall = walls.begin(), end = walls.end(); wall != end; ++wall)
-			wall->Draw(screen);
-		player.Draw(screen);
-		screen.Update();
+		GraphicsWorld::Update(screen);
 
 		if(player.IsDead())
 		{
