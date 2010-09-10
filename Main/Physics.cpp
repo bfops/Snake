@@ -4,10 +4,12 @@
 #include "custom_algorithm.hpp"
 
 #include "Common.hpp"
-#include "DebugLogger.hpp"
+#include "Logger.hpp"
 #include "Physics.hpp"
 
 using namespace std;
+
+static Logger::Handle logger = Logger::RequestHandle("PhysicsWorld");
 
 namespace PhysicsWorld {
 
@@ -46,7 +48,7 @@ void Add(WorldObject& obj)
 	PhysicsGroup group;
 	group.push_back(&obj);
 	groups.push_back(group);
-	DebugLogger::Log("Type %u object %p16 added\n", obj.GetObjectType(), (void*)&obj);
+	logger.Debug(boost::format("Type %1% object %1% added") % obj.GetObjectType() % (void*)&obj);
 }
 void Add(PhysicsGroup& group)
 {
@@ -55,7 +57,7 @@ void Add(PhysicsGroup& group)
 	groups.push_back(group);
 
 	// TODO: output group members
-	DebugLogger::Log("Object group added!\n");
+	logger.Debug("Object group added!");
 }
 void Remove(WorldObject& obj)
 {
@@ -65,11 +67,12 @@ void Remove(WorldObject& obj)
 		{
 			if(group->size() == 0)
 				unordered_remove(groups, group);
-			DebugLogger::Log("Type %u object %p16 removed\n", obj.GetObjectType(), (void*)&obj);
+
+			logger.Debug(boost::format("Type %1% object %2% removed") % obj.GetObjectType() % (void*)&obj);
 			return;
 		}
 	}
-	assert(!"Invalid object specified");
+	logger.Debug("Invalid object specified");
 }
 void RemoveGroup(WorldObject& obj)
 {
@@ -81,7 +84,7 @@ void RemoveGroup(WorldObject& obj)
 			return;
 		}
 	}
-	assert(!"Invalid group specified");
+	logger.Debug("Invalid group specified");
 }
 static void collide_with_other_groups(PhysicsObjectList::iterator startGroup, PhysicsGroup::iterator collider)
 {
@@ -91,11 +94,6 @@ static void collide_with_other_groups(PhysicsObjectList::iterator startGroup, Ph
 		{
 			if(IsCollide(**collider, **collidee))
 			{
-				DebugLogger::Log("Collision between %p16 [(%i,%i) %ux%u] and %p16 [(%i,%i) %ux%u]\n",
-					(void*)*collider, (*collider)->location.x, (*collider)->location.y, (*collider)->width, (*collider)->height,
-					(void*)*collidee, (*collidee)->location.x, (*collidee)->location.y, (*collidee)->width, (*collidee)->height
-				);
-
 				(*collider)->CollisionHandler(**collidee);
 				(*collidee)->CollisionHandler(**collider);
 			}

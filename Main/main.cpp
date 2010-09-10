@@ -1,12 +1,13 @@
 #include <ctime>
 #include <cstdio>
 
+#include <boost/array.hpp>
 #include <boost/date_time.hpp>
 #include <boost/thread.hpp>
 #include <SDL/SDL.h>
 
 #include "Common.hpp"
-#include "DebugLogger.hpp"
+#include "Logger.hpp"
 #include "Event.hpp"
 #include "Graphics.hpp"
 #include "Screen.hpp"
@@ -18,16 +19,46 @@
 using namespace boost;
 using namespace std;
 
-static vector<Wall> create_walls(Point screenBounds);
+typedef boost::array<Wall, 4> Walls;
+
+static Walls make_walls(Point screenBounds);
 
 // TODO: fetch this dynamically
 const unsigned int FPS = 60;
 
+// TODO: use more interrupts rather than loops
+static void main_loop(Screen& screen, Snake& player, const Walls& walls)
+{
+	Logger::Handle logger = Logger::RequestHandle("main_loop()");
+	bool quit = false;
+
+	while(!quit && !player.IsDead())
+	{
+		SDL_PollEvent(NULL);
+		player.Update();
+		PhysicsWorld::Update();
+
+		screen.Clear();
+
+		for(Walls::const_iterator wall = walls.begin(), end = walls.end(); wall != end; ++wall)
+			wall->Draw(screen);
+
+		player.Draw(screen);
+		screen.Update();
+
+		this_thread::sleep(posix_time::millisec(1000 / FPS));
+	}
+
+	logger.Fatal("You lose!");
+}
+
 // TODO: pause functionality
 int main()
 {
-	// TODO: start screen
+	// TODO: have a start screen
 	// TODO: procedurally-generated adventure mode
+
+	Logger::Handle logger = Logger::RequestHandle("main()");
 
 	const char* windowTitle = "Rewritable's Snake";
 	SDL_WM_SetCaption(windowTitle, windowTitle);
@@ -35,51 +66,31 @@ int main()
 	SDL_ShowCursor(SDL_DISABLE);
 
 	Screen screen(800, 600);
-	vector<Wall> walls = create_walls(screen.GetBounds());
+	Walls walls = make_walls(screen.GetBounds());
 
 	bool quit = false;
-	DebugLogger::Log("Creating player\n");
-	DebugLogger::Indent* indent = new DebugLogger::Indent();
+	logger.Debug("Creating player");
 	Snake player(screen.GetCenter());
-	delete indent;
 
 	Event::RegisterPlayer(player);
 	Event::RegisterQuitter(quit);
 
-	// TODO: use more interrupts rather than loops
-	// game loop
-	while(!quit)
-	{
-		SDL_PollEvent(NULL);
-
-		player.Update();
-
-		PhysicsWorld::Update();
-		GraphicsWorld::Update(screen);
-
-		if(player.IsDead())
-		{
-			printf("You lose!\n");
-			break;
-		}
-
-		this_thread::sleep(posix_time::millisec(1000 / FPS));
-	}
+	main_loop(screen, player, walls);
 
 	return 0;
 }
 
-static vector<Wall> create_walls(Point screenBounds)
+static boost::array<Wall, 4> make_walls(Point screenBounds)
 {
 	const unsigned int wallThickness = 10;
-	vector<Wall> walls;
-	walls.reserve(4);
-	walls.push_back(Wall(Point(0, 0), wallThickness, screenBounds.y));
-	walls.push_back(Wall(Point(screenBounds.x - wallThickness, 0), wallThickness, screenBounds.y));
-	walls.push_back(Wall(Point(0, 0), screenBounds.x, wallThickness));
-	walls.push_back(Wall(Point(0, screenBounds.y - wallThickness), screenBounds.x, wallThickness));
+	boost::array<Wall, 4> walls;
 
-	for(vector<Wall>::iterator i = walls.begin(), end = walls.end(); i != end; ++i)
+	walls[0] = Wall(Point(0, 0), wallThickness, screenBounds.y);
+	walls[1] = Wall(Point(screenBounds.x - wallThickness, 0), wallThickness, screenBounds.y);
+	walls[2] = Wall(Point(0, 0), screenBounds.x, wallThickness);
+	walls[3] = Wall(Point(0, screenBounds.y - wallThickness), screenBounds.x, wallThickness);
+
+	for(Walls::iterator i = walls.begin(), end = walls.end(); i != end; ++i)
 		i->AddToWorld();
 
 	return walls;

@@ -5,7 +5,7 @@
 
 #include "Color24.hpp"
 #include "Common.hpp"
-#include "DebugLogger.hpp"
+#include "Logger.hpp"
 #include "Physics.hpp"
 #include "Point.hpp"
 #include "Screen.hpp"
@@ -23,6 +23,7 @@ Color24 headColor(160, 160, 160);
 Color24 bodyColor(0, 255, 0);
 
 Snake::Snake(Point loc)
+	: logger(Logger::RequestHandle("Snake"))
 {
 	Reset(loc);
 }
@@ -58,11 +59,11 @@ void Snake::Reset(Point headLocation)
 
 	speed = 100;
 
-	#ifdef NDEBUG
+#ifdef NDEBUG
 	const unsigned int defaultLength = 44;
-	#else
+#else
 	const unsigned int defaultLength = 224;
-	#endif
+#endif
 
 	length = defaultLength;
 	path = Path();
@@ -161,12 +162,9 @@ void Snake::Update()
 	{
 		if(length > path.size())
 		{
-			DebugLogger::Log("Adding new segment\n");
-			{
-				DebugLogger::Indent indent;
-				AddTailSegment(Point());
-			}
-			DebugLogger::Log("New segment added\n");
+			logger.Debug("Adding new segment\n");
+			AddTailSegment(Point());
+			logger.Debug("New segment added\n");
 		}
 
 		// each segment assumes the properties of the one in front of it

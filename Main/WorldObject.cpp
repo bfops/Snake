@@ -4,8 +4,8 @@
 #include "WorldObject.hpp"
 
 #include "Common.hpp"
-#include "DebugLogger.hpp"
 #include "Graphics.hpp"
+#include "Logger.hpp"
 #include "Physics.hpp"
 
 using namespace std;

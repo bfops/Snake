@@ -1,9 +1,9 @@
 add_executable(GingerbreadPrototype
 	Color24.cpp
-	DebugLogger.cpp
 	Event.cpp
 	Food.cpp
 	Graphics.cpp
+	Logger.cpp
 	main.cpp
 	Physics.cpp
 	Screen.cpp
