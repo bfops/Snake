@@ -14,6 +14,8 @@ find_package(SDL)
 include_directories(${Boost_INCLUDE_DIR} ${SDL_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})# ${SDL_INCLUDE_DIR})
 
+include_directories("include")
+
 if(MSVC)
     #
 else(MSVC)
@@ -25,3 +27,4 @@ else(MSVC)
 endif()
 
 add_subdirectory(Main)
+add_subdirectory(gtest)

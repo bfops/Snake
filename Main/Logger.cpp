@@ -1,6 +1,7 @@
 #include "Logger.hpp"
 
 #include <cstdio>
+#include <stdexcept>
 
 #include <boost/thread/mutex.hpp>
 
@@ -27,5 +28,6 @@ namespace Logger
 	void Handle::Fatal(const char* message)
 	{
 		Write("F", tag, message);
+		throw std::runtime_error(message);
 	}
 }
