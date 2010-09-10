@@ -6,7 +6,9 @@
 
 namespace PhysicsWorld
 {
-	// TODO: nicer abstraction
+	// URGENT TODO: nicer abstraction.
+	// Allocate a PhysicsGroup, and then you can add
+	// things already in the world to that group
 	typedef std::vector<WorldObject*> PhysicsGroup;
 
 	void Add(WorldObject&);

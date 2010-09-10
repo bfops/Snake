@@ -11,6 +11,7 @@
 #include "Timer.hpp"
 #include "Vector2D.hpp"
 
+// URENT TODO: store snakes as vectors of direction-length pairs
 class Snake
 {
 public:
