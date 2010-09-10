@@ -3,10 +3,9 @@
 #include <SDL/SDL.h>
 
 #include "Color24.hpp"
-#include "Logger.hpp"
 #include "Point.hpp"
 
-// TODO: make graphics world
+// TODO: move screen into GraphicsWorld
 class Screen
 {
 private:

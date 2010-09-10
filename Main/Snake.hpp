@@ -1,13 +1,10 @@
 #pragma once
 
-#include <deque>
 #include <vector>
-
 #include <SDL/SDL.h>
 
 #include "Common.hpp"
 #include "Logger.hpp"
-#include "Screen.hpp"
 #include "SnakeSegment.hpp"
 #include "Timer.hpp"
 #include "Vector2D.hpp"
@@ -16,6 +13,8 @@
 class Snake
 {
 public:
+	// TODO: make Direction::Direction private so that only
+	// certain directions make exist
 	typedef Vector2D Direction;
 	const static Direction right, left, up, down;
 
@@ -43,6 +42,5 @@ public:
 	void Reset(Point headLocation);
 	void ChangeDirection(Direction);
 	void Update();
-	void Draw(Screen& target) const;
 	bool IsDead() const;
 };

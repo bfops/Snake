@@ -1,8 +1,5 @@
-#include <cassert>
-#include <ctime>
-
-#include "Common.hpp"
 #include "Timer.hpp"
+#include "Common.hpp"
 
 using namespace boost::posix_time;
 

@@ -3,12 +3,12 @@
 #include <boost/random.hpp>
 #include <SDL/SDL.h>
 
+#include "Snake.hpp"
+
 #include "Color24.hpp"
 #include "Common.hpp"
 #include "Logger.hpp"
 #include "Point.hpp"
-#include "Screen.hpp"
-#include "Snake.hpp"
 #include "Timer.hpp"
 
 using namespace std;
@@ -18,8 +18,10 @@ const Snake::Direction Snake::left(-1, 0);
 const Snake::Direction Snake::up(0, -1);
 const Snake::Direction Snake::down(0, 1);
 
+namespace {
 Color24 headColor(160, 160, 160);
 Color24 bodyColor(0, 255, 0);
+}
 
 Snake::Snake(Point loc)
 	: logger(Logger::RequestHandle("Snake"))
@@ -175,11 +177,6 @@ void Snake::Update()
 		}
 		apply_direction(path.begin()->location, direction);
 	}
-}
-void Snake::Draw(Screen& target) const
-{
-	for(Path::const_iterator i = path.begin(), end = path.end(); i != end; ++i)
-		i->Draw(target);
 }
 bool Snake::IsDead() const
 {

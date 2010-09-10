@@ -1,4 +1,5 @@
 #include "Color24.hpp"
+
 #include "Common.hpp"
 
 Color24::Color24() :

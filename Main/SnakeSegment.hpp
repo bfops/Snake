@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Color24.hpp"
 #include "Food.hpp"
 #include "WorldObject.hpp"
 

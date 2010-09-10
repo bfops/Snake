@@ -1,8 +1,11 @@
+#include "Wall.hpp"
 #include "Color24.hpp"
 #include "Common.hpp"
-#include "Wall.hpp"
 
+namespace {
 Color24 defaultColor(255, 0, 0);
+}
+
 Wall::Wall() :
 	WorldObject(wall)
 {

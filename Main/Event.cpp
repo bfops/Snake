@@ -1,21 +1,13 @@
-#include "Common.hpp"
 #include "Event.hpp"
+
+#include "Common.hpp"
 #include "Snake.hpp"
 
 namespace Event {
 
 namespace {
-Snake* player;
-bool* quit;
-
-struct Initializer
-{
-	Initializer()
-	{
-		player = NULL;
-		quit = NULL;
-	}
-} init;
+Snake* player = NULL;
+bool* quit = NULL;
 }
 
 static int key_handler(SDLKey sym)

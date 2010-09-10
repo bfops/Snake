@@ -1,7 +1,5 @@
-#include <cassert>
-
-#include "Common.hpp"
 #include "SnakeSegment.hpp"
+#include "Common.hpp"
 
 SnakeSegment::SnakeSegment() :
 	WorldObject(snake), dead(false), eaten(false)

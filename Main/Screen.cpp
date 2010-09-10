@@ -1,14 +1,15 @@
 #include "Screen.hpp"
 
-#include <cassert>
-#include <stdexcept>
 #include <string>
 
 #include "Common.hpp"
-#include "Point.hpp"
-#include "Wall.hpp"
+#include "Logger.hpp"
 
 using namespace std;
+
+namespace {
+Logger::Handle logger = Logger::RequestHandle("Screen");
+}
 
 Screen::Screen(unsigned int _width, unsigned int _height) :
 	width(_width), height(_height), bgColor(0, 0, 0)
@@ -18,7 +19,7 @@ Screen::Screen(unsigned int _width, unsigned int _height) :
 	{
 		string error = "Error creating screen: ";
 		error += SDL_GetError();
-		throw runtime_error(error.c_str());
+		logger.Fatal(error.c_str());
 	}
 }
 
@@ -42,7 +43,7 @@ void Screen::Update()
 	{
 		string error = "Error updating screen: ";
 		error += SDL_GetError();
-		throw runtime_error(error.c_str());
+		logger.Fatal(error.c_str());
 	}
 }
 void Screen::Clear()

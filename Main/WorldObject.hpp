@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdlib>
-
 #include "Color24.hpp"
 #include "Point.hpp"
 #include "Screen.hpp"

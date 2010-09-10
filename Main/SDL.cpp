@@ -1,15 +1,17 @@
 #include <SDL/SDL.h>
-#include <stdexcept>
 
 #include "Common.hpp"
+#include "Logger.hpp"
 
 namespace {
+Logger::Handle logger = Logger::RequestHandle("SDLInitializer");
+
 struct SDLInitializer
 {
 	SDLInitializer()
 	{
 		if(SDL_Init(SDL_INIT_VIDEO))
-			throw std::runtime_error("SDL failed to initialize");
+			logger.Fatal("SDL failed to initialize");
 	}
 
 	~SDLInitializer()
