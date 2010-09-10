@@ -6,6 +6,7 @@
 #include <SDL/SDL.h>
 
 #include "Common.hpp"
+#include "Logger.hpp"
 #include "Screen.hpp"
 #include "SnakeSegment.hpp"
 #include "Timer.hpp"
@@ -19,6 +20,8 @@ public:
 
 private:
 	typedef std::vector<SnakeSegment> Path;
+
+	Logger::Handle logger;
 
 	Direction direction;
 	unsigned int length;

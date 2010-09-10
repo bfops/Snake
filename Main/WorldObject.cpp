@@ -2,7 +2,7 @@
 #include <string>
 
 #include "Common.hpp"
-#include "DebugLogger.hpp"
+#include "Logger.hpp"
 #include "Physics.hpp"
 #include "WorldObject.hpp"
 
