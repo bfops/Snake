@@ -1,8 +1,11 @@
 #include <cassert>
 #include <cstdarg>
+#include <cstdio>
 
 #include "Common.hpp"
 #include "DebugLogger.hpp"
+
+using namespace std;
 
 namespace DebugLogger {
 
@@ -36,7 +39,13 @@ namespace DebugLogger {
 	void Log(const char* fmt, ...)
 	{
 		#ifndef NDEBUG
-		assert(!"DebugLogger::Log");
+		for(unsigned int i = 0; i < tabNumber; ++i)
+			printf("\t");
+
+		va_list argList;
+		va_start(argList, fmt);
+		vprintf(fmt, argList);
+		va_end(argList);
 		#endif
 	}
 }
