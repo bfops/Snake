@@ -33,10 +33,12 @@ static bool object_exists(const WorldObject* obj)
 {
 	return any(groups.begin(), groups.end(), boost::bind(object_found, _1, obj));
 }
+
 static bool any_objects_exist(const PhysicsGroup& group)
 {
 	return any(group.begin(), group.end(), object_exists);
 }
+
 void Add(WorldObject& obj)
 {
 	assert(!object_exists(&obj));
@@ -44,7 +46,7 @@ void Add(WorldObject& obj)
 	PhysicsGroup group;
 	group.push_back(&obj);
 	groups.push_back(group);
-	logger.Debug(boost::format("Type %1% object %1% added") % obj.GetObjectType() % (void*)&obj);
+	logger.Debug(boost::format("Type %1% object %2% added") % obj.GetObjectType() % &obj);
 }
 void Add(PhysicsGroup& group)
 {
@@ -64,7 +66,7 @@ void Remove(WorldObject& obj)
 			if(group->size() == 0)
 				unordered_remove(groups, group);
 
-			logger.Debug(boost::format("Type %1% object %2% removed") % obj.GetObjectType() % (void*)&obj);
+			logger.Debug(boost::format("Type %1% object %2% removed") % obj.GetObjectType() % &obj);
 			return;
 		}
 	}
