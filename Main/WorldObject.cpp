@@ -2,14 +2,43 @@
 #include <string>
 
 #include "Common.hpp"
+#include "DebugLogger.hpp"
+#include "Physics.hpp"
 #include "WorldObject.hpp"
 
 using namespace std;
 
-WorldObject::~WorldObject()
+WorldObject::WorldObject(ObjectType _type) :
+	inPhysics(false), type(_type)
 {
 }
+WorldObject::WorldObject(const WorldObject& obj) :
+	inPhysics(obj.inPhysics), location(obj.location), width(obj.width), height(obj.height), color(obj.color)
+{
+	if(inPhysics)
+		PhysicsWorld::Add(*this);
+}
+WorldObject::~WorldObject()
+{
+	if(inPhysics)
+		PhysicsWorld::Remove(*this);
+}
 
+void WorldObject::AddToWorld()
+{
+	PhysicsWorld::Add(*this);
+	inPhysics = true;
+}
+void WorldObject::RemoveFromWorld()
+{
+	PhysicsWorld::Remove(*this);
+	inPhysics = false;
+}
+
+WorldObject::ObjectType WorldObject::GetObjectType() const
+{
+	return type;
+}
 void WorldObject::Draw(Screen& target) const
 {
 	SDL_Surface* surface = target.GetSurface();

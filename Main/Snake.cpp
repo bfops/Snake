@@ -29,29 +29,10 @@ Snake::Snake(Point loc)
 
 void Snake::AddTailSegment(Point location)
 {
-	// vectors move their elements when they are modified.
-	// therefore, all elements must be removed and re-added
-	// to the Physics World, because otherwise its pointers
-	// will be invalid.
-
-	if(path.size() > 0)
-	{
-		PhysicsWorld::Remove(*path.begin());
-		if(path.size() > 1)
-			PhysicsWorld::RemoveGroup(*(path.begin() + 1));
-	}
-
 	SnakeSegment newSegment;
 	newSegment.location = location;
 	path.push_back(newSegment);
-
-	PhysicsWorld::PhysicsGroup bodyGroup;
-	for(Path::iterator segmentToAdd = path.begin() + 1, end = path.end(); segmentToAdd != end; ++segmentToAdd)
-	{
-		bodyGroup.push_back(&*segmentToAdd);
-	}
-	PhysicsWorld::Add(bodyGroup);
-	PhysicsWorld::Add(*path.begin());
+	path.rbegin()->AddToWorld();
 
 	const unsigned int headLength = 15;
 	if(path.size() <= headLength)

@@ -16,7 +16,7 @@ private:
 public:
 	SnakeSegment();
 
-	ObjectType GetObjectType() const;
+	//ObjectType GetObjectType() const;
 	void CollisionHandler(const WorldObject&);
 
 	bool IsDead() const;

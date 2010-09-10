@@ -5,7 +5,7 @@
 #include "SnakeSegment.hpp"
 
 SnakeSegment::SnakeSegment() :
-	dead(false), eaten(false)
+	WorldObject(snake), dead(false), eaten(false)
 {
 	height = 15;
 	width = 1;
@@ -28,10 +28,6 @@ void SnakeSegment::CollisionHandler(const WorldObject& obj)
 		DeathCollisionHandler();
 	else if(type == WorldObject::food)
 		FoodCollisionHandler(static_cast<const Food&>(obj));
-}
-WorldObject::ObjectType SnakeSegment::GetObjectType() const
-{
-	return snake;
 }
 
 bool SnakeSegment::IsDead() const

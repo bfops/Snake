@@ -13,7 +13,7 @@ private:
 public:
 	Food();
 
-	ObjectType GetObjectType() const;
+	//ObjectType GetObjectType() const;
 	void CollisionHandler(const WorldObject&);
 
 	bool IsEaten() const;

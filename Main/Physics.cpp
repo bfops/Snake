@@ -46,8 +46,7 @@ void Add(WorldObject& obj)
 	PhysicsGroup group;
 	group.push_back(&obj);
 	groups.push_back(group);
-
-	DebugLogger::Log("Type %u object added: %p12\n", obj.GetObjectType(), (void*)&obj);
+	DebugLogger::Log("Type %u object %p16 added\n", obj.GetObjectType(), (void*)&obj);
 }
 void Add(PhysicsGroup& group)
 {
@@ -66,7 +65,7 @@ void Remove(WorldObject& obj)
 		{
 			if(group->size() == 0)
 				unordered_remove(groups, group);
-			DebugLogger::Log("Type %u object removed: %p12\n", obj.GetObjectType(), (void*)&obj);
+			DebugLogger::Log("Type %u object %p16 removed\n", obj.GetObjectType(), (void*)&obj);
 			return;
 		}
 	}
@@ -92,7 +91,7 @@ static void collide_with_other_groups(PhysicsObjectList::iterator startGroup, Ph
 		{
 			if(IsCollide(**collider, **collidee))
 			{
-				DebugLogger::Log("Collision between %p12 [(%i,%i) %ux%u] and %p12 [(%i,%i) %ux%u]\n",
+				DebugLogger::Log("Collision between %p16 [(%i,%i) %ux%u] and %p16 [(%i,%i) %ux%u]\n",
 					(void*)*collider, (*collider)->location.x, (*collider)->location.y, (*collider)->width, (*collider)->height,
 					(void*)*collidee, (*collidee)->location.x, (*collidee)->location.y, (*collidee)->width, (*collidee)->height
 				);

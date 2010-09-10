@@ -3,11 +3,13 @@
 #include "Wall.hpp"
 
 Color24 defaultColor(255, 0, 0);
-Wall::Wall()
+Wall::Wall() :
+	WorldObject(wall)
 {
 	color = defaultColor;
 }
-Wall::Wall(Point loc, size_t w, size_t h)
+Wall::Wall(Point loc, size_t w, size_t h) :
+	WorldObject(wall)
 {
 	color = defaultColor;
 	location = loc;
@@ -15,10 +17,6 @@ Wall::Wall(Point loc, size_t w, size_t h)
 	height = h;
 }
 
-WorldObject::ObjectType Wall::GetObjectType() const
-{
-	return wall;
-}
 void Wall::CollisionHandler(const WorldObject& obj)
 {
 }

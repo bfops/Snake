@@ -18,13 +18,23 @@ public:
 		food
 	};
 
+protected:
+	bool inPhysics;
+	ObjectType type;
+
+public:
 	Point location;
-	unsigned int height, width;
+	unsigned int width, height;
 	Color24 color;
 
+	WorldObject(ObjectType);
+	WorldObject(const WorldObject&);
 	virtual ~WorldObject();
 
-	virtual ObjectType GetObjectType() const = 0;
+	virtual void AddToWorld();
+	virtual void RemoveFromWorld();
+
+	virtual ObjectType GetObjectType() const;
 	virtual void CollisionHandler(const WorldObject& colidee) = 0;
 	virtual void Draw(Screen& target) const;
 };
