@@ -1,3 +1,4 @@
+#include <boost/bind/bind.hpp>
 #include <cassert>
 #include <list>
 
@@ -23,27 +24,22 @@ static bool IsWithinBounds(int obj1Location, int obj2Location, unsigned int obj2
 static bool IsLeftWithinBounds(const WorldObject&, const WorldObject&);
 static bool IsTopWithinBounds(const WorldObject&, const WorldObject&);
 
-static bool object_exists(const WorldObject& obj)
+static bool object_found(PhysicsGroup& group, const WorldObject* obj)
 {
-	for(PhysicsObjectList::iterator i = groups.begin(), end = groups.end(); i != end; ++i)
-	{
-		if(std::find(i->begin(), i->end(), &obj) != i->end())
-			return true;
-	}
-	return false;
+	return find(group.begin(), group.end(), obj) != group.end();
+}
+
+static bool object_exists(const WorldObject* obj)
+{
+	return any(groups.begin(), groups.end(), boost::bind(object_found, _1, obj));
 }
 static bool any_objects_exist(const PhysicsGroup& group)
 {
-	for(PhysicsGroup::const_iterator i = group.begin(), end = group.end(); i != end; ++i)
-	{
-		if(object_exists(**i))
-			return true;
-	}
-	return false;
+	return any(group.begin(), group.end(), object_exists);
 }
 void Add(WorldObject& obj)
 {
-	assert(!object_exists(obj));
+	assert(!object_exists(&obj));
 
 	PhysicsGroup group;
 	group.push_back(&obj);

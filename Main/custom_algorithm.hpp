@@ -28,3 +28,23 @@ bool unordered_find_and_remove(std::vector<_T>& v, const _T& val)
 	unordered_remove(v, loc);
 	return true;
 }
+
+template <typename IterType, typename PredType>
+bool all(IterType begin, IterType end, PredType predicate)
+{
+	for(; begin != end; ++begin)
+		if(!predicate(*begin))
+			return false;
+
+	return true;
+}
+
+template <typename IterType, typename PredType>
+bool any(IterType begin, IterType end, PredType predicate)
+{
+	for(; begin != end; ++begin)
+		if(predicate(*begin))
+			return true;
+
+	return false;
+}
