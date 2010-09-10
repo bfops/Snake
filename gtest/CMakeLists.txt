@@ -14,4 +14,4 @@ set(GTEST_SRC
 	# More sources here.
 )
 
-add_library(gtest ${GTEST_HEADERS} ${GTEST_SRC})
+add_library(gtest ${GTEST_HEADERS} ${GTEST_SRC} ${Boost_LIBRARIES})

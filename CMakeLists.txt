@@ -26,5 +26,8 @@ else(MSVC)
 	)
 endif()
 
-add_subdirectory(Main)
+enable_testing()
+
 add_subdirectory(gtest)
+add_subdirectory(Main)
+add_subdirectory(Main_test)
