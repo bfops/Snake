@@ -19,10 +19,10 @@ typedef vector<PhysicsGroup> PhysicsObjectList;
 PhysicsObjectList groups;
 }
 
-static bool IsCollide(const WorldObject&, const WorldObject&);
+static bool IsCollide(const WorldObject*, const WorldObject*);
 static bool IsWithinBounds(int obj1Location, int obj2Location, unsigned int obj2Dimension);
-static bool IsLeftWithinBounds(const WorldObject&, const WorldObject&);
-static bool IsTopWithinBounds(const WorldObject&, const WorldObject&);
+static bool IsLeftWithinBounds(const WorldObject*, const WorldObject*);
+static bool IsTopWithinBounds(const WorldObject*, const WorldObject*);
 
 static bool object_found(PhysicsGroup& group, const WorldObject* obj)
 {
@@ -66,8 +66,7 @@ void Remove(WorldObject& obj)
 			if(group->size() == 0)
 				unordered_remove(groups, group);
 
-			logger.Debug(boost::format("Type %1% object %2% removed") % obj.GetObjectType() % &obj);
-			return;
+			return logger.Debug(boost::format("Type %1% object %2% removed") % obj.GetObjectType() % &obj);
 		}
 	}
 	logger.Debug("Invalid object specified");
@@ -75,59 +74,46 @@ void Remove(WorldObject& obj)
 void RemoveGroup(WorldObject& obj)
 {
 	for(PhysicsObjectList::iterator group = groups.begin(), end = groups.end(); group != end; ++group)
-	{
-		if(find(group->begin(), group->end(), &obj) != group->end())
-		{
-			unordered_remove(groups, group);
-			return;
-		}
-	}
+		if(object_found(*group, &obj))
+			return unordered_remove(groups, group);
+
 	logger.Debug("Invalid group specified");
 }
-static void collide_with_other_groups(PhysicsObjectList::iterator startGroup, PhysicsGroup::iterator collider)
-{
-	for(PhysicsObjectList::iterator group = startGroup + 1, lastGroup = groups.end(); group != lastGroup; ++group)
-	{
-		for(PhysicsGroup::iterator collidee = group->begin(), end = group->end(); collidee != end; ++collidee)
-		{
-			if(IsCollide(**collider, **collidee))
-			{
-				logger.Debug(
-					boost::format("Collision between %1% [(%2%, %3%) %4%x%5%] and %6% [(%7%, %8%) %9%x%10%]")
-					% *collider % (*collider)->location.x % (*collider)->location.y % (*collider)->width % (*collider)->height
-					% *collidee % (*collidee)->location.x % (*collidee)->location.y % (*collidee)->width % (*collidee)->height
-				);
 
-				(*collider)->CollisionHandler(**collidee);
-				(*collidee)->CollisionHandler(**collider);
-			}
-		}
+static void handle_potential_collision(Logger::Handle logger, WorldObject* o1, WorldObject* o2)
+{
+	if(IsCollide(o1, o2))
+	{
+		o1->CollisionHandler(*o2);
+		o2->CollisionHandler(*o1);
 	}
 }
+
+static void collide_with_other_groups(PhysicsObjectList::iterator startGroup, WorldObject* collider)
+{
+	for(PhysicsObjectList::iterator group = startGroup + 1, lastGroup = groups.end(); group != lastGroup; ++group)
+		std::for_each(group->begin(), group->end(), boost::bind(handle_potential_collision, logger, collider, _1));
+}
+
 void Update()
 {
 	for(PhysicsObjectList::iterator group = groups.begin(), lastGroup = groups.end() - 1; group != lastGroup; ++group)
-	{
-		for(PhysicsGroup::iterator collider = group->begin(), end = group->end(); collider != end; ++collider)
-		{
-			collide_with_other_groups(group, collider);
-		}
-	}
+		std::for_each(group->begin(), group->end(), boost::bind(collide_with_other_groups, group, _1));
 }
 
 static bool IsWithinBounds(int obj1Location, int obj2Location, unsigned int dimension)
 {
 	return((obj1Location >= obj2Location) && (obj1Location < (int)(obj2Location + dimension)));
 }
-static bool IsLeftWithinBounds(const WorldObject& obj1, const WorldObject& obj2)
+static bool IsLeftWithinBounds(const WorldObject* obj1, const WorldObject* obj2)
 {
-	return IsWithinBounds(obj1.location.x, obj2.location.x, obj2.width);
+	return IsWithinBounds(obj1->location.x, obj2->location.x, obj2->width);
 }
-static bool IsTopWithinBounds(const WorldObject& obj1, const WorldObject& obj2)
+static bool IsTopWithinBounds(const WorldObject* obj1, const WorldObject* obj2)
 {
-	return IsWithinBounds(obj1.location.y, obj2.location.y, obj2.height);
+	return IsWithinBounds(obj1->location.y, obj2->location.y, obj2->height);
 }
-static bool IsCollide(const WorldObject& obj1, const WorldObject& obj2)
+static bool IsCollide(const WorldObject* obj1, const WorldObject* obj2)
 {
 	return (
 		(IsTopWithinBounds(obj1, obj2) || IsTopWithinBounds(obj2, obj1))
