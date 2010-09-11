@@ -1,5 +1,5 @@
 set(TESTS
-	test_cqueue
+	test_cgq
 )
 
 add_executable(Main_test ${TESTS})
