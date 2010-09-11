@@ -47,3 +47,10 @@ inline bool any(IterType begin, IterType end, PredType predicate)
 {
 	return std::find_if(begin, end, predicate) != end;
 }
+
+// Returns true if `elem` is in the interval [begin, end) and false otherwise.
+template <typename IterType, typename T>
+inline bool in(IterType begin, IterType end, const T& elem)
+{
+	return any(begin, end, boost::bind(std::equal_to<T>(), elem, _1));
+}

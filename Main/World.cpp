@@ -18,7 +18,7 @@ Logger::Handle logger = Logger::RequestHandle("World");
 
 static inline bool object_exists(const WorldObject* obj)
 {
-	return find(objects.begin(), objects.end(), obj) != objects.end();
+	return in(objects.begin(), objects.end(), obj);
 }
 
 void Add(WorldObject& obj)
@@ -69,6 +69,7 @@ static inline void handle_potential_collision(WorldObject* o1, WorldObject* o2)
 {
 	CollidableObject c1 = world_to_collidable_object(o1);
 	CollidableObject c2 = world_to_collidable_object(o2);
+
 	if(does_collide(&c1, &c2))
 	{
 		o1->CollisionHandler(*o2);

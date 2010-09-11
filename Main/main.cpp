@@ -10,6 +10,7 @@
 #include "Logger.hpp"
 #include "Event.hpp"
 #include "Screen.hpp"
+#include "SDL.h"
 #include "Snake.hpp"
 #include "Wall.hpp"
 #include "World.hpp"
@@ -39,11 +40,11 @@ static void main_loop(Screen& screen, Snake& player, const Walls& walls, bool& q
 }
 
 // TODO: pause functionality
+// TODO: have a start screen
+// TODO: procedurally-generated adventure mode
 int main()
 {
-	// TODO: have a start screen
-	// TODO: procedurally-generated adventure mode
-
+	SDLInitializer sdl_keepalive;
 	Logger::Handle logger = Logger::RequestHandle("main()");
 
 	const char* windowTitle = "Rewritable's Snake";

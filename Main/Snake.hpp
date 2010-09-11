@@ -9,6 +9,8 @@
 #include "Timer.hpp"
 #include "Vector2D.hpp"
 
+#include <cstddef>
+
 // URGENT TODO: store snakes as vectors of direction-length pairs
 class Snake
 {
@@ -34,7 +36,7 @@ private:
 	Timer speedupTimer;
 
 	void AddTailSegment(Point location);
-	void Grow();
+	void Grow(size_t amount = 1);
 
 public:
 	Snake(Point headLocation);

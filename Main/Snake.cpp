@@ -1,5 +1,7 @@
 #include <cassert>
+#include <cstddef>
 
+#include <boost/bind/bind.hpp>
 #include <boost/random.hpp>
 #include <SDL/SDL.h>
 
@@ -9,6 +11,8 @@
 #include "Logger.hpp"
 #include "Point.hpp"
 #include "Timer.hpp"
+
+#include "custom_algorithm.hpp"
 
 using namespace std;
 
@@ -36,19 +40,13 @@ void Snake::AddTailSegment(Point location)
 	path.rbegin()->AddToWorld();
 
 	const unsigned int headLength = 15;
-	if(path.size() <= headLength)
-	{
-		path.rbegin()->color = headColor;
-	}
-	else
-	{
-		path.rbegin()->color = bodyColor;
-	}
+
+	path.rbegin()->color = (path.size() <= headLength) ? headColor : bodyColor;
 }
-void Snake::Grow()
+void Snake::Grow(size_t amount)
 {
-	const unsigned int growthAmount = 30;
-	length += growthAmount;
+	const unsigned int factor = 30;
+	length += factor * amount;
 }
 
 void Snake::Reset(Point headLocation)
@@ -138,11 +136,11 @@ static void apply_direction(Point& location, const Vector2D& direction)
 	location.x += direction.x;
 	location.y += direction.y;
 }
+
 void Snake::Update()
 {
-	for(Path::iterator i = path.begin(), end = path.end(); i != end; ++i)
-		if(i->HasEaten())
-			Grow();
+	size_t pathsThatHaveEaten = std::count_if(path.begin(), path.end(), boost::bind(&SnakeSegment::HasEaten, _1));
+	Grow(pathsThatHaveEaten);
 
 	const unsigned int speedupPeriod = 10000;
 	while(speedupTimer.ResetIfHasElapsed(speedupPeriod))
@@ -177,12 +175,8 @@ void Snake::Update()
 		apply_direction(path.begin()->location, direction);
 	}
 }
+
 bool Snake::IsDead() const
 {
-	for(Path::const_iterator i = path.begin(), end = path.end(); i != end; ++i)
-	{
-		if(i->IsDead())
-			return true;
-	}
-	return false;
+	return any(path.begin(), path.end(), boost::bind(&SnakeSegment::IsDead, _1));
 }
