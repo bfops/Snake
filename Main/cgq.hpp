@@ -27,7 +27,7 @@
 		clear()
 */
 template <typename Ty>
-class cqueue
+class cgq
 {
 public:
 	typedef Ty        value_type;
