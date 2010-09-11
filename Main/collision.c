@@ -23,10 +23,5 @@ static inline bool top_within_bounds(const CollidableObject * restrict obj1, con
 
 bool does_collide(const CollidableObject* restrict o1, const CollidableObject* restrict o2)
 {
-	bool t1 = top_within_bounds(o1, o2);
-	//bool t2 = top_within_bounds(o2, o1);
-	bool t3 = left_within_bounds(o1, o2);
-	//bool t4 = left_within_bounds(o2, o1);
-
-	return (t1) && (t3);
+	return top_within_bounds(o1, o2) && left_within_bounds(o1, o2);
 }
