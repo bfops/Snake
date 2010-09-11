@@ -20,10 +20,11 @@ if(MSVC)
     #
 else(MSVC)
 	add_definitions(
-		-pipe -fsigned-char -fno-nonansi-builtins
-		-fno-operator-names -Werror -Wfatal-errors
+		-pipe -fsigned-char -Werror -Wfatal-errors
 		-Wno-long-long -static -pedantic -pedantic-errors -Wall
 	)
+
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
 endif()
 
 enable_testing()

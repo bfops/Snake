@@ -1,4 +1,5 @@
 add_executable(GingerbreadPrototype
+	collision.c
 	Color24.cpp
 	Event.cpp
 	Food.cpp
