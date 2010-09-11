@@ -23,9 +23,9 @@
 		operator=(const cqueue&) NEEDS ITERATOR
 		COMPLETE ~cqueue()
 		COMPLETE reserve()
-		push()
-		bool pop(Ty& x)
-		clear()
+		COMPLETE push()
+		COMPLETE bool pop(Ty& x)
+		COMPLETE clear()
 */
 template <typename Ty>
 class cgq
@@ -71,7 +71,7 @@ private:
 	// Moves a pointer "p" "n" spaces forward in the queue, wrapping around
 	// to the front when necessary. Think of it as finite field addition, where
 	// the field is the buffer.
-	inline pointer move_pointer(pointer p, size_type n)
+	inline pointer move_pointer(pointer p, difference_type n)
 	{
 		assert(
 			is_power_of_two(capacity)
