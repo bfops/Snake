@@ -4,26 +4,22 @@
 #include <SDL/SDL.h>
 
 #include "Common.hpp"
+#include "Direction.hpp"
 #include "Logger.hpp"
 #include "SnakeSegment.hpp"
 #include "Timer.hpp"
 #include "Vector2D.hpp"
 
-// URGENT TODO: store snakes as vectors of direction-length pairs
+// TODO: modify so that when SnakeSegments die
+// or eat, the Snake is notified immediately
+// TODO: color snake head
 class Snake
 {
-public:
-	// TODO: make Direction::Direction private so that only
-	// certain directions make exist
-	typedef Vector2D Direction;
-	const static Direction right, left, up, down;
-
 private:
-	typedef std::vector<SnakeSegment> Path;
+	typedef std::deque<SnakeSegment> Path;
 
 	Logger::Handle logger;
 
-	Direction direction;
 	unsigned int length;
 	Path path;
 
@@ -33,8 +29,11 @@ private:
 	Timer growTimer;
 	Timer speedupTimer;
 
-	void AddTailSegment(Point location);
+	void AddTailSegment(Point location, Direction);
 	void Grow();
+
+	inline SnakeSegment& Head();
+	inline SnakeSegment& Tail();
 
 public:
 	Snake(Point headLocation);

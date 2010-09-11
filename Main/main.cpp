@@ -1,6 +1,3 @@
-#include <ctime>
-#include <cstdio>
-
 #include <boost/array.hpp>
 #include <boost/date_time.hpp>
 #include <boost/thread.hpp>
@@ -17,9 +14,12 @@
 using namespace boost;
 using namespace std;
 
-typedef boost::array<Wall, 4> Walls;
+typedef array<Wall, 4> Walls;
 
 static Walls make_walls(Point screenBounds);
+namespace {
+Logger::Handle logger = Logger::RequestHandle("main()");
+}
 
 // TODO: fetch this dynamically
 const unsigned int FPS = 60;
@@ -36,15 +36,14 @@ static void main_loop(Screen& screen, Snake& player, const Walls& walls, bool& q
 
 		this_thread::sleep(posix_time::millisec(1000 / FPS));
 	}
+	logger.Debug("You dead");
 }
 
-// TODO: pause functionality
+// TODO: have pause functionality
 int main()
 {
 	// TODO: have a start screen
 	// TODO: procedurally-generated adventure mode
-
-	Logger::Handle logger = Logger::RequestHandle("main()");
 
 	const char* windowTitle = "Rewritable's Snake";
 	SDL_WM_SetCaption(windowTitle, windowTitle);

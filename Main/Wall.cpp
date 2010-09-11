@@ -15,9 +15,8 @@ Wall::Wall(Point loc, size_t w, size_t h) :
 	WorldObject(wall)
 {
 	color = defaultColor;
-	location = loc;
-	width = w;
-	height = h;
+	minBounds = loc;
+	maxBounds = Point(loc.x + w - 1, loc.y + h - 1);
 }
 
 void Wall::CollisionHandler(const WorldObject& obj)

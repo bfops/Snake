@@ -8,6 +8,7 @@
 #include "Logger.hpp"
 
 using namespace std;
+using namespace boost;
 
 namespace World {
 namespace {
@@ -50,27 +51,15 @@ void Update(Screen& target)
 }
 
 namespace PhysicsWorld {
-static inline bool IsWithinBounds(int obj1Location, int obj2Location, unsigned int dimension)
-{
-	return((obj1Location >= obj2Location) && (obj1Location < (int)(obj2Location + dimension)));
-}
-
-static inline bool IsLeftWithinBounds(const WorldObject* obj1, const WorldObject* obj2)
-{
-	return IsWithinBounds(obj1->location.x, obj2->location.x, obj2->width);
-}
-
-static inline bool IsTopWithinBounds(const WorldObject* obj1, const WorldObject* obj2)
-{
-	return IsWithinBounds(obj1->location.y, obj2->location.y, obj2->height);
-}
-
 static inline bool IsCollide(const WorldObject* obj1, const WorldObject* obj2)
 {
-	return (
-		(IsTopWithinBounds(obj1, obj2) || IsTopWithinBounds(obj2, obj1))
-		&& (IsLeftWithinBounds(obj1, obj2) || IsLeftWithinBounds(obj2, obj1))
-	);
+#define TESTBOUNDS(m) ((obj1Min.m <= obj2Min.m) ? (obj2Min.m < obj1Max.m) : (obj1Min.m < obj2Max.m))
+	const Point obj1Min = obj1->GetMinBounds();
+	const Point obj1Max = obj1->GetMaxBounds();
+	const Point obj2Min = obj2->GetMinBounds();
+	const Point obj2Max = obj2->GetMaxBounds();
+	return (TESTBOUNDS(x) && TESTBOUNDS(y));
+#undef TESTBOUNDS
 }
 
 static inline void handle_potential_collision(WorldObject* o1, WorldObject* o2)
@@ -107,7 +96,7 @@ WorldObject::WorldObject(ObjectType _type) :
 {
 }
 WorldObject::WorldObject(const WorldObject& obj) :
-	inWorld(obj.inWorld), location(obj.location), width(obj.width), height(obj.height), color(obj.color)
+	inWorld(obj.inWorld), minBounds(obj.minBounds), maxBounds(obj.maxBounds), color(obj.color)
 {
 	if(inWorld)
 		World::Add(*this);
@@ -142,16 +131,29 @@ void WorldObject::Draw(Screen& target) const
 	SDL_Surface* surface = target.GetSurface();
 
 	SDL_Rect rect;
-	rect.w = width;
-	rect.h = height;
-	rect.x = location.x;
-	rect.y = location.y;
+	rect.w = maxBounds.x - minBounds.x;
+	rect.h = maxBounds.y - minBounds.y;
+	rect.x = minBounds.x;
+	rect.y = minBounds.y;
 
 	if(SDL_FillRect(surface, &rect, color.GetRGBMap(surface)) == -1)
 	{
 		string error = "Error drawing to screen: ";
 		error += SDL_GetError();
-		throw runtime_error(error.c_str());
+		logger.Fatal(error.c_str());
 	}
+}
+
+Point WorldObject::GetMinBounds() const
+{
+	return minBounds;
+}
+Point WorldObject::GetMaxBounds() const
+{
+	return maxBounds;
+}
+Color24 WorldObject::GetColor() const
+{
+	return color;
 }
 }

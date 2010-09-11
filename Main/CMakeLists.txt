@@ -1,5 +1,6 @@
 add_executable(GingerbreadPrototype
 	Color24.cpp
+	Direction.cpp
 	Event.cpp
 	Food.cpp
 	Logger.cpp

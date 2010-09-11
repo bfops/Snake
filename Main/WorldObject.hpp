@@ -20,20 +20,25 @@ namespace World
 		bool inWorld;
 		ObjectType type;
 
-	public:
-		Point location;
-		unsigned int width, height;
+		Point minBounds;
+		Point maxBounds;
+
 		Color24 color;
 
+	public:
 		WorldObject(ObjectType);
 		WorldObject(const WorldObject&);
 		virtual ~WorldObject();
 
-		virtual void AddToWorld();
-		virtual void RemoveFromWorld();
+		void AddToWorld();
+		void RemoveFromWorld();
 
-		virtual ObjectType GetObjectType() const;
+		ObjectType GetObjectType() const;
 		virtual void CollisionHandler(const WorldObject& colidee) = 0;
-		virtual void Draw(Screen& target) const;
+		void Draw(Screen& target) const;
+
+		Point GetMinBounds() const;
+		Point GetMaxBounds() const;
+		Color24 GetColor() const;
 	};
 }

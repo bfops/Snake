@@ -1,6 +1,6 @@
 #include "Event.hpp"
-
 #include "Common.hpp"
+#include "Direction.hpp"
 #include "Snake.hpp"
 
 namespace Event {
@@ -17,16 +17,16 @@ static int key_handler(SDLKey sym)
 	switch(sym)
 	{
 		case SDLK_UP:
-			player->ChangeDirection(Snake::up);
+			player->ChangeDirection(Direction::up);
 			break;
 		case SDLK_DOWN:
-			player->ChangeDirection(Snake::down);
+			player->ChangeDirection(Direction::down);
 			break;
 		case SDLK_LEFT:
-			player->ChangeDirection(Snake::left);
+			player->ChangeDirection(Direction::left);
 			break;
 		case SDLK_RIGHT:
-			player->ChangeDirection(Snake::right);
+			player->ChangeDirection(Direction::right);
 			break;
 
 		default:
