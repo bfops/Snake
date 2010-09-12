@@ -29,7 +29,7 @@ TEST(cgq, no_edge_conditions)
 	EXPECT_FALSE(q.pop(temp));
 }
 
-#define STRESS_LEVEL 10000
+#define STRESS_LEVEL 100000
 
 TEST(cgq, stress_test)
 {
