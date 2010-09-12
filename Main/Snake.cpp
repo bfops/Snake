@@ -46,11 +46,11 @@ void Snake::Grow(size_t amount)
 
 inline SnakeSegment& Snake::Head()
 {
-	return *path.begin();
+	return *path.rbegin();
 }
 inline SnakeSegment& Snake::Tail()
 {
-	return *path.rbegin();
+	return *path.begin();
 }
 
 void Snake::Reset(Point headLocation)
@@ -75,15 +75,53 @@ void Snake::ChangeDirection(Direction newDirection)
 	// TODO: if players enter two directions quickly enough,
 	// they can u-turn into themselves. Fix.
 
-	// URGENT TODO: Make work
-	assert(!"Snake::ChangeDirection");
+	Direction direction(Head().GetDirection());
+	Bounds bounds(Head().GetBounds());
+
+	if(newDirection != direction && newDirection != -direction)
+	{
+		Point newSegmentStart;
+		if(direction == Direction::left || direction == Direction::right)
+		{
+			if(newDirection == Direction::up)
+				newSegmentStart.y = bounds.min.y;
+			else if(newDirection == Direction::down)
+				newSegmentStart.y = bounds.max.y;
+
+			if(direction == Direction::left)
+				newSegmentStart.x = bounds.min.x;
+			else
+				newSegmentStart.x = bounds.max.x - snakeWidth();
+		}
+		else if(direction == Direction::up || direction == Direction::down)
+		{
+			if(newDirection == Direction::left)
+				newSegmentStart.x = bounds.min.x;
+			else if(newDirection == Direction::right)
+				newSegmentStart.x = bounds.max.x;
+
+			if(direction == Direction::up)
+				newSegmentStart.y = bounds.min.y;
+			else
+				newSegmentStart.y = bounds.max.y - snakeWidth();
+		}
+
+		path.push(SnakeSegment(newSegmentStart, newDirection, snakeWidth()));
+		Head().AddToWorld();
+	}
 }
 
 void Snake::Update()
 {
-	size_t segmentsWhichHaveEaten = std::count_if(path.begin(), path.end(), boost::bind(&SnakeSegment::HasEaten, _1));
-	// TODO: the amount to grow should be based on food
-	Grow(segmentsWhichHaveEaten * 30);
+	for(Path::iterator i = path.begin(), end = path.end(); i != end; ++i)
+	{
+		// TODO: different foods do different amounts
+		if(i->HasEaten())
+		{
+			i->Digest();
+			Grow(30);
+		}
+	}
 
 	while(speedupTimer.ResetIfHasElapsed(speedupPeriod()))
 	{
@@ -102,7 +140,16 @@ void Snake::Update()
 		if(length > 0)
 			--length;
 		else
+		{
 			--Tail();
+			if(Tail().IsEmpty())
+			{
+				Tail().RemoveFromWorld();
+				// TODO: get the fuck rid of this
+				SnakeSegment arglebargle;
+				path.pop(arglebargle);
+			}
+		}
 
 		++Head();
 	}
