@@ -19,8 +19,6 @@ class Snake
 private:
 	typedef std::deque<SnakeSegment> Path;
 
-	Logger::Handle logger;
-
 	unsigned int length;
 	Path path;
 

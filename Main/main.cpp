@@ -18,6 +18,7 @@ using namespace std;
 typedef array<Wall, 4> Walls;
 
 static Walls make_walls(Point screenBounds);
+
 namespace {
 Logger::Handle logger = Logger::RequestHandle("main()");
 }

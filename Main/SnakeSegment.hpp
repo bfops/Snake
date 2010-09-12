@@ -19,7 +19,7 @@ private:
 public:
 	Direction direction;
 
-	SnakeSegment(Point location, Direction direction);
+	SnakeSegment(Point location, Direction direction, unsigned int segmentWidth);
 
 	void CollisionHandler(const WorldObject&);
 
