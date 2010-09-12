@@ -18,12 +18,12 @@ using namespace std;
 
 namespace {
 Logger::Handle logger = Logger::RequestHandle("Snake");
-DEF_CONSTANT(unsigned int, snakeWidth, 15)
 #ifdef DEBUG
 DEF_CONSTANT(unsigned int, defaultLength, 224)
 #else
 DEF_CONSTANT(unsigned int, defaultLength, 44)
 #endif
+DEF_CONSTANT(unsigned int, snakeWidth, 15)
 DEF_CONSTANT(unsigned int, speedupPeriod, 10000)
 DEF_CONSTANT(unsigned int, growthPeriod, 4000)
 DEF_CONSTANT(unsigned int, growthAmount, 15)
