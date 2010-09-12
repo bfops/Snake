@@ -16,15 +16,19 @@
 
 using namespace std;
 
+namespace {
+Logger::Handle logger = Logger::RequestHandle("Snake");
+const unsigned int snakeWidth = 15;
+}
+
 Snake::Snake(Point loc)
-	: logger(Logger::RequestHandle("Snake"))
 {
 	Reset(loc);
 }
 
 void Snake::AddTailSegment(Point location, Direction direction)
 {
-	SnakeSegment newSegment(location, direction);
+	SnakeSegment newSegment(location, direction, snakeWidth);
 	path.push(newSegment);
 	newSegment.AddToWorld();
 }
@@ -70,6 +74,7 @@ void Snake::ChangeDirection(Direction newDirection)
 	// TODO: if players enter two directions quickly enough,
 	// they can u-turn into themselves. Fix.
 
+	// URGENT TODO: Make work
 	assert(!"Snake::ChangeDirection");
 }
 

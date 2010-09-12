@@ -1,18 +1,21 @@
 #include "SnakeSegment.hpp"
 #include "Common.hpp"
 
-SnakeSegment::SnakeSegment(Point location, Direction _direction) :
+SnakeSegment::SnakeSegment() :
+	WorldObject(snake)
+{
+}
+SnakeSegment::SnakeSegment(Point location, Direction _direction, unsigned int width) :
 	WorldObject(snake), dead(false), hasEaten(false), direction(_direction)
 {
 	color = Color24(0, 255, 0);
-	const unsigned int snakeWidth = 15;
 	minBounds = location;
 	maxBounds = location;
 
 	if(direction == Direction::left || direction == Direction::right)
-		maxBounds.y += snakeWidth;
+		maxBounds.y += width;
 	else
-		maxBounds.x += snakeWidth;
+		maxBounds.x += width;
 }
 
 void SnakeSegment::DeathCollisionHandler()

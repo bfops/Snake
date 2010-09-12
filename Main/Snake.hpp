@@ -18,8 +18,6 @@ class Snake
 private:
 	typedef cgq<SnakeSegment> Path;
 
-	Logger::Handle logger;
-
 	unsigned int length;
 	Path path;
 
