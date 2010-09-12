@@ -24,11 +24,9 @@ Snake::Snake(Point loc)
 
 void Snake::AddTailSegment(Point location, Direction direction)
 {
-	{
 	SnakeSegment newSegment(location, direction);
 	path.push(newSegment);
-	}
-	Head().AddToWorld();
+	newSegment.AddToWorld();
 }
 void Snake::Grow(size_t amount)
 {
