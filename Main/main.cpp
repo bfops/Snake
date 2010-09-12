@@ -31,8 +31,11 @@ DEF_CONSTANT(unsigned int, FPS, 60)
 
 // TODO: Use interrupts.
 /// Returns true if we should continue playing, false otherwise.
-static bool main_loop(Screen& screen, Snake& player, const Walls& walls, bool& quit)
+static bool main_loop(Screen& screen, Snake& player, const Walls& walls)
 {
+	bool quit;
+	Event::RegisterQuitter(quit);
+
 	while(!player.IsDead() && !quit)
 	{
 		SDL_PollEvent(NULL);
@@ -42,10 +45,10 @@ static bool main_loop(Screen& screen, Snake& player, const Walls& walls, bool& q
 
 		this_thread::sleep(posix_time::millisec(1000 / FPS()));
 	}
+	if(quit)
+		return false;
 
-	if(!quit)
-		logger.Debug("You dead");
-
+	logger.Debug("You dead");
 	return true;
 }
 
@@ -65,13 +68,13 @@ int main()
 
 	logger.Debug("Creating player");
 	Snake player(screen.GetCenter());
-	bool quit = false;
 
 	Event::RegisterPlayer(player);
-	Event::RegisterQuitter(quit);
 
-	while(main_loop(screen, player, walls, quit))
+	while(main_loop(screen, player, walls))
+	{
 		player.Reset(screen.GetCenter());
+	}
 
 	return 0;
 }
