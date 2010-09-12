@@ -148,7 +148,7 @@ void Snake::Update()
 			if(Tail().IsEmpty())
 			{
 				Tail().RemoveFromWorld();
-				path.pop_front();
+				path.pop_back();
 			}
 		}
 
