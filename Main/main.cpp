@@ -33,11 +33,14 @@ DEF_CONSTANT(unsigned int, FPS, 60)
 /// Returns true if we should continue playing, false otherwise.
 static bool main_loop(Screen& screen, Snake& player, const Walls& walls)
 {
-	bool quit;
+	bool quit = false;
 	Event::RegisterQuitter(quit);
 
-	while(!player.IsDead() && !quit)
+	while(!player.IsDead())
 	{
+		if(quit)
+			return false;
+
 		SDL_PollEvent(NULL);
 		player.Update();
 
@@ -45,8 +48,6 @@ static bool main_loop(Screen& screen, Snake& player, const Walls& walls)
 
 		this_thread::sleep(posix_time::millisec(1000 / FPS()));
 	}
-	if(quit)
-		return false;
 
 	logger.Debug("You dead");
 	return true;
