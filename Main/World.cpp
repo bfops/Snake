@@ -103,7 +103,7 @@ WorldObject::WorldObject(ObjectType _type) :
 }
 
 WorldObject::WorldObject(const WorldObject& obj) :
-	inWorld(obj.inWorld), minBounds(obj.minBounds), maxBounds(obj.maxBounds), color(obj.color)
+	inWorld(obj.inWorld), type(obj.type), minBounds(obj.minBounds), maxBounds(obj.maxBounds), color(obj.color)
 {
 	if(inWorld)
 		World::Add(*this);
@@ -116,6 +116,10 @@ WorldObject& WorldObject::operator=(const WorldObject& o)
 	minBounds = o.minBounds;
 	maxBounds = o.maxBounds;
 	color = o.color;
+
+	if(o.inWorld)
+		World::Add(*this);
+
 	return *this;
 }
 

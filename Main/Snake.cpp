@@ -18,7 +18,15 @@ using namespace std;
 
 namespace {
 Logger::Handle logger = Logger::RequestHandle("Snake");
-const unsigned int snakeWidth = 15;
+DEF_CONSTANT(unsigned int, snakeWidth, 15)
+#ifdef DEBUG
+DEF_CONSTANT(unsigned int, defaultLength, 224)
+#else
+DEF_CONSTANT(unsigned int, defaultLength, 44)
+#endif
+DEF_CONSTANT(unsigned int, speedupPeriod, 10000)
+DEF_CONSTANT(unsigned int, growthPeriod, 4000)
+DEF_CONSTANT(unsigned int, growthAmount, 15)
 }
 
 Snake::Snake(Point loc)
@@ -28,9 +36,8 @@ Snake::Snake(Point loc)
 
 void Snake::AddTailSegment(Point location, Direction direction)
 {
-	SnakeSegment newSegment(location, direction, snakeWidth);
-	path.push(newSegment);
-	newSegment.AddToWorld();
+	path.push(SnakeSegment(location, direction, snakeWidth()));
+	Head().AddToWorld();
 }
 void Snake::Grow(size_t amount)
 {
@@ -54,13 +61,7 @@ void Snake::Reset(Point headLocation)
 
 	speed = 100;
 
-#ifdef NDEBUG
-	const unsigned int defaultLength = 44;
-#else
-	const unsigned int defaultLength = 224;
-#endif
-
-	length = defaultLength;
+	length = defaultLength();
 	path.clear();
 
 	const static Direction directions[] = {Direction::left, Direction::right, Direction::up, Direction::down};
@@ -81,19 +82,17 @@ void Snake::ChangeDirection(Direction newDirection)
 void Snake::Update()
 {
 	size_t segmentsWhichHaveEaten = std::count_if(path.begin(), path.end(), boost::bind(&SnakeSegment::HasEaten, _1));
+	// TODO: the amount to grow should be based on food
 	Grow(segmentsWhichHaveEaten * 30);
 
-	const unsigned int speedupPeriod = 10000;
-	while(speedupTimer.ResetIfHasElapsed(speedupPeriod))
+	while(speedupTimer.ResetIfHasElapsed(speedupPeriod()))
 	{
 		speed += 20;
 	}
 
-	const unsigned int growthPeriod = 4000;
-	while(growTimer.ResetIfHasElapsed(growthPeriod))
+	while(growTimer.ResetIfHasElapsed(growthPeriod()))
 	{
-		const unsigned int growthAmount = 15;
-		length += growthAmount;
+		Grow(growthAmount());
 	}
 
 	while(moveTimer.ResetIfHasElapsed(1000 / speed))

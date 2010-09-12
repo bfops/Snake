@@ -162,7 +162,6 @@ private:
 	pointer head;
 	pointer tail;
 
-private:
 	// Determins the next power of two that is >= k.
 	// This only works for unsigned types.
 	template <class T>

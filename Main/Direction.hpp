@@ -9,6 +9,7 @@ private:
 	Vector2D direction;
 
 public:
+	// TODO: put these in functions
 	const static Direction up, down, left, right;
 
 	Direction()

@@ -1,4 +1,5 @@
 #include "Logger.hpp"
+#include "Common.hpp"
 
 #include <cstdio>
 #include <stdexcept>
@@ -18,7 +19,7 @@ static void Write(const char* type, const char* tag, const char* message)
 
 namespace Logger
 {
-#ifndef NDEBUG
+#ifdef DEBUG
 	void Handle::Debug(const char* message)
 	{
 		Write("D", tag, message);
