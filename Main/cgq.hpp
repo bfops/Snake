@@ -163,7 +163,7 @@ private:
 	pointer tail;
 
 private:
-	// Determins the next power of two that is higher than k.
+	// Determins the next power of two that is >= k.
 	// This only works for unsigned types.
 	template <class T>
 	static inline T next_power_of_two(T k)
