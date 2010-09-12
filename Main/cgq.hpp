@@ -162,6 +162,40 @@ private:
 	pointer head;
 	pointer tail;
 
+	// This class ensures this class' invariants are maintained on construction
+	// and destruction, along with an optional manual checker.
+	struct invariant_checker
+	{
+	private:
+		const cgq* parent;
+
+	public:
+		inline invariant_checker(const cgq* _parent)
+			: parent(_parent)
+		{
+			check();
+		}
+
+		inline void check() const
+		{
+			assert(parent->buffer);
+			assert(parent->head);
+			assert(parent->tail);
+
+			assert(parent->minSize >= 1);
+			assert(parent->capacity >= parent->minSize);
+			assert(parent->numElems + 1 <= parent->capacity);
+
+			assert(parent->head >= parent->buffer);
+			assert(parent->tail >= parent->buffer);
+		}
+
+		inline ~invariant_checker()
+		{
+			check();
+		}
+	};
+
 	// Determins the next power of two that is >= k.
 	// This only works for unsigned types.
 	template <class T>
@@ -189,6 +223,8 @@ private:
 	/// This function resizes the buffer to any size, with no error checking.
 	void resize(size_type newSize)
 	{
+		invariant_checker c(this);
+
 		pointer newBuffer = new value_type[newSize];
 		tail = std::copy(begin(), end(), newBuffer);
 		delete[] buffer;
@@ -238,34 +274,60 @@ public:
 	*/
 	inline void reserve(size_type minimumCapacity)
 	{
+		invariant_checker c(this);
+
 		size_type n = next_power_of_two(minimumCapacity);
 
 		if(n > capacity)
 			resize(n);
 	}
 
-	/// Appends an item to the queue. The queue will be resized as necessary.
-	void push(const_reference e)
+	inline reference front()
 	{
+		invariant_checker c(this);
+		return *begin();
+	}
+
+	inline const_reference front() const
+	{
+		invariant_checker c(this);
+		return *begin();
+	}
+
+	inline reference back()
+	{
+		invariant_checker c(this);
+		return *rbegin();
+	}
+
+	inline const_reference back() const
+	{
+		invariant_checker c(this);
+		return *rbegin();
+	}
+
+private:
+	// Ensures there is enough room in the queue for "toAdd" more elements.
+	inline void ensure_room_for(size_type toAdd)
+	{
+		invariant_checker c(this);
+
 		// This line does two important things:
 		//   1) It maintains the "there must be at least one unused space in
 		//      the buffer (for end() and rend()).
 		//   2) It doubles the size every time the buffer's about to overflow.
-		if((numElems + 2) > capacity)
+		if((numElems + toAdd + 1) > capacity)
 			resize(capacity << 1);
-
-		*tail = e;
-		tail = move_pointer(tail, 1);
-
-		++numElems;
 	}
 
-	/// Pops an element out of the queue and into "dest". This function returns
-	/// true if an element could be popped, and false otherwise.
-	bool pop(reference dest)
+	// May shrink the buffer depending on how many elements there are about to
+	// be removed.
+	inline void possibly_shrink(size_type elementsToRemove)
 	{
-		if(numElems == 0)
-			return false;
+		invariant_checker c(this);
+
+		// The number of bytes to reserve in the buffer.
+		size_type toReserve = numElems - elementsToRemove + 1;
 
 		// When the number of elements drops below 1/4 of total capacity, the
 		// buffer is resized to 1/2 it's current length. If the resize would
@@ -274,14 +336,57 @@ public:
 		//     1) The buffer's memory usage stays sane.
 		//     2) The buffer's capacity never drops below minSize.
 		//     3) The buffer's capacity is always a power of two.
-		if((numElems <= (capacity >> 2)) && (numElems >= (minSize << 1)))
+		if((toReserve <= (capacity >> 2)) && (toReserve >= (minSize << 1)))
 			resize(capacity >> 1);
+	}
 
-		dest = *head;
+public:
+	void push_back(const_reference e)
+	{
+		invariant_checker c(this);
+
+		ensure_room_for(1);
+
+		*tail = e;
+		tail = move_pointer(tail, 1);
+
+		++numElems;
+	}
+
+	void push_front(const_reference e)
+	{
+		invariant_checker c(this);
+
+		ensure_room_for(1);
+
+		head = move_pointer(head, -1);
+		*head = e;
+
+		++numElems;
+	}
+
+	void pop_front()
+	{
+		invariant_checker c(this);
+
+		assert(!empty());
+
+		possibly_shrink(1);
+
 		head = move_pointer(head, 1);
 		--numElems;
+	}
 
-		return true;
+	void pop_back()
+	{
+		invariant_checker c(this);
+
+		assert(!empty());
+
+		possibly_shrink(1);
+
+		tail = move_pointer(tail, -1);
+		--numElems;
 	}
 
 	/// Returns the number of elements in the queue. Runs in O(1).
@@ -307,6 +412,8 @@ public:
 	/// Removes all elements from the queue.
 	inline void clear()
 	{
+		invariant_checker c(this);
+
 		delete[] buffer;
 
 		buffer = new value_type[minSize];

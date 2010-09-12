@@ -36,7 +36,7 @@ Snake::Snake(Point loc)
 
 void Snake::AddTailSegment(Point location, Direction direction)
 {
-	path.push(SnakeSegment(location, direction, snakeWidth()));
+	path.push_front(SnakeSegment(location, direction, snakeWidth()));
 	Head().AddToWorld();
 }
 void Snake::Grow(size_t amount)
@@ -46,11 +46,11 @@ void Snake::Grow(size_t amount)
 
 inline SnakeSegment& Snake::Head()
 {
-	return *path.rbegin();
+	return path.front();
 }
 inline SnakeSegment& Snake::Tail()
 {
-	return *path.begin();
+	return path.back();
 }
 
 void Snake::Reset(Point headLocation)
@@ -106,7 +106,7 @@ void Snake::ChangeDirection(Direction newDirection)
 				newSegmentStart.y = bounds.max.y - snakeWidth();
 		}
 
-		path.push(SnakeSegment(newSegmentStart, newDirection, snakeWidth()));
+		path.push_front(SnakeSegment(newSegmentStart, newDirection, snakeWidth()));
 		Head().AddToWorld();
 	}
 }
@@ -145,9 +145,7 @@ void Snake::Update()
 			if(Tail().IsEmpty())
 			{
 				Tail().RemoveFromWorld();
-				// TODO: get the fuck rid of this
-				SnakeSegment arglebargle;
-				path.pop(arglebargle);
+				path.pop_front();
 			}
 		}
 

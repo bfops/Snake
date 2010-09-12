@@ -11,22 +11,20 @@ TEST(cgq, no_edge_conditions)
 {
 	cgq<int> q(2);
 
-	q.push(3);
-	q.push(2);
-	q.push(1);
+	q.push_back(3);
+	q.push_back(2);
+	q.push_back(1);
 
-	int temp = 0;
+	EXPECT_EQ(3, q.front());
+	q.pop_front();
 
-	EXPECT_TRUE(q.pop(temp));
-	EXPECT_EQ(3, temp);
+	EXPECT_EQ(2, q.front());
+	q.pop_front();
 
-	EXPECT_TRUE(q.pop(temp));
-	EXPECT_EQ(2, temp);
+	EXPECT_EQ(1, q.front());
+	q.pop_front();
 
-	EXPECT_TRUE(q.pop(temp));
-	EXPECT_EQ(1, temp);
-
-	EXPECT_FALSE(q.pop(temp));
+	EXPECT_TRUE(q.empty());
 }
 
 #define STRESS_LEVEL 100000
@@ -36,18 +34,15 @@ TEST(cgq, stress_test)
 	cgq<int> q;
 
 	for(int i = 0; i < STRESS_LEVEL; ++i)
-		q.push(i);
-
-	int temp = -1;
+		q.push_back(i);
 
 	for(int i = 0; i < STRESS_LEVEL; ++i)
 	{
-		EXPECT_TRUE(q.pop(temp));
-		EXPECT_EQ(i, temp);
+		EXPECT_EQ(i, q.front());
+		q.pop_front();
 	}
 
-	for(int i = 0; i < STRESS_LEVEL; ++i)
-		EXPECT_FALSE(q.pop(temp));
+	EXPECT_TRUE(q.empty());
 }
 
 TEST(cgq, swapping)
@@ -79,7 +74,7 @@ TEST(cgq, forward_iteration)
 	cgq<int> q;
 
 	for(int i = 0; i < 100; ++i)
-		q.push(i);
+		q.push_back(i);
 
 	int n = 0;
 
@@ -97,7 +92,7 @@ TEST(cgq, backward_iteration)
 	cgq<int> q;
 
 	for(int i = 99; i >= 0; --i)
-		q.push(i);
+		q.push_back(i);
 
 	int n = 0;
 
@@ -114,11 +109,11 @@ TEST(cgq, clear)
 {
 	cgq<int> q(2);
 
-	q.push(1);
-	q.push(2);
-	q.push(3);
-	q.push(4);
-	q.push(5);
+	q.push_back(1);
+	q.push_back(2);
+	q.push_back(3);
+	q.push_back(4);
+	q.push_back(5);
 
 	q.clear();
 
