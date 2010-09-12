@@ -9,6 +9,9 @@ class SnakeSegment : public World::WorldObject
 private:
 	bool dead;
 	bool hasEaten;
+	bool empty;
+
+	Direction direction;
 
 	void FoodCollisionHandler(const Food& foodObject);
 	void DeathCollisionHandler();
@@ -17,8 +20,6 @@ private:
 	void ModifyLength(int amount);
 
 public:
-	Direction direction;
-
 	SnakeSegment();
 	SnakeSegment(Point location, Direction direction, unsigned int segmentWidth);
 
@@ -33,6 +34,11 @@ public:
 	// decrease length
 	SnakeSegment operator--(int);
 
+	Direction GetDirection() const;
+
 	bool IsDead() const;
-	bool HasEaten();
+	bool HasEaten() const;
+	bool IsEmpty() const;
+
+	void Digest();
 };

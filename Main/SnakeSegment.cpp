@@ -1,21 +1,25 @@
 #include "SnakeSegment.hpp"
 #include "Common.hpp"
 
+// TODO: create a side-getting function for a Bound,
+// which returns the bounds of the side gotten,
+// e.g. Bounds get_side(Bounds b, Direction whichSide)
+
 SnakeSegment::SnakeSegment() :
-	WorldObject(snake)
+	WorldObject(snake), dead(false), hasEaten(false), empty(false)
 {
 }
 SnakeSegment::SnakeSegment(Point location, Direction _direction, unsigned int width) :
-	WorldObject(snake), dead(false), hasEaten(false), direction(_direction)
+	WorldObject(snake), dead(false), hasEaten(false), empty(false), direction(_direction)
 {
 	color = Color24(0, 255, 0);
-	minBounds = location;
-	maxBounds = location;
+	bounds.min = location;
+	bounds.max = location;
 
 	if(direction == Direction::left || direction == Direction::right)
-		maxBounds.y += width;
+		bounds.max.y += width;
 	else
-		maxBounds.x += width;
+		bounds.max.x += width;
 }
 
 void SnakeSegment::DeathCollisionHandler()
@@ -48,25 +52,28 @@ void SnakeSegment::ModifyLength(int amount)
 	if(amount > 0)
 	{
 		if(direction == Direction::left)
-			minBounds.x -= amount;
+			bounds.min.x -= amount;
 		else if(direction == Direction::right)
-			maxBounds.x += amount;
+			bounds.max.x += amount;
 		else if(direction == Direction::up)
-			minBounds.y -= amount;
+			bounds.min.y -= amount;
 		else if(direction == Direction::down)
-			maxBounds.y += amount;
+			bounds.max.y += amount;
 	}
 	else
 	{
 		if(direction == Direction::left)
-			maxBounds.x += amount;
+			bounds.max.x += amount;
 		else if(direction == Direction::right)
-			minBounds.x -= amount;
+			bounds.min.x -= amount;
 		else if(direction == Direction::up)
-			maxBounds.y += amount;
+			bounds.max.y += amount;
 		else if(direction == Direction::down)
-			minBounds.y -= amount;
+			bounds.min.y -= amount;
 	}
+
+	if(bounds.min.x >= bounds.max.x || bounds.min.y >= bounds.max.y)
+		empty = true;
 }
 
 SnakeSegment& SnakeSegment::operator++()
@@ -94,15 +101,26 @@ SnakeSegment SnakeSegment::operator--(int)
 	return returnvalue;
 }
 
+Direction SnakeSegment::GetDirection() const
+{
+	return direction;
+}
+
 bool SnakeSegment::IsDead() const
 {
 	return dead;
 }
 // as soon as the information's gotten,
 // pretend the segment's no longer eaten
-bool SnakeSegment::HasEaten()
+bool SnakeSegment::HasEaten() const
 {
-	bool retval = hasEaten;
+	return hasEaten;
+}
+bool SnakeSegment::IsEmpty() const
+{
+	return empty;
+}
+void SnakeSegment::Digest()
+{
 	hasEaten = false;
-	return retval;
 }

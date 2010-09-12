@@ -57,10 +57,11 @@ static inline CollidableObject world_to_collidable_object(const WorldObject* w)
 {
 	CollidableObject ret;
 
-	ret.Min.x = w->GetMinBounds().x;
-	ret.Min.y = w->GetMinBounds().y;
-	ret.Max.x = w->GetMaxBounds().x;
-	ret.Max.y = w->GetMaxBounds().y;
+	Bounds bounds = w->GetBounds();
+	ret.Min.x = bounds.min.x;
+	ret.Min.y = bounds.min.y;
+	ret.Max.x = bounds.max.x;
+	ret.Max.y = bounds.max.y;
 
 	return ret;
 }
@@ -103,7 +104,7 @@ WorldObject::WorldObject(ObjectType _type) :
 }
 
 WorldObject::WorldObject(const WorldObject& obj) :
-	inWorld(obj.inWorld), type(obj.type), minBounds(obj.minBounds), maxBounds(obj.maxBounds), color(obj.color)
+	inWorld(obj.inWorld), type(obj.type), bounds(obj.bounds), color(obj.color)
 {
 	if(inWorld)
 		World::Add(*this);
@@ -113,8 +114,7 @@ WorldObject& WorldObject::operator=(const WorldObject& o)
 {
 	inWorld = o.inWorld;
 	type = o.type;
-	minBounds = o.minBounds;
-	maxBounds = o.maxBounds;
+	bounds = o.bounds;
 	color = o.color;
 
 	if(o.inWorld)
@@ -133,6 +133,8 @@ void WorldObject::AddToWorld()
 {
 	if(!inWorld)
 		World::Add(*this);
+	else
+		logger.Debug("Object already in world!");
 
 	inWorld = true;
 }
@@ -140,6 +142,8 @@ void WorldObject::RemoveFromWorld()
 {
 	if(inWorld)
 		World::Remove(*this);
+	else
+		logger.Debug("Object not in world!");
 
 	inWorld = false;
 }
@@ -153,10 +157,10 @@ void WorldObject::Draw(Screen& target) const
 	SDL_Surface* surface = target.GetSurface();
 
 	SDL_Rect rect;
-	rect.w = maxBounds.x - minBounds.x;
-	rect.h = maxBounds.y - minBounds.y;
-	rect.x = minBounds.x;
-	rect.y = minBounds.y;
+	rect.w = bounds.max.x - bounds.min.x;
+	rect.h = bounds.max.y - bounds.min.y;
+	rect.x = bounds.min.x;
+	rect.y = bounds.min.y;
 
 	if(SDL_FillRect(surface, &rect, color.GetRGBMap(surface)) == -1)
 	{
@@ -166,13 +170,9 @@ void WorldObject::Draw(Screen& target) const
 	}
 }
 
-Point WorldObject::GetMinBounds() const
+Bounds WorldObject::GetBounds() const
 {
-	return minBounds;
-}
-Point WorldObject::GetMaxBounds() const
-{
-	return maxBounds;
+	return bounds;
 }
 Color24 WorldObject::GetColor() const
 {

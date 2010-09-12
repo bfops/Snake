@@ -1,7 +1,7 @@
 #pragma once
 
+#include "Bounds.hpp"
 #include "Color24.hpp"
-#include "Point.hpp"
 #include "Screen.hpp"
 
 namespace World
@@ -20,8 +20,7 @@ namespace World
 		bool inWorld;
 		ObjectType type;
 
-		Point minBounds;
-		Point maxBounds;
+		Bounds bounds;
 
 		Color24 color;
 
@@ -38,8 +37,7 @@ namespace World
 		virtual void CollisionHandler(const WorldObject& colidee) = 0;
 		void Draw(Screen& target) const;
 
-		Point GetMinBounds() const;
-		Point GetMaxBounds() const;
+		Bounds GetBounds() const;
 		Color24 GetColor() const;
 	};
 }

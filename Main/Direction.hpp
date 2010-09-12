@@ -17,6 +17,7 @@ public:
 	{}
 
 	operator Vector2D&();
+	Direction operator-() const;
 	bool operator==(const Direction&) const;
 	bool operator!=(const Direction&) const;
 };
