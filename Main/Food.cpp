@@ -1,8 +1,17 @@
 #include "Food.hpp"
+#include "Common.hpp"
 
-Food::Food() :
+namespace {
+DEF_CONSTANT(Color24, foodColor, Color24(0, 255, 255))
+}
+
+Food::Food(Point location, unsigned int size) :
 	WorldObject(food), eaten(false)
 {
+	bounds.min = location;
+	bounds.max = Point(location.x + size, location.y + size);
+
+	color = foodColor();
 }
 
 void Food::SnakeCollisionHandler()

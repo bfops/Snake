@@ -4,9 +4,13 @@
 
 #include <vector>
 #include <boost/bind/bind.hpp>
+#include <boost/random.hpp>
 
+#include "Common.hpp"
 #include "custom_algorithm.hpp"
+#include "Food.hpp"
 #include "Logger.hpp"
+#include "Timer.hpp"
 
 using namespace std;
 using namespace boost;
@@ -38,8 +42,50 @@ void Remove(WorldObject& obj)
 		logger.Debug("Invalid object specified");
 }
 
+namespace GameWorld {
+namespace {
+Timer foodTimer;
+typedef vector<Food> Menu;
+Menu foods;
+DEF_CONSTANT(unsigned int, foodAdditionPeriod, 8000)
+DEF_CONSTANT(unsigned int, foodSize, 15)
+}
+void Update(Point screenBounds)
+{
+	// URGENT URGENT TODO: fix this!
+	bool endReached = false;
+	do
+	{
+		endReached = true;
+		for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
+		{
+			if(i->IsEaten())
+			{
+				unordered_remove(foods, i);
+				endReached = false;
+				break;
+			}
+		}
+	}
+	while(!endReached);
+
+	if(foodTimer.ResetIfHasElapsed(foodAdditionPeriod()))
+	{
+		// I'm 90% sure I'm doin' it wrong
+		int32_t seed(time(NULL));
+		Point foodLocation;
+		foodLocation.x = minstd_rand0(seed)() % (screenBounds.x - foodSize());
+		foodLocation.y = minstd_rand0(seed)() % (screenBounds.y - foodSize());
+
+		Food newFood(foodLocation, foodSize());
+		newFood.AddToWorld();
+		foods.push_back(newFood);
+	}
+}
+}
+
 namespace GraphicsWorld {
-// TODO: just move the damn screen in?
+// TODO: move the screen into GraphicsWorld entirely
 void Update(Screen& target)
 {
 	target.Clear();
@@ -92,10 +138,11 @@ void Update()
 }
 }
 
-void Update(Screen& target)
+void Update(Screen& screen)
 {
 	PhysicsWorld::Update();
-	GraphicsWorld::Update(target);
+	GraphicsWorld::Update(screen);
+	GameWorld::Update(screen.GetBounds());
 }
 
 WorldObject::WorldObject(ObjectType _type) :
@@ -112,13 +159,13 @@ WorldObject::WorldObject(const WorldObject& obj) :
 
 WorldObject& WorldObject::operator=(const WorldObject& o)
 {
+	if(!inWorld && o.inWorld)
+		World::Add(*this);
+
 	inWorld = o.inWorld;
 	type = o.type;
 	bounds = o.bounds;
 	color = o.color;
-
-	if(o.inWorld)
-		World::Add(*this);
 
 	return *this;
 }
