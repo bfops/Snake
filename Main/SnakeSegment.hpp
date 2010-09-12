@@ -13,7 +13,7 @@ private:
 
 	Direction direction;
 
-	void FoodCollisionHandler(const Food& foodObject);
+	void FoodCollisionHandler();
 	void DeathCollisionHandler();
 
 	// change length by _amount_

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Point.hpp"
 #include "WorldObject.hpp"
 
 // TODO: different food types
@@ -11,7 +12,7 @@ private:
 	void SnakeCollisionHandler();
 
 public:
-	Food();
+	Food(Point location, unsigned int size);
 
 	//ObjectType GetObjectType() const;
 	void CollisionHandler(const WorldObject&);

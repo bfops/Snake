@@ -1,9 +1,15 @@
 #include "SnakeSegment.hpp"
 #include "Common.hpp"
+#include "Logger.hpp"
 
-// TODO: create a side-getting function for a Bound,
+// URGENT TODO: create a side-getting function for a Bound,
 // which returns the bounds of the side gotten,
 // e.g. Bounds get_side(Bounds b, Direction whichSide)
+
+namespace {
+Logger::Handle logger = Logger::RequestHandle("SnakeSegment");
+DEF_CONSTANT(Color24, segmentColor, Color24(0, 255, 0))
+}
 
 SnakeSegment::SnakeSegment() :
 	WorldObject(snake), dead(false), hasEaten(false), empty(false)
@@ -12,7 +18,7 @@ SnakeSegment::SnakeSegment() :
 SnakeSegment::SnakeSegment(Point location, Direction _direction, unsigned int width) :
 	WorldObject(snake), dead(false), hasEaten(false), empty(false), direction(_direction)
 {
-	color = Color24(0, 255, 0);
+	color = segmentColor();
 	bounds.min = location;
 	bounds.max = location;
 
@@ -26,10 +32,9 @@ void SnakeSegment::DeathCollisionHandler()
 {
 	dead = true;
 }
-void SnakeSegment::FoodCollisionHandler(const Food& foodObject)
+void SnakeSegment::FoodCollisionHandler()
 {
-	if(!foodObject.IsEaten())
-		hasEaten = true;
+	hasEaten = true;
 }
 
 void SnakeSegment::CollisionHandler(const WorldObject& obj)
@@ -38,7 +43,7 @@ void SnakeSegment::CollisionHandler(const WorldObject& obj)
 	if(type == WorldObject::snake || type == WorldObject::wall)
 		DeathCollisionHandler();
 	else if(type == WorldObject::food)
-		FoodCollisionHandler(reinterpret_cast<const Food&>(obj));
+		FoodCollisionHandler();
 }
 
 void SnakeSegment::ModifyLength(int amount)
