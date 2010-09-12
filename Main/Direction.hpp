@@ -11,6 +11,10 @@ private:
 public:
 	const static Direction up, down, left, right;
 
+	Direction()
+		: direction(0, 0)
+	{}
+
 	operator Vector2D&();
 	bool operator==(const Direction&) const;
 	bool operator!=(const Direction&) const;

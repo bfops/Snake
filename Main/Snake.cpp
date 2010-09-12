@@ -28,7 +28,7 @@ Snake::Snake(Point loc)
 
 void Snake::AddTailSegment(Point location, Direction direction)
 {
-	path.push_front(SnakeSegment(location, direction, snakeWidth));
+	path.push(SnakeSegment(location, direction, snakeWidth));
 	Head().AddToWorld();
 }
 void Snake::Grow(size_t amount)
@@ -80,7 +80,7 @@ void Snake::ChangeDirection(Direction newDirection)
 void Snake::Update()
 {
 	size_t segmentsWhichHaveEaten = std::count_if(path.begin(), path.end(), boost::bind(&SnakeSegment::HasEaten, _1));
-		Grow(segmentsWhichHaveEaten * 30);
+	Grow(segmentsWhichHaveEaten * 30);
 
 	const unsigned int speedupPeriod = 10000;
 	while(speedupTimer.ResetIfHasElapsed(speedupPeriod))

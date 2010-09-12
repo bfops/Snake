@@ -1,6 +1,10 @@
 #include "SnakeSegment.hpp"
 #include "Common.hpp"
 
+SnakeSegment::SnakeSegment() :
+	WorldObject(snake)
+{
+}
 SnakeSegment::SnakeSegment(Point location, Direction _direction, unsigned int width) :
 	WorldObject(snake), dead(false), hasEaten(false), direction(_direction)
 {
@@ -30,7 +34,7 @@ void SnakeSegment::CollisionHandler(const WorldObject& obj)
 	if(type == WorldObject::snake || type == WorldObject::wall)
 		DeathCollisionHandler();
 	else if(type == WorldObject::food)
-		FoodCollisionHandler(static_cast<const Food&>(obj));
+		FoodCollisionHandler(reinterpret_cast<const Food&>(obj));
 }
 
 void SnakeSegment::ModifyLength(int amount)
