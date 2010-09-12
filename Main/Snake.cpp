@@ -15,6 +15,7 @@
 #include "custom_algorithm.hpp"
 
 using namespace std;
+using namespace boost;
 
 namespace {
 Logger::Handle logger = Logger::RequestHandle("Snake");
@@ -53,6 +54,12 @@ inline SnakeSegment& Snake::Tail()
 	return path.back();
 }
 
+Direction get_random_direction()
+{
+	const static Direction& directions[] = {Direction::left, Direction::right, Direction::up, Direction::down};
+	uint32_t randomNumber = minstd_rand(time(NULL))();
+	return directions[randomNumber % countof(directions)];
+}
 void Snake::Reset(Point headLocation)
 {
 	moveTimer.Reset();
@@ -64,11 +71,7 @@ void Snake::Reset(Point headLocation)
 	length = defaultLength();
 	path.clear();
 
-	const static Direction directions[] = {Direction::left, Direction::right, Direction::up, Direction::down};
-	boost::uint32_t randomNumber = boost::minstd_rand(boost::int32_t(time(NULL)))();
-	Direction randomStartDirection(directions[randomNumber % countof(directions)]);
-
-	AddTailSegment(headLocation, randomStartDirection);
+	AddTailSegment(headLocation, get_random_direction());
 }
 void Snake::ChangeDirection(Direction newDirection)
 {

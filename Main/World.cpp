@@ -52,7 +52,7 @@ DEF_CONSTANT(unsigned int, foodSize, 15)
 }
 void Update(Point screenBounds)
 {
-	// URGENT URGENT TODO: fix this!
+	// URGENT URGENT TODO: fix this code!
 	bool endReached = false;
 	do
 	{

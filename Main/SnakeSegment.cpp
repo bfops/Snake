@@ -22,6 +22,7 @@ SnakeSegment::SnakeSegment(Point location, Direction _direction, unsigned int wi
 	bounds.min = location;
 	bounds.max = location;
 
+	// account for segment orientation
 	if(direction == Direction::left || direction == Direction::right)
 		bounds.max.y += width;
 	else

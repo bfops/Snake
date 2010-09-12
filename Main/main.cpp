@@ -16,22 +16,20 @@
 using namespace boost;
 using namespace std;
 
-typedef array<Wall, 4> Walls;
+typedef array<Wall, 4> WallBox;
 
-static Walls make_walls(Point screenBounds);
+static WallBox make_walls(Point maxScreenPoint);
 
 namespace {
 Logger::Handle logger = Logger::RequestHandle("main()");
 DEF_CONSTANT(const char*, windowTitle, "Rewritable's Snake")
 DEF_CONSTANT(unsigned int, wallThickness, 10)
+// TODO: fetch FPS dynamically
+DEF_CONSTANT(unsigned int, FPS, 60)
 }
 
-// TODO: fetch this dynamically
-DEF_CONSTANT(unsigned int, FPS, 60)
-
-// TODO: Use interrupts.
 /// Returns true if we should continue playing, false otherwise.
-static bool main_loop(Screen& screen, Snake& player, const Walls& walls)
+static bool main_loop(Screen& screen, Snake& player, const WallBox& walls)
 {
 	bool quit = false;
 	Event::RegisterQuitter(quit);
@@ -53,19 +51,17 @@ static bool main_loop(Screen& screen, Snake& player, const Walls& walls)
 	return true;
 }
 
-// TODO: pause functionality
-// TODO: have a start screen
-// TODO: procedurally-generated adventure mode
 int main()
 {
-	SDLInitializer sdl_keepalive;
+	// keep SDL active as long as this is in scope
+	SDLInitializer keepSDLInitialized;
 
 	SDL_WM_SetCaption(windowTitle(), windowTitle());
 	SDL_SetEventFilter(Event::Handler);
 	SDL_ShowCursor(SDL_DISABLE);
 
 	Screen screen(800, 600);
-	Walls walls = make_walls(screen.GetBounds());
+	WallBox walls = make_walls(screen.GetBounds());
 
 	logger.Debug("Creating player");
 	Snake player(screen.GetCenter());
