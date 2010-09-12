@@ -49,3 +49,63 @@ TEST(cgq, stress_test)
 	for(int i = 0; i < STRESS_LEVEL; ++i)
 		EXPECT_FALSE(q.pop(temp));
 }
+
+TEST(cgq, swapping)
+{
+	cgq<int> a;
+	cgq<int> b;
+
+	std::swap(a, b);
+}
+
+TEST(cgq, copy_construction_and_assignment)
+{
+	cgq<int> a;
+	cgq<int> b;
+
+	a = b;
+
+	cgq<int> c(a);
+}
+
+TEST(cgq, finite_field_addition)
+{
+	EXPECT_EQ(2, detail::finite_field_addition(1, -3, 4));
+	EXPECT_EQ(2, detail::finite_field_addition(1, -15, 4));
+}
+
+TEST(cgq, forward_iteration)
+{
+	cgq<int> q;
+
+	for(int i = 0; i < 100; ++i)
+		q.push(i);
+
+	int n = 0;
+
+	for(cgq<int>::iterator i = q.begin(), e = q.end(); i != e; ++i)
+	{
+		EXPECT_EQ(n, *i);
+		++n;
+	}
+
+	EXPECT_EQ(100, n);
+}
+
+TEST(cgq, backward_iteration)
+{
+	cgq<int> q;
+
+	for(int i = 99; i >= 0; --i)
+		q.push(i);
+
+	int n = 0;
+
+	for(cgq<int>::reverse_iterator i = q.rbegin(), e = q.rend(); i != e; --i)
+	{
+		EXPECT_EQ(n, *i);
+		++n;
+	}
+
+	EXPECT_EQ(100, n);
+}
