@@ -72,6 +72,9 @@ void Snake::Reset(Point headLocation)
 }
 void Snake::ChangeDirection(Direction newDirection)
 {
+	// TODO: change so that the new segment takes on the
+	// "intersection" block between the new and old segment
+
 	// TODO: if players enter two directions quickly enough,
 	// they can u-turn into themselves. Fix.
 
