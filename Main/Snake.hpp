@@ -1,9 +1,8 @@
 #pragma once
 
 #include <cstddef>
-#include <SDL/SDL.h>
-#include <vector>
 
+#include "cgq.hpp"
 #include "Common.hpp"
 #include "Direction.hpp"
 #include "Logger.hpp"
@@ -17,7 +16,7 @@
 class Snake
 {
 private:
-	typedef std::deque<SnakeSegment> Path;
+	typedef cgq<SnakeSegment> Path;
 
 	Logger::Handle logger;
 

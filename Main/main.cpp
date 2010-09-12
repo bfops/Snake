@@ -1,4 +1,6 @@
+#include <algorithm>
 #include <boost/array.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/date_time.hpp>
 #include <boost/thread.hpp>
 #include <SDL/SDL.h>
@@ -23,21 +25,27 @@ Logger::Handle logger = Logger::RequestHandle("main()");
 }
 
 // TODO: fetch this dynamically
-const unsigned int FPS = 60;
+DEF_CONSTANT(unsigned int, FPS, 60)
 
-// TODO: use more interrupts rather than loops
-static void main_loop(Screen& screen, Snake& player, const Walls& walls, bool& quit)
+// TODO: Use interrupts.
+/// Returns true if we should continue playing, false otherwise.
+static bool main_loop(Screen& screen, Snake& player, const Walls& walls, bool& quit)
 {
-	while(!quit && !player.IsDead())
+	while(!player.IsDead())
 	{
+		if(quit)
+			return false;
+
 		SDL_PollEvent(NULL);
 		player.Update();
 
 		World::Update(screen);
 
-		this_thread::sleep(posix_time::millisec(1000 / FPS));
+		this_thread::sleep(posix_time::millisec(1000 / FPS()));
 	}
+
 	logger.Debug("You dead");
+	return true;
 }
 
 // TODO: pause functionality
@@ -62,11 +70,8 @@ int main()
 	Event::RegisterPlayer(player);
 	Event::RegisterQuitter(quit);
 
-	while(!quit)
-	{
-		main_loop(screen, player, walls, quit);
+	while(main_loop(screen, player, walls, quit))
 		player.Reset(screen.GetCenter());
-	}
 
 	return 0;
 }
@@ -81,8 +86,7 @@ static boost::array<Wall, 4> make_walls(Point screenBounds)
 	walls[2] = Wall(Point(0, 0), screenBounds.x, wallThickness);
 	walls[3] = Wall(Point(0, screenBounds.y - wallThickness), screenBounds.x, wallThickness);
 
-	for(Walls::iterator i = walls.begin(), end = walls.end(); i != end; ++i)
-		i->AddToWorld();
+	std::for_each(walls.begin(), walls.end(), boost::bind(&Wall::AddToWorld, _1));
 
 	return walls;
 }

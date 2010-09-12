@@ -19,6 +19,21 @@ private:
 public:
 	Direction direction;
 
+	SnakeSegment()
+		: WorldObject(snake)
+	{}
+
+	SnakeSegment(const SnakeSegment& o)
+		: WorldObject(snake), dead(o.dead), hasEaten(o.hasEaten)
+	{}
+
+	SnakeSegment& operator=(const SnakeSegment& o)
+	{
+		dead = o.dead;
+		hasEaten = o.hasEaten;
+		return *this;
+	}
+
 	SnakeSegment(Point location, Direction direction);
 
 	void CollisionHandler(const WorldObject&);

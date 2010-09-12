@@ -28,6 +28,7 @@ namespace World
 	public:
 		WorldObject(ObjectType);
 		WorldObject(const WorldObject&);
+		WorldObject& operator=(const WorldObject&);
 		virtual ~WorldObject();
 
 		void AddToWorld();
