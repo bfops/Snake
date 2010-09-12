@@ -4,3 +4,7 @@
 
 #define DEF_CONSTANT(type, name, value) \
 	inline type name() { return value; }
+
+#ifndef NDEBUG
+#define DEBUG
+#endif
