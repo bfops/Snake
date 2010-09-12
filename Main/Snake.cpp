@@ -1,5 +1,7 @@
 #include <cassert>
+#include <cstddef>
 
+#include <boost/bind/bind.hpp>
 #include <boost/random.hpp>
 #include <SDL/SDL.h>
 
@@ -9,6 +11,8 @@
 #include "Logger.hpp"
 #include "Point.hpp"
 #include "Timer.hpp"
+
+#include "custom_algorithm.hpp"
 
 using namespace std;
 
@@ -26,10 +30,9 @@ void Snake::AddTailSegment(Point location, Direction direction)
 	}
 	Head().AddToWorld();
 }
-void Snake::Grow()
+void Snake::Grow(size_t amount)
 {
-	const unsigned int growthAmount = 30;
-	length += growthAmount;
+	length += amount;
 }
 
 inline SnakeSegment& Snake::Head()
@@ -74,9 +77,8 @@ void Snake::ChangeDirection(Direction newDirection)
 
 void Snake::Update()
 {
-	for(Path::iterator i = path.begin(), end = path.end(); i != end; ++i)
-		if(i->HasEaten())
-			Grow();
+	size_t segmentsWhichHaveEaten = std::count_if(path.begin(), path.end(), boost::bind(&SnakeSegment::HasEaten, _1));
+		Grow(segmentsWhichHaveEaten * 30);
 
 	const unsigned int speedupPeriod = 10000;
 	while(speedupTimer.ResetIfHasElapsed(speedupPeriod))
@@ -103,12 +105,8 @@ void Snake::Update()
 		++Head();
 	}
 }
+
 bool Snake::IsDead() const
 {
-	for(Path::const_iterator i = path.begin(), end = path.end(); i != end; ++i)
-	{
-		if(i->IsDead())
-			return true;
-	}
-	return false;
+	return any(path.begin(), path.end(), boost::bind(&SnakeSegment::IsDead, _1));
 }

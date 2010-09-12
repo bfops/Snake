@@ -1,5 +1,6 @@
 #include "World.hpp"
 #include "WorldObject.hpp"
+#include "collision.h"
 
 #include <vector>
 #include <boost/bind/bind.hpp>
@@ -18,7 +19,7 @@ Logger::Handle logger = Logger::RequestHandle("World");
 
 static inline bool object_exists(const WorldObject* obj)
 {
-	return find(objects.begin(), objects.end(), obj) != objects.end();
+	return in(objects.begin(), objects.end(), obj);
 }
 
 void Add(WorldObject& obj)
@@ -32,9 +33,9 @@ void Add(WorldObject& obj)
 void Remove(WorldObject& obj)
 {
 	if(unordered_find_and_remove(objects, &obj))
-		return logger.Debug(boost::format("Type %1% object %2% removed") % obj.GetObjectType() % &obj);
-
-	logger.Debug("Invalid object specified");
+		logger.Debug(boost::format("Type %1% object %2% removed") % obj.GetObjectType() % &obj);
+	else
+		logger.Debug("Invalid object specified");
 }
 
 namespace GraphicsWorld {
@@ -43,28 +44,33 @@ void Update(Screen& target)
 {
 	target.Clear();
 
-	for(ObjectList::iterator i = objects.begin(), end = objects.end(); i != end; ++i)
-		(*i)->Draw(target);
+	std::for_each(objects.begin(), objects.end(),
+		boost::bind(&WorldObject::Draw, _1, boost::ref(target))
+	);
 
 	target.Update();
 }
 }
 
 namespace PhysicsWorld {
-static inline bool IsCollide(const WorldObject* obj1, const WorldObject* obj2)
+static inline CollidableObject world_to_collidable_object(const WorldObject* w)
 {
-#define TESTBOUNDS(m) ((obj1Min.m <= obj2Min.m) ? (obj2Min.m < obj1Max.m) : (obj1Min.m < obj2Max.m))
-	const Point obj1Min = obj1->GetMinBounds();
-	const Point obj1Max = obj1->GetMaxBounds();
-	const Point obj2Min = obj2->GetMinBounds();
-	const Point obj2Max = obj2->GetMaxBounds();
-	return (TESTBOUNDS(x) && TESTBOUNDS(y));
-#undef TESTBOUNDS
+	CollidableObject ret;
+
+	ret.Min.x = w->GetMinBounds().x;
+	ret.Min.y = w->GetMinBounds().y;
+	ret.Max.x = w->GetMaxBounds().x;
+	ret.Max.y = w->GetMaxBounds().y;
+
+	return ret;
 }
 
 static inline void handle_potential_collision(WorldObject* o1, WorldObject* o2)
 {
-	if(IsCollide(o1, o2))
+	CollidableObject c1 = world_to_collidable_object(o1);
+	CollidableObject c2 = world_to_collidable_object(o2);
+
+	if(does_collide(&c1, &c2))
 	{
 		o1->CollisionHandler(*o2);
 		o2->CollisionHandler(*o1);
@@ -73,8 +79,7 @@ static inline void handle_potential_collision(WorldObject* o1, WorldObject* o2)
 
 static inline void collide_with_subsequent_objects(ObjectList::iterator collider)
 {
-	for(ObjectList::iterator collidee = collider + 1, lastGroup = objects.end(); collidee != lastGroup; ++collidee)
-		handle_potential_collision(*collider, *collidee);
+	std::for_each(collider + 1, objects.end(), boost::bind(handle_potential_collision, *collider, _1));
 }
 
 void Update()
@@ -82,6 +87,7 @@ void Update()
 	for(ObjectList::iterator collider = objects.begin(), lastGroup = objects.end() - 1; collider != lastGroup; ++collider)
 		collide_with_subsequent_objects(collider);
 }
+
 }
 }
 

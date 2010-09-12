@@ -7,6 +7,7 @@
 #include "Logger.hpp"
 #include "Event.hpp"
 #include "Screen.hpp"
+#include "SDL.h"
 #include "Snake.hpp"
 #include "Wall.hpp"
 #include "World.hpp"
@@ -39,11 +40,12 @@ static void main_loop(Screen& screen, Snake& player, const Walls& walls, bool& q
 	logger.Debug("You dead");
 }
 
-// TODO: have pause functionality
+// TODO: pause functionality
+// TODO: have a start screen
+// TODO: procedurally-generated adventure mode
 int main()
 {
-	// TODO: have a start screen
-	// TODO: procedurally-generated adventure mode
+	SDLInitializer sdl_keepalive;
 
 	const char* windowTitle = "Rewritable's Snake";
 	SDL_WM_SetCaption(windowTitle, windowTitle);

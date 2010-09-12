@@ -14,13 +14,8 @@ Logger::Handle logger = Logger::RequestHandle("Screen");
 Screen::Screen(unsigned int _width, unsigned int _height) :
 	width(_width), height(_height), bgColor(0, 0, 0)
 {
-	screen = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE);
-	if(screen == NULL)
-	{
-		string error = "Error creating screen: ";
-		error += SDL_GetError();
-		logger.Fatal(error.c_str());
-	}
+	if((screen = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE)) == NULL)
+		logger.Fatal(boost::format("Error creating screen: %1%") % SDL_GetError());
 }
 
 SDL_Surface* Screen::GetSurface()
@@ -40,11 +35,7 @@ Point Screen::GetBounds() const
 void Screen::Update()
 {
 	if(SDL_Flip(screen) == -1)
-	{
-		string error = "Error updating screen: ";
-		error += SDL_GetError();
-		logger.Fatal(error.c_str());
-	}
+		logger.Fatal(boost::format("Error updating screen: %1%") % SDL_GetError());
 }
 void Screen::Clear()
 {

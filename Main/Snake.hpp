@@ -1,7 +1,8 @@
 #pragma once
 
-#include <vector>
+#include <cstddef>
 #include <SDL/SDL.h>
+#include <vector>
 
 #include "Common.hpp"
 #include "Direction.hpp"
@@ -30,7 +31,7 @@ private:
 	Timer speedupTimer;
 
 	void AddTailSegment(Point location, Direction);
-	void Grow();
+	void Grow(size_t amount);
 
 	inline SnakeSegment& Head();
 	inline SnakeSegment& Tail();
