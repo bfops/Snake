@@ -17,7 +17,7 @@ inline bool is_power_of_two(T x)
 // a - b = a + (-b). Get it?
 inline long finite_field_addition(unsigned long a, long b, unsigned long m)
 {
-	assert(a >= 0 && a < m);
+	assert(a < m);
 	assert(is_power_of_two(m));
 
 	if(b < 0)
@@ -68,21 +68,21 @@ public:
 		TargetTy* buffer;
 		size_type capacity;
 
-		bidirectional_iterator(TargetTy* _loc, TargetTy* _buffer, size_type _capacity)
+		inline bidirectional_iterator(TargetTy* _loc, TargetTy* _buffer, size_type _capacity)
 			: loc(_loc), buffer(_buffer), capacity(_capacity) {}
 
 	public:
-		bidirectional_iterator()
+		inline bidirectional_iterator()
 		{
 			loc = NULL;
 			buffer = NULL;
 			capacity = 0;
 		}
 
-		bidirectional_iterator(const bidirectional_iterator& other)
+		inline bidirectional_iterator(const bidirectional_iterator& other)
 			: loc(other.loc), buffer(other.buffer), capacity(other.capacity) {}
 
-		bidirectional_iterator& operator=(const bidirectional_iterator& other)
+		inline bidirectional_iterator& operator=(const bidirectional_iterator& other)
 		{
 			loc = other.loc;
 			buffer = other.buffer;
@@ -91,12 +91,12 @@ public:
 
 		// Since operator== is much less used than operator!= on iterators,
 		// we use a double negative. It's all in the name of efficiency! I swear!
-		bool operator==(const bidirectional_iterator& other)
+		inline bool operator==(const bidirectional_iterator& other)
 		{
 			return !(*this != other);
 		}
 
-		bool operator!=(const bidirectional_iterator& other)
+		inline bool operator!=(const bidirectional_iterator& other)
 		{
 			// If any of these asserts fail, we're comparing iterators of
 			// different containers.
@@ -109,43 +109,43 @@ public:
 			return loc != other.loc;
 		}
 
-		TargetTy& operator*()
+		inline TargetTy& operator*()
 		{
 			return *loc;
 		}
 
-		TargetTy* operator->()
+		inline TargetTy* operator->()
 		{
 			return loc;
 		}
 
-		bidirectional_iterator& operator++()
+		inline bidirectional_iterator& operator++()
 		{
 			loc = buffer + detail::finite_field_addition(loc - buffer, 1, capacity);
 			return *this;
 		}
 
-		bidirectional_iterator operator++(int)
+		inline bidirectional_iterator operator++(int)
 		{
 			bidirectional_iterator old(loc, buffer, capacity);
 			++(*this);
 			return old;
 		}
 
-		bidirectional_iterator& operator--()
+		inline bidirectional_iterator& operator--()
 		{
 			loc = buffer + detail::finite_field_addition(loc - buffer, -1, capacity);
 			return *this;
 		}
 
-		bidirectional_iterator operator--(int)
+		inline bidirectional_iterator operator--(int)
 		{
 			bidirectional_iterator old(loc, buffer, capacity);
 			--(*this);
 			return old;
 		}
 
-		~bidirectional_iterator() {}
+		inline ~bidirectional_iterator() {}
 	};
 
 	typedef bidirectional_iterator<Ty>       iterator;
@@ -191,18 +191,11 @@ private:
 	void resize(size_type newSize)
 	{
 		pointer newBuffer = new value_type[newSize];
-
-		// TODO: Use iterators and std::copy.
-		for(size_type i = 0; i < numElems; ++i)
-		{
-			newBuffer[i] = *head;
-			head = move_pointer(head, 1);
-		}
-
+		tail = std::copy(begin(), end(), newBuffer);
 		delete[] buffer;
+
 		buffer = newBuffer;
 		head = newBuffer;
-		tail = newBuffer + numElems;
 		capacity = newSize;
 	}
 
@@ -219,13 +212,13 @@ public:
 		tail = buffer;
 	}
 
-	cgq(const cgq& other)
+	inline cgq(const cgq& other)
 	{
 		buffer = NULL;
 		*this = other;
 	}
 
-	cgq& operator=(const cgq& other)
+	inline cgq& operator=(const cgq& other)
 	{
 		if(buffer)
 			delete[] buffer;
@@ -235,15 +228,7 @@ public:
 		numElems = other.numElems;
 		buffer = new value_type[capacity];
 		head = buffer;
-		tail = buffer;
-
-		pointer next = other.head;
-
-		for(size_type i = 0; i < numElems; ++i)
-		{
-			*tail++ = *next;
-			next = move_pointer(next, 1);
-		}
+		tail = std::copy(other.begin(), other.end(), head);
 
 		return *this;
 	}
@@ -252,32 +237,28 @@ public:
 		Requests that the capacity of the allocated storage space for the
 		elements of the queue be at least enough to hold n elements.
 	*/
-	void reserve(size_type minimumCapacity)
+	inline void reserve(size_type minimumCapacity)
 	{
 		size_type n = next_power_of_two(minimumCapacity);
 
-		if(n < numElems)
-			return;
-
-		resize(n);
+		if(n > capacity)
+			resize(n);
 	}
 
 	/// Appends an item to the queue. The queue will be resized as necessary.
 	void push(const_reference e)
 	{
-		size_type newSize = numElems + 1;
-
 		// This line does two important things:
 		//   1) It maintains the "there must be at least one unused space in
 		//      the buffer (for end() and rend()).
 		//   2) It doubles the size every time the buffer's about to overflow.
-		if((newSize + 1) > capacity)
+		if((numElems + 2) > capacity)
 			resize(capacity << 1);
 
 		*tail = e;
 		tail = move_pointer(tail, 1);
 
-		numElems = newSize;
+		++numElems;
 	}
 
 	/// Pops an element out of the queue and into "dest". This function returns
@@ -337,7 +318,7 @@ public:
 		capacity = minSize;
 	}
 
-	void swap(cgq& other)
+	inline void swap(cgq& other)
 	{
 		std::swap(buffer, other.buffer);
 		std::swap(head, other.head);
@@ -350,54 +331,54 @@ public:
 
 private:
 	template <typename IterTy>
-	inline IterTy make_iterator(pointer from)
+	inline IterTy make_iterator(pointer from) const
 	{
 		return IterTy(from, buffer, capacity);
 	}
 
 public:
-	iterator begin()
+	inline iterator begin()
 	{
 		return make_iterator<iterator>(head);
 	}
 
-	iterator end()
+	inline iterator end()
 	{
 		return make_iterator<iterator>(tail);
 	}
 
-	const_iterator begin() const
+	inline const_iterator begin() const
 	{
 		return make_iterator<const_iterator>(head);
 	}
 
-	const_iterator end() const
+	inline const_iterator end() const
 	{
 		// See the non-const version for an explanation.
 		return make_iterator<const_iterator>(tail);
 	}
 
-	reverse_iterator rbegin()
+	inline reverse_iterator rbegin()
 	{
 		return make_iterator<reverse_iterator>(move_pointer(tail, -1));
 	}
 
-	reverse_iterator rend()
+	inline reverse_iterator rend()
 	{
 		return make_iterator<reverse_iterator>(move_pointer(head, -1));
 	}
 
-	const_reverse_iterator rbegin() const
+	inline const_reverse_iterator rbegin() const
 	{
 		return make_iterator<const_reverse_iterator>(move_pointer(tail, -1));
 	}
 
-	const_reverse_iterator rend() const
+	inline const_reverse_iterator rend() const
 	{
 		return make_iterator<const_reverse_iterator>(move_pointer(head, -1));
 	}
 
-	~cgq()
+	inline ~cgq()
 	{
 		delete[] buffer;
 	}
