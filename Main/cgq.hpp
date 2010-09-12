@@ -38,25 +38,6 @@ inline long finite_field_addition(unsigned long a, long b, unsigned long m)
 	efficient FIFO queue implementation based off of an std::vector instead of
 	an std::deque. It supports a very minimal interface compared to the STL,
 	but still aims to be mostly compatible.
-
-	The following operations are supported:
-		iterator
-		const_iterator
-		reverse_iterator
-		const_reverse_iteration
-		begin() (const, non-const, and reverse)
-		end() (const, non-const, and reverse)
-		COMPLETE size()
-		COMPLETE empty()
-		COMPLETE cqueue()
-		COMPLETE cqueue(defaultSize)
-		COMPLETE cqueue(const cqueue&)
-		COMPLETE operator=(const cqueue&)
-		COMPLETE ~cqueue()
-		COMPLETE reserve()
-		COMPLETE push()
-		COMPLETE bool pop(Ty& x)
-		COMPLETE clear()
 */
 template <typename Ty>
 class cgq
