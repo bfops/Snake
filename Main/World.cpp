@@ -20,6 +20,7 @@ namespace {
 typedef vector<WorldObject*> ObjectList;
 ObjectList objects;
 Logger::Handle logger = Logger::RequestHandle("World");
+DEF_CONSTANT(Bounds, worldBounds, Bounds(Point(0, 0), Point(800, 600)))
 
 static inline bool object_exists(const WorldObject* obj)
 {
@@ -37,9 +38,9 @@ void Add(WorldObject& obj)
 void Remove(WorldObject& obj)
 {
 	if(unordered_find_and_remove(objects, &obj))
-		logger.Debug(boost::format("Type %1% object %2% removed") % obj.GetObjectType() % &obj);
+		logger.Debug(format("Type %1% object %2% removed") % obj.GetObjectType() % &obj);
 	else
-		logger.Debug("Invalid object specified");
+		logger.Debug(format("Invalid object (%1%) specified") % &obj);
 }
 
 namespace GameWorld {
@@ -50,7 +51,7 @@ Menu foods;
 DEF_CONSTANT(unsigned int, foodAdditionPeriod, 8000)
 DEF_CONSTANT(unsigned int, foodSize, 15)
 }
-void Update(Point screenBounds)
+void Update(Bounds spawnBounds)
 {
 	// URGENT URGENT TODO: fix this code!
 	bool endReached = false;
@@ -74,27 +75,35 @@ void Update(Point screenBounds)
 		// I'm 90% sure I'm doin' it wrong
 		int32_t seed(time(NULL));
 		Point foodLocation;
-		foodLocation.x = minstd_rand0(seed)() % (screenBounds.x - foodSize());
-		foodLocation.y = minstd_rand0(seed)() % (screenBounds.y - foodSize());
+		foodLocation.x = minstd_rand0(seed)() % (worldBounds().max.x - foodSize());
+		foodLocation.y = minstd_rand0(seed)() % (worldBounds().max.y - foodSize());
 
 		Food newFood(foodLocation, foodSize());
 		newFood.AddToWorld();
 		foods.push_back(newFood);
 	}
 }
+void Reset()
+{
+	foods.clear();
+	foodTimer.Reset();
+}
 }
 
 namespace GraphicsWorld {
-// TODO: move the screen into GraphicsWorld entirely
-void Update(Screen& target)
+namespace {
+DEF_CONSTANT(Point, screenBounds, Point(800, 600))
+Screen screen(screenBounds().x, screenBounds().y);
+}
+void Update()
 {
-	target.Clear();
+	screen.Clear();
 
 	std::for_each(objects.begin(), objects.end(),
-		boost::bind(&WorldObject::Draw, _1, boost::ref(target))
+		boost::bind(&WorldObject::Draw, _1, boost::ref(screen))
 	);
 
-	target.Update();
+	screen.Update();
 }
 }
 
@@ -134,15 +143,39 @@ void Update()
 	for(ObjectList::iterator collider = objects.begin(), lastGroup = objects.end() - 1; collider != lastGroup; ++collider)
 		collide_with_subsequent_objects(collider);
 }
-
 }
 }
 
-void Update(Screen& screen)
+void Update()
 {
 	PhysicsWorld::Update();
-	GraphicsWorld::Update(screen);
-	GameWorld::Update(screen.GetBounds());
+	GraphicsWorld::Update();
+	// TODO: reduce spawn area
+	GameWorld::Update(GetBounds());
+}
+void Reset()
+{
+	bool end_reached = false;
+	while(!end_reached)
+	{
+		end_reached = true;
+		for(ObjectList::iterator i = objects.begin(), end = objects.end(); i != end; ++i)
+		{
+			end_reached = false;
+			(*i)->RemoveFromWorld();
+			break;
+		}
+	}
+
+	GameWorld::Reset();
+}
+Bounds GetBounds()
+{
+	return worldBounds();
+}
+Point GetCenter()
+{
+	return Point(worldBounds().max.x / 2, worldBounds().max.y / 2);
 }
 
 WorldObject::WorldObject(ObjectType _type) :
@@ -181,7 +214,7 @@ void WorldObject::AddToWorld()
 	if(!inWorld)
 		World::Add(*this);
 	else
-		logger.Debug("Object already in world!");
+		logger.Debug(format("Object %1% already in world!") % this);
 
 	inWorld = true;
 }
@@ -190,7 +223,7 @@ void WorldObject::RemoveFromWorld()
 	if(inWorld)
 		World::Remove(*this);
 	else
-		logger.Debug("Object not in world!");
+		logger.Debug(format("Object %1% not in world!") % this);
 
 	inWorld = false;
 }
