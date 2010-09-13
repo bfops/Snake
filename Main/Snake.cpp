@@ -24,8 +24,9 @@ DEF_CONSTANT(unsigned int, defaultLength, 224)
 #else
 DEF_CONSTANT(unsigned int, defaultLength, 44)
 #endif
-DEF_CONSTANT(unsigned int, snakeWidth, 15)
-DEF_CONSTANT(unsigned int, speedupPeriod, 10000)
+DEF_CONSTANT(unsigned int, snakeWidth, 20)
+DEF_CONSTANT(unsigned int, speedupPeriod, 21000)
+DEF_CONSTANT(unsigned int, speedupAmount, 23)
 DEF_CONSTANT(unsigned int, growthPeriod, 4000)
 DEF_CONSTANT(unsigned int, growthAmount, 15)
 }
@@ -109,14 +110,10 @@ void Snake::Update()
 	}
 
 	while(speedupTimer.ResetIfHasElapsed(speedupPeriod()))
-	{
-		speed += 20;
-	}
+		speed += speedupAmount();
 
 	while(growTimer.ResetIfHasElapsed(growthPeriod()))
-	{
 		Grow(growthAmount());
-	}
 
 	while(moveTimer.ResetIfHasElapsed(1000 / speed))
 	{
