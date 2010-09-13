@@ -1,9 +1,26 @@
 #include "Direction.hpp"
+#include "Common.hpp"
 
-const Direction Direction::up(0, -1);
-const Direction Direction::down(0, 1);
-const Direction Direction::left(-1, 0);
-const Direction Direction::right(1, 0);
+Direction Direction::empty()
+{
+	return Direction(0, 0);
+}
+Direction Direction::left()
+{
+	return Direction(-1, 0);
+}
+Direction Direction::right()
+{
+	return Direction(1, 0);
+}
+Direction Direction::up()
+{
+	return Direction(0, -1);
+}
+Direction Direction::down()
+{
+	return Direction(0, 1);
+}
 
 Direction::Direction(int x, int y) :
 	direction(x, y)

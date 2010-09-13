@@ -12,7 +12,7 @@ DEF_CONSTANT(Color24, segmentColor, Color24(0, 255, 0))
 }
 
 SnakeSegment::SnakeSegment() :
-	WorldObject(snake), dead(false), hasEaten(false), empty(false)
+	WorldObject(snake), dead(false), hasEaten(false), empty(false), direction(Direction::empty())
 {
 }
 SnakeSegment::SnakeSegment(Point location, Direction _direction, unsigned int width) :
@@ -23,7 +23,7 @@ SnakeSegment::SnakeSegment(Point location, Direction _direction, unsigned int wi
 	bounds.max = location;
 
 	// account for segment orientation
-	if(direction == Direction::left || direction == Direction::right)
+	if(direction == Direction::left() || direction == Direction::right())
 		bounds.max.y += width;
 	else
 		bounds.max.x += width;
@@ -57,24 +57,24 @@ void SnakeSegment::ModifyLength(int amount)
 	// bound is different between the two IFs
 	if(amount > 0)
 	{
-		if(direction == Direction::left)
+		if(direction == Direction::left())
 			bounds.min.x -= amount;
-		else if(direction == Direction::right)
+		else if(direction == Direction::right())
 			bounds.max.x += amount;
-		else if(direction == Direction::up)
+		else if(direction == Direction::up())
 			bounds.min.y -= amount;
-		else if(direction == Direction::down)
+		else if(direction == Direction::down())
 			bounds.max.y += amount;
 	}
 	else
 	{
-		if(direction == Direction::left)
+		if(direction == Direction::left())
 			bounds.max.x += amount;
-		else if(direction == Direction::right)
+		else if(direction == Direction::right())
 			bounds.min.x -= amount;
-		else if(direction == Direction::up)
+		else if(direction == Direction::up())
 			bounds.max.y += amount;
-		else if(direction == Direction::down)
+		else if(direction == Direction::down())
 			bounds.min.y -= amount;
 	}
 

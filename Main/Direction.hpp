@@ -9,12 +9,12 @@ private:
 	Vector2D direction;
 
 public:
-	// TODO: put these in functions
-	const static Direction up, down, left, right;
-
-	Direction()
-		: direction(0, 0)
-	{}
+	// TODO: make inline?
+	static Direction empty();
+	static Direction up();
+	static Direction down();
+	static Direction left();
+	static Direction right();
 
 	operator Vector2D&();
 	Direction operator-() const;

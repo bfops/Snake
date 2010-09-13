@@ -85,7 +85,7 @@ static boost::array<Wall, 4> make_walls(Point screenBounds)
 	walls[2] = Wall(Point(0, 0), screenBounds.x, wallThickness());
 	walls[3] = Wall(Point(0, screenBounds.y - wallThickness()), screenBounds.x, wallThickness());
 
-	std::for_each(walls.begin(), walls.end(), boost::bind(&Wall::AddToWorld, _1));
+	for_each(walls.begin(), walls.end(), bind(&Wall::AddToWorld, _1));
 
 	return walls;
 }

@@ -16,17 +16,17 @@ static int key_handler(SDLKey sym)
 
 	switch(sym)
 	{
-		case SDLK_UP:
-			player->ChangeDirection(Direction::up);
-			break;
-		case SDLK_DOWN:
-			player->ChangeDirection(Direction::down);
-			break;
 		case SDLK_LEFT:
-			player->ChangeDirection(Direction::left);
+			player->ChangeDirection(Direction::left());
 			break;
 		case SDLK_RIGHT:
-			player->ChangeDirection(Direction::right);
+			player->ChangeDirection(Direction::right());
+			break;
+		case SDLK_UP:
+			player->ChangeDirection(Direction::up());
+			break;
+		case SDLK_DOWN:
+			player->ChangeDirection(Direction::down());
 			break;
 
 		default:

@@ -56,7 +56,7 @@ inline SnakeSegment& Snake::Tail()
 
 Direction get_random_direction()
 {
-	const static Direction& directions[] = {Direction::left, Direction::right, Direction::up, Direction::down};
+	const static Direction directions[] = {Direction::left(), Direction::right(), Direction::up(), Direction::down()};
 	uint32_t randomNumber = minstd_rand(time(NULL))();
 	return directions[randomNumber % countof(directions)];
 }
@@ -87,26 +87,26 @@ void Snake::ChangeDirection(Direction newDirection)
 	if(newDirection != direction && newDirection != -direction)
 	{
 		Point newSegmentStart;
-		if(direction == Direction::left || direction == Direction::right)
+		if(direction == Direction::left() || direction == Direction::right())
 		{
-			if(newDirection == Direction::up)
+			if(newDirection == Direction::up())
 				newSegmentStart.y = bounds.min.y;
-			else if(newDirection == Direction::down)
+			else
 				newSegmentStart.y = bounds.max.y;
 
-			if(direction == Direction::left)
+			if(direction == Direction::left())
 				newSegmentStart.x = bounds.min.x;
 			else
 				newSegmentStart.x = bounds.max.x - snakeWidth();
 		}
-		else if(direction == Direction::up || direction == Direction::down)
+		else
 		{
-			if(newDirection == Direction::left)
+			if(newDirection == Direction::left())
 				newSegmentStart.x = bounds.min.x;
-			else if(newDirection == Direction::right)
+			else
 				newSegmentStart.x = bounds.max.x;
 
-			if(direction == Direction::up)
+			if(direction == Direction::up())
 				newSegmentStart.y = bounds.min.y;
 			else
 				newSegmentStart.y = bounds.max.y - snakeWidth();
