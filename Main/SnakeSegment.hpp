@@ -2,6 +2,7 @@
 
 #include "Direction.hpp"
 #include "Food.hpp"
+#include "Side.hpp"
 #include "WorldObject.hpp"
 
 class SnakeSegment : public World::WorldObject
@@ -35,6 +36,10 @@ public:
 	SnakeSegment operator--(int);
 
 	Direction GetDirection() const;
+	Side GetHeadSide() const;
+	void SetHeadSide(Side side);
+	Side GetTailSide() const;
+	void SetTailSide(Side side);
 
 	bool IsDead() const;
 	bool HasEaten() const;

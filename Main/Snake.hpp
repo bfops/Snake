@@ -10,8 +10,6 @@
 #include "Timer.hpp"
 #include "Vector2D.hpp"
 
-// TODO: modify so that when SnakeSegments die
-// or eat, the Snake is notified immediately
 // TODO: color snake head
 class Snake
 {

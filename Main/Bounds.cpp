@@ -1,6 +1,10 @@
 #include "Bounds.hpp"
-#include "Common.hpp"
+
 #include <boost/concept_check.hpp>
+#include <cassert>
+
+#include "Common.hpp"
+#include "custom_algorithm.hpp"
 
 Bounds::Bounds()
 {
@@ -9,22 +13,58 @@ Bounds::Bounds(Point _min, Point _max) :
 	min(_min), max(_max)
 {
 }
+Bounds::Bounds(Side side) :
+	min(side.min), max(side.min)
+{
+	if(side.horizontal)
+		max.x += side.dimension;
+	else
+		max.y += side.dimension;
+}
+
+Bounds::operator Side() const
+{
+	// it's gotta be a line (i.e. one dimension is 0)
+	// in order to be a side
+	assert(min.x == max.x || min.y == max.y);
+
+	Side retval;
+	retval.min = min;
+
+	if(min.x == max.x)
+	{
+		retval.horizontal = false;
+		retval.dimension = (max.y - min.y);
+	}
+	else
+	{
+		retval.horizontal = true;
+		retval.dimension = (max.x - min.x);
+	}
+
+	return retval;
+}
 
 namespace {
-/// transfers side data from one locus to another
-void transfer_side(const Bounds& input, Bounds& output, Direction side)
+inline bool validDirection(Direction direction)
 {
-	if(side == Direction::left())
+	return (direction == Direction::left() || direction == Direction::right()
+		|| direction == Direction::up() || direction == Direction::down());
+}
+void transfer_side(const Bounds& input, Bounds& output, Direction whichSide)
+{
+	assert(validDirection(whichSide));
+	if(whichSide == Direction::left())
 	{
 		output.min = input.min;
 		output.max.y = input.max.y;
 	}
-	else if(side == Direction::right())
+	else if(whichSide == Direction::right())
 	{
 		output.min.y = input.min.y;
 		output.max = input.max;
 	}
-	else if(side == Direction::up())
+	else if(whichSide == Direction::up())
 	{
 		output.min = input.min;
 		output.max.x = input.max.x;
@@ -36,26 +76,29 @@ void transfer_side(const Bounds& input, Bounds& output, Direction side)
 	}
 }
 }
-Bounds Bounds::GetSide(Direction side)
+Side Bounds::GetSide(Direction whichSide) const
 {
-	Bounds retval;
-	transfer_side(*this, retval, side);
+	assert(validDirection(whichSide));
 
-	// getting a side is "lossy", so we
-	// need to lose some data here by setting
-	// mins = maxs and maxs = mins
-	if(side == Direction::left())
-		retval.max.x = min.x;
-	else if(side == Direction::right())
-		retval.min.x = max.x;
-	else if(side == Direction::up())
-		retval.max.y = min.y;
+	Bounds retval;
+	transfer_side(*this, retval, whichSide);
+
+	// getting a side from a bounded rectangle
+	// is "lossy", so we need to set mins = maxs
+	// or maxs = mins to "lose" the data
+	if(whichSide == Direction::left())
+		retval.max.x = retval.min.x;
+	else if(whichSide == Direction::right())
+		retval.min.x = retval.max.x;
+	else if(whichSide == Direction::up())
+		retval.max.y = retval.min.y;
 	else
-		retval.min.y = max.y;
+		retval.min.y = retval.max.y;
 
 	return retval;
 }
-void Bounds::SetSide(Bounds bounds, Direction side)
+void Bounds::SetSide(Side side, Direction whichSide)
 {
-	transfer_side(bounds, *this, side);
+	assert(validDirection(whichSide));
+	transfer_side(side, *this, whichSide);
 }

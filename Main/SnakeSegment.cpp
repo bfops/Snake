@@ -49,33 +49,17 @@ void SnakeSegment::CollisionHandler(const WorldObject& obj)
 
 void SnakeSegment::ModifyLength(int amount)
 {
-	// TODO: MAKE LESS UGLY.
-	// basically with negative amounts,
-	// the opposite bound gets the opposite
-	// operation.
-	// If amount is negated, then only the
-	// bound is different between the two IFs
 	if(amount > 0)
 	{
-		if(direction == Direction::left())
-			bounds.min.x -= amount;
-		else if(direction == Direction::right())
-			bounds.max.x += amount;
-		else if(direction == Direction::up())
-			bounds.min.y -= amount;
-		else if(direction == Direction::down())
-			bounds.max.y += amount;
+		Side headSide = GetHeadSide();
+		headSide.ApplyVector(direction, amount);
+		SetHeadSide(headSide);
 	}
 	else
 	{
-		if(direction == Direction::left())
-			bounds.max.x += amount;
-		else if(direction == Direction::right())
-			bounds.min.x -= amount;
-		else if(direction == Direction::up())
-			bounds.max.y += amount;
-		else if(direction == Direction::down())
-			bounds.min.y -= amount;
+		Side tailSide = GetTailSide();
+		tailSide.ApplyVector(direction, -amount);
+		SetTailSide(tailSide);
 	}
 
 	if(bounds.min.x >= bounds.max.x || bounds.min.y >= bounds.max.y)
@@ -110,6 +94,22 @@ SnakeSegment SnakeSegment::operator--(int)
 Direction SnakeSegment::GetDirection() const
 {
 	return direction;
+}
+Side SnakeSegment::GetHeadSide() const
+{
+	return bounds.GetSide(direction);
+}
+void SnakeSegment::SetHeadSide(Side side)
+{
+	bounds.SetSide(side, direction);
+}
+Side SnakeSegment::GetTailSide() const
+{
+	return bounds.GetSide(-direction);
+}
+void SnakeSegment::SetTailSide(Side side)
+{
+	bounds.SetSide(side, -direction);
 }
 
 bool SnakeSegment::IsDead() const

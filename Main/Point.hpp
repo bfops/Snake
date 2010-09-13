@@ -2,4 +2,10 @@
 
 #include "Vector2D.hpp"
 
-typedef Vector2D Point;
+struct Point
+{
+	unsigned int x, y;
+
+	Point();
+	Point(unsigned int x, unsigned int y);
+};

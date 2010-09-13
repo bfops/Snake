@@ -7,8 +7,10 @@ add_executable(GingerbreadPrototype
 	Food.cpp
 	Logger.cpp
 	main.cpp
+	Point.cpp
 	Screen.cpp
 	SDL.cpp
+	Side.cpp
 	Snake.cpp
 	SnakeSegment.cpp
 	Timer.cpp

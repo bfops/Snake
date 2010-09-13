@@ -84,6 +84,7 @@ void Snake::ChangeDirection(Direction newDirection)
 	Direction direction(Head().GetDirection());
 	Bounds bounds(Head().GetBounds());
 
+	// URGENT TODO: fix code
 	if(newDirection != direction && newDirection != -direction)
 	{
 		Point newSegmentStart;

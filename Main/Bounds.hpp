@@ -2,6 +2,7 @@
 
 #include "Direction.hpp"
 #include "Point.hpp"
+#include "Side.hpp"
 
 struct Bounds
 {
@@ -9,7 +10,10 @@ struct Bounds
 
 	Bounds();
 	Bounds(Point min, Point max);
+	Bounds(Side);
 
-	Bounds GetSide(Direction whichSide);
-	void SetSide(Bounds sideBounds, Direction whichSide);
+	operator Side() const;
+
+	Side GetSide(Direction whichSide) const;
+	void SetSide(Side sideBounds, Direction whichSide);
 };
