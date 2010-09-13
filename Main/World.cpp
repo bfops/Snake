@@ -1,16 +1,18 @@
 #include "World.hpp"
 #include "WorldObject.hpp"
-#include "collision.h"
 
-#include <vector>
+#include <boost/array.hpp>
 #include <boost/bind/bind.hpp>
 #include <boost/random.hpp>
+#include <vector>
 
+#include "collision.h"
 #include "Common.hpp"
 #include "custom_algorithm.hpp"
 #include "Food.hpp"
 #include "Logger.hpp"
 #include "Timer.hpp"
+#include "Wall.hpp"
 
 using namespace std;
 using namespace boost;
@@ -18,11 +20,35 @@ using namespace boost;
 namespace World {
 namespace {
 typedef vector<WorldObject*> ObjectList;
-ObjectList objects;
-Logger::Handle logger = Logger::RequestHandle("World");
-DEF_CONSTANT(Bounds, worldBounds, Bounds(Point(0, 0), Point(800, 600)))
+// TODO: make WallBox a class
+typedef array<Wall, 4> WallBox;
 
-static inline bool object_exists(const WorldObject* obj)
+WallBox make_walls();
+
+ObjectList objects;
+WallBox walls = make_walls();
+Logger::Handle logger = Logger::RequestHandle("World");
+
+DEF_CONSTANT(Bounds, worldBounds, Bounds(Point(0, 0), Point(800, 600)))
+DEF_CONSTANT(unsigned int, wallThickness, 10)
+
+void add_walls_to_world(WallBox& wallbox)
+{
+	for_each(wallbox.begin(), wallbox.end(), bind(&Wall::AddToWorld, _1));
+}
+WallBox make_walls()
+{
+	WallBox wallbox;
+	wallbox[0] = Wall(Point(0, 0), wallThickness(), worldBounds().max.y);
+	wallbox[1] = Wall(Point(worldBounds().max.x - wallThickness(), 0), wallThickness(), worldBounds().max.y);
+	wallbox[2] = Wall(Point(0, 0), worldBounds().max.x, wallThickness());
+	wallbox[3] = Wall(Point(0, worldBounds().max.y - wallThickness()), worldBounds().max.x, wallThickness());
+
+	add_walls_to_world(wallbox);
+
+	return wallbox;
+}
+inline bool object_exists(const WorldObject* obj)
 {
 	return in(objects.begin(), objects.end(), obj);
 }
@@ -32,7 +58,7 @@ void Add(WorldObject& obj)
 	assert(!object_exists(&obj));
 
 	objects.push_back(&obj);
-	logger.Debug(boost::format("Type %1% object %2% added") % obj.GetObjectType() % &obj);
+	logger.Debug(format("Type %1% object %2% added") % obj.GetObjectType() % &obj);
 }
 
 void Remove(WorldObject& obj)
@@ -51,6 +77,7 @@ Menu foods;
 DEF_CONSTANT(unsigned int, foodAdditionPeriod, 8000)
 DEF_CONSTANT(unsigned int, foodSize, 15)
 }
+
 void Update(Bounds spawnBounds)
 {
 	// URGENT URGENT TODO: fix this code!
@@ -99,8 +126,8 @@ void Update()
 {
 	screen.Clear();
 
-	std::for_each(objects.begin(), objects.end(),
-		boost::bind(&WorldObject::Draw, _1, boost::ref(screen))
+	for_each(objects.begin(), objects.end(),
+		bind(&WorldObject::Draw, _1, boost::ref(screen))
 	);
 
 	screen.Update();
@@ -135,7 +162,7 @@ static inline void handle_potential_collision(WorldObject* o1, WorldObject* o2)
 
 static inline void collide_with_subsequent_objects(ObjectList::iterator collider)
 {
-	std::for_each(collider + 1, objects.end(), boost::bind(handle_potential_collision, *collider, _1));
+	for_each(collider + 1, objects.end(), boost::bind(handle_potential_collision, *collider, _1));
 }
 
 void Update()
@@ -168,6 +195,7 @@ void Reset()
 	}
 
 	GameWorld::Reset();
+	add_walls_to_world(walls);
 }
 Bounds GetBounds()
 {
