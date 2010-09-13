@@ -82,39 +82,17 @@ void Snake::ChangeDirection(Direction newDirection)
 	// they can u-turn into themselves. Fix.
 
 	Direction direction(Head().GetDirection());
-	Bounds bounds(Head().GetBounds());
 
-	// URGENT TODO: fix code
 	if(newDirection != direction && newDirection != -direction)
 	{
-		Point newSegmentStart;
-		if(direction == Direction::left() || direction == Direction::right())
-		{
-			if(newDirection == Direction::up())
-				newSegmentStart.y = bounds.min.y;
-			else
-				newSegmentStart.y = bounds.max.y;
+		// the point to start is the _direction_
+		// side of the current head
+		Bounds head = Head().GetHeadSquare();
+		Side startSide = head.GetSide(newDirection);
 
-			if(direction == Direction::left())
-				newSegmentStart.x = bounds.min.x;
-			else
-				newSegmentStart.x = bounds.max.x - snakeWidth();
-		}
-		else
-		{
-			if(newDirection == Direction::left())
-				newSegmentStart.x = bounds.min.x;
-			else
-				newSegmentStart.x = bounds.max.x;
-
-			if(direction == Direction::up())
-				newSegmentStart.y = bounds.min.y;
-			else
-				newSegmentStart.y = bounds.max.y - snakeWidth();
-		}
-
-		path.push_front(SnakeSegment(newSegmentStart, newDirection, snakeWidth()));
-		Head().AddToWorld();
+		SnakeSegment newSegment(startSide.min, newDirection, snakeWidth());
+		newSegment.AddToWorld();
+		path.push_front(newSegment);
 	}
 }
 

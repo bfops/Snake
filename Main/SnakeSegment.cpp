@@ -15,8 +15,8 @@ SnakeSegment::SnakeSegment() :
 	WorldObject(snake), dead(false), hasEaten(false), empty(false), direction(Direction::empty())
 {
 }
-SnakeSegment::SnakeSegment(Point location, Direction _direction, unsigned int width) :
-	WorldObject(snake), dead(false), hasEaten(false), empty(false), direction(_direction)
+SnakeSegment::SnakeSegment(Point location, Direction _direction, unsigned int _width) :
+	WorldObject(snake), dead(false), hasEaten(false), empty(false), width(_width), direction(_direction)
 {
 	color = segmentColor();
 	bounds.min = location;
@@ -94,6 +94,21 @@ SnakeSegment SnakeSegment::operator--(int)
 Direction SnakeSegment::GetDirection() const
 {
 	return direction;
+}
+Bounds SnakeSegment::GetHeadSquare() const
+{
+	// front side of the head square
+	Side frontSide = GetHeadSide();
+	// back side of the head square; to be a square,
+	// this must be _width_ away from _frontSide_
+	Side backSide = frontSide;
+	backSide.ApplyVector(-direction, width);
+
+	Bounds headSquare;
+	headSquare.SetSide(frontSide, direction);
+	headSquare.SetSide(backSide, -direction);
+
+	return headSquare;
 }
 Side SnakeSegment::GetHeadSide() const
 {

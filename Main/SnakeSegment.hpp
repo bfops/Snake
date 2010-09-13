@@ -12,6 +12,8 @@ private:
 	bool hasEaten;
 	bool empty;
 
+	unsigned int width;
+
 	Direction direction;
 
 	void FoodCollisionHandler();
@@ -35,7 +37,10 @@ public:
 	// decrease length
 	SnakeSegment operator--(int);
 
+	unsigned int GetWidth() const;
+
 	Direction GetDirection() const;
+	Bounds GetHeadSquare() const;
 	Side GetHeadSide() const;
 	void SetHeadSide(Side side);
 	Side GetTailSide() const;
