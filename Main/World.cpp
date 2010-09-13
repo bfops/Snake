@@ -37,9 +37,9 @@ void Add(WorldObject& obj)
 void Remove(WorldObject& obj)
 {
 	if(unordered_find_and_remove(objects, &obj))
-		logger.Debug(boost::format("Type %1% object %2% removed") % obj.GetObjectType() % &obj);
+		logger.Debug(format("Type %1% object %2% removed") % obj.GetObjectType() % &obj);
 	else
-		logger.Debug("Invalid object specified");
+		logger.Debug(format("Invalid object (%1%) specified") % &obj);
 }
 
 namespace GameWorld {
@@ -81,6 +81,11 @@ void Update(Point screenBounds)
 		newFood.AddToWorld();
 		foods.push_back(newFood);
 	}
+}
+void Reset()
+{
+	foods.clear();
+	foodTimer.Reset();
 }
 }
 
@@ -134,7 +139,6 @@ void Update()
 	for(ObjectList::iterator collider = objects.begin(), lastGroup = objects.end() - 1; collider != lastGroup; ++collider)
 		collide_with_subsequent_objects(collider);
 }
-
 }
 }
 
@@ -143,6 +147,11 @@ void Update(Screen& screen)
 	PhysicsWorld::Update();
 	GraphicsWorld::Update(screen);
 	GameWorld::Update(screen.GetBounds());
+}
+void Reset()
+{
+	for_each(objects.begin(), objects.end(), bind(&WorldObject::RemoveFromWorld, _1));
+	GameWorld::Reset();
 }
 
 WorldObject::WorldObject(ObjectType _type) :

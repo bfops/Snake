@@ -19,6 +19,7 @@ using namespace std;
 typedef array<Wall, 4> WallBox;
 
 static WallBox make_walls(Point maxScreenPoint);
+static void add_walls_to_world(WallBox& walls);
 
 namespace {
 Logger::Handle logger = Logger::RequestHandle("main()");
@@ -29,7 +30,7 @@ DEF_CONSTANT(unsigned int, FPS, 60)
 }
 
 /// Returns true if we should continue playing, false otherwise.
-static bool main_loop(Screen& screen, Snake& player, const WallBox& walls)
+static bool main_loop(Screen& screen, Snake& player)
 {
 	bool quit = false;
 	Event::RegisterQuitter(quit);
@@ -68,24 +69,30 @@ int main()
 
 	Event::RegisterPlayer(player);
 
-	while(main_loop(screen, player, walls))
+	while(main_loop(screen, player))
 	{
+		World::Reset();
 		player.Reset(screen.GetCenter());
+		add_walls_to_world(walls);
 	}
 
 	return 0;
 }
 
-static boost::array<Wall, 4> make_walls(Point screenBounds)
+static WallBox make_walls(Point screenBounds)
 {
-	boost::array<Wall, 4> walls;
+	WallBox walls;
 
 	walls[0] = Wall(Point(0, 0), wallThickness(), screenBounds.y);
 	walls[1] = Wall(Point(screenBounds.x - wallThickness(), 0), wallThickness(), screenBounds.y);
 	walls[2] = Wall(Point(0, 0), screenBounds.x, wallThickness());
 	walls[3] = Wall(Point(0, screenBounds.y - wallThickness()), screenBounds.x, wallThickness());
 
-	for_each(walls.begin(), walls.end(), bind(&Wall::AddToWorld, _1));
+	add_walls_to_world(walls);
 
 	return walls;
+}
+static void add_walls_to_world(WallBox& walls)
+{
+	for_each(walls.begin(), walls.end(), bind(&Wall::AddToWorld, _1));
 }
