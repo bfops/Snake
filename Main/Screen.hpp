@@ -5,7 +5,6 @@
 #include "Color24.hpp"
 #include "Point.hpp"
 
-// TODO: move screen into GraphicsWorld
 class Screen
 {
 private:
