@@ -80,24 +80,25 @@ DEF_CONSTANT(unsigned int, foodSize, 15)
 
 void Update(Bounds spawnBounds)
 {
-	// TODO: map?
-	for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
-		if(i->IsEaten())
-			foods.erase(i);
+	foods.erase(std::remove_if(foods.begin(), foods.end(), boost::bind(&Food::IsEaten, _1)), foods.end());
 
 	if(foodTimer.ResetIfHasElapsed(foodAdditionPeriod()))
 	{
-		// I'm 90% sure I'm doin' it wrong
-		int32_t seed(time(NULL));
-		Point foodLocation;
-		foodLocation.x = minstd_rand0(seed)() % (worldBounds().max.x - foodSize());
-		foodLocation.y = minstd_rand0(seed)() % (worldBounds().max.y - foodSize());
+		minstd_rand0 rand(time(NULL));
 
-		Food newFood(foodLocation, foodSize());
+		Food newFood(
+			Point(
+				rand() % (worldBounds().max.x - foodSize()),
+				rand() % (worldBounds().max.y - foodSize())
+			),
+			foodSize()
+		);
+
 		newFood.AddToWorld();
 		foods.push_back(newFood);
 	}
 }
+
 void Reset()
 {
 	foods.clear();
@@ -128,10 +129,10 @@ static inline CollidableObject world_to_collidable_object(const WorldObject* w)
 	CollidableObject ret;
 
 	Bounds bounds = w->GetBounds();
-	ret.Min.x = bounds.min.x;
-	ret.Min.y = bounds.min.y;
-	ret.Max.x = bounds.max.x;
-	ret.Max.y = bounds.max.y;
+	ret.min.x = bounds.min.x;
+	ret.min.y = bounds.min.y;
+	ret.max.x = bounds.max.x;
+	ret.max.y = bounds.max.y;
 
 	return ret;
 }
@@ -170,18 +171,7 @@ void Update()
 }
 void Reset()
 {
-	// URGENT URGENT TODO: make code less ugly
-	bool end_reached = false;
-	while(!end_reached)
-	{
-		end_reached = true;
-		for(ObjectList::iterator i = objects.begin(), end = objects.end(); i != end; ++i)
-		{
-			end_reached = false;
-			(*i)->RemoveFromWorld();
-			break;
-		}
-	}
+	objects.clear();
 
 	GameWorld::Reset();
 	add_walls_to_world(walls);
@@ -226,7 +216,7 @@ WorldObject::~WorldObject()
 		World::Remove(*this);
 }
 
-void WorldObject::AddToWorld()
+WorldObject& WorldObject::AddToWorld()
 {
 	if(!inWorld)
 		World::Add(*this);
@@ -234,8 +224,10 @@ void WorldObject::AddToWorld()
 		logger.Debug(format("Object %1% already in world!") % this);
 
 	inWorld = true;
+
+	return *this;
 }
-void WorldObject::RemoveFromWorld()
+WorldObject& WorldObject::RemoveFromWorld()
 {
 	if(inWorld)
 		World::Remove(*this);
@@ -243,6 +235,8 @@ void WorldObject::RemoveFromWorld()
 		logger.Debug(format("Object %1% not in world!") % this);
 
 	inWorld = false;
+
+	return *this;
 }
 
 WorldObject::ObjectType WorldObject::GetObjectType() const

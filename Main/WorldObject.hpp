@@ -30,8 +30,8 @@ namespace World
 		WorldObject& operator=(const WorldObject&);
 		virtual ~WorldObject();
 
-		void AddToWorld();
-		void RemoveFromWorld();
+		WorldObject& AddToWorld();
+		WorldObject& RemoveFromWorld();
 
 		ObjectType GetObjectType() const;
 		virtual void CollisionHandler(const WorldObject& colidee) = 0;

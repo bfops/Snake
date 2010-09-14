@@ -9,14 +9,13 @@
 
 typedef struct
 {
-	struct
-	{
-		int x, y;
-	} Min;
-	struct
-	{
-		int x, y;
-	} Max;
+	int x, y;
+} point;
+
+typedef struct
+{
+	point min;
+	point max;
 } CollidableObject;
 
 bool does_collide(const CollidableObject* restrict o1, const CollidableObject* restrict o2);
