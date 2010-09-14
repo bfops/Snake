@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Common.hpp"
 #include "Vector2D.hpp"
 
 class Direction
@@ -9,12 +10,11 @@ private:
 	Vector2D direction;
 
 public:
-	// TODO: make inline?
-	static Direction empty();
-	static Direction up();
-	static Direction down();
-	static Direction left();
-	static Direction right();
+	static DEF_CONSTANT(Direction, empty, Direction(0, 0))
+	static DEF_CONSTANT(Direction, left, Direction(-1, 0))
+	static DEF_CONSTANT(Direction, right, Direction(1, 0))
+	static DEF_CONSTANT(Direction, up, Direction(0, -1))
+	static DEF_CONSTANT(Direction, down, Direction(0, 1))
 
 	operator Vector2D&();
 	Direction operator-() const;
