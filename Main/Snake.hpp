@@ -17,6 +17,7 @@ private:
 	typedef cgq<SnakeSegment> Path;
 
 	unsigned int length;
+	unsigned int projectedLength;
 	Path path;
 
 	unsigned int speed;

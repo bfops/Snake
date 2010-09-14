@@ -19,16 +19,12 @@ using namespace boost;
 
 namespace {
 Logger::Handle logger = Logger::RequestHandle("Snake");
-#ifdef DEBUG
-DEF_CONSTANT(unsigned int, defaultLength, 224)
-#else
-DEF_CONSTANT(unsigned int, defaultLength, 44)
-#endif
+DEF_CONSTANT(unsigned int, defaultLength, 90)
 DEF_CONSTANT(unsigned int, snakeWidth, 20)
-DEF_CONSTANT(unsigned int, speedupPeriod, 21000)
+DEF_CONSTANT(unsigned int, speedupPeriod, 16000)
 DEF_CONSTANT(unsigned int, speedupAmount, 23)
-DEF_CONSTANT(unsigned int, growthPeriod, 4000)
-DEF_CONSTANT(unsigned int, growthAmount, 15)
+DEF_CONSTANT(double, linearGrowthRate, 10.0 / 29.0)
+DEF_CONSTANT(double, growthCap, 110)
 }
 
 Snake::Snake(Point loc)
@@ -43,7 +39,7 @@ void Snake::AddTailSegment(Point location, Direction direction)
 }
 void Snake::Grow(size_t amount)
 {
-	length += amount;
+	projectedLength += amount;
 }
 
 inline SnakeSegment& Snake::Head()
@@ -69,7 +65,8 @@ void Snake::Reset(Point headLocation)
 
 	speed = 100;
 
-	length = defaultLength();
+	length = 0;
+	projectedLength = defaultLength();
 	path.clear();
 
 	AddTailSegment(headLocation, get_random_direction());
@@ -104,23 +101,29 @@ void Snake::Update()
 		// TODO: different foods do different amounts
 		if(i->HasEaten())
 		{
+			// TODO: this should be fetched from the food!
+			double foodConstant = 1;
+			double growthConstant;
+			if(projectedLength < growthCap() / linearGrowthRate())
+				// 10 / 29 is magically derived from some testing
+				growthConstant = projectedLength * linearGrowthRate();
+			else
+				growthConstant = growthCap();
+			Grow(round(foodConstant * growthConstant));
+
 			i->Digest();
-			Grow(30);
 		}
 	}
 
 	while(speedupTimer.ResetIfHasElapsed(speedupPeriod()))
 		speed += speedupAmount();
 
-	while(growTimer.ResetIfHasElapsed(growthPeriod()))
-		Grow(growthAmount());
-
 	while(moveTimer.ResetIfHasElapsed(1000 / speed))
 	{
 		// when there is a request for more length,
 		// simply don't shrink the tail
-		if(length > 0)
-			--length;
+		if(length < projectedLength)
+			++length;
 		else
 		{
 			--Tail();
