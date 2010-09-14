@@ -80,22 +80,10 @@ DEF_CONSTANT(unsigned int, foodSize, 15)
 
 void Update(Bounds spawnBounds)
 {
-	// URGENT URGENT TODO: fix this code!
-	bool endReached = false;
-	do
-	{
-		endReached = true;
-		for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
-		{
-			if(i->IsEaten())
-			{
-				unordered_remove(foods, i);
-				endReached = false;
-				break;
-			}
-		}
-	}
-	while(!endReached);
+	// TODO: map?
+	for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
+		if(i->IsEaten())
+			foods.erase(i);
 
 	if(foodTimer.ResetIfHasElapsed(foodAdditionPeriod()))
 	{
@@ -182,6 +170,7 @@ void Update()
 }
 void Reset()
 {
+	// URGENT URGENT TODO: make code less ugly
 	bool end_reached = false;
 	while(!end_reached)
 	{

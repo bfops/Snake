@@ -2,10 +2,6 @@
 #include "Common.hpp"
 #include "Logger.hpp"
 
-// URGENT TODO: create a side-getting function for a Bound,
-// which returns the bounds of the side gotten,
-// e.g. Bounds get_side(Bounds b, Direction whichSide)
-
 namespace {
 Logger::Handle logger = Logger::RequestHandle("SnakeSegment");
 DEF_CONSTANT(Color24, segmentColor, Color24(0, 255, 0))

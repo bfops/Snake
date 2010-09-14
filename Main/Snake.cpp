@@ -23,8 +23,8 @@ DEF_CONSTANT(unsigned int, defaultLength, 90)
 DEF_CONSTANT(unsigned int, snakeWidth, 20)
 DEF_CONSTANT(unsigned int, speedupPeriod, 16000)
 DEF_CONSTANT(unsigned int, speedupAmount, 23)
+DEF_CONSTANT(unsigned int, growthCap, 110)
 DEF_CONSTANT(double, linearGrowthRate, 10.0 / 29.0)
-DEF_CONSTANT(double, growthCap, 110)
 }
 
 Snake::Snake(Point loc)
@@ -98,7 +98,6 @@ void Snake::Update()
 {
 	for(Path::iterator i = path.begin(), end = path.end(); i != end; ++i)
 	{
-		// TODO: different foods do different amounts
 		if(i->HasEaten())
 		{
 			// TODO: this should be fetched from the food!
