@@ -162,6 +162,7 @@ void Update()
 	for(ObjectList::iterator collider = objects.begin(), lastGroup = objects.end() - 1; collider != lastGroup; ++collider)
 		collide_with_subsequent_objects(collider);
 }
+
 }
 }
 
@@ -172,6 +173,7 @@ void Update()
 	// TODO: reduce spawn area
 	GameWorld::Update(GetBounds());
 }
+
 void Reset()
 {
 	objects.clear();
@@ -179,10 +181,12 @@ void Reset()
 	GameWorld::Reset();
 	add_walls_to_world(walls);
 }
+
 Bounds GetBounds()
 {
 	return worldBounds();
 }
+
 Point GetCenter()
 {
 	return Point(worldBounds().max.x / 2, worldBounds().max.y / 2);
@@ -230,6 +234,7 @@ WorldObject& WorldObject::AddToWorld()
 
 	return *this;
 }
+
 WorldObject& WorldObject::RemoveFromWorld()
 {
 	if(inWorld)
@@ -246,6 +251,7 @@ WorldObject::ObjectType WorldObject::GetObjectType() const
 {
 	return type;
 }
+
 void WorldObject::Draw(Screen& target) const
 {
 	SDL_Surface* surface = target.GetSurface();
@@ -272,4 +278,5 @@ Color24 WorldObject::GetColor() const
 {
 	return color;
 }
+
 }
