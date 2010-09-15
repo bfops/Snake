@@ -61,9 +61,12 @@ void Add(WorldObject& obj)
 	logger.Debug(format("Type %1% object %2% added") % obj.GetObjectType() % &obj);
 }
 
-void Remove(WorldObject& obj)
+void Remove(const WorldObject& obj)
 {
-	if(unordered_find_and_remove(objects, &obj))
+	ObjectList::iterator toRemoveStart = std::remove(objects.begin(), objects.end(), &obj);
+	objects.erase(toRemoveStart, objects.end());
+
+	if(toRemoveStart != objects.end())
 		logger.Debug(format("Type %1% object %2% removed") % obj.GetObjectType() % &obj);
 	else
 		logger.Debug(format("Invalid object (%1%) specified") % &obj);
