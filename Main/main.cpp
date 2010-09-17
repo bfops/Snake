@@ -3,6 +3,7 @@
 #include <SDL/SDL.h>
 
 #include "Common.hpp"
+#include "GameWorld.hpp"
 #include "Logger.hpp"
 #include "Event.hpp"
 #include "SDL.h"
@@ -20,7 +21,7 @@ DEF_CONSTANT(unsigned int, FPS, 60)
 }
 
 /// Returns true if we should continue playing, false otherwise.
-static bool main_loop(World& world, Snake& player)
+static bool main_loop(World& world, Snake& player, GameWorld& gameWorld)
 {
 	bool quit = false;
 	Event::RegisterQuitter(quit);
@@ -32,7 +33,8 @@ static bool main_loop(World& world, Snake& player)
 
 		SDL_PollEvent(NULL);
 
-		player.Update();
+		player.Update(world);
+		gameWorld.Update(world);
 		world.Update();
 
 		this_thread::sleep(posix_time::millisec(1000 / FPS()));
@@ -55,15 +57,17 @@ int main()
 	// into main_loop (it need not be in a
 	// higher scope)
 	World world;
+	GameWorld gameWorld(world);
 	logger.Debug("Creating player");
 	Snake player(world);
 
 	Event::RegisterPlayer(player);
 	Event::RegisterWorld(world);
 
-	while(main_loop(world, player))
+	while(main_loop(world, player, gameWorld))
 	{
 		world.Reset();
+		gameWorld.Reset(world);
 		player.Reset(world);
 	}
 

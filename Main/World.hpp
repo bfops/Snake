@@ -25,10 +25,8 @@ public:
 
 	void Update();
 	void Reset();
-	Bounds GetBounds() const;
 	Point GetCenter() const;
 
-	// TODO: limit to only WorldObjects
 	/// re-creates an object passed and adds
 	/// the new one to the world
 	template <typename _T>

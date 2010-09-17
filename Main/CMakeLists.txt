@@ -5,6 +5,7 @@ add_executable(GingerbreadPrototype
 	Direction.cpp
 	Event.cpp
 	Food.cpp
+	GameWorld.cpp
 	Logger.cpp
 	main.cpp
 	Point.cpp
@@ -17,6 +18,7 @@ add_executable(GingerbreadPrototype
 	Vector2D.cpp
 	Wall.cpp
 	World.cpp
+	WorldObject.cpp
 )
 
 target_link_libraries(GingerbreadPrototype

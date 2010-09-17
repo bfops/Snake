@@ -19,13 +19,8 @@ protected:
 	Bounds bounds;
 	Color24 color;
 
-<<<<<<< HEAD
 public:
 	WorldObject(ObjectType);
-=======
-		WorldObject& AddToWorld();
-		WorldObject& RemoveFromWorld();
->>>>>>> 4d48b061e698573c41522b13249ac0ce91905ee2
 
 	ObjectType GetObjectType() const;
 	virtual void CollisionHandler(const WorldObject& colidee) = 0;

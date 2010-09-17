@@ -37,6 +37,6 @@ public:
 
 	void Reset(World& world);
 	void ChangeDirection(Direction, World& world);
-	void Update();
+	void Update(World& world);
 	bool IsDead() const;
 };

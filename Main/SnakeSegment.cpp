@@ -3,7 +3,6 @@
 #include "Logger.hpp"
 
 namespace {
-Logger::Handle logger = Logger::RequestHandle("SnakeSegment");
 DEF_CONSTANT(Color24, segmentColor, Color24(0, 255, 0))
 }
 
@@ -36,8 +35,6 @@ void SnakeSegment::FoodCollisionHandler()
 
 void SnakeSegment::CollisionHandler(const WorldObject& obj)
 {
-	logger.Debug("HELLO");
-
 	WorldObject::ObjectType type = obj.GetObjectType();
 	if(type == WorldObject::snake || type == WorldObject::wall)
 		DeathCollisionHandler();

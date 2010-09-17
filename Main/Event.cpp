@@ -67,8 +67,8 @@ void RegisterQuitter(bool& quitter)
 {
 	quit = &quitter;
 }
-void RegisterWorld(World& world)
+void RegisterWorld(World& _world)
 {
-
+	world = &_world;
 }
 }

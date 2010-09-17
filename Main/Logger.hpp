@@ -13,9 +13,8 @@ namespace Logger
 
 		const char* tag;
 
-		Handle(const char* _tag)
+		inline Handle(const char* _tag)
 		{
-			printf("Shit be happening");
 			assert(_tag);
 			tag = _tag;
 		}

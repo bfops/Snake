@@ -18,7 +18,6 @@ Food::Food(Point location, unsigned int size) :
 
 void Food::SnakeCollisionHandler()
 {
-	printf("hello!");
 	eaten = true;
 }
 

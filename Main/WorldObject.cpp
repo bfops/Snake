@@ -1,8 +1,14 @@
 #include "WorldObject.hpp"
 
+#include "Logger.hpp"
+
 #include <string>
 
 using namespace std;
+
+namespace {
+Logger::Handle logger = Logger::RequestHandle("World");
+}
 
 WorldObject::WorldObject(ObjectType _type) :
 	type(_type)

@@ -1,7 +1,6 @@
 #include "World.hpp"
 #include "WorldObject.hpp"
 
-#include <boost/random.hpp>
 #include <vector>
 
 #include "collision.h"
@@ -17,9 +16,7 @@ using namespace std;
 using namespace boost;
 
 namespace {
-DEF_CONSTANT(Bounds, worldBounds, Bounds(Point(0, 0), Point(800, 600)))
-DEF_CONSTANT(unsigned int, wallThickness, 10)
-
+DEF_CONSTANT(Point, screenBounds, Point(800, 600))
 inline bool object_exists(const WorldObject* obj, World::ObjectList& objects)
 {
 	// TODO: use in()
@@ -30,63 +27,8 @@ inline bool object_exists(const WorldObject* obj, World::ObjectList& objects)
 	return false;
 }
 
-namespace GameWorld {
-namespace {
-Logger::Handle logger = Logger::RequestHandle("GameWorld");
-Timer foodTimer;
-typedef vector<Food*> Menu;
-Menu foods;
-DEF_CONSTANT(unsigned int, foodAdditionPeriod, 8000)
-DEF_CONSTANT(unsigned int, foodSize, 15)
-
-void make_walls(World& world)
-{
-	world.Create(Wall(Point(0, 0), wallThickness(), worldBounds().max.y));
-	world.Create(Wall(Point(worldBounds().max.x - wallThickness(), 0), wallThickness(), worldBounds().max.y));
-	world.Create(Wall(Point(0, 0), worldBounds().max.x, wallThickness()));
-	world.Create(Wall(Point(0, worldBounds().max.y - wallThickness()), worldBounds().max.x, wallThickness()));
-}
-}
-
-void Update(World& world)
-{
-	// TODO: reduce spawn area (store walls in GameWorld)
-	Bounds spawnBounds = world.GetBounds();
-	// TODO: map?
-	for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
-		if((*i)->IsEaten())
-		{
-			world.Destroy(*i);
-			foods.erase(i);
-		}
-
-	if(foodTimer.ResetIfHasElapsed(foodAdditionPeriod()))
-	{
-		minstd_rand0 rand(time(NULL));
-
-		Food newFood(
-			Point(
-				rand() % (worldBounds().max.x - foodSize()),
-				rand() % (worldBounds().max.y - foodSize())
-			),
-			foodSize()
-		);
-
-		Food* newFood = world.Create(Food(foodLocation, foodSize()));
-		foods.push_back(newFood);
-	}
-}
-void Reset(World& world)
-{
-	foods.clear();
-	foodTimer.Reset();
-	make_walls(world);
-}
-}
-
 namespace GraphicsWorld {
 namespace {
-DEF_CONSTANT(Point, screenBounds, Point(800, 600))
 Screen screen(screenBounds().x, screenBounds().y);
 }
 
@@ -157,21 +99,14 @@ void World::Update()
 {
 	PhysicsWorld::Update(objects);
 	GraphicsWorld::Update(objects);
-	GameWorld::Update(*this);
 }
 
 void World::Reset()
 {
 	objects.clear();
-	GameWorld::Reset(*this);
-}
-
-Bounds World::GetBounds() const
-{
-	return worldBounds();
 }
 
 Point World::GetCenter() const
 {
-	return Point(worldBounds().max.x / 2, worldBounds().max.y / 2);
+	return Point(screenBounds().x / 2, screenBounds().y / 2);
 }

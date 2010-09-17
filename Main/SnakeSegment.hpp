@@ -5,7 +5,7 @@
 #include "Side.hpp"
 #include "WorldObject.hpp"
 
-class SnakeSegment : public World::WorldObject
+class SnakeSegment : public WorldObject
 {
 private:
 	bool dead;

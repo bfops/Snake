@@ -98,7 +98,7 @@ void Snake::ChangeDirection(Direction newDirection, World& world)
 	}
 }
 
-void Snake::Update()
+void Snake::Update(World& world)
 {
 	for(Path::iterator i = path.begin(), end = path.end(); i != end; ++i)
 	{
@@ -132,7 +132,10 @@ void Snake::Update()
 			--Tail();
 
 			if(Tail().IsEmpty())
+			{
+				world.Destroy(&Tail());
 				path.pop_back();
+			}
 		}
 
 		++Head();
