@@ -36,6 +36,8 @@ void SnakeSegment::FoodCollisionHandler()
 
 void SnakeSegment::CollisionHandler(const WorldObject& obj)
 {
+	logger.Debug("HELLO");
+
 	WorldObject::ObjectType type = obj.GetObjectType();
 	if(type == WorldObject::snake || type == WorldObject::wall)
 		DeathCollisionHandler();

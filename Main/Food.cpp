@@ -1,6 +1,8 @@
 #include "Food.hpp"
 #include "Common.hpp"
 
+#include <cstdio>
+
 namespace {
 DEF_CONSTANT(Color24, foodColor, Color24(0, 255, 255))
 }
@@ -16,6 +18,7 @@ Food::Food(Point location, unsigned int size) :
 
 void Food::SnakeCollisionHandler()
 {
+	printf("hello!");
 	eaten = true;
 }
 

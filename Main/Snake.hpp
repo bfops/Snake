@@ -5,17 +5,18 @@
 #include "cgq.hpp"
 #include "Common.hpp"
 #include "Direction.hpp"
-#include "Logger.hpp"
 #include "SnakeSegment.hpp"
 #include "Timer.hpp"
 #include "Vector2D.hpp"
+#include "World.hpp"
 
 // TODO: color snake head
 class Snake
 {
-private:
-	typedef cgq<SnakeSegment> Path;
+public:
+	typedef cgq<SnakeSegment*> Path;
 
+private:
 	unsigned int length;
 	unsigned int projectedLength;
 	Path path;
@@ -26,17 +27,16 @@ private:
 	Timer growTimer;
 	Timer speedupTimer;
 
-	void AddTailSegment(Point location, Direction);
 	void Grow(size_t amount);
 
 	inline SnakeSegment& Head();
 	inline SnakeSegment& Tail();
 
 public:
-	Snake(Point headLocation);
+	Snake(World& world);
 
-	void Reset(Point headLocation);
-	void ChangeDirection(Direction);
+	void Reset(World& world);
+	void ChangeDirection(Direction, World& world);
 	void Update();
 	bool IsDead() const;
 };

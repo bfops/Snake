@@ -4,7 +4,7 @@
 #include "WorldObject.hpp"
 
 // TODO: different food types
-class Food : public World::WorldObject
+class Food : public WorldObject
 {
 private:
 	bool eaten;

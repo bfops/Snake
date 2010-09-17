@@ -20,7 +20,7 @@ DEF_CONSTANT(unsigned int, FPS, 60)
 }
 
 /// Returns true if we should continue playing, false otherwise.
-static bool main_loop(Snake& player)
+static bool main_loop(World& world, Snake& player)
 {
 	bool quit = false;
 	Event::RegisterQuitter(quit);
@@ -33,7 +33,7 @@ static bool main_loop(Snake& player)
 		SDL_PollEvent(NULL);
 
 		player.Update();
-		World::Update();
+		world.Update();
 
 		this_thread::sleep(posix_time::millisec(1000 / FPS()));
 	}
@@ -51,16 +51,20 @@ int main()
 	SDL_SetEventFilter(Event::Handler);
 	SDL_ShowCursor(SDL_DISABLE);
 
-	Point screenCenter = World::GetCenter();
+	// TODO: move this entire block of stuff
+	// into main_loop (it need not be in a
+	// higher scope)
+	World world;
 	logger.Debug("Creating player");
-	Snake player(screenCenter);
+	Snake player(world);
 
 	Event::RegisterPlayer(player);
+	Event::RegisterWorld(world);
 
-	while(main_loop(player))
+	while(main_loop(world, player))
 	{
-		World::Reset();
-		player.Reset(screenCenter);
+		world.Reset();
+		player.Reset(world);
 	}
 
 	return 0;

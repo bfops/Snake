@@ -2,6 +2,7 @@
 
 #include <boost/format.hpp>
 #include <cassert>
+#include <cstdio>
 
 namespace Logger
 {
@@ -12,8 +13,9 @@ namespace Logger
 
 		const char* tag;
 
-		inline Handle(const char* _tag)
+		Handle(const char* _tag)
 		{
+			printf("Shit be happening");
 			assert(_tag);
 			tag = _tag;
 		}

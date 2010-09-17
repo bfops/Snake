@@ -6,6 +6,7 @@
 namespace Event {
 
 namespace {
+World* world = NULL;
 Snake* player = NULL;
 bool* quit = NULL;
 }
@@ -13,20 +14,21 @@ bool* quit = NULL;
 static int key_handler(SDLKey sym)
 {
 	assert(player);
+	assert(world);
 
 	switch(sym)
 	{
 		case SDLK_LEFT:
-			player->ChangeDirection(Direction::left());
+			player->ChangeDirection(Direction::left(), *world);
 			break;
 		case SDLK_RIGHT:
-			player->ChangeDirection(Direction::right());
+			player->ChangeDirection(Direction::right(), *world);
 			break;
 		case SDLK_UP:
-			player->ChangeDirection(Direction::up());
+			player->ChangeDirection(Direction::up(), *world);
 			break;
 		case SDLK_DOWN:
-			player->ChangeDirection(Direction::down());
+			player->ChangeDirection(Direction::down(), *world);
 			break;
 
 		default:
@@ -64,5 +66,9 @@ void RegisterPlayer(Snake& _player)
 void RegisterQuitter(bool& quitter)
 {
 	quit = &quitter;
+}
+void RegisterWorld(World& world)
+{
+
 }
 }
