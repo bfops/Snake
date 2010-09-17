@@ -9,9 +9,11 @@
 
 class GameWorld
 {
+public:
+	typedef std::vector<Food*> Menu;
+
 private:
 	Timer foodTimer;
-	typedef std::vector<Food*> Menu;
 	Menu foods;
 	Snake player;
 

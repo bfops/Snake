@@ -3,6 +3,7 @@
 #include "Event.hpp"
 #include "Wall.hpp"
 
+#include <boost/bind.hpp>
 #include <boost/random.hpp>
 #include <vector>
 
@@ -26,6 +27,15 @@ void make_walls(World& world)
 	world.Create(Wall(Point(0, 0), worldBounds().max.x, wallThickness()));
 	world.Create(Wall(Point(0, worldBounds().max.y - wallThickness()), worldBounds().max.x, wallThickness()));
 }
+
+void delete_food_if_eaten(World& world, GameWorld::Menu& v, GameWorld::Menu::iterator food)
+{
+	if((*food)->IsEaten())
+	{
+		world.Destroy(*food);
+		v.erase(food);
+	}
+}
 }
 
 GameWorld::GameWorld(World& world) :
@@ -40,13 +50,7 @@ void GameWorld::Update(World& world)
 
 	// TODO: map?
 	for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
-	{
-		if((*i)->IsEaten())
-		{
-			world.Destroy(*i);
-			foods.erase(i);
-		}
-	}
+		delete_food_if_eaten(world, foods, i);
 
 	if(foodTimer.ResetIfHasElapsed(foodAdditionPeriod()))
 	{
