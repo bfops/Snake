@@ -1,5 +1,6 @@
 #include "GameWorld.hpp"
 
+#include "Event.hpp"
 #include "Wall.hpp"
 
 #include <boost/random.hpp>
@@ -24,13 +25,16 @@ void make_walls(World& world)
 }
 }
 
-GameWorld::GameWorld(World& world)
+GameWorld::GameWorld(World& world) :
+	player(world)
 {
 	Reset(world);
 }
 
 void GameWorld::Update(World& world)
 {
+	player.Update(world);
+
 	// TODO: reduce spawn area (store walls in GameWorld)
 	Bounds spawnBounds = worldBounds();
 	// TODO: map?
@@ -59,12 +63,14 @@ void GameWorld::Update(World& world)
 
 void GameWorld::Reset(World& world)
 {
+	player.Reset(world);
+	Event::RegisterPlayer(player);
 	foods.clear();
 	foodTimer.Reset();
 	make_walls(world);
 }
 
-Bounds GameWorld::GetBounds() const
+bool GameWorld::Lost() const
 {
-	return worldBounds();
+	return player.IsDead();
 }

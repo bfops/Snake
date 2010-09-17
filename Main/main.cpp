@@ -7,7 +7,6 @@
 #include "Logger.hpp"
 #include "Event.hpp"
 #include "SDL.h"
-#include "Snake.hpp"
 #include "World.hpp"
 
 using namespace boost;
@@ -21,19 +20,18 @@ DEF_CONSTANT(unsigned int, FPS, 60)
 }
 
 /// Returns true if we should continue playing, false otherwise.
-static bool main_loop(World& world, Snake& player, GameWorld& gameWorld)
+static bool main_loop(World& world, GameWorld& gameWorld)
 {
 	bool quit = false;
 	Event::RegisterQuitter(quit);
 
-	while(!player.IsDead())
+	while(!gameWorld.Lost())
 	{
 		if(quit)
 			return false;
 
 		SDL_PollEvent(NULL);
 
-		player.Update(world);
 		gameWorld.Update(world);
 		world.Update();
 
@@ -58,17 +56,13 @@ int main()
 	// higher scope)
 	World world;
 	GameWorld gameWorld(world);
-	logger.Debug("Creating player");
-	Snake player(world);
 
-	Event::RegisterPlayer(player);
 	Event::RegisterWorld(world);
 
-	while(main_loop(world, player, gameWorld))
+	while(main_loop(world, gameWorld))
 	{
 		world.Reset();
 		gameWorld.Reset(world);
-		player.Reset(world);
 	}
 
 	return 0;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Food.hpp"
+#include "Snake.hpp"
 #include "Timer.hpp"
 #include "World.hpp"
 
@@ -12,6 +13,7 @@ private:
 	Timer foodTimer;
 	typedef std::vector<Food*> Menu;
 	Menu foods;
+	Snake player;
 
 public:
 	GameWorld(World& world);
@@ -19,5 +21,5 @@ public:
 	void Update(World& world);
 	void Reset(World& world);
 
-	Bounds GetBounds() const;
+	bool Lost() const;
 };
