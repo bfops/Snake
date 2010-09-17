@@ -15,6 +15,9 @@ DEF_CONSTANT(unsigned int, foodAdditionPeriod, 8000)
 DEF_CONSTANT(unsigned int, foodSize, 15)
 DEF_CONSTANT(unsigned int, wallThickness, 10)
 DEF_CONSTANT(Bounds, worldBounds, Bounds(Point(0, 0), Point(800, 600)))
+// TODO: make this nicer
+DEF_CONSTANT(Bounds, spawnBounds, Bounds(Point(wallThickness(), wallThickness()), \
+	Point(800 - wallThickness(), 600 - wallThickness())))
 
 void make_walls(World& world)
 {
@@ -35,8 +38,6 @@ void GameWorld::Update(World& world)
 {
 	player.Update(world);
 
-	// TODO: reduce spawn area (store walls in GameWorld)
-	Bounds spawnBounds = worldBounds();
 	// TODO: map?
 	for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
 	{
@@ -52,9 +53,9 @@ void GameWorld::Update(World& world)
 		minstd_rand0 rand(time(NULL));
 
 		Point foodLocation(
-				rand() % (worldBounds().max.x - foodSize()),
-				rand() % (worldBounds().max.y - foodSize())
-			);
+			rand() % ((spawnBounds().max.x - spawnBounds().min.x) - foodSize()) + spawnBounds().min.x,
+			rand() % ((spawnBounds().max.y - spawnBounds().min.y) - foodSize()) + spawnBounds().min.y
+		);
 
 		Food* newFood = world.Create(Food(foodLocation, foodSize()));
 		foods.push_back(newFood);
