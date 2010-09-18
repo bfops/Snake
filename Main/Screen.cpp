@@ -8,8 +8,12 @@ using namespace std;
 Screen::Screen(unsigned int _width, unsigned int _height) :
 	logger(Logger::RequestHandle("Screen")), width(_width), height(_height), bgColor(0, 0, 0)
 {
-	if((screen = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE)) == NULL)
+	screen = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE);
+	if(screen == NULL)
 		logger.Fatal(boost::format("Error creating screen: %1%") % SDL_GetError());
+
+	if(SDL_SetColorKey(screen, SDL_SRCCOLORKEY | SDL_RLEACCEL, transparent().GetRGBMap(screen)) != 0)
+		logger.Fatal("Error setting color key");
 }
 
 SDL_Surface* Screen::GetSurface()
