@@ -29,6 +29,9 @@ public:
 private:
 	Logger::Handle logger;
 
+#error // commenting out the following line stops
+	// segfault from happening, even if the variable
+	// is never read OR written.
 	SentinelFood* sentinel;
 
 	bool quit;
