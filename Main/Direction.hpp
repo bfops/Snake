@@ -16,7 +16,7 @@ public:
 	static DEF_CONSTANT(Direction, up, Direction(0, -1))
 	static DEF_CONSTANT(Direction, down, Direction(0, 1))
 
-	operator Vector2D&();
+	operator Vector2D() const;
 	Direction operator-() const;
 	bool operator==(const Direction&) const;
 	bool operator!=(const Direction&) const;

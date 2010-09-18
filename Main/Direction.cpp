@@ -7,7 +7,7 @@ Direction::Direction(int x, int y) :
 {
 }
 
-Direction::operator Vector2D&()
+Direction::operator Vector2D() const
 {
 	return direction;
 }

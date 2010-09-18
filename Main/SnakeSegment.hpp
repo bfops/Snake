@@ -23,7 +23,7 @@ private:
 	void FoodCollisionHandler(const Food& food);
 	void DeathCollisionHandler();
 
-	// change length by _amount_
+	/// change length by _amount_
 	void ModifyLength(int amount);
 
 public:
@@ -32,13 +32,13 @@ public:
 
 	void CollisionHandler(const WorldObject&);
 
-	// increase length
+	/// increase length
 	SnakeSegment& operator++();
-	// increase length
+	/// increase length
 	SnakeSegment operator++(int);
-	// decrease length
+	/// decrease length
 	SnakeSegment& operator--();
-	// decrease length
+	/// decrease length
 	SnakeSegment operator--(int);
 
 	unsigned int GetWidth() const;
