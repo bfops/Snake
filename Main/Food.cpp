@@ -2,10 +2,6 @@
 
 #include "Common.hpp"
 
-#include <cstdio>
-#include <cmath>
-#include <boost/concept_check.hpp>
-
 Food::FoodInfo::FoodInfo(double _calories, Color24 _color) :
 	calories(_calories), color(_color)
 {

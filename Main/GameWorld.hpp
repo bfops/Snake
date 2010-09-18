@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Food.hpp"
+#include "Logger.hpp"
 #include "Snake.hpp"
 #include "Timer.hpp"
 #include "ObjectManager.hpp"
@@ -25,6 +26,8 @@ public:
 	typedef std::vector<Food*> Menu;
 
 private:
+	Logger::Handle logger;
+
 	bool quit;
 	Timer foodTimer;
 	Menu foods;

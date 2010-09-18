@@ -5,12 +5,8 @@
 
 using namespace std;
 
-namespace {
-Logger::Handle logger = Logger::RequestHandle("Screen");
-}
-
 Screen::Screen(unsigned int _width, unsigned int _height) :
-	width(_width), height(_height), bgColor(0, 0, 0)
+	logger(Logger::RequestHandle("Screen")), width(_width), height(_height), bgColor(0, 0, 0)
 {
 	if((screen = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE)) == NULL)
 		logger.Fatal(boost::format("Error creating screen: %1%") % SDL_GetError());

@@ -9,7 +9,6 @@ using namespace std;
 using namespace boost;
 
 namespace {
-Logger::Handle logger = Logger::RequestHandle("Snake");
 DEF_CONSTANT(unsigned int, defaultLength, 90)
 DEF_CONSTANT(unsigned int, snakeWidth, 20)
 DEF_CONSTANT(unsigned int, speedupPeriod, 16000)
@@ -18,7 +17,8 @@ DEF_CONSTANT(unsigned int, growthCap, 200)
 DEF_CONSTANT(double, linearGrowthRate, 10.0 / 29.0)
 }
 
-Snake::Snake(ObjectManager& objectManager)
+Snake::Snake(ObjectManager& objectManager) :
+	logger(Logger::RequestHandle("Snake"))
 {
 	Reset(objectManager);
 }

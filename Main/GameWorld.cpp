@@ -9,12 +9,11 @@ using namespace boost;
 using namespace std;
 
 namespace {
-Logger::Handle logger = Logger::RequestHandle("GameWorld");
 DEF_CONSTANT(unsigned int, foodAdditionPeriod, 8000)
 DEF_CONSTANT(unsigned int, foodSize, 15)
 DEF_CONSTANT(unsigned int, wallThickness, 10)
 DEF_CONSTANT(Bounds, worldBounds, Bounds(Point(0, 0), Point(800, 600)))
-// TODO: make this nicer
+// TODO: make this nicer (i.e. more dynamic)
 DEF_CONSTANT(Bounds, spawnBounds, Bounds(Point(wallThickness(), wallThickness()), \
 	Point(800 - wallThickness(), 600 - wallThickness())))
 
@@ -76,7 +75,7 @@ Food::FoodInfo get_food_type(minstd_rand0& rand)
 }
 
 GameWorld::GameWorld() :
-	quit(false), player(objectManager), eventHandler(*this)
+	logger(Logger::RequestHandle("GameWorld")), quit(false), player(objectManager), eventHandler(*this)
 {
 	Reset();
 }

@@ -47,6 +47,7 @@ inline bool validDirection(Direction direction)
 	return (direction == Direction::left() || direction == Direction::right()
 		|| direction == Direction::up() || direction == Direction::down());
 }
+
 void transfer_side(const Bounds& input, Bounds& output, Direction whichSide)
 {
 	assert(validDirection(whichSide));
@@ -72,6 +73,7 @@ void transfer_side(const Bounds& input, Bounds& output, Direction whichSide)
 	}
 }
 }
+
 Side Bounds::GetSide(Direction whichSide) const
 {
 	assert(validDirection(whichSide));

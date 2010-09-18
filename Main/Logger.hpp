@@ -21,15 +21,15 @@ namespace Logger
 
 	public:
 #ifdef NDEBUG
-		inline void Debug(const char*) {}
-		inline void Debug(const boost::format&) {}
+		inline void Debug(const char*) const {}
+		inline void Debug(const boost::format&) const {}
 #else
-		void Debug(const char* message);
-		inline void Debug(const boost::format& message) { return Debug(message.str().c_str()); }
+		void Debug(const char* message) const;
+		inline void Debug(const boost::format& message) const { return Debug(message.str().c_str()); }
 #endif
 
-		void Fatal(const char* message);
-		inline void Fatal(const boost::format& message) { return Fatal(message.str().c_str()); }
+		void Fatal(const char* message) const;
+		inline void Fatal(const boost::format& message) const { return Fatal(message.str().c_str()); }
 
 		inline Handle(const Handle& other) { tag = other.tag; }
 		inline ~Handle() {}

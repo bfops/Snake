@@ -1,15 +1,9 @@
 #include "WorldObject.hpp"
 
-#include "Logger.hpp"
-
 using namespace std;
 
-namespace {
-Logger::Handle logger = Logger::RequestHandle("World");
-}
-
 WorldObject::WorldObject(ObjectType _type) :
-	type(_type)
+	logger(Logger::RequestHandle("WorldObject")), type(_type)
 {
 }
 
