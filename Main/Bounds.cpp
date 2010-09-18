@@ -1,10 +1,6 @@
 #include "Bounds.hpp"
 
-#include <boost/concept_check.hpp>
 #include <cassert>
-
-#include "Common.hpp"
-#include "custom_algorithm.hpp"
 
 Bounds::Bounds()
 {

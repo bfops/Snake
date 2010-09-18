@@ -1,4 +1,5 @@
 #include "Vector2D.hpp"
+
 #include "Common.hpp"
 
 Vector2D::Vector2D() :

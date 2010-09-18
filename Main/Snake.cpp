@@ -1,19 +1,9 @@
-#include <cassert>
-#include <cstddef>
-
-#include <boost/bind/bind.hpp>
-#include <boost/random.hpp>
-#include <SDL/SDL.h>
-
 #include "Snake.hpp"
-#include "Color24.hpp"
+
 #include "Common.hpp"
 #include "Logger.hpp"
-#include "Point.hpp"
-#include "Timer.hpp"
-#include "ObjectManager.hpp"
 
-#include "custom_algorithm.hpp"
+#include <boost/random.hpp>
 
 using namespace std;
 using namespace boost;
@@ -41,9 +31,12 @@ void add_segment(Snake::Path& path, Point location, Direction direction, ObjectM
 }
 }
 
-void Snake::Grow(unsigned int amount)
+void Snake::Grow(int amount)
 {
-	projectedLength += amount;
+	if((int)projectedLength + amount < 1)
+		projectedLength = 1;
+	else
+		projectedLength += amount;
 }
 
 inline SnakeSegment& Snake::Head()
@@ -105,11 +98,14 @@ void Snake::Update(ObjectManager& objectManager)
 		if((*i)->GetDigestionInfo() != SnakeSegment::HUNGRY)
 		{
 			double foodConstant = (*i)->GetDigestionInfo();
-			const unsigned int uncappedGrowth = round(projectedLength * foodConstant * linearGrowthRate());
-			const unsigned int growthAmount = min(growthCap(), uncappedGrowth);
+			const int uncappedGrowth = round(projectedLength * foodConstant * linearGrowthRate());
+			int growthAmount;
+			if(uncappedGrowth < 0)
+				growthAmount = -min(growthCap(), (unsigned int)(-uncappedGrowth));
+			else
+				growthAmount = min(growthCap(), (unsigned int)(uncappedGrowth));
 
 			logger.Debug(format("Growing by %1%") % growthAmount);
-			// TODO: allow for negative growth
 			Grow(growthAmount);
 
 			(*i)->Digest();
@@ -121,10 +117,20 @@ void Snake::Update(ObjectManager& objectManager)
 
 	while(moveTimer.ResetIfHasElapsed(1000 / speed))
 	{
+		if(projectedLength < length)
+		{
+			--Tail();
+			--length;
+		}
+
+		++Head();
+
 		// when there is a request for more length,
 		// simply don't shrink the tail
 		if(length < projectedLength)
+		{
 			++length;
+		}
 		else
 		{
 			--Tail();
@@ -135,8 +141,6 @@ void Snake::Update(ObjectManager& objectManager)
 				path.pop_back();
 			}
 		}
-
-		++Head();
 	}
 }
 

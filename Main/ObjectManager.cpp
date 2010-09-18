@@ -1,16 +1,13 @@
 #include "ObjectManager.hpp"
-#include "WorldObject.hpp"
 
 #include <vector>
 
 #include "collision.h"
 #include "Common.hpp"
 #include "custom_algorithm.hpp"
-#include "Food.hpp"
 #include "Logger.hpp"
 #include "Screen.hpp"
-#include "Timer.hpp"
-#include "Wall.hpp"
+#include "WorldObject.hpp"
 
 using namespace std;
 using namespace boost;

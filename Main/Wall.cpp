@@ -1,4 +1,5 @@
 #include "Wall.hpp"
+
 #include "Color24.hpp"
 #include "Common.hpp"
 

@@ -1,6 +1,6 @@
 #include "Food.hpp"
+
 #include "Common.hpp"
-#include "Logger.hpp"
 
 #include <cstdio>
 #include <cmath>

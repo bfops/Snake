@@ -1,14 +1,12 @@
 #pragma once
 
 #include "Bounds.hpp"
+#include "custom_algorithm.hpp"
 #include "Logger.hpp"
 #include "Point.hpp"
 #include "WorldObject.hpp"
 
-#include "custom_algorithm.hpp"
-
 #include <boost/shared_ptr.hpp>
-#include <memory>
 #include <vector>
 
 class ObjectManager

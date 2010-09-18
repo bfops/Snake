@@ -3,7 +3,6 @@
 #include "Event.hpp"
 #include "Wall.hpp"
 
-#include <boost/bind.hpp>
 #include <boost/random.hpp>
 #include <vector>
 
@@ -63,6 +62,10 @@ Food::FoodInfo get_food_type(minstd_rand0& rand)
 {
 	const unsigned int randMax = 100;
 	unsigned int randnum = rand() % (randMax + 1);
+
+	if(probability_hit(randnum, 1.0 / 20.0, randMax))
+		return Food::ice();
+
 	if(probability_hit(randnum, 1.0 / 10.0, randMax))
 		return Food::celery();
 

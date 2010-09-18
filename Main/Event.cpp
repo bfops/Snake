@@ -1,4 +1,5 @@
 #include "Event.hpp"
+
 #include "Common.hpp"
 #include "Direction.hpp"
 #include "Snake.hpp"

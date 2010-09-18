@@ -1,6 +1,6 @@
 #include "SnakeSegment.hpp"
+
 #include "Common.hpp"
-#include "Logger.hpp"
 
 const double SnakeSegment::HUNGRY = 0;
 
@@ -46,21 +46,24 @@ void SnakeSegment::CollisionHandler(const WorldObject& obj)
 
 void SnakeSegment::ModifyLength(int amount)
 {
-	if(amount > 0)
+	if(!empty)
 	{
-		Side headSide = GetHeadSide();
-		headSide.ApplyVector(direction, amount);
-		SetHeadSide(headSide);
-	}
-	else
-	{
-		Side tailSide = GetTailSide();
-		tailSide.ApplyVector(direction, -amount);
-		SetTailSide(tailSide);
-	}
+		if(amount > 0)
+		{
+			Side headSide = GetHeadSide();
+			headSide.ApplyVector(direction, amount);
+			SetHeadSide(headSide);
+		}
+		else
+		{
+			Side tailSide = GetTailSide();
+			tailSide.ApplyVector(direction, -amount);
+			SetTailSide(tailSide);
+		}
 
-	if(bounds.min.x >= bounds.max.x || bounds.min.y >= bounds.max.y)
-		empty = true;
+		if(bounds.min.x >= bounds.max.x || bounds.min.y >= bounds.max.y)
+			empty = true;
+	}
 }
 
 SnakeSegment& SnakeSegment::operator++()

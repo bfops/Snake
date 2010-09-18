@@ -1,7 +1,5 @@
 #include "Screen.hpp"
 
-#include <string>
-
 #include "Common.hpp"
 #include "Logger.hpp"
 

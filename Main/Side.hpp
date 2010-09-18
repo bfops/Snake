@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Direction.hpp"
 #include "Point.hpp"
+#include "Vector2D.hpp"
 
 struct Side
 {

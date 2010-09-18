@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Vector2D.hpp"
-
 struct Point
 {
 	unsigned int x, y;

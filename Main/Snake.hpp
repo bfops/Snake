@@ -1,13 +1,10 @@
 #pragma once
 
-#include <cstddef>
-
 #include "cgq.hpp"
 #include "Common.hpp"
 #include "Direction.hpp"
 #include "SnakeSegment.hpp"
 #include "Timer.hpp"
-#include "Vector2D.hpp"
 #include "ObjectManager.hpp"
 
 // TODO: color snake head
@@ -27,7 +24,7 @@ private:
 	Timer growTimer;
 	Timer speedupTimer;
 
-	void Grow(unsigned int amount);
+	void Grow(int amount);
 
 	inline SnakeSegment& Head();
 	inline SnakeSegment& Tail();

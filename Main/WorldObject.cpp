@@ -2,8 +2,6 @@
 
 #include "Logger.hpp"
 
-#include <string>
-
 using namespace std;
 
 namespace {

@@ -1,4 +1,5 @@
 #include "Direction.hpp"
+
 #include "Common.hpp"
 
 Direction::Direction(int x, int y) :
