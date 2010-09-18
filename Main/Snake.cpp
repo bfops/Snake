@@ -13,7 +13,7 @@ DEF_CONSTANT(unsigned int, defaultLength, 90)
 DEF_CONSTANT(unsigned int, snakeWidth, 20)
 DEF_CONSTANT(unsigned int, speedupPeriod, 16000)
 DEF_CONSTANT(unsigned int, speedupAmount, 23)
-DEF_CONSTANT(unsigned int, growthCap, 200)
+DEF_CONSTANT(unsigned int, growthCap, 100)
 DEF_CONSTANT(double, linearGrowthRate, 10.0 / 29.0)
 }
 
@@ -98,13 +98,10 @@ void Snake::Update(ObjectManager& objectManager)
 		if((*i)->GetDigestionInfo() != SnakeSegment::HUNGRY)
 		{
 			double foodConstant = (*i)->GetDigestionInfo();
-			const int uncappedGrowth = round(projectedLength * foodConstant * linearGrowthRate());
-			int growthAmount;
-			if(uncappedGrowth < 0)
-				growthAmount = -min(growthCap(), (unsigned int)(-uncappedGrowth));
-			else
-				growthAmount = min(growthCap(), (unsigned int)(uncappedGrowth));
+			double baseUncappedGrowth = projectedLength * linearGrowthRate();
+			double baseRealGrowth = min((double)growthCap(), baseUncappedGrowth);
 
+			int growthAmount = round(baseRealGrowth * foodConstant);
 			logger.Debug(format("Growing by %1%") % growthAmount);
 			Grow(growthAmount);
 
@@ -117,16 +114,14 @@ void Snake::Update(ObjectManager& objectManager)
 
 	while(moveTimer.ResetIfHasElapsed(1000 / speed))
 	{
-		if(projectedLength < length)
+		++Head();
+
+		if(length > projectedLength)
 		{
 			--Tail();
 			--length;
 		}
 
-		++Head();
-
-		// when there is a request for more length,
-		// simply don't shrink the tail
 		if(length < projectedLength)
 		{
 			++length;

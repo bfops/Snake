@@ -42,9 +42,6 @@ int main()
 	SDL_WM_SetCaption(windowTitle(), windowTitle());
 	SDL_ShowCursor(SDL_DISABLE);
 
-	// TODO: move this entire block of stuff
-	// into main_loop (it need not be in a
-	// higher scope)
 	GameWorld gameWorld;
 
 	while(main_loop(gameWorld))
