@@ -13,9 +13,6 @@ DEF_CONSTANT(unsigned int, foodAdditionPeriod, 8000)
 DEF_CONSTANT(unsigned int, foodSize, 15)
 DEF_CONSTANT(unsigned int, wallThickness, 10)
 DEF_CONSTANT(Bounds, worldBounds, Bounds(Point(0, 0), Point(800, 600)))
-// TODO: make this nicer (i.e. more dynamic)
-DEF_CONSTANT(Bounds, spawnBounds, Bounds(Point(wallThickness(), wallThickness()), \
-	Point(800 - wallThickness(), 600 - wallThickness())))
 
 void make_walls(ObjectManager& objectManager)
 {
@@ -72,10 +69,22 @@ Food::FoodInfo get_food_type(minstd_rand0& rand)
 
 	return Food::normal();
 }
+
+void send_sentinel(SentinelFood*& sentinel, ObjectManager& objectManager)
+{
+	minstd_rand0 rand(time(NULL));
+
+	Point foodLocation(
+		rand() % ((worldBounds().max.x - worldBounds().min.x) - foodSize()) + worldBounds().min.x,
+		rand() % ((worldBounds().max.y - worldBounds().min.y) - foodSize()) + worldBounds().min.y
+	);
+
+	sentinel = objectManager.Create(SentinelFood(foodLocation, foodSize()));
+}
 }
 
 GameWorld::GameWorld() :
-	logger(Logger::RequestHandle("GameWorld")), quit(false), player(objectManager), eventHandler(*this)
+	logger(Logger::RequestHandle("GameWorld")), player(objectManager), eventHandler(*this)
 {
 	Reset();
 }
@@ -92,22 +101,42 @@ void GameWorld::Update()
 
 	if(foodTimer.ResetIfHasElapsed(foodAdditionPeriod()))
 	{
-		minstd_rand0 rand(time(NULL));
+		// TODO: change to have a list of sentinels,
+		// so that even if one gets extremely bad luck,
+		// it'll continue to try to appear
+		/*if(sentinel)
+		{
+			if(!sentinel->IsInterfering())
+			{
+				minstd_rand0 rand(time(NULL));
+				Food::FoodInfo foodType = get_food_type(rand);
 
-		Point foodLocation(
-			rand() % ((spawnBounds().max.x - spawnBounds().min.x) - foodSize()) + spawnBounds().min.x,
-			rand() % ((spawnBounds().max.y - spawnBounds().min.y) - foodSize()) + spawnBounds().min.y
-		);
+				Food* newFood = objectManager.Create(Food(*sentinel, foodType));
+				foods.push_back(newFood);
 
-		Food::FoodInfo foodType = get_food_type(rand);
+				objectManager.Destroy(sentinel);
+				sentinel = NULL;
+			}
+			else
+			{
+				objectManager.Destroy(sentinel);
+				send_sentinel(sentinel, objectManager);
+			}
+		}
 
-		Food* newFood = objectManager.Create(Food(foodLocation, foodSize(), foodType));
-		foods.push_back(newFood);
+		// if we've already sent a sentinel,
+		// we might as well keep that one
+		if(sentinel == NULL)
+		{
+			send_sentinel(sentinel, objectManager);
+		}*/
 	}
 }
 
 void GameWorld::Reset()
 {
+	//sentinel = NULL;
+	quit = false;
 	objectManager.Reset();
 	player.Reset(objectManager);
 	foods.clear();

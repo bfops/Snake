@@ -5,6 +5,7 @@
 #include "Snake.hpp"
 #include "Timer.hpp"
 #include "ObjectManager.hpp"
+#include "WorldObject.hpp"
 
 #include <SDL/SDL_events.h>
 #include <vector>
@@ -27,6 +28,8 @@ public:
 
 private:
 	Logger::Handle logger;
+
+	SentinelFood* sentinel;
 
 	bool quit;
 	Timer foodTimer;

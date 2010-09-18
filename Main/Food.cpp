@@ -7,13 +7,12 @@ Food::FoodInfo::FoodInfo(double _calories, Color24 _color) :
 {
 }
 
-Food::Food(Point location, unsigned int size, const FoodInfo& foodInfo) :
-	WorldObject(food), eaten(false), calories(foodInfo.calories)
+Food::Food(SentinelFood& prototype, const FoodInfo& foodInfo) :
+	WorldObject(food), eaten(false)
 {
-	bounds.min = location;
-	bounds.max = Point(location.x + size, location.y + size);
-
+	bounds = prototype.GetBounds();
 	color = foodInfo.color;
+	calories = foodInfo.calories;
 }
 
 void Food::SnakeCollisionHandler()

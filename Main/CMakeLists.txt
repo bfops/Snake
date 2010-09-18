@@ -12,6 +12,7 @@ add_executable(GingerbreadPrototype
 	Point.cpp
 	Screen.cpp
 	SDL.cpp
+	SentinelFood.cpp
 	Side.cpp
 	Snake.cpp
 	SnakeSegment.cpp

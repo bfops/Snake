@@ -12,7 +12,8 @@ public:
 	{
 		snake,
 		wall,
-		food
+		food,
+		sentinelFood
 	};
 
 protected:
