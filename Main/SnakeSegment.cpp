@@ -2,16 +2,18 @@
 #include "Common.hpp"
 #include "Logger.hpp"
 
+const double SnakeSegment::HUNGRY = 0;
+
 namespace {
 DEF_CONSTANT(Color24, segmentColor, Color24(0, 255, 0))
 }
 
 SnakeSegment::SnakeSegment() :
-	WorldObject(snake), dead(false), hasEaten(false), empty(false), direction(Direction::empty())
+	WorldObject(snake), dead(false), empty(false), digestionInfo(HUNGRY), direction(Direction::empty())
 {
 }
 SnakeSegment::SnakeSegment(Point location, Direction _direction, unsigned int _width) :
-	WorldObject(snake), dead(false), hasEaten(false), empty(false), width(_width), direction(_direction)
+	WorldObject(snake), dead(false), empty(false), digestionInfo(HUNGRY), width(_width), direction(_direction)
 {
 	color = segmentColor();
 	bounds.min = location;
@@ -28,9 +30,9 @@ void SnakeSegment::DeathCollisionHandler()
 {
 	dead = true;
 }
-void SnakeSegment::FoodCollisionHandler()
+void SnakeSegment::FoodCollisionHandler(const Food& food)
 {
-	hasEaten = true;
+	digestionInfo = food.GetCalories();
 }
 
 void SnakeSegment::CollisionHandler(const WorldObject& obj)
@@ -39,7 +41,7 @@ void SnakeSegment::CollisionHandler(const WorldObject& obj)
 	if(type == WorldObject::snake || type == WorldObject::wall)
 		DeathCollisionHandler();
 	else if(type == WorldObject::food)
-		FoodCollisionHandler();
+		FoodCollisionHandler(*reinterpret_cast<const Food*>(&obj));
 }
 
 void SnakeSegment::ModifyLength(int amount)
@@ -126,11 +128,9 @@ bool SnakeSegment::IsDead() const
 {
 	return dead;
 }
-// as soon as the information's gotten,
-// pretend the segment's no longer eaten
-bool SnakeSegment::HasEaten() const
+double SnakeSegment::GetDigestionInfo() const
 {
-	return hasEaten;
+	return digestionInfo;
 }
 bool SnakeSegment::IsEmpty() const
 {
@@ -138,5 +138,5 @@ bool SnakeSegment::IsEmpty() const
 }
 void SnakeSegment::Digest()
 {
-	hasEaten = false;
+	digestionInfo = HUNGRY;
 }

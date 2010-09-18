@@ -1,21 +1,38 @@
 #pragma once
 
+#include "Common.hpp"
 #include "Point.hpp"
 #include "WorldObject.hpp"
+
+#include <boost/array.hpp>
 
 // TODO: different food types
 class Food : public WorldObject
 {
+public:
+	struct FoodInfo
+	{
+		double calories;
+		Color24 color;
+
+		FoodInfo(double calories, Color24 color);
+	};
+
 private:
 	bool eaten;
+	double calories;
 
 	void SnakeCollisionHandler();
 
 public:
-	Food(Point location, unsigned int size);
+	static DEF_CONSTANT(FoodInfo, celery, FoodInfo(0.3, Color24(127, 255, 127)))
+	static DEF_CONSTANT(FoodInfo, normal, FoodInfo(1.0, Color24(0, 255, 255)))
+	static DEF_CONSTANT(FoodInfo, donut, FoodInfo(3.0, Color24(200, 0, 0)))
 
-	//ObjectType GetObjectType() const;
+	Food(Point location, unsigned int size, const FoodInfo& foodInfo);
+
 	void CollisionHandler(const WorldObject&);
 
 	bool IsEaten() const;
+	double GetCalories() const;
 };

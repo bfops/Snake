@@ -11,7 +11,7 @@
 #include "Logger.hpp"
 #include "Point.hpp"
 #include "Timer.hpp"
-#include "World.hpp"
+#include "ObjectManager.hpp"
 
 #include "custom_algorithm.hpp"
 
@@ -24,24 +24,24 @@ DEF_CONSTANT(unsigned int, defaultLength, 90)
 DEF_CONSTANT(unsigned int, snakeWidth, 20)
 DEF_CONSTANT(unsigned int, speedupPeriod, 16000)
 DEF_CONSTANT(unsigned int, speedupAmount, 23)
-DEF_CONSTANT(unsigned int, growthCap, 110)
+DEF_CONSTANT(unsigned int, growthCap, 200)
 DEF_CONSTANT(double, linearGrowthRate, 10.0 / 29.0)
 }
 
-Snake::Snake(World& world)
+Snake::Snake(ObjectManager& objectManager)
 {
-	Reset(world);
+	Reset(objectManager);
 }
 
 namespace {
-void add_segment(Snake::Path& path, Point location, Direction direction, World& world)
+void add_segment(Snake::Path& path, Point location, Direction direction, ObjectManager& objectManager)
 {
-	SnakeSegment* newSegment = world.Create(SnakeSegment(location, direction, snakeWidth()));
+	SnakeSegment* newSegment = objectManager.Create(SnakeSegment(location, direction, snakeWidth()));
 	path.push_front(newSegment);
 }
 }
 
-void Snake::Grow(size_t amount)
+void Snake::Grow(unsigned int amount)
 {
 	projectedLength += amount;
 }
@@ -61,9 +61,9 @@ Direction get_random_direction()
 	uint32_t randomNumber = minstd_rand(time(NULL))();
 	return directions[randomNumber % countof(directions)];
 }
-void Snake::Reset(World& world)
+void Snake::Reset(ObjectManager& objectManager)
 {
-	Point headLocation = world.GetCenter();
+	Point headLocation = objectManager.GetCenter();
 
 	moveTimer.Reset();
 	growTimer.Reset();
@@ -75,9 +75,9 @@ void Snake::Reset(World& world)
 	projectedLength = defaultLength();
 	path.clear();
 
-	add_segment(path, headLocation, get_random_direction(), world);
+	add_segment(path, headLocation, get_random_direction(), objectManager);
 }
-void Snake::ChangeDirection(Direction newDirection, World& world)
+void Snake::ChangeDirection(Direction newDirection, ObjectManager& objectManager)
 {
 	// TODO: change so that the new segment takes on the
 	// "intersection" block between the new and old segment
@@ -94,25 +94,23 @@ void Snake::ChangeDirection(Direction newDirection, World& world)
 		Bounds head = Head().GetHeadSquare();
 		Side startSide = head.GetSide(newDirection);
 
-		add_segment(path, startSide.min, newDirection, world);
+		add_segment(path, startSide.min, newDirection, objectManager);
 	}
 }
 
-void Snake::Update(World& world)
+void Snake::Update(ObjectManager& objectManager)
 {
 	for(Path::iterator i = path.begin(), end = path.end(); i != end; ++i)
 	{
-		if((*i)->HasEaten())
+		if((*i)->GetDigestionInfo() != SnakeSegment::HUNGRY)
 		{
-			// TODO: this should be fetched from the food!
-			double foodConstant = 1;
-			double growthConstant;
-			if(projectedLength < growthCap() / linearGrowthRate())
-				// 10 / 29 is magically derived from some testing
-				growthConstant = projectedLength * linearGrowthRate();
-			else
-				growthConstant = growthCap();
-			Grow(round(foodConstant * growthConstant));
+			double foodConstant = (*i)->GetDigestionInfo();
+			const unsigned int uncappedGrowth = round(projectedLength * foodConstant * linearGrowthRate());
+			const unsigned int growthAmount = min(growthCap(), uncappedGrowth);
+
+			logger.Debug(format("Growing by %1%") % growthAmount);
+			// TODO: allow for negative growth
+			Grow(growthAmount);
 
 			(*i)->Digest();
 		}
@@ -133,7 +131,7 @@ void Snake::Update(World& world)
 
 			if(Tail().IsEmpty())
 			{
-				world.Destroy(&Tail());
+				objectManager.Destroy(&Tail());
 				path.pop_back();
 			}
 		}

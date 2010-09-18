@@ -11,7 +11,7 @@
 #include <memory>
 #include <vector>
 
-class World
+class ObjectManager
 {
 public:
 	typedef std::vector<boost::shared_ptr<WorldObject> > ObjectList;
@@ -19,9 +19,10 @@ public:
 private:
 	ObjectList objects;
 	Logger::Handle logger;
+	Screen screen;
 
 public:
-	World();
+	ObjectManager();
 
 	void Update();
 	void Reset();

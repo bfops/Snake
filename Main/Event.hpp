@@ -11,5 +11,5 @@ namespace Event
 	int SDLCALL Handler(const SDL_Event*);
 	void RegisterPlayer(Snake& player);
 	void RegisterQuitter(bool& quitter);
-	void RegisterWorld(World& world);
+	void RegisterWorld(ObjectManager& world);
 }

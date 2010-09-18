@@ -3,7 +3,7 @@
 #include "Food.hpp"
 #include "Snake.hpp"
 #include "Timer.hpp"
-#include "World.hpp"
+#include "ObjectManager.hpp"
 
 #include <vector>
 
@@ -18,10 +18,10 @@ private:
 	Snake player;
 
 public:
-	GameWorld(World& world);
+	GameWorld(ObjectManager& world);
 
-	void Update(World& world);
-	void Reset(World& world);
+	void Update(ObjectManager& world);
+	void Reset(ObjectManager& world);
 
 	bool Lost() const;
 };

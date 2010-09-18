@@ -7,7 +7,7 @@
 #include "Logger.hpp"
 #include "Event.hpp"
 #include "SDL.h"
-#include "World.hpp"
+#include "ObjectManager.hpp"
 
 using namespace boost;
 using namespace std;
@@ -20,7 +20,7 @@ DEF_CONSTANT(unsigned int, FPS, 60)
 }
 
 /// Returns true if we should continue playing, false otherwise.
-static bool main_loop(World& world, GameWorld& gameWorld)
+static bool main_loop(ObjectManager& objectManager, GameWorld& gameWorld)
 {
 	bool quit = false;
 	Event::RegisterQuitter(quit);
@@ -32,8 +32,8 @@ static bool main_loop(World& world, GameWorld& gameWorld)
 
 		SDL_PollEvent(NULL);
 
-		gameWorld.Update(world);
-		world.Update();
+		gameWorld.Update(objectManager);
+		objectManager.Update();
 
 		this_thread::sleep(posix_time::millisec(1000 / FPS()));
 	}
@@ -54,15 +54,15 @@ int main()
 	// TODO: move this entire block of stuff
 	// into main_loop (it need not be in a
 	// higher scope)
-	World world;
-	GameWorld gameWorld(world);
+	ObjectManager objectManager;
+	GameWorld gameWorld(objectManager);
 
-	Event::RegisterWorld(world);
+	Event::RegisterWorld(objectManager);
 
-	while(main_loop(world, gameWorld))
+	while(main_loop(objectManager, gameWorld))
 	{
-		world.Reset();
-		gameWorld.Reset(world);
+		objectManager.Reset();
+		gameWorld.Reset(objectManager);
 	}
 
 	return 0;

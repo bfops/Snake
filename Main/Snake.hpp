@@ -8,7 +8,7 @@
 #include "SnakeSegment.hpp"
 #include "Timer.hpp"
 #include "Vector2D.hpp"
-#include "World.hpp"
+#include "ObjectManager.hpp"
 
 // TODO: color snake head
 class Snake
@@ -27,16 +27,16 @@ private:
 	Timer growTimer;
 	Timer speedupTimer;
 
-	void Grow(size_t amount);
+	void Grow(unsigned int amount);
 
 	inline SnakeSegment& Head();
 	inline SnakeSegment& Tail();
 
 public:
-	Snake(World& world);
+	Snake(ObjectManager& world);
 
-	void Reset(World& world);
-	void ChangeDirection(Direction, World& world);
-	void Update(World& world);
+	void Reset(ObjectManager& world);
+	void ChangeDirection(Direction, ObjectManager& world);
+	void Update(ObjectManager& world);
 	bool IsDead() const;
 };

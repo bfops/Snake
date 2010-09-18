@@ -8,6 +8,7 @@ add_executable(GingerbreadPrototype
 	GameWorld.cpp
 	Logger.cpp
 	main.cpp
+	ObjectManager.cpp
 	Point.cpp
 	Screen.cpp
 	SDL.cpp
@@ -17,7 +18,6 @@ add_executable(GingerbreadPrototype
 	Timer.cpp
 	Vector2D.cpp
 	Wall.cpp
-	World.cpp
 	WorldObject.cpp
 )
 

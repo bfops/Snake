@@ -1,19 +1,23 @@
 #include "Food.hpp"
 #include "Common.hpp"
+#include "Logger.hpp"
 
 #include <cstdio>
+#include <cmath>
+#include <boost/concept_check.hpp>
 
-namespace {
-DEF_CONSTANT(Color24, foodColor, Color24(0, 255, 255))
+Food::FoodInfo::FoodInfo(double _calories, Color24 _color) :
+	calories(_calories), color(_color)
+{
 }
 
-Food::Food(Point location, unsigned int size) :
-	WorldObject(food), eaten(false)
+Food::Food(Point location, unsigned int size, const FoodInfo& foodInfo) :
+	WorldObject(food), eaten(false), calories(foodInfo.calories)
 {
 	bounds.min = location;
 	bounds.max = Point(location.x + size, location.y + size);
 
-	color = foodColor();
+	color = foodInfo.color;
 }
 
 void Food::SnakeCollisionHandler()
@@ -30,4 +34,9 @@ void Food::CollisionHandler(const WorldObject& obj)
 bool Food::IsEaten() const
 {
 	return eaten;
+}
+
+double Food::GetCalories() const
+{
+	return calories;
 }

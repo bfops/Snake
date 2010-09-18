@@ -7,16 +7,20 @@
 
 class SnakeSegment : public WorldObject
 {
+public:
+	const static double HUNGRY;
+
 private:
 	bool dead;
-	bool hasEaten;
 	bool empty;
+
+	double digestionInfo;
 
 	unsigned int width;
 
 	Direction direction;
 
-	void FoodCollisionHandler();
+	void FoodCollisionHandler(const Food& food);
 	void DeathCollisionHandler();
 
 	// change length by _amount_
@@ -47,7 +51,7 @@ public:
 	void SetTailSide(Side side);
 
 	bool IsDead() const;
-	bool HasEaten() const;
+	double GetDigestionInfo() const;
 	bool IsEmpty() const;
 
 	void Digest();

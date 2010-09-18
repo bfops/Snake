@@ -1,4 +1,4 @@
-#include "World.hpp"
+#include "ObjectManager.hpp"
 #include "WorldObject.hpp"
 
 #include <vector>
@@ -17,34 +17,30 @@ using namespace boost;
 
 namespace {
 DEF_CONSTANT(Point, screenBounds, Point(800, 600))
-inline bool object_exists(const WorldObject* obj, World::ObjectList& objects)
+inline bool object_exists(const WorldObject* obj, ObjectManager::ObjectList& objects)
 {
 	// TODO: use in()
-	for(World::ObjectList::iterator i = objects.begin(), end = objects.end(); i != end; ++i)
+	for(ObjectManager::ObjectList::iterator i = objects.begin(), end = objects.end(); i != end; ++i)
 		if(obj == i->get())
 			return true;
 
 	return false;
 }
 
-namespace GraphicsWorld {
-namespace {
-Screen screen(screenBounds().x, screenBounds().y);
-}
-
-void Update(World::ObjectList& objects)
+namespace Graphics {
+void Update(ObjectManager::ObjectList& objects, Screen& screen)
 {
 	screen.Clear();
 
 	// TODO: re-bind
-	for(World::ObjectList::iterator i = objects.begin(), end = objects.end(); i != end; ++i)
+	for(ObjectManager::ObjectList::iterator i = objects.begin(), end = objects.end(); i != end; ++i)
 		(*i)->Draw(screen);
 
 	screen.Update();
 }
 }
 
-namespace PhysicsWorld {
+namespace Physics {
 namespace {
 inline CollidableObject world_to_collidable_object(const WorldObject* w)
 {
@@ -71,42 +67,41 @@ void handle_potential_collision(WorldObject* o1, WorldObject* o2)
 	}
 }
 
-inline void collide_with_subsequent_objects(World::ObjectList::iterator collider, World::ObjectList::iterator end)
+inline void collide_with_subsequent_objects(ObjectManager::ObjectList::iterator collider, ObjectManager::ObjectList::iterator end)
 {
 	// TODO: re-bind
-	for(World::ObjectList::iterator collidee = collider + 1; collidee != end; ++collidee)
+	for(ObjectManager::ObjectList::iterator collidee = collider + 1; collidee != end; ++collidee)
 		handle_potential_collision(collider->get(), collidee->get());
 }
-
 }
 
-void Update(World::ObjectList& objects)
+void Update(ObjectManager::ObjectList& objects)
 {
 	// don't try the last objects, since all have been checked against it
-	for(World::ObjectList::iterator collider = objects.begin(), end = objects.end() - 1; collider != end; ++collider)
+	for(ObjectManager::ObjectList::iterator collider = objects.begin(), end = objects.end() - 1; collider != end; ++collider)
 		collide_with_subsequent_objects(collider, objects.end());
 }
 }
 }
 
-World::World() :
-	logger(Logger::RequestHandle("World"))
+ObjectManager::ObjectManager() :
+	logger(Logger::RequestHandle("World")), screen(screenBounds().x, screenBounds().y)
 {
 	Reset();
 }
 
-void World::Update()
+void ObjectManager::Update()
 {
-	PhysicsWorld::Update(objects);
-	GraphicsWorld::Update(objects);
+	Physics::Update(objects);
+	Graphics::Update(objects, screen);
 }
 
-void World::Reset()
+void ObjectManager::Reset()
 {
 	objects.clear();
 }
 
-Point World::GetCenter() const
+Point ObjectManager::GetCenter() const
 {
 	return Point(screenBounds().x / 2, screenBounds().y / 2);
 }
