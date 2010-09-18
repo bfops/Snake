@@ -4,7 +4,6 @@
 #include "Point.hpp"
 #include "WorldObject.hpp"
 
-// TODO: different food types
 class Food : public WorldObject
 {
 public:

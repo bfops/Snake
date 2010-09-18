@@ -1,6 +1,5 @@
 #include "GameWorld.hpp"
 
-#include "Event.hpp"
 #include "Wall.hpp"
 
 #include <boost/random.hpp>
@@ -76,14 +75,16 @@ Food::FoodInfo get_food_type(minstd_rand0& rand)
 }
 }
 
-GameWorld::GameWorld(ObjectManager& objectManager) :
-	player(objectManager)
+GameWorld::GameWorld() :
+	quit(false), player(objectManager), eventHandler(*this)
 {
-	Reset(objectManager);
+	Reset();
 }
 
-void GameWorld::Update(ObjectManager& objectManager)
+void GameWorld::Update()
 {
+	objectManager.Update();
+	eventHandler.Update();
 	player.Update(objectManager);
 
 	// TODO: map?
@@ -106,16 +107,51 @@ void GameWorld::Update(ObjectManager& objectManager)
 	}
 }
 
-void GameWorld::Reset(ObjectManager& objectManager)
+void GameWorld::Reset()
 {
+	objectManager.Reset();
 	player.Reset(objectManager);
-	Event::RegisterPlayer(player);
 	foods.clear();
 	foodTimer.Reset();
 	make_walls(objectManager);
 }
 
+void GameWorld::QuitNotify()
+{
+	quit = true;
+}
+
+void GameWorld::KeyNotify(SDLKey key)
+{
+	switch(key)
+	{
+		case SDLK_LEFT:
+			player.ChangeDirection(Direction::left(), objectManager);
+			break;
+
+		case SDLK_RIGHT:
+			player.ChangeDirection(Direction::right(), objectManager);
+			break;
+
+		case SDLK_UP:
+			player.ChangeDirection(Direction::up(), objectManager);
+			break;
+
+		case SDLK_DOWN:
+			player.ChangeDirection(Direction::down(), objectManager);
+			break;
+
+		default:
+			break;
+	}
+}
+
 bool GameWorld::Lost() const
 {
 	return player.IsDead();
+}
+
+bool GameWorld::QuitCalled() const
+{
+	return quit;
 }

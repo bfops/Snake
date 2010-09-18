@@ -4,7 +4,6 @@
 #include "Common.hpp"
 #include "GameWorld.hpp"
 #include "Logger.hpp"
-#include "Event.hpp"
 #include "SDL.h"
 #include "ObjectManager.hpp"
 
@@ -19,23 +18,16 @@ DEF_CONSTANT(unsigned int, FPS, 60)
 }
 
 /// Returns true if we should continue playing, false otherwise.
-static bool main_loop(ObjectManager& objectManager, GameWorld& gameWorld)
+static bool main_loop(GameWorld& gameWorld)
 {
-	bool quit = false;
-	Event::RegisterQuitter(quit);
-
-	while(!gameWorld.Lost())
+	while(!gameWorld.Lost() && !gameWorld.QuitCalled())
 	{
-		if(quit)
-			return false;
-
-		SDL_PollEvent(NULL);
-
-		gameWorld.Update(objectManager);
-		objectManager.Update();
+		gameWorld.Update();
 
 		this_thread::sleep(posix_time::millisec(1000 / FPS()));
 	}
+	if(gameWorld.QuitCalled())
+		return false;
 
 	logger.Debug("You dead");
 	return true;
@@ -47,21 +39,16 @@ int main()
 	SDLInitializer keepSDLInitialized;
 
 	SDL_WM_SetCaption(windowTitle(), windowTitle());
-	SDL_SetEventFilter(Event::Handler);
 	SDL_ShowCursor(SDL_DISABLE);
 
 	// TODO: move this entire block of stuff
 	// into main_loop (it need not be in a
 	// higher scope)
-	ObjectManager objectManager;
-	GameWorld gameWorld(objectManager);
+	GameWorld gameWorld;
 
-	Event::RegisterWorld(objectManager);
-
-	while(main_loop(objectManager, gameWorld))
+	while(main_loop(gameWorld))
 	{
-		objectManager.Reset();
-		gameWorld.Reset(objectManager);
+		gameWorld.Reset();
 	}
 
 	return 0;
