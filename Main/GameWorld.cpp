@@ -191,7 +191,9 @@ void GameWorld::Update()
 				Food::FoodInfo foodType = get_food_type(rand);
 
 				Food newFood(sentinel, foodType);
+				for_each(foods.begin(), foods.end(), bind(&GameWorld::Delete, this, _1));
 				foods.push_back(newFood);
+				for_each(foods.begin(), foods.end(), bind(&GameWorld::Add, this, _1));
 
 				Delete(sentinel);
 				sentinelSent = false;
@@ -200,11 +202,12 @@ void GameWorld::Update()
 			{
 				Delete(sentinel);
 				send_sentinel(sentinel);
+				Add(sentinel);
 			}
 		}
 		// if we've already sent a sentinel,
 		// we might as well keep that one
-		if(!sentinelSent)
+		else if(!sentinelSent)
 		{
 			send_sentinel(sentinel);
 			Add(sentinel);
@@ -218,7 +221,10 @@ void GameWorld::Reset()
 	objects.clear();
 	quit = false;
 	player.Reset(*this);
+
+	for_each(foods.begin(), foods.end(), bind(&GameWorld::Delete, this, _1));
 	foods.clear();
+
 	foodTimer.Reset();
 	make_walls(*this, walls);
 }
