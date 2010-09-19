@@ -176,7 +176,13 @@ void GameWorld::Update()
 	// it'll continue to try to appear
 	if(sentinelSent)
 	{
-		if(!sentinel.IsInterfering())
+		if(sentinel.IsInterfering())
+		{
+			Delete(sentinel);
+			send_sentinel(sentinel);
+			Add(sentinel);
+		}
+		else
 		{
 			minstd_rand0 rand(time(NULL));
 			Food::FoodInfo foodType = get_food_type(rand);
@@ -188,12 +194,6 @@ void GameWorld::Update()
 
 			Delete(sentinel);
 			sentinelSent = false;
-		}
-		else
-		{
-			Delete(sentinel);
-			send_sentinel(sentinel);
-			Add(sentinel);
 		}
 	}
 
