@@ -83,9 +83,8 @@ DEF_CONSTANT(unsigned int, foodSize, 15)
 DEF_CONSTANT(unsigned int, wallThickness, 10)
 DEF_CONSTANT(Bounds, worldBounds, Bounds(Point(0, 0), Point(800, 600)))
 
-GameWorld::WallBox make_walls(GameWorld& gameWorld)
+void make_walls(GameWorld& gameWorld, GameWorld::WallBox& walls)
 {
-	GameWorld::WallBox walls;
 	walls[0] = Wall(Point(0, 0), wallThickness(), worldBounds().max.y);
 	walls[1] = Wall(Point(worldBounds().max.x - wallThickness(), 0), wallThickness(), worldBounds().max.y);
 	walls[2] = Wall(Point(0, 0), worldBounds().max.x, wallThickness());
@@ -96,8 +95,6 @@ GameWorld::WallBox make_walls(GameWorld& gameWorld)
 	{
 		gameWorld.Add(walls[i]);
 	}
-
-	return walls;
 }
 
 void delete_food_if_eaten(GameWorld& world, GameWorld::Menu& v, GameWorld::Menu::iterator food)
@@ -165,6 +162,7 @@ GameWorld::GameWorld() :
 	logger(Logger::RequestHandle("GameWorld")), sentinelSent(false),
 	screen(screenBounds().x, screenBounds().y),	player(*this), eventHandler(*this)
 {
+	logger.Debug("Constructed GameWorld");
 	Reset();
 }
 
@@ -222,7 +220,7 @@ void GameWorld::Reset()
 	player.Reset(*this);
 	foods.clear();
 	foodTimer.Reset();
-	make_walls(*this);
+	make_walls(*this, walls);
 }
 
 void GameWorld::QuitNotify()

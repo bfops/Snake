@@ -45,6 +45,8 @@ private:
 
 	EventHandler eventHandler;
 
+	WallBox walls;
+
 public:
 	GameWorld();
 

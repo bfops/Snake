@@ -19,6 +19,7 @@ DEF_CONSTANT(unsigned int, FPS, 60)
 static bool main_loop(GameWorld& gameWorld)
 {
 	Logger::Handle logger = Logger::RequestHandle("main()");
+	logger.Debug("GameWorld made");
 
 	while(!gameWorld.Lost() && !gameWorld.QuitCalled())
 	{
