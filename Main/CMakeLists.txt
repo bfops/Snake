@@ -8,7 +8,6 @@ add_executable(GingerbreadPrototype
 	GameWorld.cpp
 	Logger.cpp
 	main.cpp
-	ObjectManager.cpp
 	Point.cpp
 	Screen.cpp
 	SDL.cpp

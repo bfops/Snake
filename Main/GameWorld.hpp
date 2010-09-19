@@ -4,9 +4,10 @@
 #include "Logger.hpp"
 #include "Snake.hpp"
 #include "Timer.hpp"
-#include "ObjectManager.hpp"
+#include "Wall.hpp"
 #include "WorldObject.hpp"
 
+#include <boost/array.hpp>
 #include <SDL/SDL_events.h>
 #include <vector>
 
@@ -24,15 +25,18 @@ public:
 		void Update();
 	};
 
-	typedef std::vector<Food*> Menu;
+	typedef std::vector<WorldObject*> ObjectList;
+	typedef std::vector<Food> Menu;
+	typedef boost::array<Wall, 4> WallBox;
 
 private:
 	Logger::Handle logger;
 
-#error // commenting out the following line stops
-	// segfault from happening, even if the variable
-	// is never read OR written.
-	SentinelFood* sentinel;
+	SentinelFood sentinel;
+	bool sentinelSent;
+
+	Screen screen;
+	ObjectList objects;
 
 	bool quit;
 	Timer foodTimer;
@@ -40,7 +44,6 @@ private:
 	Snake player;
 
 	EventHandler eventHandler;
-	ObjectManager objectManager;
 
 public:
 	GameWorld();
@@ -53,4 +56,9 @@ public:
 
 	bool Lost() const;
 	bool QuitCalled() const;
+
+	Point GetCenter() const;
+
+	void Add(WorldObject&);
+	void Delete(WorldObject&);
 };

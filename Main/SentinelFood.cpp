@@ -2,6 +2,11 @@
 
 #include "Screen.hpp"
 
+SentinelFood::SentinelFood() :
+	WorldObject(sentinelFood)
+{
+}
+
 SentinelFood::SentinelFood(Point location, unsigned int size) :
 	WorldObject(sentinelFood)
 {

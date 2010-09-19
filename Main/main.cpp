@@ -5,7 +5,6 @@
 #include "GameWorld.hpp"
 #include "Logger.hpp"
 #include "SDL.h"
-#include "ObjectManager.hpp"
 
 using namespace boost;
 using namespace std;

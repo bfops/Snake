@@ -8,6 +8,7 @@ private:
 	bool interfering;
 
 public:
+	SentinelFood();
 	SentinelFood(Point location, unsigned int size);
 
 	void CollisionHandler(const WorldObject&);

@@ -5,13 +5,14 @@
 #include "Direction.hpp"
 #include "SnakeSegment.hpp"
 #include "Timer.hpp"
-#include "ObjectManager.hpp"
 
+// TODO: shitshitshit circular dependencies!
+class GameWorld;
 // TODO: color snake head
 class Snake
 {
 public:
-	typedef cgq<SnakeSegment*> Path;
+	typedef cgq<SnakeSegment> Path;
 
 private:
 	Logger::Handle logger;
@@ -32,10 +33,10 @@ private:
 	inline SnakeSegment& Tail();
 
 public:
-	Snake(ObjectManager& world);
+	Snake(GameWorld& world);
 
-	void Reset(ObjectManager& world);
-	void ChangeDirection(Direction, ObjectManager& world);
-	void Update(ObjectManager& world);
+	void Reset(GameWorld& world);
+	void ChangeDirection(Direction, GameWorld& world);
+	void Update(GameWorld& world);
 	bool IsDead() const;
 };
