@@ -241,30 +241,32 @@ void GameWorld::QuitNotify()
 
 void GameWorld::KeyNotify(SDLKey key)
 {
-	switch(key)
+	if(key == SDLK_p)
+		paused = !paused;
+
+	if(!paused)
 	{
-		case SDLK_LEFT:
-			player.ChangeDirection(Direction::left(), *this);
-			break;
+		switch(key)
+		{
+			case SDLK_LEFT:
+				player.ChangeDirection(Direction::left(), *this);
+				break;
 
-		case SDLK_RIGHT:
-			player.ChangeDirection(Direction::right(), *this);
-			break;
+			case SDLK_RIGHT:
+				player.ChangeDirection(Direction::right(), *this);
+				break;
 
-		case SDLK_UP:
-			player.ChangeDirection(Direction::up(), *this);
-			break;
+			case SDLK_UP:
+				player.ChangeDirection(Direction::up(), *this);
+				break;
 
-		case SDLK_DOWN:
-			player.ChangeDirection(Direction::down(), *this);
-			break;
+			case SDLK_DOWN:
+				player.ChangeDirection(Direction::down(), *this);
+				break;
 
-		case SDLK_p:
-			paused = !paused;
-			break;
-
-		default:
-			break;
+			default:
+				break;
+		}
 	}
 }
 
