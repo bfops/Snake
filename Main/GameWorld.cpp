@@ -97,15 +97,6 @@ void make_walls(GameWorld& gameWorld, GameWorld::WallBox& walls)
 	}
 }
 
-void delete_food_if_eaten(GameWorld& world, GameWorld::Menu& v, GameWorld::Menu::iterator food)
-{
-	if(food->IsEaten())
-	{
-		world.Delete(*food);
-		v.erase(food);
-	}
-}
-
 /// checks if _probability_ occurred in _randnum_
 /// probability-checking can be done by seeing if
 /// _randnum_ < _probability_ * _max_number_.
@@ -159,9 +150,10 @@ void send_sentinel(SentinelFood& sentinel)
 }
 
 GameWorld::GameWorld() :
-	logger(Logger::RequestHandle("GameWorld")), sentinelSent(false),
-	screen(screenBounds().x, screenBounds().y),	player(*this), eventHandler(*this)
+	logger(Logger::RequestHandle("GameWorld")),	screen(screenBounds().x, screenBounds().y),
+	player(*this), eventHandler(*this)
 {
+	sentinelSent = false;
 	Reset();
 }
 
@@ -173,8 +165,11 @@ void GameWorld::Update()
 	eventHandler.Update();
 	player.Update(*this);
 
+	for_each(foods.begin(), foods.end(), bind(&GameWorld::Delete, this, _1));
 	for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
-		delete_food_if_eaten(*this, foods, i);
+		if(i->IsEaten())
+			foods.erase(i);
+	for_each(foods.begin(), foods.end(), bind(&GameWorld::Add, this, _1));
 
 	// TODO: change to have a list of sentinels,
 	// so that even if one gets extremely bad luck,
@@ -217,6 +212,10 @@ void GameWorld::Update()
 
 void GameWorld::Reset()
 {
+	if(sentinelSent)
+		Delete(sentinel);
+	sentinelSent = false;
+
 	objects.clear();
 	quit = false;
 	player.Reset(*this);
