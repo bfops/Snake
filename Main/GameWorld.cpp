@@ -222,8 +222,6 @@ void GameWorld::Reset()
 		Delete(sentinel);
 	sentinelSent = false;
 
-	objects.clear();
-
 	quit = false;
 	player.Reset(*this);
 
@@ -232,6 +230,8 @@ void GameWorld::Reset()
 
 	foodTimer.Reset();
 	make_walls(*this, walls);
+
+	objects.clear();
 }
 
 void GameWorld::QuitNotify()
