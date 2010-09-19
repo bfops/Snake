@@ -1,9 +1,5 @@
 #pragma once
 
-struct Point
-{
-	unsigned int x, y;
+#include "Vector2D.hpp"
 
-	Point();
-	Point(unsigned int x, unsigned int y);
-};
+typedef Vector2D Point;

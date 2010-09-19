@@ -5,10 +5,14 @@
 #include "Wall.hpp"
 
 #include <boost/random.hpp>
+#include <cassert>
 #include <vector>
 
 using namespace boost;
 using namespace std;
+
+// TODO: factor out all the common delete/add
+// code for vectors into a common function
 
 namespace {
 DEF_CONSTANT(Point, screenBounds, Point(800, 600))
@@ -90,11 +94,7 @@ void make_walls(GameWorld& gameWorld, GameWorld::WallBox& walls)
 	walls[2] = Wall(Point(0, 0), worldBounds().max.x, wallThickness());
 	walls[3] = Wall(Point(0, worldBounds().max.y - wallThickness()), worldBounds().max.x, wallThickness());
 
-	// TODO: less magic numbery
-	for(unsigned int i = 0; i < 4; ++i)
-	{
-		gameWorld.Add(walls[i]);
-	}
+	for_each(walls.begin(), walls.end(), bind(&GameWorld::Add, &gameWorld, _1));
 }
 
 /// checks if _probability_ occurred in _randnum_
@@ -159,64 +159,69 @@ GameWorld::GameWorld() :
 
 void GameWorld::Update()
 {
-	Physics::Update(objects);
-	Graphics::Update(objects, screen);
-
 	eventHandler.Update();
-	player.Update(*this);
 
-	for_each(foods.begin(), foods.end(), bind(&GameWorld::Delete, this, _1));
-	for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
-		if(i->IsEaten())
-			foods.erase(i);
-	for_each(foods.begin(), foods.end(), bind(&GameWorld::Add, this, _1));
-
-	// TODO: change to have a list of sentinels,
-	// so we can have many trying to appear,
-	// if one takes REALLY long
-	if(sentinelSent)
+	// TODO: fix pausing
+	if(!paused)
 	{
-		if(sentinel.IsInterfering())
+		Physics::Update(objects);
+		Graphics::Update(objects, screen);
+		player.Update(*this);
+
+		for_each(foods.begin(), foods.end(), bind(&GameWorld::Delete, this, _1));
+		for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
+			if(i->IsEaten())
+				foods.erase(i);
+		for_each(foods.begin(), foods.end(), bind(&GameWorld::Add, this, _1));
+
+		// TODO: change to have a list of sentinels,
+		// so we can have many trying to appear,
+		// if one takes REALLY long
+		if(sentinelSent)
 		{
-			Delete(sentinel);
-			send_sentinel(sentinel);
-			Add(sentinel);
+			if(sentinel.IsInterfering())
+			{
+				Delete(sentinel);
+				send_sentinel(sentinel);
+				Add(sentinel);
+			}
+			else
+			{
+				minstd_rand0 rand(time(NULL));
+				Food::FoodInfo foodType = get_food_type(rand);
+
+				Food newFood(sentinel, foodType);
+				for_each(foods.begin(), foods.end(), bind(&GameWorld::Delete, this, _1));
+				foods.push_back(newFood);
+				for_each(foods.begin(), foods.end(), bind(&GameWorld::Add, this, _1));
+
+				Delete(sentinel);
+				sentinelSent = false;
+			}
 		}
-		else
+
+		if(foodTimer.ResetIfHasElapsed(foodAdditionPeriod()))
 		{
-			minstd_rand0 rand(time(NULL));
-			Food::FoodInfo foodType = get_food_type(rand);
-
-			Food newFood(sentinel, foodType);
-			for_each(foods.begin(), foods.end(), bind(&GameWorld::Delete, this, _1));
-			foods.push_back(newFood);
-			for_each(foods.begin(), foods.end(), bind(&GameWorld::Add, this, _1));
-
-			Delete(sentinel);
-			sentinelSent = false;
-		}
-	}
-
-	if(foodTimer.ResetIfHasElapsed(foodAdditionPeriod()))
-	{
-		// if we've already sent a sentinel,
-		// we might as well keep that one
-		if(!sentinelSent)
-		{
-			send_sentinel(sentinel);
-			Add(sentinel);
-			sentinelSent = true;
+			// if we've already sent a sentinel,
+			// we might as well keep that one
+			if(!sentinelSent)
+			{
+				send_sentinel(sentinel);
+				Add(sentinel);
+				sentinelSent = true;
+			}
 		}
 	}
 }
 
 void GameWorld::Reset()
 {
+	paused = false;
+
 	if(sentinelSent)
 		Delete(sentinel);
 	sentinelSent = false;
 
-	objects.clear();
 	quit = false;
 	player.Reset(*this);
 
@@ -225,6 +230,8 @@ void GameWorld::Reset()
 
 	foodTimer.Reset();
 	make_walls(*this, walls);
+
+	objects.clear();
 }
 
 void GameWorld::QuitNotify()
@@ -234,26 +241,32 @@ void GameWorld::QuitNotify()
 
 void GameWorld::KeyNotify(SDLKey key)
 {
-	switch(key)
+	if(key == SDLK_p)
+		paused = !paused;
+
+	if(!paused)
 	{
-		case SDLK_LEFT:
-			player.ChangeDirection(Direction::left(), *this);
-			break;
+		switch(key)
+		{
+			case SDLK_LEFT:
+				player.ChangeDirection(Direction::left(), *this);
+				break;
 
-		case SDLK_RIGHT:
-			player.ChangeDirection(Direction::right(), *this);
-			break;
+			case SDLK_RIGHT:
+				player.ChangeDirection(Direction::right(), *this);
+				break;
 
-		case SDLK_UP:
-			player.ChangeDirection(Direction::up(), *this);
-			break;
+			case SDLK_UP:
+				player.ChangeDirection(Direction::up(), *this);
+				break;
 
-		case SDLK_DOWN:
-			player.ChangeDirection(Direction::down(), *this);
-			break;
+			case SDLK_DOWN:
+				player.ChangeDirection(Direction::down(), *this);
+				break;
 
-		default:
-			break;
+			default:
+				break;
+		}
 	}
 }
 

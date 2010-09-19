@@ -77,6 +77,7 @@ void Snake::Reset(GameWorld& world)
 	path.clear();
 
 	add_segment(path, headLocation, get_random_direction(), world);
+	Vector2D dir = Head().GetDirection();
 }
 void Snake::ChangeDirection(Direction newDirection, GameWorld& world)
 {
