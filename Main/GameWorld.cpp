@@ -173,37 +173,37 @@ void GameWorld::Update()
 	eventHandler.Update();
 	player.Update(*this);
 
-	// TODO: map?
 	for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
 		delete_food_if_eaten(*this, foods, i);
 
+	// TODO: change to have a list of sentinels,
+	// so that even if one gets extremely bad luck,
+	// it'll continue to try to appear
+	if(sentinelSent)
+	{
+		if(!sentinel.IsInterfering())
+		{
+			minstd_rand0 rand(time(NULL));
+			Food::FoodInfo foodType = get_food_type(rand);
+
+			Food newFood(sentinel, foodType);
+			for_each(foods.begin(), foods.end(), bind(&GameWorld::Delete, this, _1));
+			foods.push_back(newFood);
+			for_each(foods.begin(), foods.end(), bind(&GameWorld::Add, this, _1));
+
+			Delete(sentinel);
+			sentinelSent = false;
+		}
+		else
+		{
+			Delete(sentinel);
+			send_sentinel(sentinel);
+			Add(sentinel);
+		}
+	}
+
 	if(foodTimer.ResetIfHasElapsed(foodAdditionPeriod()))
 	{
-		// TODO: change to have a list of sentinels,
-		// so that even if one gets extremely bad luck,
-		// it'll continue to try to appear
-		if(sentinelSent)
-		{
-			if(!sentinel.IsInterfering())
-			{
-				minstd_rand0 rand(time(NULL));
-				Food::FoodInfo foodType = get_food_type(rand);
-
-				Food newFood(sentinel, foodType);
-				for_each(foods.begin(), foods.end(), bind(&GameWorld::Delete, this, _1));
-				foods.push_back(newFood);
-				for_each(foods.begin(), foods.end(), bind(&GameWorld::Add, this, _1));
-
-				Delete(sentinel);
-				sentinelSent = false;
-			}
-			else
-			{
-				Delete(sentinel);
-				send_sentinel(sentinel);
-				Add(sentinel);
-			}
-		}
 		// if we've already sent a sentinel,
 		// we might as well keep that one
 		if(!sentinelSent)
