@@ -31,6 +31,7 @@ public:
 
 private:
 	Logger::Handle logger;
+	bool paused;
 
 	SentinelFood sentinel;
 	bool sentinelSent;
