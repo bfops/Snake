@@ -149,7 +149,6 @@ void Snake::Update(GameWorld& world)
 
 bool Snake::IsDead() const
 {
-	// TODO: go back to using "any"
 	for(Path::const_iterator i = path.begin(), end = path.end(); i != end; ++i)
 		if(i->IsDead())
 			return true;

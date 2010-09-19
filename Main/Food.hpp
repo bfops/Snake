@@ -5,7 +5,6 @@
 #include "SentinelFood.hpp"
 #include "WorldObject.hpp"
 
-// TODO: put food in gameworld
 class Food : public WorldObject
 {
 public:

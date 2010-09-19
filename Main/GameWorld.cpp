@@ -172,8 +172,8 @@ void GameWorld::Update()
 	for_each(foods.begin(), foods.end(), bind(&GameWorld::Add, this, _1));
 
 	// TODO: change to have a list of sentinels,
-	// so that even if one gets extremely bad luck,
-	// it'll continue to try to appear
+	// so we can have many trying to appear,
+	// if one takes REALLY long
 	if(sentinelSent)
 	{
 		if(sentinel.IsInterfering())
