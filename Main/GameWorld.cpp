@@ -162,7 +162,6 @@ GameWorld::GameWorld() :
 	logger(Logger::RequestHandle("GameWorld")), sentinelSent(false),
 	screen(screenBounds().x, screenBounds().y),	player(*this), eventHandler(*this)
 {
-	logger.Debug("Constructed GameWorld");
 	Reset();
 }
 
@@ -207,7 +206,7 @@ void GameWorld::Update()
 		}
 		// if we've already sent a sentinel,
 		// we might as well keep that one
-		else if(!sentinelSent)
+		if(!sentinelSent)
 		{
 			send_sentinel(sentinel);
 			Add(sentinel);
