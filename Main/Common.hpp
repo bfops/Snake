@@ -8,3 +8,11 @@
 #ifndef NDEBUG
 #define DEBUG
 #endif
+
+#ifdef DEBUG
+#define DEBUGLOG(func, logger, string) \
+	if(func) \
+		logger.Debug(string);
+#else
+#define DEBUGLOG(func, logger, __FILE__ ## " #" # __LINE__ ## ": " ## string) ;
+#endif

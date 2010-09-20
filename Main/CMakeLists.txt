@@ -15,6 +15,7 @@ add_executable(GingerbreadPrototype
 	Snake.cpp
 	SnakeSegment.cpp
 	Timer.cpp
+	UniqueObjectList.cpp
 	Vector2D.cpp
 	Wall.cpp
 	WorldObject.cpp
