@@ -2,6 +2,12 @@
 
 #include "Common.hpp"
 
+const Direction Direction::empty(0, 0);
+const Direction Direction::left(-1, 0);
+const Direction Direction::right(1, 0);
+const Direction Direction::up(0, -1);
+const Direction Direction::down(0, 1);
+
 Direction::Direction(int x, int y) :
 	direction(x, y)
 {

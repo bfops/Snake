@@ -4,23 +4,21 @@
 
 const double SnakeSegment::HUNGRY = 0;
 
-namespace {
-DEF_CONSTANT(Color24, segmentColor, Color24(0, 255, 0))
-}
+static const Color24 segmentColor(0, 255, 0);
 
 SnakeSegment::SnakeSegment() :
-	WorldObject(snake), dead(false), empty(false), digestionInfo(HUNGRY), direction(Direction::empty())
+	WorldObject(snake), dead(false), empty(false), digestionInfo(HUNGRY), direction(Direction::empty)
 {
 }
 SnakeSegment::SnakeSegment(Point location, Direction _direction, unsigned int _width) :
 	WorldObject(snake), dead(false), empty(false), digestionInfo(HUNGRY), width(_width), direction(_direction)
 {
-	color = segmentColor();
+	color = segmentColor;
 	bounds.min = location;
 	bounds.max = location;
 
 	// account for segment orientation
-	if(direction == Direction::left() || direction == Direction::right())
+	if(direction == Direction::left || direction == Direction::right)
 		bounds.max.y += width;
 	else
 		bounds.max.x += width;

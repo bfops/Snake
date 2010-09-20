@@ -4,13 +4,11 @@
 #include "custom_algorithm.hpp"
 #include "Logger.hpp"
 
-namespace {
-Logger::Handle logger = Logger::RequestHandle("UniqueObjectList");
+static Logger::Handle logger = Logger::RequestHandle("UniqueObjectList");
 
-bool object_exists(const UniqueObjectList::List& list, const WorldObject* val)
+static inline bool object_exists(const UniqueObjectList::List& list, const WorldObject* val)
 {
 	return in(list.begin(), list.end(), val);
-}
 }
 
 void UniqueObjectList::add(WorldObject& pObj)

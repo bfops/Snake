@@ -23,10 +23,7 @@ private:
 	void SnakeCollisionHandler();
 
 public:
-	static DEF_CONSTANT(FoodInfo, ice, FoodInfo(-2.5, Color24(0, 0, 255)))
-	static DEF_CONSTANT(FoodInfo, celery, FoodInfo(0.3, Color24(127, 255, 127)))
-	static DEF_CONSTANT(FoodInfo, normal, FoodInfo(1.0, Color24(0, 255, 255)))
-	static DEF_CONSTANT(FoodInfo, donut, FoodInfo(3.0, Color24(200, 0, 0)))
+	static const FoodInfo ice, celery, normal, donut;
 
 	Food(SentinelFood& prototype, const FoodInfo& foodInfo);
 

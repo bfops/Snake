@@ -3,19 +3,17 @@
 #include "Color24.hpp"
 #include "Common.hpp"
 
-namespace {
-DEF_CONSTANT(Color24, defaultColor, Color24(255, 0, 0))
-}
+static const Color24 wallColor(255, 0, 0);
 
 Wall::Wall() :
 	WorldObject(wall)
 {
-	color = defaultColor();
+	color = wallColor;
 }
 Wall::Wall(Point loc, size_t w, size_t h) :
 	WorldObject(wall)
 {
-	color = defaultColor();
+	color = wallColor;
 	bounds.min = loc;
 	bounds.max = Point(loc.x + w - 1, loc.y + h - 1);
 }

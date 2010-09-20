@@ -11,14 +11,12 @@
 using namespace std;
 using namespace boost;
 
-namespace {
-DEF_CONSTANT(unsigned int, defaultLength, 90)
-DEF_CONSTANT(unsigned int, snakeWidth, 20)
-DEF_CONSTANT(unsigned int, speedupPeriod, 16000)
-DEF_CONSTANT(unsigned int, speedupAmount, 23)
-DEF_CONSTANT(unsigned int, growthCap, 100)
-DEF_CONSTANT(double, linearGrowthRate, 10.0 / 29.0)
-}
+static const unsigned int defaultLength(90);
+static const unsigned int snakeWidth(20);
+static const unsigned int speedupPeriod(16000);
+static const unsigned int speedupAmount(23);
+static const unsigned int growthCap(100);
+static const double linearGrowthRate(10.0 / 29.0);
 
 Snake::Snake(Point center, UniqueObjectList& gameObjects) :
 	logger(Logger::RequestHandle("Snake"))
@@ -26,17 +24,15 @@ Snake::Snake(Point center, UniqueObjectList& gameObjects) :
 	Reset(center, gameObjects);
 }
 
-namespace {
-	void add_segment(Snake::Path& path, Point location, Direction direction, UniqueObjectList& gameObjects)
+static void add_segment(Snake::Path& path, Point location, Direction direction, UniqueObjectList& gameObjects)
 {
-	SnakeSegment newSegment(location, direction, snakeWidth());
+	SnakeSegment newSegment(location, direction, snakeWidth);
 
 	for_each(path.begin(), path.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
 
 	path.push_front(newSegment);
 
 	for_each(path.begin(), path.end(), bind(&UniqueObjectList::add, &gameObjects, _1));
-}
 }
 
 void Snake::Grow(int amount)
@@ -58,7 +54,7 @@ inline SnakeSegment& Snake::Tail()
 
 Direction get_random_direction()
 {
-	const static Direction directions[] = {Direction::left(), Direction::right(), Direction::up(), Direction::down()};
+	const static Direction directions[] = {Direction::left, Direction::right, Direction::up, Direction::down};
 	uint32_t randomNumber = minstd_rand(time(NULL))();
 	return directions[randomNumber % countof(directions)];
 }
@@ -73,7 +69,7 @@ void Snake::Reset(Point center, UniqueObjectList& gameObjects)
 	speed = 100;
 
 	length = 0;
-	projectedLength = defaultLength();
+	projectedLength = defaultLength;
 
 	for_each(path.begin(), path.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
 	path.clear();
@@ -109,8 +105,8 @@ void Snake::Update(UniqueObjectList& gameObjects)
 		if(i->GetDigestionInfo() != SnakeSegment::HUNGRY)
 		{
 			double foodConstant = i->GetDigestionInfo();
-			double baseUncappedGrowth = projectedLength * linearGrowthRate();
-			double baseRealGrowth = min((double)growthCap(), baseUncappedGrowth);
+			double baseUncappedGrowth = projectedLength * linearGrowthRate;
+			double baseRealGrowth = min((double)growthCap, baseUncappedGrowth);
 
 			int growthAmount = round(baseRealGrowth * foodConstant);
 			logger.Debug(format("Growing by %1%") % growthAmount);
@@ -120,8 +116,8 @@ void Snake::Update(UniqueObjectList& gameObjects)
 		}
 	}
 
-	while(speedupTimer.ResetIfHasElapsed(speedupPeriod()))
-		speed += speedupAmount();
+	while(speedupTimer.ResetIfHasElapsed(speedupPeriod))
+		speed += speedupAmount;
 
 	while(moveTimer.ResetIfHasElapsed(1000 / speed))
 	{

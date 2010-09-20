@@ -12,7 +12,7 @@ SentinelFood::SentinelFood(Point location, unsigned int size) :
 	WorldObject(sentinelFood)
 {
 	interfering = false;
-	color = Screen::transparent();
+	color = Screen::transparent;
 
 	bounds.min = (bounds.max = location);
 	bounds.max.x += size;

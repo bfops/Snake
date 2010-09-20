@@ -10,11 +10,7 @@ private:
 	Vector2D direction;
 
 public:
-	static DEF_CONSTANT(Direction, empty, Direction(0, 0))
-	static DEF_CONSTANT(Direction, left, Direction(-1, 0))
-	static DEF_CONSTANT(Direction, right, Direction(1, 0))
-	static DEF_CONSTANT(Direction, up, Direction(0, -1))
-	static DEF_CONSTANT(Direction, down, Direction(0, 1))
+	static const Direction empty, left, right, up, down;
 
 	operator Vector2D() const;
 	Direction operator-() const;

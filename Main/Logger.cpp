@@ -9,14 +9,12 @@
 typedef boost::mutex Mut;
 typedef boost::unique_lock<Mut> Lock;
 
-namespace {
-Mut ioProtection;
+static Mut ioProtection;
 
-void Write(const char* type, const char* tag, const char* message)
+static void write(const char* type, const char* tag, const char* message)
 {
 	Lock w(ioProtection);
 	printf("%s -> [%s]: %s\n", type, tag, message);
-}
 }
 
 namespace Logger
@@ -24,13 +22,13 @@ namespace Logger
 #ifdef DEBUG
 	void Handle::Debug(const char* message) const
 	{
-		Write("D", tag, message);
+		write("D", tag, message);
 	}
 #endif
 
 	void Handle::Fatal(const char* message) const
 	{
-		Write("F", tag, message);
+		write("F", tag, message);
 		throw std::runtime_error(message);
 	}
 }

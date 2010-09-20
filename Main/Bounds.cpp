@@ -43,27 +43,26 @@ Bounds::operator Side() const
 	return retval;
 }
 
-namespace {
-inline bool validDirection(Direction direction)
+static inline bool validDirection(Direction direction)
 {
-	return (direction == Direction::left() || direction == Direction::right()
-		|| direction == Direction::up() || direction == Direction::down());
+	return (direction == Direction::left || direction == Direction::right
+		|| direction == Direction::up || direction == Direction::down);
 }
 
-void transfer_side(const Bounds& input, Bounds& output, Direction whichSide)
+static void transfer_side(const Bounds& input, Bounds& output, Direction whichSide)
 {
 	assert(validDirection(whichSide));
-	if(whichSide == Direction::left())
+	if(whichSide == Direction::left)
 	{
 		output.min = input.min;
 		output.max.y = input.max.y;
 	}
-	else if(whichSide == Direction::right())
+	else if(whichSide == Direction::right)
 	{
 		output.min.y = input.min.y;
 		output.max = input.max;
 	}
-	else if(whichSide == Direction::up())
+	else if(whichSide == Direction::up)
 	{
 		output.min = input.min;
 		output.max.x = input.max.x;
@@ -73,7 +72,6 @@ void transfer_side(const Bounds& input, Bounds& output, Direction whichSide)
 		output.min.x = input.min.x;
 		output.max = input.max;
 	}
-}
 }
 
 Side Bounds::GetSide(Direction whichSide) const
@@ -86,11 +84,11 @@ Side Bounds::GetSide(Direction whichSide) const
 	// getting a side from a bounded rectangle
 	// is "lossy", so we need to set mins = maxs
 	// or maxs = mins to "lose" the data
-	if(whichSide == Direction::left())
+	if(whichSide == Direction::left)
 		retval.max.x = retval.min.x;
-	else if(whichSide == Direction::right())
+	else if(whichSide == Direction::right)
 		retval.min.x = retval.max.x;
-	else if(whichSide == Direction::up())
+	else if(whichSide == Direction::up)
 		retval.max.y = retval.min.y;
 	else
 		retval.min.y = retval.max.y;

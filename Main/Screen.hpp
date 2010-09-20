@@ -18,7 +18,7 @@ private:
 	Color24 bgColor;
 
 public:
-	static DEF_CONSTANT(Color24, transparent, Color24(255, 0, 255))
+	static const Color24 transparent;
 
 	Screen(unsigned int width, unsigned int height);
 
