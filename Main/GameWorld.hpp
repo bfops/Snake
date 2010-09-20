@@ -15,17 +15,6 @@
 class GameWorld
 {
 public:
-	class EventHandler
-	{
-	private:
-		GameWorld* const world;
-
-	public:
-		EventHandler(GameWorld& parent);
-
-		void Update(UniqueObjectList& gameObjects);
-	};
-
 	typedef std::vector<Food> Menu;
 	typedef boost::array<Wall, 4> WallBox;
 
@@ -43,9 +32,6 @@ private:
 	Timer foodTimer;
 	Menu foods;
 	Snake player;
-
-	// TODO: move this out
-	EventHandler eventHandler;
 
 	WallBox walls;
 

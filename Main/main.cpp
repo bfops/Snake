@@ -2,6 +2,7 @@
 #include <SDL/SDL.h>
 
 #include "Common.hpp"
+#include "EventHandler.hpp"
 #include "GameWorld.hpp"
 #include "Logger.hpp"
 #include "SDL.h"
@@ -15,14 +16,14 @@ Logger::Handle logger(Logger::RequestHandle("main()"));
 DEF_CONSTANT(const char*, windowTitle, "Rewritable's Snake")
 // TODO: fetch FPS dynamically
 DEF_CONSTANT(unsigned int, FPS, 60)
-}
 
 /// Returns true if we should continue playing, false otherwise.
-static bool main_loop(GameWorld& gameWorld, UniqueObjectList& gameObjects)
+inline bool main_loop(GameWorld& gameWorld, UniqueObjectList& gameObjects, EventHandler& eventHandler)
 {
 	while(!gameWorld.Lost() && !gameWorld.QuitCalled())
 	{
 		gameWorld.Update(gameObjects);
+		eventHandler.Update(gameWorld, gameObjects);
 
 		this_thread::sleep(posix_time::millisec(1000 / FPS()));
 	}
@@ -31,6 +32,7 @@ static bool main_loop(GameWorld& gameWorld, UniqueObjectList& gameObjects)
 
 	logger.Debug("You dead");
 	return true;
+}
 }
 
 int main()
@@ -42,9 +44,10 @@ int main()
 	SDL_ShowCursor(SDL_DISABLE);
 
 	UniqueObjectList gameObjects;
+	EventHandler eventHandler;
 	GameWorld gameWorld(gameObjects);
 
-	while(main_loop(gameWorld, gameObjects))
+	while(main_loop(gameWorld, gameObjects, eventHandler))
 	{
 		gameWorld.Reset(gameObjects);
 	}

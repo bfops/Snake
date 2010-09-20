@@ -1,5 +1,7 @@
 #include "Bounds.hpp"
 
+#include "Direction.hpp"
+
 #include <cassert>
 
 Bounds::Bounds()

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Direction.hpp"
 #include "Point.hpp"
 #include "Side.hpp"
 
+class Direction;
 struct Bounds
 {
 	Point min, max;

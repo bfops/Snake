@@ -140,7 +140,7 @@ void send_sentinel(SentinelFood& sentinel)
 
 GameWorld::GameWorld(UniqueObjectList& gameObjects) :
 	logger(Logger::RequestHandle("GameWorld")),	screen(screenBounds().x, screenBounds().y),
-	player(GetCenter(), gameObjects), eventHandler(*this)
+	player(GetCenter(), gameObjects)
 {
 	make_walls(walls);
 	for_each(walls.begin(), walls.end(), bind(&UniqueObjectList::add, &gameObjects, _1));
@@ -150,8 +150,6 @@ GameWorld::GameWorld(UniqueObjectList& gameObjects) :
 
 void GameWorld::Update(UniqueObjectList& gameObjects)
 {
-	eventHandler.Update(gameObjects);
-
 	// TODO: fix pausing
 	if(!paused)
 	{

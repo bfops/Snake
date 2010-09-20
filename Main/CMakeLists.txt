@@ -3,7 +3,7 @@ add_executable(GingerbreadPrototype
 	collision.c
 	Color24.cpp
 	Direction.cpp
-	Event.cpp
+	EventHandler.cpp
 	Food.cpp
 	GameWorld.cpp
 	Logger.cpp
