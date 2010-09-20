@@ -12,7 +12,7 @@ find_package(Boost ${BOOST_VERSION} REQUIRED COMPONENTS ${BOOST_PACKAGES})
 find_package(SDL)
 
 include_directories(${Boost_INCLUDE_DIR} ${SDL_INCLUDE_DIR})
-link_directories(${Boost_LIBRARY_DIRS})# ${SDL_INCLUDE_DIR})
+link_directories(${Boost_LIBRARY_DIRS})
 
 include_directories("include")
 
@@ -32,3 +32,4 @@ enable_testing()
 add_subdirectory(gtest)
 add_subdirectory(Main)
 add_subdirectory(Main_test)
+add_subdirectory(gingerbread-in-c)
