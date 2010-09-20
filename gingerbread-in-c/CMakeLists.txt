@@ -1,4 +1,5 @@
 add_executable(gingerbread-in-c
+	event.c
 	graphics.c
 	main.c
 )
