@@ -150,63 +150,57 @@ GameWorld::GameWorld(UniqueObjectList& gameObjects) :
 
 void GameWorld::Update(UniqueObjectList& gameObjects)
 {
-	// TODO: fix pausing
-	if(!paused)
+	Physics::Update(gameObjects);
+	Graphics::Update(gameObjects, screen);
+	player.Update(gameObjects);
+
+	for_each(foods.begin(), foods.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
+	for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
+		if(i->IsEaten())
+			foods.erase(i);
+	for_each(foods.begin(), foods.end(), bind(&UniqueObjectList::add, &gameObjects, _1));
+
+	// TODO: change to have a list of sentinels,
+	// so we can have many trying to appear,
+	// if one takes REALLY long
+	if(sentinelSent)
 	{
-		Physics::Update(gameObjects);
-		Graphics::Update(gameObjects, screen);
-		player.Update(gameObjects);
-
-		for_each(foods.begin(), foods.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
-		for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
-			if(i->IsEaten())
-				foods.erase(i);
-		for_each(foods.begin(), foods.end(), bind(&UniqueObjectList::add, &gameObjects, _1));
-
-		// TODO: change to have a list of sentinels,
-		// so we can have many trying to appear,
-		// if one takes REALLY long
-		if(sentinelSent)
+		if(sentinel.IsInterfering())
 		{
-			if(sentinel.IsInterfering())
-			{
-				gameObjects.remove(sentinel);
-				send_sentinel(sentinel);
-				gameObjects.add(sentinel);
-			}
-			else
-			{
-				minstd_rand0 rand(time(NULL));
-				Food::FoodInfo foodType = get_food_type(rand);
-
-				Food newFood(sentinel, foodType);
-				for_each(foods.begin(), foods.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
-				foods.push_back(newFood);
-				for_each(foods.begin(), foods.end(), bind(&UniqueObjectList::add, &gameObjects, _1));
-
-				gameObjects.remove(sentinel);
-				sentinelSent = false;
-			}
+			gameObjects.remove(sentinel);
+			send_sentinel(sentinel);
+			gameObjects.add(sentinel);
 		}
-
-		if(foodTimer.ResetIfHasElapsed(foodAdditionPeriod()))
+		else
 		{
-			// if we've already sent a sentinel,
-			// we might as well keep that one
-			if(!sentinelSent)
-			{
-				send_sentinel(sentinel);
-				gameObjects.add(sentinel);
-				sentinelSent = true;
-			}
+			minstd_rand0 rand(time(NULL));
+			Food::FoodInfo foodType = get_food_type(rand);
+
+			Food newFood(sentinel, foodType);
+			for_each(foods.begin(), foods.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
+			foods.push_back(newFood);
+			for_each(foods.begin(), foods.end(), bind(&UniqueObjectList::add, &gameObjects, _1));
+
+			gameObjects.remove(sentinel);
+			sentinelSent = false;
+		}
+	}
+
+	if(foodTimer.ResetIfHasElapsed(foodAdditionPeriod()))
+	{
+		// if we've already sent a sentinel,
+		// we might as well keep that one
+		if(!sentinelSent)
+		{
+			send_sentinel(sentinel);
+			gameObjects.add(sentinel);
+			sentinelSent = true;
 		}
 	}
 }
 
 void GameWorld::Reset(UniqueObjectList& gameObjects)
 {
-	paused = false;
-
 	if(sentinelSent)
 		gameObjects.remove(sentinel);
 	sentinelSent = false;
@@ -226,32 +220,26 @@ void GameWorld::QuitNotify()
 
 void GameWorld::KeyNotify(SDLKey key, UniqueObjectList& gameObjects)
 {
-	if(key == SDLK_p)
-		paused = !paused;
-
-	if(!paused)
+	switch(key)
 	{
-		switch(key)
-		{
-			case SDLK_LEFT:
-				player.ChangeDirection(Direction::left(), gameObjects);
-				break;
+		case SDLK_LEFT:
+			player.ChangeDirection(Direction::left(), gameObjects);
+			break;
 
-			case SDLK_RIGHT:
-				player.ChangeDirection(Direction::right(), gameObjects);
-				break;
+		case SDLK_RIGHT:
+			player.ChangeDirection(Direction::right(), gameObjects);
+			break;
 
-			case SDLK_UP:
-				player.ChangeDirection(Direction::up(), gameObjects);
-				break;
+		case SDLK_UP:
+			player.ChangeDirection(Direction::up(), gameObjects);
+			break;
 
-			case SDLK_DOWN:
-				player.ChangeDirection(Direction::down(), gameObjects);
-				break;
+		case SDLK_DOWN:
+			player.ChangeDirection(Direction::down(), gameObjects);
+			break;
 
-			default:
-				break;
-		}
+		default:
+			break;
 	}
 }
 

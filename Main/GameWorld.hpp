@@ -20,8 +20,6 @@ public:
 
 private:
 	Logger::Handle logger;
-	// TODO: pull this out
-	bool paused;
 
 	SentinelFood sentinel;
 	bool sentinelSent;
