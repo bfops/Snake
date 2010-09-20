@@ -20,22 +20,22 @@ DEF_CONSTANT(unsigned int, growthCap, 100)
 DEF_CONSTANT(double, linearGrowthRate, 10.0 / 29.0)
 }
 
-Snake::Snake(GameWorld& world) :
+Snake::Snake(Point center, UniqueObjectList& gameObjects) :
 	logger(Logger::RequestHandle("Snake"))
 {
-	Reset(world);
+	Reset(center, gameObjects);
 }
 
 namespace {
-void add_segment(Snake::Path& path, Point location, Direction direction, GameWorld& world)
+	void add_segment(Snake::Path& path, Point location, Direction direction, UniqueObjectList& gameObjects)
 {
 	SnakeSegment newSegment(location, direction, snakeWidth());
 
-	for_each(path.begin(), path.end(), bind(&GameWorld::Delete, &world, _1));
+	for_each(path.begin(), path.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
 
 	path.push_front(newSegment);
 
-	for_each(path.begin(), path.end(), bind(&GameWorld::Add, &world, _1));
+	for_each(path.begin(), path.end(), bind(&UniqueObjectList::add, &gameObjects, _1));
 }
 }
 
@@ -62,9 +62,9 @@ Direction get_random_direction()
 	uint32_t randomNumber = minstd_rand(time(NULL))();
 	return directions[randomNumber % countof(directions)];
 }
-void Snake::Reset(GameWorld& world)
+void Snake::Reset(Point center, UniqueObjectList& gameObjects)
 {
-	Point headLocation = world.GetCenter();
+	Point headLocation = center;
 
 	moveTimer.Reset();
 	growTimer.Reset();
@@ -74,12 +74,14 @@ void Snake::Reset(GameWorld& world)
 
 	length = 0;
 	projectedLength = defaultLength();
+
+	for_each(path.begin(), path.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
 	path.clear();
 
-	add_segment(path, headLocation, get_random_direction(), world);
+	add_segment(path, headLocation, get_random_direction(), gameObjects);
 	Vector2D dir = Head().GetDirection();
 }
-void Snake::ChangeDirection(Direction newDirection, GameWorld& world)
+void Snake::ChangeDirection(Direction newDirection, UniqueObjectList& gameObjects)
 {
 	// TODO: change so that the new segment takes on the
 	// "intersection" block between the new and old segment
@@ -96,11 +98,11 @@ void Snake::ChangeDirection(Direction newDirection, GameWorld& world)
 		Bounds head = Head().GetHeadSquare();
 		Side startSide = head.GetSide(newDirection);
 
-		add_segment(path, startSide.min, newDirection, world);
+		add_segment(path, startSide.min, newDirection, gameObjects);
 	}
 }
 
-void Snake::Update(GameWorld& world)
+void Snake::Update(UniqueObjectList& gameObjects)
 {
 	for(Path::iterator i = path.begin(), end = path.end(); i != end; ++i)
 	{
@@ -141,7 +143,7 @@ void Snake::Update(GameWorld& world)
 
 			if(Tail().IsEmpty())
 			{
-				world.Delete(Tail());
+				gameObjects.remove(Tail());
 				path.pop_back();
 			}
 		}

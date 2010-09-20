@@ -4,6 +4,7 @@
 #include "Logger.hpp"
 #include "Snake.hpp"
 #include "Timer.hpp"
+#include "UniqueObjectList.hpp"
 #include "Wall.hpp"
 #include "WorldObject.hpp"
 
@@ -22,46 +23,43 @@ public:
 	public:
 		EventHandler(GameWorld& parent);
 
-		void Update();
+		void Update(UniqueObjectList& gameObjects);
 	};
 
-	typedef std::vector<WorldObject*> ObjectList;
 	typedef std::vector<Food> Menu;
 	typedef boost::array<Wall, 4> WallBox;
 
 private:
 	Logger::Handle logger;
+	// TODO: pull this out
 	bool paused;
 
 	SentinelFood sentinel;
 	bool sentinelSent;
 
 	Screen screen;
-	ObjectList objects;
 
 	bool quit;
 	Timer foodTimer;
 	Menu foods;
 	Snake player;
 
+	// TODO: move this out
 	EventHandler eventHandler;
 
 	WallBox walls;
 
 public:
-	GameWorld();
+	GameWorld(UniqueObjectList& gameObjects);
 
-	void Update();
-	void Reset();
+	void Update(UniqueObjectList& gameObjects);
+	void Reset(UniqueObjectList& gameObjects);
 
 	void QuitNotify();
-	void KeyNotify(SDLKey sym);
+	void KeyNotify(SDLKey sym, UniqueObjectList& gameObjects);
 
 	bool Lost() const;
 	bool QuitCalled() const;
 
 	Point GetCenter() const;
-
-	void Add(WorldObject&);
-	void Delete(WorldObject&);
 };

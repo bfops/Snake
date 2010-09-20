@@ -13,26 +13,26 @@ bool object_exists(const UniqueObjectList::List& list, const WorldObject* val)
 }
 }
 
-void UniqueObjectList::add(WorldObject* pObj)
+void UniqueObjectList::add(WorldObject& pObj)
 {
-	DEBUGLOG(object_exists(objects, pObj), logger, "Object pObj already exists.")
+	DEBUGLOGIF(object_exists(objects, &pObj), logger, boost::format("Object %1% already exists.") % &pObj)
 
-	objects.push_back(pObj);
+	objects.push_back(&pObj);
 }
 
-void UniqueObjectList::remove(WorldObject* pObj)
+void UniqueObjectList::remove(WorldObject& pObj)
 {
-	DEBUGLOG(!object_exists(objects, pObj), logger, "Object pObj does not exist.")
+	DEBUGLOGIF(!object_exists(objects, &pObj), logger, boost::format("Object %1% does not exist.") % &pObj)
 
-	unordered_find_and_remove(objects, pObj);
+	unordered_find_and_remove(objects, &pObj);
 }
 
-UniqueObjectList::Iterator UniqueObjectList::begin()
+UniqueObjectList::iterator UniqueObjectList::begin()
 {
 	return objects.begin();
 }
 
-UniqueObjectList::Iterator UniqueObjectList::end()
+UniqueObjectList::iterator UniqueObjectList::end()
 {
 	return objects.end();
 }

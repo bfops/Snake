@@ -16,23 +16,14 @@ using namespace std;
 
 namespace {
 DEF_CONSTANT(Point, screenBounds, Point(800, 600))
-inline bool object_exists(const WorldObject* obj, GameWorld::ObjectList& objects)
-{
-	// TODO: use in()
-	for(GameWorld::ObjectList::iterator i = objects.begin(), end = objects.end(); i != end; ++i)
-		if(obj == *i)
-			return true;
-
-	return false;
-}
 
 namespace Graphics {
-void Update(GameWorld::ObjectList& objects, Screen& screen)
+void Update(UniqueObjectList& gameObjects, Screen& screen)
 {
 	screen.Clear();
 
 	// TODO: re-bind
-	for(GameWorld::ObjectList::iterator i = objects.begin(), end = objects.end(); i != end; ++i)
+	for(UniqueObjectList::iterator i = gameObjects.begin(), end = gameObjects.end(); i != end; ++i)
 		(*i)->Draw(screen);
 
 	screen.Update();
@@ -66,19 +57,19 @@ void handle_potential_collision(WorldObject* o1, WorldObject* o2)
 	}
 }
 
-inline void collide_with_subsequent_objects(GameWorld::ObjectList::iterator collider, GameWorld::ObjectList::iterator end)
+inline void collide_with_subsequent_objects(UniqueObjectList::iterator collider, UniqueObjectList::iterator end)
 {
 	// TODO: re-bind
-	for(GameWorld::ObjectList::iterator collidee = collider + 1; collidee != end; ++collidee)
+	for(UniqueObjectList::iterator collidee = collider + 1; collidee != end; ++collidee)
 		handle_potential_collision(*collider, *collidee);
 }
 }
 
-void Update(GameWorld::ObjectList& objects)
+void Update(UniqueObjectList& gameObjects)
 {
-	// don't try the last objects, since all have been checked against it
-	for(GameWorld::ObjectList::iterator collider = objects.begin(), end = objects.end() - 1; collider != end; ++collider)
-		collide_with_subsequent_objects(collider, objects.end());
+	// don't try the last gameObjects, since all have been checked against it
+	for(UniqueObjectList::iterator collider = gameObjects.begin(), end = gameObjects.end() - 1; collider != end; ++collider)
+		collide_with_subsequent_objects(collider, gameObjects.end());
 }
 }
 
@@ -87,14 +78,12 @@ DEF_CONSTANT(unsigned int, foodSize, 15)
 DEF_CONSTANT(unsigned int, wallThickness, 10)
 DEF_CONSTANT(Bounds, worldBounds, Bounds(Point(0, 0), Point(800, 600)))
 
-void make_walls(GameWorld& gameWorld, GameWorld::WallBox& walls)
+void make_walls(GameWorld::WallBox& walls)
 {
 	walls[0] = Wall(Point(0, 0), wallThickness(), worldBounds().max.y);
 	walls[1] = Wall(Point(worldBounds().max.x - wallThickness(), 0), wallThickness(), worldBounds().max.y);
 	walls[2] = Wall(Point(0, 0), worldBounds().max.x, wallThickness());
 	walls[3] = Wall(Point(0, worldBounds().max.y - wallThickness()), worldBounds().max.x, wallThickness());
-
-	for_each(walls.begin(), walls.end(), bind(&GameWorld::Add, &gameWorld, _1));
 }
 
 /// checks if _probability_ occurred in _randnum_
@@ -149,30 +138,32 @@ void send_sentinel(SentinelFood& sentinel)
 }
 }
 
-GameWorld::GameWorld() :
+GameWorld::GameWorld(UniqueObjectList& gameObjects) :
 	logger(Logger::RequestHandle("GameWorld")),	screen(screenBounds().x, screenBounds().y),
-	player(*this), eventHandler(*this)
+	player(GetCenter(), gameObjects), eventHandler(*this)
 {
+	make_walls(walls);
+	for_each(walls.begin(), walls.end(), bind(&UniqueObjectList::add, &gameObjects, _1));
 	sentinelSent = false;
-	Reset();
+	Reset(gameObjects);
 }
 
-void GameWorld::Update()
+void GameWorld::Update(UniqueObjectList& gameObjects)
 {
-	eventHandler.Update();
+	eventHandler.Update(gameObjects);
 
 	// TODO: fix pausing
 	if(!paused)
 	{
-		Physics::Update(objects);
-		Graphics::Update(objects, screen);
-		player.Update(*this);
+		Physics::Update(gameObjects);
+		Graphics::Update(gameObjects, screen);
+		player.Update(gameObjects);
 
-		for_each(foods.begin(), foods.end(), bind(&GameWorld::Delete, this, _1));
+		for_each(foods.begin(), foods.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
 		for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
 			if(i->IsEaten())
 				foods.erase(i);
-		for_each(foods.begin(), foods.end(), bind(&GameWorld::Add, this, _1));
+		for_each(foods.begin(), foods.end(), bind(&UniqueObjectList::add, &gameObjects, _1));
 
 		// TODO: change to have a list of sentinels,
 		// so we can have many trying to appear,
@@ -181,9 +172,9 @@ void GameWorld::Update()
 		{
 			if(sentinel.IsInterfering())
 			{
-				Delete(sentinel);
+				gameObjects.remove(sentinel);
 				send_sentinel(sentinel);
-				Add(sentinel);
+				gameObjects.add(sentinel);
 			}
 			else
 			{
@@ -191,11 +182,11 @@ void GameWorld::Update()
 				Food::FoodInfo foodType = get_food_type(rand);
 
 				Food newFood(sentinel, foodType);
-				for_each(foods.begin(), foods.end(), bind(&GameWorld::Delete, this, _1));
+				for_each(foods.begin(), foods.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
 				foods.push_back(newFood);
-				for_each(foods.begin(), foods.end(), bind(&GameWorld::Add, this, _1));
+				for_each(foods.begin(), foods.end(), bind(&UniqueObjectList::add, &gameObjects, _1));
 
-				Delete(sentinel);
+				gameObjects.remove(sentinel);
 				sentinelSent = false;
 			}
 		}
@@ -207,31 +198,27 @@ void GameWorld::Update()
 			if(!sentinelSent)
 			{
 				send_sentinel(sentinel);
-				Add(sentinel);
+				gameObjects.add(sentinel);
 				sentinelSent = true;
 			}
 		}
 	}
 }
 
-void GameWorld::Reset()
+void GameWorld::Reset(UniqueObjectList& gameObjects)
 {
 	paused = false;
 
 	if(sentinelSent)
-		Delete(sentinel);
+		gameObjects.remove(sentinel);
 	sentinelSent = false;
 
 	quit = false;
-	player.Reset(*this);
+	player.Reset(GetCenter(), gameObjects);
 
-	for_each(foods.begin(), foods.end(), bind(&GameWorld::Delete, this, _1));
+	for_each(foods.begin(), foods.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
 	foods.clear();
-
 	foodTimer.Reset();
-	make_walls(*this, walls);
-
-	objects.clear();
 }
 
 void GameWorld::QuitNotify()
@@ -239,7 +226,7 @@ void GameWorld::QuitNotify()
 	quit = true;
 }
 
-void GameWorld::KeyNotify(SDLKey key)
+void GameWorld::KeyNotify(SDLKey key, UniqueObjectList& gameObjects)
 {
 	if(key == SDLK_p)
 		paused = !paused;
@@ -249,19 +236,19 @@ void GameWorld::KeyNotify(SDLKey key)
 		switch(key)
 		{
 			case SDLK_LEFT:
-				player.ChangeDirection(Direction::left(), *this);
+				player.ChangeDirection(Direction::left(), gameObjects);
 				break;
 
 			case SDLK_RIGHT:
-				player.ChangeDirection(Direction::right(), *this);
+				player.ChangeDirection(Direction::right(), gameObjects);
 				break;
 
 			case SDLK_UP:
-				player.ChangeDirection(Direction::up(), *this);
+				player.ChangeDirection(Direction::up(), gameObjects);
 				break;
 
 			case SDLK_DOWN:
-				player.ChangeDirection(Direction::down(), *this);
+				player.ChangeDirection(Direction::down(), gameObjects);
 				break;
 
 			default:
@@ -283,18 +270,4 @@ bool GameWorld::QuitCalled() const
 Point GameWorld::GetCenter() const
 {
 	return Point(screenBounds().x / 2, screenBounds().y / 2);
-}
-
-void GameWorld::Add(WorldObject& obj)
-{
-	assert(!object_exists(&obj, objects));
-
-	objects.push_back(&obj);
-}
-
-void GameWorld::Delete(WorldObject& obj)
-{
-	assert(object_exists(&obj, objects));
-
-	unordered_find_and_remove(objects, &obj);
 }

@@ -5,8 +5,8 @@
 #include "Direction.hpp"
 #include "SnakeSegment.hpp"
 #include "Timer.hpp"
+#include "UniqueObjectList.hpp"
 
-// TODO: shitshitshit circular dependencies!
 class GameWorld;
 // TODO: color snake head
 class Snake
@@ -33,10 +33,11 @@ private:
 	inline SnakeSegment& Tail();
 
 public:
-	Snake(GameWorld& world);
+	// TODO: factor out constructor w/ Reset()
+	Snake(Point centerOfScreen, UniqueObjectList& gameObjects);
 
-	void Reset(GameWorld& world);
-	void ChangeDirection(Direction, GameWorld& world);
-	void Update(GameWorld& world);
+	void Reset(Point centerOfScreen, UniqueObjectList& gameObjects);
+	void ChangeDirection(Direction, UniqueObjectList& gameObjects);
+	void Update(UniqueObjectList& gameObjects);
 	bool IsDead() const;
 };

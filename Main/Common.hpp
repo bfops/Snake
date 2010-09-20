@@ -10,9 +10,16 @@
 #endif
 
 #ifdef DEBUG
-#define DEBUGLOG(func, logger, string) \
+#define DEBUGLOG(logger, string) \
+	logger.Debug(string);
+#else
+#define DEBUGLOG(logger, string) ;
+#endif
+
+#ifdef DEBUG
+#define DEBUGLOGIF(func, logger, string) \
 	if(func) \
-		logger.Debug(string);
+		DEBUGLOG(logger, string)
 #else
 #define DEBUGLOG(func, logger, __FILE__ ## " #" # __LINE__ ## ": " ## string) ;
 #endif

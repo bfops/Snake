@@ -8,7 +8,7 @@ GameWorld::EventHandler::EventHandler(GameWorld& _world) :
 {
 }
 
-void GameWorld::EventHandler::Update()
+void GameWorld::EventHandler::Update(UniqueObjectList& gameObjects)
 {
 	SDL_Event event;
 
@@ -17,7 +17,7 @@ void GameWorld::EventHandler::Update()
 		switch(event.type)
 		{
 			case SDL_KEYDOWN:
-				world->KeyNotify(event.key.keysym.sym);
+				world->KeyNotify(event.key.keysym.sym, gameObjects);
 				break;
 
 			case SDL_QUIT:

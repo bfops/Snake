@@ -8,15 +8,16 @@ class UniqueObjectList
 {
 public:
 	typedef std::vector<WorldObject*> List;
-	typedef List::iterator Iterator;
+	typedef List::iterator iterator;
 
 private:
 	List objects;
 
 public:
-	void add(WorldObject*);
-	void remove(WorldObject*);
+	void add(WorldObject&);
+	void remove(WorldObject&);
+	void clear();
 
-	Iterator begin();
-	Iterator end();
+	iterator begin();
+	iterator end();
 };
