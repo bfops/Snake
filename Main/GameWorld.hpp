@@ -33,6 +33,8 @@ private:
 
 	WallBox walls;
 
+	void Init();
+
 public:
 	GameWorld(UniqueObjectList& gameObjects);
 

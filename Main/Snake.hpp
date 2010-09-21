@@ -32,6 +32,8 @@ private:
 	inline SnakeSegment& Head();
 	inline SnakeSegment& Tail();
 
+	void Init(Point centerOfScreen, UniqueObjectList& gameObjects);
+
 public:
 	// TODO: factor out constructor w/ Reset()
 	Snake(Point centerOfScreen, UniqueObjectList& gameObjects);

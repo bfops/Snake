@@ -129,14 +129,22 @@ void send_sentinel(SentinelFood& sentinel)
 }
 }
 
+void GameWorld::Init()
+{
+	sentinelSent = false;
+
+	quit = false;
+	foodTimer.Reset();
+}
+
 GameWorld::GameWorld(UniqueObjectList& gameObjects) :
 	logger(Logger::RequestHandle("GameWorld")),	screen(screenBounds.x, screenBounds.y),
 	player(GetCenter(), gameObjects)
 {
 	make_walls(walls);
 	for_each(walls.begin(), walls.end(), bind(&UniqueObjectList::add, &gameObjects, _1));
-	sentinelSent = false;
-	Reset(gameObjects);
+
+	Init();
 }
 
 void GameWorld::Update(UniqueObjectList& gameObjects)
@@ -194,14 +202,12 @@ void GameWorld::Reset(UniqueObjectList& gameObjects)
 {
 	if(sentinelSent)
 		gameObjects.remove(sentinel);
-	sentinelSent = false;
-
-	quit = false;
 	player.Reset(GetCenter(), gameObjects);
 
 	for_each(foods.begin(), foods.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
 	foods.clear();
-	foodTimer.Reset();
+
+	Init();
 }
 
 void GameWorld::QuitNotify()

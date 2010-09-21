@@ -21,7 +21,7 @@ static const double linearGrowthRate(10.0 / 29.0);
 Snake::Snake(Point center, UniqueObjectList& gameObjects) :
 	logger(Logger::RequestHandle("Snake"))
 {
-	Reset(center, gameObjects);
+	Init(center, gameObjects);
 }
 
 static void add_segment(Snake::Path& path, Point location, Direction direction, UniqueObjectList& gameObjects)
@@ -47,18 +47,20 @@ inline SnakeSegment& Snake::Head()
 {
 	return path.front();
 }
+
 inline SnakeSegment& Snake::Tail()
 {
 	return path.back();
 }
 
-Direction get_random_direction()
+static inline Direction get_random_direction()
 {
 	const static Direction directions[] = {Direction::left, Direction::right, Direction::up, Direction::down};
 	uint32_t randomNumber = minstd_rand(time(NULL))();
 	return directions[randomNumber % countof(directions)];
 }
-void Snake::Reset(Point center, UniqueObjectList& gameObjects)
+
+void Snake::Init(Point center, UniqueObjectList& gameObjects)
 {
 	Point headLocation = center;
 
@@ -71,11 +73,15 @@ void Snake::Reset(Point center, UniqueObjectList& gameObjects)
 	length = 0;
 	projectedLength = defaultLength;
 
+	add_segment(path, headLocation, get_random_direction(), gameObjects);
+}
+
+void Snake::Reset(Point center, UniqueObjectList& gameObjects)
+{
 	for_each(path.begin(), path.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
 	path.clear();
 
-	add_segment(path, headLocation, get_random_direction(), gameObjects);
-	Vector2D dir = Head().GetDirection();
+	Init(center, gameObjects);
 }
 void Snake::ChangeDirection(Direction newDirection, UniqueObjectList& gameObjects)
 {
