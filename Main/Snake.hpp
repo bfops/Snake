@@ -35,7 +35,6 @@ private:
 	void Init(Point centerOfScreen, UniqueObjectList& gameObjects);
 
 public:
-	// TODO: factor out constructor w/ Reset()
 	Snake(Point centerOfScreen, UniqueObjectList& gameObjects);
 
 	void Reset(Point centerOfScreen, UniqueObjectList& gameObjects);

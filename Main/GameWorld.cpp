@@ -69,12 +69,31 @@ static const unsigned int foodSize(15);
 static const unsigned int wallThickness(10);
 static const Bounds worldBounds(Point(0, 0), Point(800, 600));
 
-void make_walls(GameWorld::WallBox& walls)
+static inline void make_walls(GameWorld::WallBox& walls)
 {
 	walls[0] = Wall(Point(0, 0), wallThickness, worldBounds.max.y);
 	walls[1] = Wall(Point(worldBounds.max.x - wallThickness, 0), wallThickness, worldBounds.max.y);
 	walls[2] = Wall(Point(0, 0), worldBounds.max.x, wallThickness);
 	walls[3] = Wall(Point(0, worldBounds.max.y - wallThickness), worldBounds.max.x, wallThickness);
+}
+
+template <typename Iter>
+static inline void add_range_to_object_list(Iter start, Iter end, UniqueObjectList& gameObjects)
+{
+	for_each(start, end, bind(&UniqueObjectList::add, &gameObjects, _1));
+}
+
+template <typename _T>
+static inline void add_vector_to_object_list(vector<_T>& v, UniqueObjectList& gameObjects)
+{
+	//for_each(v.begin(), v.end(), bind(&UniqueObjectList::add, &gameObjects, _1));
+	add_range_to_object_list(v.begin(), v.end(), gameObjects);
+}
+
+template <typename _T>
+static inline void remove_vector_from_object_list(vector<_T>& v, UniqueObjectList& gameObjects)
+{
+	for_each(v.begin(), v.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
 }
 
 /// checks if _probability_ occurred in _randnum_
@@ -142,7 +161,7 @@ GameWorld::GameWorld(UniqueObjectList& gameObjects) :
 	player(GetCenter(), gameObjects)
 {
 	make_walls(walls);
-	for_each(walls.begin(), walls.end(), bind(&UniqueObjectList::add, &gameObjects, _1));
+	add_range_to_object_list(walls.begin(), walls.end(), gameObjects);
 
 	Init();
 }
@@ -153,11 +172,11 @@ void GameWorld::Update(UniqueObjectList& gameObjects)
 	Graphics::Update(gameObjects, screen);
 	player.Update(gameObjects);
 
-	for_each(foods.begin(), foods.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
+	remove_vector_from_object_list(foods, gameObjects);
 	for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
 		if(i->IsEaten())
 			foods.erase(i);
-	for_each(foods.begin(), foods.end(), bind(&UniqueObjectList::add, &gameObjects, _1));
+	add_vector_to_object_list(foods, gameObjects);
 
 	// TODO: change to have a list of sentinels,
 	// so we can have many trying to appear,
@@ -176,9 +195,9 @@ void GameWorld::Update(UniqueObjectList& gameObjects)
 			Food::FoodInfo foodType = get_food_type(rand);
 
 			Food newFood(sentinel, foodType);
-			for_each(foods.begin(), foods.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
+			remove_vector_from_object_list(foods, gameObjects);
 			foods.push_back(newFood);
-			for_each(foods.begin(), foods.end(), bind(&UniqueObjectList::add, &gameObjects, _1));
+			add_vector_to_object_list(foods, gameObjects);
 
 			gameObjects.remove(sentinel);
 			sentinelSent = false;
@@ -204,7 +223,7 @@ void GameWorld::Reset(UniqueObjectList& gameObjects)
 		gameObjects.remove(sentinel);
 	player.Reset(GetCenter(), gameObjects);
 
-	for_each(foods.begin(), foods.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
+	remove_vector_from_object_list(foods, gameObjects);
 	foods.clear();
 
 	Init();
