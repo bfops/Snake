@@ -11,9 +11,6 @@
 using namespace boost;
 using namespace std;
 
-// TODO: factor out all the common delete/add
-// code for vectors into a common function
-
 namespace {
 const static Point screenBounds(800, 600);
 
@@ -22,9 +19,7 @@ void Update(UniqueObjectList& gameObjects, Screen& screen)
 {
 	screen.Clear();
 
-	// TODO: re-bind
-	for(UniqueObjectList::iterator i = gameObjects.begin(), end = gameObjects.end(); i != end; ++i)
-		(*i)->Draw(screen);
+	for_each(gameObjects.begin(), gameObjects.end(), bind(&WorldObject::Draw, _1, ref(screen)));
 
 	screen.Update();
 }
@@ -58,14 +53,12 @@ static inline void handle_potential_collision(WorldObject* o1, WorldObject* o2)
 
 static inline void collide_with_subsequent_objects(UniqueObjectList::iterator collider, UniqueObjectList::iterator end)
 {
-	// TODO: re-bind
-	for(UniqueObjectList::iterator collidee = collider + 1; collidee != end; ++collidee)
-		handle_potential_collision(*collider, *collidee);
+	for_each(collider + 1, end, bind(&handle_potential_collision, *collider, _1));
 }
 
 void Update(UniqueObjectList& gameObjects)
 {
-	// don't try the last gameObjects, since all have been checked against it
+	// don't try the last gameObject, since all have been checked against it
 	for(UniqueObjectList::iterator collider = gameObjects.begin(), end = gameObjects.end() - 1; collider != end; ++collider)
 		collide_with_subsequent_objects(collider, gameObjects.end());
 }
