@@ -84,12 +84,9 @@ void Snake::Reset(Point center, UniqueObjectList& gameObjects)
 }
 void Snake::ChangeDirection(Direction newDirection, UniqueObjectList& gameObjects)
 {
-	// TODO: if players enter two directions quickly enough,
-	// they can u-turn into themselves. Fix.
-
 	Direction direction(Head().GetDirection());
 
-	if(newDirection != direction && newDirection != -direction)
+	if(newDirection != direction && newDirection != -direction && Head().GetWidth() >= 2 * snakeWidth)
 	{
 		// the point to start is the _direction_
 		// side of the current head

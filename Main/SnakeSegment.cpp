@@ -89,6 +89,14 @@ SnakeSegment SnakeSegment::operator--(int)
 	return returnvalue;
 }
 
+unsigned int SnakeSegment::GetWidth() const
+{
+	if(direction == Direction::left || direction == Direction::right)
+		return bounds.max.x - bounds.min.x - 1;
+
+	return bounds.max.y - bounds.min.y - 1;
+}
+
 Direction SnakeSegment::GetDirection() const
 {
 	return direction;
