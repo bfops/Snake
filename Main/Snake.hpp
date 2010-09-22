@@ -8,7 +8,6 @@
 #include "UniqueObjectList.hpp"
 
 class GameWorld;
-// TODO: color snake head
 class Snake
 {
 public:

@@ -16,13 +16,13 @@ class GameWorld
 {
 public:
 	typedef std::vector<Food> Menu;
+	typedef std::vector<SentinelFood> SentinelList;
 	typedef boost::array<Wall, 4> WallBox;
 
 private:
 	Logger::Handle logger;
 
-	SentinelFood sentinel;
-	bool sentinelSent;
+	SentinelList sentinels;
 
 	Screen screen;
 

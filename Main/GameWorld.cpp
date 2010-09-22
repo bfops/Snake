@@ -83,17 +83,22 @@ static inline void add_range_to_object_list(Iter start, Iter end, UniqueObjectLi
 	for_each(start, end, bind(&UniqueObjectList::add, &gameObjects, _1));
 }
 
+template <typename Iter>
+static inline void remove_range_from_object_list(Iter start, Iter end, UniqueObjectList& gameObjects)
+{
+	for_each(start, end, bind(&UniqueObjectList::remove, &gameObjects, _1));
+}
+
 template <typename _T>
 static inline void add_vector_to_object_list(vector<_T>& v, UniqueObjectList& gameObjects)
 {
-	//for_each(v.begin(), v.end(), bind(&UniqueObjectList::add, &gameObjects, _1));
 	add_range_to_object_list(v.begin(), v.end(), gameObjects);
 }
 
 template <typename _T>
 static inline void remove_vector_from_object_list(vector<_T>& v, UniqueObjectList& gameObjects)
 {
-	for_each(v.begin(), v.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
+	remove_range_from_object_list(v.begin(), v.end(), gameObjects);
 }
 
 /// checks if _probability_ occurred in _randnum_
@@ -150,8 +155,6 @@ void send_sentinel(SentinelFood& sentinel)
 
 void GameWorld::Init()
 {
-	sentinelSent = false;
-
 	quit = false;
 	foodTimer.Reset();
 }
@@ -178,49 +181,42 @@ void GameWorld::Update(UniqueObjectList& gameObjects)
 			foods.erase(i);
 	add_vector_to_object_list(foods, gameObjects);
 
-	// TODO: change to have a list of sentinels,
-	// so we can have many trying to appear,
-	// if one takes REALLY long
-	if(sentinelSent)
+	for(SentinelList::iterator sentinel = sentinels.begin(), end = sentinels.end(); sentinel != end; ++sentinel)
 	{
-		if(sentinel.IsInterfering())
+		if(sentinel->IsInterfering())
 		{
-			gameObjects.remove(sentinel);
-			send_sentinel(sentinel);
-			gameObjects.add(sentinel);
+			gameObjects.remove(*sentinel);
+			send_sentinel(*sentinel);
+			gameObjects.add(*sentinel);
 		}
 		else
 		{
 			minstd_rand0 rand(time(NULL));
 			Food::FoodInfo foodType = get_food_type(rand);
 
-			Food newFood(sentinel, foodType);
+			Food newFood(*sentinel, foodType);
 			remove_vector_from_object_list(foods, gameObjects);
 			foods.push_back(newFood);
 			add_vector_to_object_list(foods, gameObjects);
 
-			gameObjects.remove(sentinel);
-			sentinelSent = false;
+			gameObjects.remove(*sentinel);
+			sentinels.erase(sentinel);
 		}
 	}
 
 	if(foodTimer.ResetIfHasElapsed(foodAdditionPeriod))
 	{
-		// if we've already sent a sentinel,
-		// we might as well keep that one
-		if(!sentinelSent)
-		{
-			send_sentinel(sentinel);
-			gameObjects.add(sentinel);
-			sentinelSent = true;
-		}
+		sentinels.push_back(SentinelFood());
+		send_sentinel(*sentinels.rbegin());
+		gameObjects.add(*sentinels.rbegin());;
 	}
 }
 
 void GameWorld::Reset(UniqueObjectList& gameObjects)
 {
-	if(sentinelSent)
-		gameObjects.remove(sentinel);
+	remove_vector_from_object_list(sentinels, gameObjects);
+	sentinels.clear();
+
 	player.Reset(GetCenter(), gameObjects);
 
 	remove_vector_from_object_list(foods, gameObjects);

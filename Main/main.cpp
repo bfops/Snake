@@ -13,7 +13,6 @@ using namespace std;
 static Logger::Handle logger(Logger::RequestHandle("main()"));
 
 static const char* windowTitle("ReWritable's Snake");
-// TODO: fetch FPS dynamically
 static const unsigned int FPS(60);
 
 /// Returns true if we should continue playing, false otherwise.
