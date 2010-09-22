@@ -65,7 +65,6 @@ void Snake::Init(Point center, UniqueObjectList& gameObjects)
 	Point headLocation = center;
 
 	moveTimer.Reset();
-	growTimer.Reset();
 	speedupTimer.Reset();
 
 	speed = 100;
@@ -85,9 +84,6 @@ void Snake::Reset(Point center, UniqueObjectList& gameObjects)
 }
 void Snake::ChangeDirection(Direction newDirection, UniqueObjectList& gameObjects)
 {
-	// TODO: change so that the new segment takes on the
-	// "intersection" block between the new and old segment
-
 	// TODO: if players enter two directions quickly enough,
 	// they can u-turn into themselves. Fix.
 
@@ -97,10 +93,16 @@ void Snake::ChangeDirection(Direction newDirection, UniqueObjectList& gameObject
 	{
 		// the point to start is the _direction_
 		// side of the current head
-		Bounds head = Head().GetHeadSquare();
-		Side startSide = head.GetSide(newDirection);
+		Bounds headBlock = Head().GetHeadSquare();
+		// remove the head block from this segment
+		Head().SetHeadSide(headBlock.GetSide(-direction));
+		// take on the head block from the old segment
+		Side startSide = headBlock.GetSide(-newDirection);
 
 		add_segment(path, startSide.min, newDirection, gameObjects);
+		// stretch this segment so that its initial size
+		// is enough to cover the head block
+		Head().SetHeadSide(headBlock.GetSide(newDirection));
 	}
 }
 

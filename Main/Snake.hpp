@@ -8,6 +8,9 @@
 #include "UniqueObjectList.hpp"
 
 class GameWorld;
+// TODO: replace snake with a small struct,
+// and a bunch of external functions to act
+// on it
 class Snake
 {
 public:
@@ -23,7 +26,6 @@ private:
 	unsigned int speed;
 
 	Timer moveTimer;
-	Timer growTimer;
 	Timer speedupTimer;
 
 	void Grow(int amount);
