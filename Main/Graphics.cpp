@@ -1,5 +1,9 @@
 #include "Graphics.hpp"
 
+#include "Screen.hpp"
+#include "UniqueObjectList.hpp"
+#include "WorldObject.hpp"
+
 #include <algorithm>
 #include <boost/bind.hpp>
 

@@ -1,10 +1,6 @@
 #pragma once
 
-#include <SDL/SDL.h>
-
 #include "Color24.hpp"
-#include "Common.hpp"
-#include "Logger.hpp"
 #include "Point.hpp"
 
 class Screen

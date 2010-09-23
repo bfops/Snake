@@ -1,8 +1,9 @@
 #include "Snake.hpp"
 
 #include "Common.hpp"
-#include "GameWorld.hpp"
 #include "Logger.hpp"
+#include "Side.hpp"
+#include "UniqueObjectList.hpp"
 
 #include <boost/any.hpp>
 #include <boost/bind.hpp>

@@ -1,8 +1,7 @@
-#include "GameWorld.hpp"
-
 #include "EventHandler.hpp"
+
 #include "Common.hpp"
-#include "Direction.hpp"
+#include "GameWorld.hpp"
 
 void EventHandler::Update(GameWorld& world, UniqueObjectList& gameObjects)
 {

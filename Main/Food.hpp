@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Common.hpp"
-#include "Point.hpp"
-#include "SentinelFood.hpp"
 #include "WorldObject.hpp"
+
+class SentinelFood;
 
 class Food : public WorldObject
 {

@@ -1,4 +1,4 @@
-#include "UniqueObjectList.hpp"
+class UniqueObjectList;
 
 namespace Physics
 {

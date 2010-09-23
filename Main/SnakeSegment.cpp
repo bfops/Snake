@@ -1,6 +1,8 @@
 #include "SnakeSegment.hpp"
 
 #include "Common.hpp"
+#include "Food.hpp"
+#include "Side.hpp"
 
 const double SnakeSegment::HUNGRY = 0;
 

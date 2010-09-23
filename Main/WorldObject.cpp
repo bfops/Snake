@@ -1,9 +1,14 @@
 #include "WorldObject.hpp"
 
+#include "Logger.hpp"
+#include "Screen.hpp"
+
 using namespace std;
 
+static Logger::Handle logger(Logger::RequestHandle("WorldObject"));
+
 WorldObject::WorldObject(ObjectType _type) :
-	logger(Logger::RequestHandle("WorldObject")), type(_type)
+	type(_type)
 {
 }
 

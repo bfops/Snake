@@ -1,8 +1,8 @@
 #pragma once
 
-#include "UniqueObjectList.hpp"
-
 class GameWorld;
+class UniqueObjectList;
+
 class EventHandler
 {
 public:

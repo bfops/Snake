@@ -1,7 +1,9 @@
 #include "Physics.hpp"
 
+#include "Bounds.hpp"
 #include "collision.h"
-#include <boost/concept_check.hpp>
+#include "UniqueObjectList.hpp"
+#include "WorldObject.hpp"
 
 #include <algorithm>
 #include <boost/bind.hpp>

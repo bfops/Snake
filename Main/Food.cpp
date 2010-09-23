@@ -1,6 +1,7 @@
 #include "Food.hpp"
 
 #include "Common.hpp"
+#include "SentinelFood.hpp"
 
 const Food::FoodInfo Food::ice(-2.5, Color24(0, 0, 255));
 const Food::FoodInfo Food::celery(0.3, Color24(127, 255, 127));

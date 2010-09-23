@@ -1,13 +1,13 @@
 #pragma once
 
 #include "cgq.hpp"
-#include "Common.hpp"
-#include "Direction.hpp"
 #include "SnakeSegment.hpp"
 #include "Timer.hpp"
-#include "UniqueObjectList.hpp"
 
+class Direction;
 class GameWorld;
+class UniqueObjectList;
+
 class Snake
 {
 public:

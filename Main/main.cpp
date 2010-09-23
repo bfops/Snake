@@ -7,7 +7,9 @@
 #include "Graphics.hpp"
 #include "Logger.hpp"
 #include "Physics.hpp"
+#include "Screen.hpp"
 #include "SDL.h"
+#include "UniqueObjectList.hpp"
 
 using namespace boost;
 using namespace std;

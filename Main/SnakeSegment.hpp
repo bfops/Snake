@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Direction.hpp"
-#include "Food.hpp"
-#include "Side.hpp"
 #include "WorldObject.hpp"
+
+class Food;
+class Side;
 
 class SnakeSegment : public WorldObject
 {

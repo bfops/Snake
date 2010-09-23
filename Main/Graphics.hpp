@@ -1,4 +1,5 @@
-#include "UniqueObjectList.hpp"
+class Screen;
+class UniqueObjectList;
 
 namespace Graphics
 {

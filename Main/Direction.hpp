@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Common.hpp"
 #include "Vector2D.hpp"
 
 class Direction

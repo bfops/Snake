@@ -2,8 +2,8 @@
 
 #include "Bounds.hpp"
 #include "Color24.hpp"
-#include "Logger.hpp"
-#include "Screen.hpp"
+
+class Screen;
 
 class WorldObject
 {
@@ -17,8 +17,6 @@ public:
 	};
 
 protected:
-	Logger::Handle logger;
-
 	ObjectType type;
 	Bounds bounds;
 	Color24 color;

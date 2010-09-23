@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "WorldObject.hpp"
+class WorldObject;
 
 class UniqueObjectList
 {

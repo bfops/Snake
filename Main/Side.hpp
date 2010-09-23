@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Point.hpp"
-#include "Vector2D.hpp"
+
+class Vector2D;
 
 struct Side
 {

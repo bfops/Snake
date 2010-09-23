@@ -1,15 +1,16 @@
 #pragma once
 
 #include "Food.hpp"
+#include "SentinelFood.hpp"
 #include "Snake.hpp"
 #include "Timer.hpp"
-#include "UniqueObjectList.hpp"
 #include "Wall.hpp"
-#include "WorldObject.hpp"
 
 #include <boost/array.hpp>
-#include <SDL/SDL_events.h>
+#include "SDL/SDL_events.h"
 #include <vector>
+
+class UniqueObjectList;
 
 class GameWorld
 {

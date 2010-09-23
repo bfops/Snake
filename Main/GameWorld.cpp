@@ -1,12 +1,12 @@
 #include "GameWorld.hpp"
 
-#include "custom_algorithm.hpp"
+#include "Food.hpp"
 #include "Logger.hpp"
+#include "UniqueObjectList.hpp"
 #include "Wall.hpp"
 
+#include <boost/bind.hpp>
 #include <boost/random.hpp>
-#include <cassert>
-#include <vector>
 
 using namespace boost;
 using namespace std;

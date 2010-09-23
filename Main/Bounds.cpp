@@ -1,6 +1,7 @@
 #include "Bounds.hpp"
 
 #include "Direction.hpp"
+#include "Side.hpp"
 
 #include <cassert>
 
