@@ -15,13 +15,12 @@ Screen::Screen(unsigned int _width, unsigned int _height) :
 		logger.Fatal(boost::format("Error creating screen: %1%") % SDL_GetError());
 
 	// URGENT TODO: make transparency work!
-	if(SDL_SetColorKey(screen, SDL_SRCCOLORKEY | SDL_RLEACCEL, transparent.GetRGBMap(screen)) != 0)
+	if(SDL_SetColorKey(screen, SDL_SRCCOLORKEY, transparent.GetRGBMap(screen)) != 0)
 		logger.Fatal("Error setting color key");
 }
 
 SDL_Surface* Screen::GetSurface()
 {
-	++(screen->refcount);
 	return screen;
 }
 Point Screen::GetCenter() const

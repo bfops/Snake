@@ -8,9 +8,6 @@
 #include "UniqueObjectList.hpp"
 
 class GameWorld;
-// TODO: replace snake with a small struct,
-// and a bunch of external functions to act
-// on it
 class Snake
 {
 public:
