@@ -10,6 +10,7 @@ Wall::Wall() :
 {
 	color = wallColor;
 }
+
 Wall::Wall(Point loc, size_t w, size_t h) :
 	WorldObject(wall)
 {

@@ -11,6 +11,8 @@
 using namespace std;
 using namespace boost;
 
+static Logger::Handle logger(Logger::RequestHandle("Snake"));
+
 static const unsigned int defaultLength(90);
 static const unsigned int snakeWidth(20);
 static const unsigned int speedupPeriod(16000);
@@ -18,8 +20,7 @@ static const unsigned int speedupAmount(23);
 static const unsigned int growthCap(100);
 static const double linearGrowthRate(10.0 / 29.0);
 
-Snake::Snake(Point center, UniqueObjectList& gameObjects) :
-	logger(Logger::RequestHandle("Snake"))
+Snake::Snake(Point center, UniqueObjectList& gameObjects)
 {
 	Init(center, gameObjects);
 }

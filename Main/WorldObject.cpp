@@ -11,6 +11,7 @@ WorldObject::ObjectType WorldObject::GetObjectType() const
 {
 	return type;
 }
+
 void WorldObject::Draw(Screen& target) const
 {
 	SDL_Surface* surface = target.GetSurface();
@@ -33,6 +34,7 @@ Bounds WorldObject::GetBounds() const
 {
 	return bounds;
 }
+
 Color24 WorldObject::GetColor() const
 {
 	return color;

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Food.hpp"
-#include "Logger.hpp"
 #include "Snake.hpp"
 #include "Timer.hpp"
 #include "UniqueObjectList.hpp"
@@ -20,8 +19,6 @@ public:
 	typedef boost::array<Wall, 4> WallBox;
 
 private:
-	Logger::Handle logger;
-
 	SentinelList sentinels;
 
 	Screen screen;

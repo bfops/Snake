@@ -10,8 +10,6 @@
 class Screen
 {
 private:
-	Logger::Handle logger;
-
 	SDL_Surface* screen;
 
 	const unsigned int width, height;

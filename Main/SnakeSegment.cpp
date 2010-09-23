@@ -7,11 +7,13 @@ const double SnakeSegment::HUNGRY = 0;
 static const Color24 segmentColor(0, 255, 0);
 
 SnakeSegment::SnakeSegment() :
-	WorldObject(snake), dead(false), empty(false), digestionInfo(HUNGRY), direction(Direction::empty)
+	WorldObject(snake), direction(Direction::empty)
 {
+	Init();
 }
+
 SnakeSegment::SnakeSegment(Point location, Direction _direction, unsigned int _width) :
-	WorldObject(snake), dead(false), empty(false), digestionInfo(HUNGRY), width(_width), direction(_direction)
+	WorldObject(snake), width(_width), direction(_direction)
 {
 	color = segmentColor;
 	bounds.min = location;
@@ -22,12 +24,22 @@ SnakeSegment::SnakeSegment(Point location, Direction _direction, unsigned int _w
 		bounds.max.y += width;
 	else
 		bounds.max.x += width;
+
+	Init();
+}
+
+void SnakeSegment::Init()
+{
+	dead = false;
+	empty = false;
+	digestionInfo = HUNGRY;
 }
 
 void SnakeSegment::DeathCollisionHandler()
 {
 	dead = true;
 }
+
 void SnakeSegment::FoodCollisionHandler(const Food& food)
 {
 	digestionInfo = food.GetCalories();
@@ -69,6 +81,7 @@ SnakeSegment& SnakeSegment::operator++()
 	ModifyLength(1);
 	return *this;
 }
+
 SnakeSegment SnakeSegment::operator++(int)
 {
 	SnakeSegment returnvalue(*this);
@@ -76,11 +89,13 @@ SnakeSegment SnakeSegment::operator++(int)
 
 	return returnvalue;
 }
+
 SnakeSegment& SnakeSegment::operator--()
 {
 	ModifyLength(-1);
 	return *this;
 }
+
 SnakeSegment SnakeSegment::operator--(int)
 {
 	SnakeSegment returnvalue(*this);
@@ -101,6 +116,7 @@ Direction SnakeSegment::GetDirection() const
 {
 	return direction;
 }
+
 Bounds SnakeSegment::GetHeadSquare() const
 {
 	// front side of the head square
@@ -116,18 +132,22 @@ Bounds SnakeSegment::GetHeadSquare() const
 
 	return headSquare;
 }
+
 Side SnakeSegment::GetHeadSide() const
 {
 	return bounds.GetSide(direction);
 }
+
 void SnakeSegment::SetHeadSide(Side side)
 {
 	bounds.SetSide(side, direction);
 }
+
 Side SnakeSegment::GetTailSide() const
 {
 	return bounds.GetSide(-direction);
 }
+
 void SnakeSegment::SetTailSide(Side side)
 {
 	bounds.SetSide(side, -direction);
@@ -137,14 +157,17 @@ bool SnakeSegment::IsDead() const
 {
 	return dead;
 }
+
 double SnakeSegment::GetDigestionInfo() const
 {
 	return digestionInfo;
 }
+
 bool SnakeSegment::IsEmpty() const
 {
 	return empty;
 }
+
 void SnakeSegment::Digest()
 {
 	digestionInfo = HUNGRY;

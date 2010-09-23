@@ -14,8 +14,6 @@ public:
 	typedef cgq<SnakeSegment> Path;
 
 private:
-	Logger::Handle logger;
-
 	unsigned int length;
 	unsigned int projectedLength;
 	Path path;

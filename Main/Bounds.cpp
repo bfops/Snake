@@ -7,10 +7,12 @@
 Bounds::Bounds()
 {
 }
+
 Bounds::Bounds(Point _min, Point _max) :
 	min(_min), max(_max)
 {
 }
+
 Bounds::Bounds(Side side) :
 	min(side.min), max(side.min)
 {
@@ -95,6 +97,7 @@ Side Bounds::GetSide(Direction whichSide) const
 
 	return retval;
 }
+
 void Bounds::SetSide(Side side, Direction whichSide)
 {
 	assert(validDirection(whichSide));

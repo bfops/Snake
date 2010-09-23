@@ -2,6 +2,7 @@
 
 #include "collision.h"
 #include "custom_algorithm.hpp"
+#include "Logger.hpp"
 #include "Wall.hpp"
 
 #include <boost/random.hpp>
@@ -11,9 +12,10 @@
 using namespace boost;
 using namespace std;
 
-namespace {
+static Logger::Handle logger(Logger::RequestHandle("GameWorld"));
 const static Point screenBounds(800, 600);
 
+namespace {
 namespace Graphics {
 void Update(UniqueObjectList& gameObjects, Screen& screen)
 {
@@ -160,7 +162,7 @@ void GameWorld::Init()
 }
 
 GameWorld::GameWorld(UniqueObjectList& gameObjects) :
-	logger(Logger::RequestHandle("GameWorld")),	screen(screenBounds.x, screenBounds.y),
+	screen(screenBounds.x, screenBounds.y),
 	player(GetCenter(), gameObjects)
 {
 	make_walls(walls);

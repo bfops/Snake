@@ -23,6 +23,8 @@ private:
 	void FoodCollisionHandler(const Food& food);
 	void DeathCollisionHandler();
 
+	void Init();
+
 	/// change length by _amount_
 	void ModifyLength(int amount);
 

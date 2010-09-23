@@ -13,6 +13,7 @@ void Timer::Reset()
 {
 	begin = microsec_clock::local_time();
 }
+
 bool Timer::ResetIfHasElapsed(unsigned int ms)
 {
 	const ptime now = microsec_clock::local_time();
