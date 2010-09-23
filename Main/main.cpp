@@ -6,6 +6,7 @@
 #include "GameWorld.hpp"
 #include "Graphics.hpp"
 #include "Logger.hpp"
+#include "Physics.hpp"
 #include "SDL.h"
 
 using namespace boost;
@@ -22,8 +23,9 @@ static inline bool main_loop(GameWorld& gameWorld, UniqueObjectList& gameObjects
 {
 	while(!gameWorld.Lost() && !gameWorld.QuitCalled())
 	{
-		gameWorld.Update(gameObjects);
 		Graphics::Update(gameObjects, screen);
+		Physics::Update(gameObjects);
+		gameWorld.Update(gameObjects);
 		eventHandler.Update(gameWorld, gameObjects);
 
 		this_thread::sleep(posix_time::millisec(1000 / FPS));

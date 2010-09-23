@@ -9,6 +9,7 @@ add_executable(GingerbreadPrototype
 	Graphics.cpp
 	Logger.cpp
 	main.cpp
+	Physics.cpp
 	Screen.cpp
 	SDL.cpp
 	SentinelFood.cpp

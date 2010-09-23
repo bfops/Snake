@@ -1,6 +1,5 @@
 #include "GameWorld.hpp"
 
-#include "collision.h"
 #include "custom_algorithm.hpp"
 #include "Logger.hpp"
 #include "Wall.hpp"
@@ -13,47 +12,6 @@ using namespace boost;
 using namespace std;
 
 static Logger::Handle logger(Logger::RequestHandle("GameWorld"));
-
-namespace {
-
-namespace Physics {
-static inline CollidableObject world_to_collidable_object(const WorldObject* w)
-{
-	CollidableObject ret;
-
-	Bounds bounds = w->GetBounds();
-	ret.min.x = bounds.min.x;
-	ret.min.y = bounds.min.y;
-	ret.max.x = bounds.max.x;
-	ret.max.y = bounds.max.y;
-
-	return ret;
-}
-
-static inline void handle_potential_collision(WorldObject* o1, WorldObject* o2)
-{
-	CollidableObject c1 = world_to_collidable_object(o1);
-	CollidableObject c2 = world_to_collidable_object(o2);
-
-	if(does_collide(&c1, &c2))
-	{
-		o1->CollisionHandler(*o2);
-		o2->CollisionHandler(*o1);
-	}
-}
-
-static inline void collide_with_subsequent_objects(UniqueObjectList::iterator collider, UniqueObjectList::iterator end)
-{
-	for_each(collider + 1, end, bind(&handle_potential_collision, *collider, _1));
-}
-
-void Update(UniqueObjectList& gameObjects)
-{
-	// don't try the last gameObject, since all have been checked against it
-	for(UniqueObjectList::iterator collider = gameObjects.begin(), end = gameObjects.end() - 1; collider != end; ++collider)
-		collide_with_subsequent_objects(collider, gameObjects.end());
-}
-}
 
 static const unsigned int foodAdditionPeriod(8000);
 static const unsigned int foodSize(15);
@@ -104,7 +62,7 @@ static inline void remove_vector_from_object_list(vector<_T>& v, UniqueObjectLis
 /// account for these side-effects. (if the probability
 /// was hit, we can assume they won't be checking for
 /// more probabilities)
-bool probability_hit(unsigned int& randnum, double probability, unsigned int randMax)
+static bool probability_hit(unsigned int& randnum, double probability, unsigned int randMax)
 {
 	unsigned int border = round(randMax * probability);
 	if(randnum < border)
@@ -114,7 +72,7 @@ bool probability_hit(unsigned int& randnum, double probability, unsigned int ran
 	return false;
 }
 
-Food::FoodInfo get_food_type(minstd_rand0& rand)
+static Food::FoodInfo get_food_type(minstd_rand0& rand)
 {
 	const unsigned int randMax = 100;
 	unsigned int randnum = rand() % (randMax + 1);
@@ -131,7 +89,7 @@ Food::FoodInfo get_food_type(minstd_rand0& rand)
 	return Food::normal;
 }
 
-void send_sentinel(SentinelFood& sentinel)
+static void send_sentinel(SentinelFood& sentinel)
 {
 	minstd_rand0 rand(time(NULL));
 
@@ -141,7 +99,6 @@ void send_sentinel(SentinelFood& sentinel)
 	);
 
 	sentinel = SentinelFood(foodLocation, foodSize);
-}
 }
 
 void GameWorld::Init()
@@ -161,7 +118,6 @@ GameWorld::GameWorld(UniqueObjectList& gameObjects) :
 
 void GameWorld::Update(UniqueObjectList& gameObjects)
 {
-	Physics::Update(gameObjects);
 	player.Update(gameObjects);
 
 	remove_vector_from_object_list(foods, gameObjects);
