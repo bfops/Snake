@@ -13,19 +13,8 @@ using namespace boost;
 using namespace std;
 
 static Logger::Handle logger(Logger::RequestHandle("GameWorld"));
-const static Point screenBounds(800, 600);
 
 namespace {
-namespace Graphics {
-void Update(UniqueObjectList& gameObjects, Screen& screen)
-{
-	screen.Clear();
-
-	for_each(gameObjects.begin(), gameObjects.end(), bind(&WorldObject::Draw, _1, ref(screen)));
-
-	screen.Update();
-}
-}
 
 namespace Physics {
 static inline CollidableObject world_to_collidable_object(const WorldObject* w)
@@ -162,7 +151,6 @@ void GameWorld::Init()
 }
 
 GameWorld::GameWorld(UniqueObjectList& gameObjects) :
-	screen(screenBounds.x, screenBounds.y),
 	player(GetCenter(), gameObjects)
 {
 	make_walls(walls);
@@ -174,7 +162,6 @@ GameWorld::GameWorld(UniqueObjectList& gameObjects) :
 void GameWorld::Update(UniqueObjectList& gameObjects)
 {
 	Physics::Update(gameObjects);
-	Graphics::Update(gameObjects, screen);
 	player.Update(gameObjects);
 
 	remove_vector_from_object_list(foods, gameObjects);
@@ -269,5 +256,5 @@ bool GameWorld::QuitCalled() const
 
 Point GameWorld::GetCenter() const
 {
-	return Point(screenBounds.x / 2, screenBounds.y / 2);
+	return Point(worldBounds.max.x / 2, worldBounds.max.y / 2);
 }

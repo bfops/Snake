@@ -4,6 +4,7 @@
 #include "Common.hpp"
 #include "EventHandler.hpp"
 #include "GameWorld.hpp"
+#include "Graphics.hpp"
 #include "Logger.hpp"
 #include "SDL.h"
 
@@ -16,11 +17,13 @@ static const char* windowTitle("ReWritable's Snake");
 static const unsigned int FPS(60);
 
 /// Returns true if we should continue playing, false otherwise.
-static inline bool main_loop(GameWorld& gameWorld, UniqueObjectList& gameObjects, EventHandler& eventHandler)
+static inline bool main_loop(GameWorld& gameWorld, UniqueObjectList& gameObjects,
+	EventHandler& eventHandler, Screen& screen)
 {
 	while(!gameWorld.Lost() && !gameWorld.QuitCalled())
 	{
 		gameWorld.Update(gameObjects);
+		Graphics::Update(gameObjects, screen);
 		eventHandler.Update(gameWorld, gameObjects);
 
 		this_thread::sleep(posix_time::millisec(1000 / FPS));
@@ -41,10 +44,11 @@ int main()
 	SDL_ShowCursor(SDL_DISABLE);
 
 	UniqueObjectList gameObjects;
+	Screen screen(800, 600);
 	EventHandler eventHandler;
 	GameWorld gameWorld(gameObjects);
 
-	while(main_loop(gameWorld, gameObjects, eventHandler))
+	while(main_loop(gameWorld, gameObjects, eventHandler, screen))
 	{
 		gameWorld.Reset(gameObjects);
 	}

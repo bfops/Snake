@@ -21,8 +21,6 @@ public:
 private:
 	SentinelList sentinels;
 
-	Screen screen;
-
 	bool quit;
 	Timer foodTimer;
 	Menu foods;
