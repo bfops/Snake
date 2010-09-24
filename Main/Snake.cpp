@@ -32,13 +32,13 @@ static void add_segment(Snake::Path& path, Point location, Direction direction,
 {
 	SnakeSegment newSegment(location, direction, snakeWidth);
 
-	for_each(path.begin(), path.end(), bind(&UniqueObjectList::remove, &graphicsObjects, _1));
-	for_each(path.begin(), path.end(), bind(&UniqueObjectList::remove, &physicsObjects, _1));
+	graphicsObjects.removeRange(path.begin(), path.end());
+	physicsObjects.removeRange(path.begin(), path.end());
 
 	path.push_front(newSegment);
 
-	for_each(path.begin(), path.end(), bind(&UniqueObjectList::add, &graphicsObjects, _1));
-	for_each(path.begin(), path.end(), bind(&UniqueObjectList::add, &physicsObjects, _1));
+	graphicsObjects.addRange(path.begin(), path.end());
+	physicsObjects.addRange(path.begin(), path.end());
 }
 
 void Snake::Grow(int amount)
@@ -83,8 +83,8 @@ void Snake::Init(Point center, UniqueObjectList& graphicsObjects, UniqueObjectLi
 
 void Snake::Reset(Point center, UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects)
 {
-	for_each(path.begin(), path.end(), bind(&UniqueObjectList::remove, &graphicsObjects, _1));
-	for_each(path.begin(), path.end(), bind(&UniqueObjectList::remove, &physicsObjects, _1));
+	graphicsObjects.removeRange(path.begin(), path.end());
+	physicsObjects.removeRange(path.begin(), path.end());
 	path.clear();
 
 	Init(center, graphicsObjects, physicsObjects);

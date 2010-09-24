@@ -28,30 +28,6 @@ static inline void make_walls(GameWorld::WallBox& walls)
 	walls[3] = Wall(Point(0, worldBounds.max.y - wallThickness), worldBounds.max.x, wallThickness);
 }
 
-template <typename Iter>
-static inline void add_range_to_object_list(Iter start, Iter end, UniqueObjectList& gameObjects)
-{
-	for_each(start, end, bind(&UniqueObjectList::add, &gameObjects, _1));
-}
-
-template <typename Iter>
-static inline void remove_range_from_object_list(Iter start, Iter end, UniqueObjectList& gameObjects)
-{
-	for_each(start, end, bind(&UniqueObjectList::remove, &gameObjects, _1));
-}
-
-template <typename _T>
-static inline void add_vector_to_object_list(vector<_T>& v, UniqueObjectList& gameObjects)
-{
-	add_range_to_object_list(v.begin(), v.end(), gameObjects);
-}
-
-template <typename _T>
-static inline void remove_vector_from_object_list(vector<_T>& v, UniqueObjectList& gameObjects)
-{
-	remove_range_from_object_list(v.begin(), v.end(), gameObjects);
-}
-
 /// checks if _probability_ occurred in _randnum_
 /// probability-checking can be done by seeing if
 /// _randnum_ < _probability_ * _max_number_.
@@ -113,8 +89,8 @@ GameWorld::GameWorld(UniqueObjectList& graphicsObjects, UniqueObjectList& physic
 	player(GetCenter(), graphicsObjects, physicsObjects)
 {
 	make_walls(walls);
-	add_range_to_object_list(walls.begin(), walls.end(), graphicsObjects);
-	add_range_to_object_list(walls.begin(), walls.end(), physicsObjects);
+	graphicsObjects.addRange(walls.begin(), walls.end());
+	physicsObjects.addRange(walls.begin(), walls.end());
 
 	Init();
 }
@@ -123,13 +99,13 @@ void GameWorld::Update(UniqueObjectList& graphicsObjects, UniqueObjectList& phys
 {
 	player.Update(graphicsObjects, physicsObjects);
 
-	remove_vector_from_object_list(foods, graphicsObjects);
-	remove_vector_from_object_list(foods, physicsObjects);
+	graphicsObjects.removeRange(foods.begin(), foods.end());
+	physicsObjects.removeRange(foods.begin(), foods.end());
 	for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
 		if(i->IsEaten())
 			foods.erase(i);
-	add_vector_to_object_list(foods, graphicsObjects);
-	add_vector_to_object_list(foods, physicsObjects);
+	graphicsObjects.addRange(foods.begin(), foods.end());
+	physicsObjects.addRange(foods.begin(), foods.end());
 
 	for(SentinelList::iterator sentinel = sentinels.begin(), end = sentinels.end(); sentinel != end; ++sentinel)
 	{
@@ -143,11 +119,11 @@ void GameWorld::Update(UniqueObjectList& graphicsObjects, UniqueObjectList& phys
 			Food::FoodInfo foodType = get_food_type(rand);
 
 			Food newFood(*sentinel, foodType);
-			remove_vector_from_object_list(foods, graphicsObjects);
-			remove_vector_from_object_list(foods, physicsObjects);
+			graphicsObjects.removeRange(foods.begin(), foods.end());
+			physicsObjects.removeRange(foods.begin(), foods.end());
 			foods.push_back(newFood);
-			add_vector_to_object_list(foods, graphicsObjects);
-			add_vector_to_object_list(foods, physicsObjects);
+			graphicsObjects.addRange(foods.begin(), foods.end());
+			physicsObjects.addRange(foods.begin(), foods.end());
 
 			physicsObjects.remove(*sentinel);
 			sentinels.erase(sentinel);
@@ -164,13 +140,13 @@ void GameWorld::Update(UniqueObjectList& graphicsObjects, UniqueObjectList& phys
 
 void GameWorld::Reset(UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects)
 {
-	remove_vector_from_object_list(sentinels, physicsObjects);
-	sentinels.clear();
-
 	player.Reset(GetCenter(), graphicsObjects, physicsObjects);
 
-	remove_vector_from_object_list(foods, graphicsObjects);
-	remove_vector_from_object_list(foods, physicsObjects);
+	physicsObjects.removeRange(sentinels.begin(), sentinels.end());
+	sentinels.clear();
+
+	graphicsObjects.removeRange(foods.begin(), foods.end());
+	physicsObjects.removeRange(foods.begin(), foods.end());
 	foods.clear();
 
 	Init();
