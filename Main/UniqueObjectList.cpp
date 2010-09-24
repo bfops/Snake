@@ -1,4 +1,4 @@
-#include "UniqueObjectList.hpp"
+#include "ZippedUniqueObjectList.hpp"
 
 #include "Common.hpp"
 #include "custom_algorithm.hpp"
@@ -24,14 +24,3 @@ void UniqueObjectList::remove(WorldObject& pObj)
 
 	unordered_find_and_remove(objects, &pObj);
 }
-
-UniqueObjectList::iterator UniqueObjectList::begin()
-{
-	return objects.begin();
-}
-
-UniqueObjectList::iterator UniqueObjectList::end()
-{
-	return objects.end();
-}
-

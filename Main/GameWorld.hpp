@@ -10,7 +10,7 @@
 #include "SDL/SDL_events.h"
 #include <vector>
 
-class UniqueObjectList;
+class ZippedUniqueObjectList;
 
 class GameWorld
 {
@@ -32,13 +32,13 @@ private:
 	void Init();
 
 public:
-	GameWorld(UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects);
+	GameWorld(ZippedUniqueObjectList& gameObjects);
 
-	void Update(UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects);
-	void Reset(UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects);
+	void Update(ZippedUniqueObjectList& gameObjects);
+	void Reset(ZippedUniqueObjectList& gameObjects);
 
 	void QuitNotify();
-	void KeyNotify(SDLKey sym, UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects);
+	void KeyNotify(SDLKey sym, ZippedUniqueObjectList& gameObjects);
 
 	bool Lost() const;
 	bool QuitCalled() const;

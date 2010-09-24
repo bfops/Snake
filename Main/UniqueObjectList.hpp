@@ -6,7 +6,6 @@
 
 class WorldObject;
 
-// TODO: UniqueObjectList zipper
 class UniqueObjectList
 {
 public:
@@ -19,18 +18,23 @@ private:
 public:
 	void add(WorldObject&);
 	template<typename Iter>
-	void addRange(Iter begin, Iter end)
+	inline void addRange(Iter begin, Iter end)
 	{
 		std::for_each(begin, end, boost::bind(&UniqueObjectList::add, this, _1));
 	}
 	void remove(WorldObject&);
 	template<typename Iter>
-	void removeRange(Iter begin, Iter end)
+	inline void removeRange(Iter begin, Iter end)
 	{
 		std::for_each(begin, end, boost::bind(&UniqueObjectList::remove, this, _1));
 	}
-	void clear();
 
-	iterator begin();
-	iterator end();
+	inline iterator begin()
+	{
+		return objects.begin();
+	}
+	inline iterator end()
+	{
+		return objects.end();
+	}
 };

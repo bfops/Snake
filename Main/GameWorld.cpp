@@ -2,8 +2,8 @@
 
 #include "Food.hpp"
 #include "Logger.hpp"
-#include "UniqueObjectList.hpp"
 #include "Wall.hpp"
+#include "ZippedUniqueObjectList.hpp"
 
 #include <boost/bind.hpp>
 #include <boost/random.hpp>
@@ -85,27 +85,24 @@ void GameWorld::Init()
 	foodTimer.Reset();
 }
 
-GameWorld::GameWorld(UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects) :
-	player(GetCenter(), graphicsObjects, physicsObjects)
+GameWorld::GameWorld(ZippedUniqueObjectList& gameObjects) :
+	player(GetCenter(), gameObjects)
 {
 	make_walls(walls);
-	graphicsObjects.addRange(walls.begin(), walls.end());
-	physicsObjects.addRange(walls.begin(), walls.end());
+	gameObjects.addRange(walls.begin(), walls.end());
 
 	Init();
 }
 
-void GameWorld::Update(UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects)
+void GameWorld::Update(ZippedUniqueObjectList& gameObjects)
 {
-	player.Update(graphicsObjects, physicsObjects);
+	player.Update(gameObjects);
 
-	graphicsObjects.removeRange(foods.begin(), foods.end());
-	physicsObjects.removeRange(foods.begin(), foods.end());
+	gameObjects.removeRange(foods.begin(), foods.end());
 	for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
 		if(i->IsEaten())
 			foods.erase(i);
-	graphicsObjects.addRange(foods.begin(), foods.end());
-	physicsObjects.addRange(foods.begin(), foods.end());
+	gameObjects.addRange(foods.begin(), foods.end());
 
 	for(SentinelList::iterator sentinel = sentinels.begin(), end = sentinels.end(); sentinel != end; ++sentinel)
 	{
@@ -119,13 +116,11 @@ void GameWorld::Update(UniqueObjectList& graphicsObjects, UniqueObjectList& phys
 			Food::FoodInfo foodType = get_food_type(rand);
 
 			Food newFood(*sentinel, foodType);
-			graphicsObjects.removeRange(foods.begin(), foods.end());
-			physicsObjects.removeRange(foods.begin(), foods.end());
+			gameObjects.removeRange(foods.begin(), foods.end());
 			foods.push_back(newFood);
-			graphicsObjects.addRange(foods.begin(), foods.end());
-			physicsObjects.addRange(foods.begin(), foods.end());
+			gameObjects.addRange(foods.begin(), foods.end());
 
-			physicsObjects.remove(*sentinel);
+			gameObjects.physics.remove(*sentinel);
 			sentinels.erase(sentinel);
 		}
 	}
@@ -134,19 +129,18 @@ void GameWorld::Update(UniqueObjectList& graphicsObjects, UniqueObjectList& phys
 	{
 		sentinels.push_back(SentinelFood());
 		send_sentinel(*sentinels.rbegin());
-		physicsObjects.add(*sentinels.rbegin());
+		gameObjects.physics.add(*sentinels.rbegin());
 	}
 }
 
-void GameWorld::Reset(UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects)
+void GameWorld::Reset(ZippedUniqueObjectList& gameObjects)
 {
-	player.Reset(GetCenter(), graphicsObjects, physicsObjects);
+	player.Reset(GetCenter(), gameObjects);
 
-	physicsObjects.removeRange(sentinels.begin(), sentinels.end());
+	gameObjects.physics.removeRange(sentinels.begin(), sentinels.end());
 	sentinels.clear();
 
-	graphicsObjects.removeRange(foods.begin(), foods.end());
-	physicsObjects.removeRange(foods.begin(), foods.end());
+	gameObjects.removeRange(foods.begin(), foods.end());
 	foods.clear();
 
 	Init();
@@ -183,11 +177,11 @@ static Direction get_direction_from_key(const SDLKey key)
 	}
 }
 
-void GameWorld::KeyNotify(SDLKey key, UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects)
+void GameWorld::KeyNotify(SDLKey key, ZippedUniqueObjectList& gameObjects)
 {
 	if(key == SDLK_LEFT || key == SDLK_RIGHT || key == SDLK_UP || key == SDLK_DOWN)
 	{
-		player.ChangeDirection(get_direction_from_key(key), graphicsObjects, physicsObjects);
+		player.ChangeDirection(get_direction_from_key(key), gameObjects);
 	}
 }
 

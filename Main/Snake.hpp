@@ -6,7 +6,7 @@
 
 class Direction;
 class GameWorld;
-class UniqueObjectList;
+class ZippedUniqueObjectList;
 
 class Snake
 {
@@ -28,13 +28,13 @@ private:
 	inline SnakeSegment& Head();
 	inline SnakeSegment& Tail();
 
-	void Init(Point centerOfScreen, UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects);
+	void Init(Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
 
 public:
-	Snake(Point centerOfScreen, UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects);
+	Snake(Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
 
-	void Reset(Point centerOfScreen, UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects);
-	void ChangeDirection(Direction, UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects);
-	void Update(UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects);
+	void Reset(Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
+	void ChangeDirection(Direction, ZippedUniqueObjectList& gameObjects);
+	void Update(ZippedUniqueObjectList& gameObjects);
 	bool IsDead() const;
 };
