@@ -40,8 +40,8 @@ static void add_segment(Snake::Path& path, Point location, Direction direction, 
 
 void Snake::Grow(int amount)
 {
-	if((int)projectedLength + amount < 1)
-		projectedLength = 1;
+	if((int)projectedLength + amount < (int)defaultLength)
+		projectedLength = defaultLength;
 	else
 		projectedLength += amount;
 }
