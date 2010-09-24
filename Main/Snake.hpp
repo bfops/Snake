@@ -28,13 +28,13 @@ private:
 	inline SnakeSegment& Head();
 	inline SnakeSegment& Tail();
 
-	void Init(Point centerOfScreen, UniqueObjectList& gameObjects);
+	void Init(Point centerOfScreen, UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects);
 
 public:
-	Snake(Point centerOfScreen, UniqueObjectList& gameObjects);
+	Snake(Point centerOfScreen, UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects);
 
-	void Reset(Point centerOfScreen, UniqueObjectList& gameObjects);
-	void ChangeDirection(Direction, UniqueObjectList& gameObjects);
-	void Update(UniqueObjectList& gameObjects);
+	void Reset(Point centerOfScreen, UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects);
+	void ChangeDirection(Direction, UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects);
+	void Update(UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects);
 	bool IsDead() const;
 };

@@ -3,7 +3,7 @@
 #include "Common.hpp"
 #include "GameWorld.hpp"
 
-void EventHandler::Update(GameWorld& world, UniqueObjectList& gameObjects)
+void EventHandler::Update(GameWorld& world, UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects)
 {
 	SDL_Event event;
 
@@ -12,7 +12,7 @@ void EventHandler::Update(GameWorld& world, UniqueObjectList& gameObjects)
 		switch(event.type)
 		{
 			case SDL_KEYDOWN:
-				world.KeyNotify(event.key.keysym.sym, gameObjects);
+				world.KeyNotify(event.key.keysym.sym, graphicsObjects, physicsObjects);
 				break;
 
 			case SDL_QUIT:

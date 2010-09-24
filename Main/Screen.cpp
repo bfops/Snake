@@ -5,8 +5,6 @@
 
 using namespace std;
 
-const Color24 Screen::transparent(255, 0, 255);
-
 static Logger::Handle logger = Logger::RequestHandle("Screen");
 
 Screen::Screen(unsigned int _width, unsigned int _height) :
@@ -16,10 +14,6 @@ Screen::Screen(unsigned int _width, unsigned int _height) :
 
 	if(screen == NULL)
 		logger.Fatal(boost::format("Error creating screen: %1%") % SDL_GetError());
-
-	// URGENT TODO: make transparency work!
-	if(SDL_SetColorKey(screen, SDL_SRCCOLORKEY, transparent.GetRGBMap(screen)) != 0)
-		logger.Fatal("Error setting color key");
 }
 
 SDL_Surface* Screen::GetSurface()

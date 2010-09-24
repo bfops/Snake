@@ -12,8 +12,6 @@ private:
 	Color24 bgColor;
 
 public:
-	static const Color24 transparent;
-
 	Screen(unsigned int width, unsigned int height);
 
 	SDL_Surface* GetSurface();

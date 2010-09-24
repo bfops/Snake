@@ -20,15 +20,15 @@ static const char* windowTitle("ReWritable's Snake");
 static const unsigned int FPS(60);
 
 /// Returns true if we should continue playing, false otherwise.
-static inline bool main_loop(GameWorld& gameWorld, UniqueObjectList& gameObjects,
-	EventHandler& eventHandler, Screen& screen)
+static inline bool main_loop(GameWorld& gameWorld, UniqueObjectList& graphicsObjects,
+	UniqueObjectList& physicsObjects, EventHandler& eventHandler, Screen& screen)
 {
 	while(!gameWorld.Lost() && !gameWorld.QuitCalled())
 	{
-		Graphics::Update(gameObjects, screen);
-		Physics::Update(gameObjects);
-		gameWorld.Update(gameObjects);
-		eventHandler.Update(gameWorld, gameObjects);
+		Graphics::Update(graphicsObjects, screen);
+		Physics::Update(physicsObjects);
+		gameWorld.Update(graphicsObjects, physicsObjects);
+		eventHandler.Update(gameWorld, graphicsObjects, physicsObjects);
 
 		this_thread::sleep(posix_time::millisec(1000 / FPS));
 	}
@@ -47,14 +47,15 @@ int main()
 	SDL_WM_SetCaption(windowTitle, windowTitle);
 	SDL_ShowCursor(SDL_DISABLE);
 
-	UniqueObjectList gameObjects;
+	UniqueObjectList graphicsObjects;
+	UniqueObjectList physicsObjects;
 	Screen screen(800, 600);
 	EventHandler eventHandler;
-	GameWorld gameWorld(gameObjects);
+	GameWorld gameWorld(graphicsObjects, physicsObjects);
 
-	while(main_loop(gameWorld, gameObjects, eventHandler, screen))
+	while(main_loop(gameWorld, graphicsObjects, physicsObjects, eventHandler, screen))
 	{
-		gameWorld.Reset(gameObjects);
+		gameWorld.Reset(graphicsObjects, physicsObjects);
 	}
 
 	return 0;

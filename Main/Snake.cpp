@@ -22,20 +22,23 @@ static const unsigned int speedupAmount(23);
 static const unsigned int growthCap(100);
 static const double linearGrowthRate(10.0 / 29.0);
 
-Snake::Snake(Point center, UniqueObjectList& gameObjects)
+Snake::Snake(Point center, UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects)
 {
-	Init(center, gameObjects);
+	Init(center, graphicsObjects, physicsObjects);
 }
 
-static void add_segment(Snake::Path& path, Point location, Direction direction, UniqueObjectList& gameObjects)
+static void add_segment(Snake::Path& path, Point location, Direction direction,
+	UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects)
 {
 	SnakeSegment newSegment(location, direction, snakeWidth);
 
-	for_each(path.begin(), path.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
+	for_each(path.begin(), path.end(), bind(&UniqueObjectList::remove, &graphicsObjects, _1));
+	for_each(path.begin(), path.end(), bind(&UniqueObjectList::remove, &physicsObjects, _1));
 
 	path.push_front(newSegment);
 
-	for_each(path.begin(), path.end(), bind(&UniqueObjectList::add, &gameObjects, _1));
+	for_each(path.begin(), path.end(), bind(&UniqueObjectList::add, &graphicsObjects, _1));
+	for_each(path.begin(), path.end(), bind(&UniqueObjectList::add, &physicsObjects, _1));
 }
 
 void Snake::Grow(int amount)
@@ -63,7 +66,7 @@ static inline Direction get_random_direction()
 	return directions[randomNumber % countof(directions)];
 }
 
-void Snake::Init(Point center, UniqueObjectList& gameObjects)
+void Snake::Init(Point center, UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects)
 {
 	Point headLocation = center;
 
@@ -75,17 +78,18 @@ void Snake::Init(Point center, UniqueObjectList& gameObjects)
 	length = 0;
 	projectedLength = defaultLength;
 
-	add_segment(path, headLocation, get_random_direction(), gameObjects);
+	add_segment(path, headLocation, get_random_direction(), graphicsObjects, physicsObjects);
 }
 
-void Snake::Reset(Point center, UniqueObjectList& gameObjects)
+void Snake::Reset(Point center, UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects)
 {
-	for_each(path.begin(), path.end(), bind(&UniqueObjectList::remove, &gameObjects, _1));
+	for_each(path.begin(), path.end(), bind(&UniqueObjectList::remove, &graphicsObjects, _1));
+	for_each(path.begin(), path.end(), bind(&UniqueObjectList::remove, &physicsObjects, _1));
 	path.clear();
 
-	Init(center, gameObjects);
+	Init(center, graphicsObjects, physicsObjects);
 }
-void Snake::ChangeDirection(Direction newDirection, UniqueObjectList& gameObjects)
+void Snake::ChangeDirection(Direction newDirection, UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects)
 {
 	Direction direction(Head().GetDirection());
 
@@ -99,14 +103,14 @@ void Snake::ChangeDirection(Direction newDirection, UniqueObjectList& gameObject
 		// take on the head block from the old segment
 		Side startSide = headBlock.GetSide(-newDirection);
 
-		add_segment(path, startSide.min, newDirection, gameObjects);
+		add_segment(path, startSide.min, newDirection, graphicsObjects, physicsObjects);
 		// stretch this segment so that its initial size
 		// is enough to cover the head block
 		Head().SetHeadSide(headBlock.GetSide(newDirection));
 	}
 }
 
-void Snake::Update(UniqueObjectList& gameObjects)
+void Snake::Update(UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects)
 {
 	for(Path::iterator i = path.begin(), end = path.end(); i != end; ++i)
 	{
@@ -147,7 +151,8 @@ void Snake::Update(UniqueObjectList& gameObjects)
 
 			if(Tail().IsEmpty())
 			{
-				gameObjects.remove(Tail());
+				graphicsObjects.remove(Tail());
+				physicsObjects.remove(Tail());
 				path.pop_back();
 			}
 		}

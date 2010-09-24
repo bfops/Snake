@@ -3,5 +3,5 @@ class UniqueObjectList;
 
 namespace Graphics
 {
-	void Update(UniqueObjectList& gameObjects, Screen& target);
+	void Update(UniqueObjectList& graphicsObjects, Screen& target);
 }

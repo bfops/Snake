@@ -109,32 +109,33 @@ void GameWorld::Init()
 	foodTimer.Reset();
 }
 
-GameWorld::GameWorld(UniqueObjectList& gameObjects) :
-	player(GetCenter(), gameObjects)
+GameWorld::GameWorld(UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects) :
+	player(GetCenter(), graphicsObjects, physicsObjects)
 {
 	make_walls(walls);
-	add_range_to_object_list(walls.begin(), walls.end(), gameObjects);
+	add_range_to_object_list(walls.begin(), walls.end(), graphicsObjects);
+	add_range_to_object_list(walls.begin(), walls.end(), physicsObjects);
 
 	Init();
 }
 
-void GameWorld::Update(UniqueObjectList& gameObjects)
+void GameWorld::Update(UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects)
 {
-	player.Update(gameObjects);
+	player.Update(graphicsObjects, physicsObjects);
 
-	remove_vector_from_object_list(foods, gameObjects);
+	remove_vector_from_object_list(foods, graphicsObjects);
+	remove_vector_from_object_list(foods, physicsObjects);
 	for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
 		if(i->IsEaten())
 			foods.erase(i);
-	add_vector_to_object_list(foods, gameObjects);
+	add_vector_to_object_list(foods, graphicsObjects);
+	add_vector_to_object_list(foods, physicsObjects);
 
 	for(SentinelList::iterator sentinel = sentinels.begin(), end = sentinels.end(); sentinel != end; ++sentinel)
 	{
 		if(sentinel->IsInterfering())
 		{
-			gameObjects.remove(*sentinel);
 			send_sentinel(*sentinel);
-			gameObjects.add(*sentinel);
 		}
 		else
 		{
@@ -142,11 +143,13 @@ void GameWorld::Update(UniqueObjectList& gameObjects)
 			Food::FoodInfo foodType = get_food_type(rand);
 
 			Food newFood(*sentinel, foodType);
-			remove_vector_from_object_list(foods, gameObjects);
+			remove_vector_from_object_list(foods, graphicsObjects);
+			remove_vector_from_object_list(foods, physicsObjects);
 			foods.push_back(newFood);
-			add_vector_to_object_list(foods, gameObjects);
+			add_vector_to_object_list(foods, graphicsObjects);
+			add_vector_to_object_list(foods, physicsObjects);
 
-			gameObjects.remove(*sentinel);
+			physicsObjects.remove(*sentinel);
 			sentinels.erase(sentinel);
 		}
 	}
@@ -155,18 +158,19 @@ void GameWorld::Update(UniqueObjectList& gameObjects)
 	{
 		sentinels.push_back(SentinelFood());
 		send_sentinel(*sentinels.rbegin());
-		gameObjects.add(*sentinels.rbegin());;
+		physicsObjects.add(*sentinels.rbegin());
 	}
 }
 
-void GameWorld::Reset(UniqueObjectList& gameObjects)
+void GameWorld::Reset(UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects)
 {
-	remove_vector_from_object_list(sentinels, gameObjects);
+	remove_vector_from_object_list(sentinels, physicsObjects);
 	sentinels.clear();
 
-	player.Reset(GetCenter(), gameObjects);
+	player.Reset(GetCenter(), graphicsObjects, physicsObjects);
 
-	remove_vector_from_object_list(foods, gameObjects);
+	remove_vector_from_object_list(foods, graphicsObjects);
+	remove_vector_from_object_list(foods, physicsObjects);
 	foods.clear();
 
 	Init();
@@ -177,28 +181,37 @@ void GameWorld::QuitNotify()
 	quit = true;
 }
 
-void GameWorld::KeyNotify(SDLKey key, UniqueObjectList& gameObjects)
+static Direction get_direction_from_key(const SDLKey key)
 {
 	switch(key)
 	{
 		case SDLK_LEFT:
-			player.ChangeDirection(Direction::left, gameObjects);
+			return Direction::left;
 			break;
 
 		case SDLK_RIGHT:
-			player.ChangeDirection(Direction::right, gameObjects);
+			return Direction::right;
 			break;
 
 		case SDLK_UP:
-			player.ChangeDirection(Direction::up, gameObjects);
+			return Direction::up;
 			break;
 
 		case SDLK_DOWN:
-			player.ChangeDirection(Direction::down, gameObjects);
+			return Direction::down;
 			break;
 
 		default:
-			break;
+			logger.Fatal("Invalid key somehow passed to get_direction_from_key");
+			return Direction::empty;
+	}
+}
+
+void GameWorld::KeyNotify(SDLKey key, UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects)
+{
+	if(key == SDLK_LEFT || key == SDLK_RIGHT || key == SDLK_UP || key == SDLK_DOWN)
+	{
+		player.ChangeDirection(get_direction_from_key(key), graphicsObjects, physicsObjects);
 	}
 }
 

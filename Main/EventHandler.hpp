@@ -6,5 +6,5 @@ class UniqueObjectList;
 class EventHandler
 {
 public:
-	void Update(GameWorld& world, UniqueObjectList& gameObjects);
+	void Update(GameWorld& world, UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects);
 };

@@ -5,18 +5,22 @@
 SentinelFood::SentinelFood() :
 	WorldObject(sentinelFood)
 {
-	interfering = false;
+	Init();
 }
 
 SentinelFood::SentinelFood(Point location, unsigned int size) :
 	WorldObject(sentinelFood)
 {
-	interfering = false;
-	color = Screen::transparent;
-
 	bounds.min = (bounds.max = location);
 	bounds.max.x += size;
 	bounds.max.y += size;
+
+	Init();
+}
+
+void SentinelFood::Init()
+{
+	interfering = false;
 }
 
 void SentinelFood::CollisionHandler(const WorldObject& obj)

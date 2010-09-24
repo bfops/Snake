@@ -7,6 +7,8 @@ class SentinelFood : public WorldObject
 private:
 	bool interfering;
 
+	void Init();
+
 public:
 	SentinelFood();
 	SentinelFood(Point location, unsigned int size);

@@ -43,10 +43,10 @@ namespace Physics
 		for_each(collider + 1, end, bind(&handle_potential_collision, *collider, _1));
 	}
 
-	void Update(UniqueObjectList& gameObjects)
+	void Update(UniqueObjectList& physicsObjects)
 	{
 		// don't try the last gameObject, since all have been checked against it
-		for(UniqueObjectList::iterator collider = gameObjects.begin(), end = gameObjects.end() - 1; collider != end; ++collider)
-			collide_with_subsequent_objects(collider, gameObjects.end());
+		for(UniqueObjectList::iterator collider = physicsObjects.begin(), end = physicsObjects.end() - 1; collider != end; ++collider)
+			collide_with_subsequent_objects(collider, physicsObjects.end());
 	}
 }

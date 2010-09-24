@@ -2,5 +2,5 @@ class UniqueObjectList;
 
 namespace Physics
 {
-	void Update(UniqueObjectList& gameObjects);
+	void Update(UniqueObjectList& physicsObjects);
 }

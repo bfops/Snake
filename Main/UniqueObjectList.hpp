@@ -4,6 +4,8 @@
 
 class WorldObject;
 
+// TODO: UniqueObjectList zipper
+// TODO: vector adder/remover
 class UniqueObjectList
 {
 public:

@@ -32,13 +32,13 @@ private:
 	void Init();
 
 public:
-	GameWorld(UniqueObjectList& gameObjects);
+	GameWorld(UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects);
 
-	void Update(UniqueObjectList& gameObjects);
-	void Reset(UniqueObjectList& gameObjects);
+	void Update(UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects);
+	void Reset(UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects);
 
 	void QuitNotify();
-	void KeyNotify(SDLKey sym, UniqueObjectList& gameObjects);
+	void KeyNotify(SDLKey sym, UniqueObjectList& graphicsObjects, UniqueObjectList& physicsObjects);
 
 	bool Lost() const;
 	bool QuitCalled() const;
