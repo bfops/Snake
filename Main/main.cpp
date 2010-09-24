@@ -33,7 +33,10 @@ static inline bool main_loop(GameWorld& gameWorld, ZippedUniqueObjectList& gameO
 		this_thread::sleep(posix_time::millisec(1000 / FPS));
 	}
 	if(gameWorld.QuitCalled())
+	{
+		DEBUGLOG(logger, "Quit called")
 		return false;
+	}
 
 	DEBUGLOG(logger, "Death")
 	return true;

@@ -38,7 +38,8 @@ public:
 	void Reset(ZippedUniqueObjectList& gameObjects);
 
 	void QuitNotify();
-	void KeyNotify(SDLKey sym, ZippedUniqueObjectList& gameObjects);
+	void KeyNotify(SDLKey key, ZippedUniqueObjectList& gameObjects);
+	void MouseNotify(Uint8 button, ZippedUniqueObjectList& gameObjects);
 
 	bool Lost() const;
 	bool QuitCalled() const;

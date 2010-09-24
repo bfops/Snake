@@ -11,12 +11,16 @@ void EventHandler::Update(GameWorld& world, ZippedUniqueObjectList& gameObjects)
 	{
 		switch(event.type)
 		{
+			case SDL_QUIT:
+				world.QuitNotify();
+				break;
+
 			case SDL_KEYDOWN:
 				world.KeyNotify(event.key.keysym.sym, gameObjects);
 				break;
 
-			case SDL_QUIT:
-				world.QuitNotify();
+			case SDL_MOUSEBUTTONDOWN:
+				world.MouseNotify(event.button.button, gameObjects);
 				break;
 		}
 	}

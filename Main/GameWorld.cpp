@@ -157,19 +157,15 @@ static Direction get_direction_from_key(const SDLKey key)
 	{
 		case SDLK_LEFT:
 			return Direction::left;
-			break;
 
 		case SDLK_RIGHT:
 			return Direction::right;
-			break;
 
 		case SDLK_UP:
 			return Direction::up;
-			break;
 
 		case SDLK_DOWN:
 			return Direction::down;
-			break;
 
 		default:
 			logger.Fatal("Invalid key somehow passed to get_direction_from_key");
@@ -177,12 +173,31 @@ static Direction get_direction_from_key(const SDLKey key)
 	}
 }
 
+Direction get_direction_from_button(Uint8 button)
+{
+	switch(button)
+	{
+		case SDL_BUTTON_LEFT:
+			return Direction::left;
+
+		case SDL_BUTTON_RIGHT:
+			return Direction::right;
+
+		default:
+			return Direction::empty;
+	}
+}
+
 void GameWorld::KeyNotify(SDLKey key, ZippedUniqueObjectList& gameObjects)
 {
 	if(key == SDLK_LEFT || key == SDLK_RIGHT || key == SDLK_UP || key == SDLK_DOWN)
-	{
 		player.ChangeDirection(get_direction_from_key(key), gameObjects);
-	}
+}
+
+void GameWorld::MouseNotify(Uint8 button, ZippedUniqueObjectList& gameObjects)
+{
+	if(button == SDL_BUTTON_LEFT || button == SDL_BUTTON_RIGHT)
+		player.Turn(get_direction_from_button(button), gameObjects);
 }
 
 bool GameWorld::Lost() const

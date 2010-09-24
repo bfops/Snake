@@ -85,6 +85,7 @@ void Snake::Reset(Point center, ZippedUniqueObjectList& gameObjects)
 
 	Init(center, gameObjects);
 }
+
 void Snake::ChangeDirection(Direction newDirection, ZippedUniqueObjectList& gameObjects)
 {
 	Direction direction(Head().GetDirection());
@@ -104,6 +105,55 @@ void Snake::ChangeDirection(Direction newDirection, ZippedUniqueObjectList& game
 		// is enough to cover the head block
 		Head().SetHeadSide(headBlock.GetSide(newDirection));
 	}
+}
+
+Direction get_turned_direction(Direction direction, Direction turn)
+{
+	// TODO: clean up
+	if(turn == Direction::left)
+	{
+		if(direction == Direction::left)
+			return Direction::down;
+
+		if(direction == Direction::down)
+			return Direction::right;
+
+		if(direction == Direction::right)
+			return Direction::up;
+
+		if(direction == Direction::up)
+			return Direction::left;
+	}
+	if(turn == Direction::right)
+	{
+		if(direction == Direction::left)
+			return Direction::up;
+
+		if(direction == Direction::down)
+			return Direction::left;
+
+		if(direction == Direction::right)
+			return Direction::down;
+
+		if(direction == Direction::up)
+			return Direction::right;
+	}
+	if(turn == Direction::up || turn == Direction::empty)
+		return direction;
+
+	return -direction;
+}
+
+void Snake::Turn(Direction turn, ZippedUniqueObjectList& gameObjects)
+{
+	Direction direction(Head().GetDirection());
+
+	if(turn == Direction::left || turn == Direction::right)
+	{
+		ChangeDirection(get_turned_direction(direction, turn), gameObjects);
+	}
+	else
+		logger.Fatal("Invalid direction provided to Snake::Turn()");
 }
 
 void Snake::Update(ZippedUniqueObjectList& gameObjects)
