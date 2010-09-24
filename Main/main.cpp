@@ -35,7 +35,7 @@ static inline bool main_loop(GameWorld& gameWorld, UniqueObjectList& gameObjects
 	if(gameWorld.QuitCalled())
 		return false;
 
-	logger.Debug("You dead");
+	DEBUGLOG(logger, "Death")
 	return true;
 }
 

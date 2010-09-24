@@ -13,8 +13,10 @@ using namespace std;
 
 static Logger::Handle logger(Logger::RequestHandle("GameWorld"));
 
+// GAMECONSTANT: food management
 static const unsigned int foodAdditionPeriod(8000);
 static const unsigned int foodSize(15);
+
 static const unsigned int wallThickness(10);
 static const Bounds worldBounds(Point(0, 0), Point(800, 600));
 

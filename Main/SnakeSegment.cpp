@@ -160,14 +160,14 @@ bool SnakeSegment::IsDead() const
 	return dead;
 }
 
-double SnakeSegment::GetDigestionInfo() const
-{
-	return digestionInfo;
-}
-
 bool SnakeSegment::IsEmpty() const
 {
 	return empty;
+}
+
+double SnakeSegment::GetDigestionInfo() const
+{
+	return digestionInfo;
 }
 
 void SnakeSegment::Digest()

@@ -14,6 +14,7 @@ using namespace boost;
 
 static Logger::Handle logger(Logger::RequestHandle("Snake"));
 
+// GAMECONSTANT: snake management constants
 static const unsigned int defaultLength(90);
 static const unsigned int snakeWidth(20);
 static const unsigned int speedupPeriod(16000);
@@ -111,12 +112,12 @@ void Snake::Update(UniqueObjectList& gameObjects)
 	{
 		if(i->GetDigestionInfo() != SnakeSegment::HUNGRY)
 		{
-			double foodConstant = i->GetDigestionInfo();
-			double baseUncappedGrowth = projectedLength * linearGrowthRate;
-			double baseRealGrowth = min((double)growthCap, baseUncappedGrowth);
+			const double foodGrowthConstant = i->GetDigestionInfo();
+			const double baseUncappedGrowth = projectedLength * linearGrowthRate;
+			const double baseRealGrowth = min((double)growthCap, baseUncappedGrowth);
 
-			int growthAmount = round(baseRealGrowth * foodConstant);
-			logger.Debug(format("Growing by %1%") % growthAmount);
+			const int growthAmount = round(baseRealGrowth * foodGrowthConstant);
+			DEBUGLOG(logger, format("Growing by %1%") % growthAmount);
 			Grow(growthAmount);
 
 			i->Digest();

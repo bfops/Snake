@@ -17,6 +17,7 @@ public:
 
 private:
 	bool eaten;
+	// growth amount is proportional to this
 	double calories;
 
 	void SnakeCollisionHandler();
