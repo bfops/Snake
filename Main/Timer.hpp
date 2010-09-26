@@ -1,18 +1,17 @@
 #pragma once
 
-#include "boost/date_time.hpp"
-
 class Timer
 {
 private:
-	boost::posix_time::ptime begin;
+	unsigned int elapsedMilliseconds;
 
 public:
 	Timer();
 	void Reset();
-	/// if at least [ms] milliseconds have elapsed,
+	void Update(unsigned int elapsedMilliseconds);
+	/// if at least _ms_ milliseconds have elapsed,
 	/// reset the timer (accounting for overflow if
-	/// more than [ms] milliseconds have elapsed).
+	/// more than _ms_ milliseconds have elapsed).
 	/// Returns whether or not the timer was reset.
 	bool ResetIfHasElapsed(unsigned int ms);
 };

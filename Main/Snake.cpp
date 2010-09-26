@@ -156,8 +156,11 @@ void Snake::Turn(Direction turn, ZippedUniqueObjectList& gameObjects)
 		logger.Fatal("Invalid direction provided to Snake::Turn()");
 }
 
-void Snake::Update(ZippedUniqueObjectList& gameObjects)
+void Snake::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 {
+	speedupTimer.Update(ms);
+	moveTimer.Update(ms);
+
 	for(Path::iterator i = path.begin(), end = path.end(); i != end; ++i)
 	{
 		if(i->GetDigestionInfo() != SnakeSegment::HUNGRY)

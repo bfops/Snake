@@ -40,6 +40,6 @@ public:
 	/// turn the snake relative to the direction provided
 	void Turn(Direction turnDirection, ZippedUniqueObjectList& gameObjects);
 
-	void Update(ZippedUniqueObjectList& gameObjects);
+	void Update(ZippedUniqueObjectList& gameObjects, unsigned int elapsedMilliseconds);
 	bool IsDead() const;
 };

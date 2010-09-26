@@ -94,9 +94,10 @@ GameWorld::GameWorld(ZippedUniqueObjectList& gameObjects) :
 	Init();
 }
 
-void GameWorld::Update(ZippedUniqueObjectList& gameObjects)
+void GameWorld::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 {
-	player.Update(gameObjects);
+	foodTimer.Update(ms);
+	player.Update(gameObjects, ms);
 
 	gameObjects.removeRange(foods.begin(), foods.end());
 	for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)

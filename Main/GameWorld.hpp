@@ -34,7 +34,7 @@ private:
 public:
 	GameWorld(ZippedUniqueObjectList& gameObjects);
 
-	void Update(ZippedUniqueObjectList& gameObjects);
+	void Update(ZippedUniqueObjectList& gameObjects, unsigned int elapsedMilliseconds);
 	void Reset(ZippedUniqueObjectList& gameObjects);
 
 	void QuitNotify();
