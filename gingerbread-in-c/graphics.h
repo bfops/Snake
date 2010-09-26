@@ -1,6 +1,8 @@
 #pragma once
 #include <stdbool.h>
 
+#include "math.h"
+
 /// Represents the dimensions of the screen.
 typedef struct
 {
@@ -15,6 +17,24 @@ typedef struct
 	float b;
 	float a;
 } Color;
+
+typedef struct
+{
+	Point location;
+	Color color;
+} Vertex;
+
+typedef struct
+{
+	Vertex verticies[8];
+} RectangularPrism;
+
+typedef struct
+{
+	Point position;
+	Vector direction;
+	Vector up;
+} Camera;
 
 /** Initializes the graphics subsystem. Unless this is called, graphics API
     calls may not be used.
@@ -45,6 +65,11 @@ typedef void (*DrawFunc)(void* param);
 	@param param The parameter to pass to draw when ready.
 */
 void graphics_tick(DrawFunc draw, void* param);
+
+/**
+	Sets the camera position and direction for the current frame.
+*/
+void graphics_set_camera(const Camera* cam);
 
 /// Gracefully exits the graphics subsystem.
 void graphics_shutdown();

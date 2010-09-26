@@ -1,3 +1,4 @@
+#include "event.h"
 #include "graphics.h"
 
 #include <SDL/SDL.h>
@@ -19,7 +20,8 @@ static Color backgroundColor = {
 
 static int fatally_die(const char* message)
 {
-	printf("ERROR: %s\n", message);
+	if(message)
+		printf("ERROR: %s\n", message);
 	exit(1);
 }
 
@@ -37,10 +39,37 @@ static void init_graphics()
 	atexit(graphics_shutdown);
 }
 
+static void init_event()
+{
+	if(!event_init())
+		fatally_die("Could not initialize the event subsystem.");
+	atexit(event_shutdown);
+}
+
+static void draw_square(void* x)
+{
+	graphics_set_camera(NULL);
+}
+
 int main()
 {
 	init_sdl();
 	init_graphics();
+	init_event();
+
+	EventHandler quitHandler = {
+		.type = EVENT_QUIT,
+		.handler = (void (*)(void*))fatally_die,
+		.param = NULL
+	};
+
+	event_add_handler(quitHandler);
+
+	for(;;)
+	{
+		event_tick();
+		graphics_tick((DrawFunc)graphics_set_camera, NULL);
+	}
 
 	return 0;
 }
