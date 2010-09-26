@@ -22,7 +22,6 @@ public:
 private:
 	SentinelList sentinels;
 
-	bool quit;
 	Timer foodTimer;
 	Menu foods;
 	Snake player;
@@ -37,12 +36,10 @@ public:
 	void Update(ZippedUniqueObjectList& gameObjects, unsigned int elapsedMilliseconds);
 	void Reset(ZippedUniqueObjectList& gameObjects);
 
-	void QuitNotify();
 	void KeyNotify(SDLKey key, ZippedUniqueObjectList& gameObjects);
 	void MouseNotify(Uint8 button, ZippedUniqueObjectList& gameObjects);
 
 	bool Lost() const;
-	bool QuitCalled() const;
 
 	Point GetCenter() const;
 };

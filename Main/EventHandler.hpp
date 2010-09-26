@@ -1,10 +1,10 @@
 #pragma once
 
-class GameWorld;
+class GameState;
 class ZippedUniqueObjectList;
 
 class EventHandler
 {
 public:
-	void Update(GameWorld& world, ZippedUniqueObjectList& gameObjects);
+	void Update(GameState& gameState, ZippedUniqueObjectList& gameObjects);
 };

@@ -81,7 +81,6 @@ static void send_sentinel(SentinelFood& sentinel)
 
 void GameWorld::Init()
 {
-	quit = false;
 	foodTimer.Reset();
 }
 
@@ -147,11 +146,6 @@ void GameWorld::Reset(ZippedUniqueObjectList& gameObjects)
 	Init();
 }
 
-void GameWorld::QuitNotify()
-{
-	quit = true;
-}
-
 static Direction get_direction_from_key(const SDLKey key)
 {
 	switch(key)
@@ -204,11 +198,6 @@ void GameWorld::MouseNotify(Uint8 button, ZippedUniqueObjectList& gameObjects)
 bool GameWorld::Lost() const
 {
 	return player.IsDead();
-}
-
-bool GameWorld::QuitCalled() const
-{
-	return quit;
 }
 
 Point GameWorld::GetCenter() const

@@ -4,6 +4,7 @@
 
 #include "Common.hpp"
 #include "EventHandler.hpp"
+#include "GameState.hpp"
 #include "GameWorld.hpp"
 #include "Graphics.hpp"
 #include "Logger.hpp"
@@ -27,9 +28,10 @@ static inline posix_time::ptime get_current_time()
 
 /// Returns true if we should continue playing, false otherwise.
 static inline bool main_loop(GameWorld& gameWorld, ZippedUniqueObjectList& gameObjects,
-	EventHandler& eventHandler, Screen& screen, boost::posix_time::ptime& before)
+	EventHandler& eventHandler, Screen& screen, boost::posix_time::ptime& before,
+	GameState& gameState)
 {
-	while(!gameWorld.Lost() && !gameWorld.QuitCalled())
+	while(!gameWorld.Lost() && !gameState.QuitCalled())
 	{
 		Graphics::Update(gameObjects.graphics, screen);
 		Physics::Update(gameObjects.physics);
@@ -38,11 +40,11 @@ static inline bool main_loop(GameWorld& gameWorld, ZippedUniqueObjectList& gameO
 		gameWorld.Update(gameObjects, elapsedTime);
 		before = get_current_time();
 
-		eventHandler.Update(gameWorld, gameObjects);
+		eventHandler.Update(gameState, gameObjects);
 
 		this_thread::sleep(posix_time::millisec(1000 / FPS));
 	}
-	if(gameWorld.QuitCalled())
+	if(gameState.QuitCalled())
 	{
 		DEBUGLOG(logger, "Quit called")
 		return false;
@@ -65,8 +67,9 @@ int main()
 	EventHandler eventHandler;
 	boost::posix_time::ptime currentTime = get_current_time();
 	GameWorld gameWorld(gameObjects);
+	GameState gameState(gameWorld);
 
-	while(main_loop(gameWorld, gameObjects, eventHandler, screen, currentTime))
+	while(main_loop(gameWorld, gameObjects, eventHandler, screen, currentTime, gameState))
 	{
 		gameWorld.Reset(gameObjects);
 	}

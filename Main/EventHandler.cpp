@@ -1,9 +1,11 @@
 #include "EventHandler.hpp"
 
 #include "Common.hpp"
-#include "GameWorld.hpp"
+#include "GameState.hpp"
 
-void EventHandler::Update(GameWorld& world, ZippedUniqueObjectList& gameObjects)
+#include <SDL/SDL_events.h>
+
+void EventHandler::Update(GameState& gameState, ZippedUniqueObjectList& gameObjects)
 {
 	SDL_Event event;
 
@@ -12,15 +14,21 @@ void EventHandler::Update(GameWorld& world, ZippedUniqueObjectList& gameObjects)
 		switch(event.type)
 		{
 			case SDL_QUIT:
-				world.QuitNotify();
+				gameState.QuitHandler();
 				break;
 
 			case SDL_KEYDOWN:
-				world.KeyNotify(event.key.keysym.sym, gameObjects);
+			{
+				const SDLKey key = event.key.keysym.sym;
+				if(key == SDLK_p)
+					gameState.PauseHandler();
+
+				gameState.KeyHandler(key, gameObjects);
 				break;
+			}
 
 			case SDL_MOUSEBUTTONDOWN:
-				world.MouseNotify(event.button.button, gameObjects);
+				gameState.MouseHandler(event.button.button, gameObjects);
 				break;
 		}
 	}
