@@ -21,24 +21,21 @@ static Logger::Handle logger(Logger::RequestHandle("main()"));
 static const char* windowTitle("ReWritable's Snake");
 static const unsigned int FPS(60);
 
-static inline posix_time::ptime get_current_time()
-{
-	return posix_time::microsec_clock::local_time();
-}
-
 /// Returns true if we should continue playing, false otherwise.
 static inline bool main_loop(GameWorld& gameWorld, ZippedUniqueObjectList& gameObjects,
-	EventHandler& eventHandler, Screen& screen, boost::posix_time::ptime& before,
-	GameState& gameState)
+	EventHandler& eventHandler, Screen& screen, GameState gameState)
 {
 	while(!gameWorld.Lost() && !gameState.QuitCalled())
 	{
+		gameState.Update();
 		Graphics::Update(gameObjects.graphics, screen);
-		Physics::Update(gameObjects.physics);
 
-		const unsigned int elapsedTime = (get_current_time() - before).total_milliseconds();
-		gameWorld.Update(gameObjects, elapsedTime);
-		before = get_current_time();
+		if(!gameState.IsPaused())
+		{
+			Physics::Update(gameObjects.physics);
+
+			gameWorld.Update(gameObjects, gameState.GetElapsedTime());
+		}
 
 		eventHandler.Update(gameState, gameObjects);
 
@@ -65,11 +62,9 @@ int main()
 	ZippedUniqueObjectList gameObjects;
 	Screen screen(800, 600);
 	EventHandler eventHandler;
-	boost::posix_time::ptime currentTime = get_current_time();
 	GameWorld gameWorld(gameObjects);
-	GameState gameState(gameWorld);
 
-	while(main_loop(gameWorld, gameObjects, eventHandler, screen, currentTime, gameState))
+	while(main_loop(gameWorld, gameObjects, eventHandler, screen, GameState(gameWorld)))
 	{
 		gameWorld.Reset(gameObjects);
 	}

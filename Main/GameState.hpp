@@ -1,5 +1,6 @@
 #pragma once
 
+#include <boost/date_time.hpp>
 #include <SDL/SDL_events.h>
 
 class GameWorld;
@@ -12,6 +13,9 @@ private:
 
 	bool quit, paused;
 
+	boost::posix_time::ptime start;
+	unsigned int elapsedMilliseconds;
+
 public:
 	GameState(GameWorld& gameWorld);
 
@@ -22,4 +26,7 @@ public:
 
 	bool IsPaused() const;
 	bool QuitCalled() const;
+
+	void Update();
+	unsigned int GetElapsedTime() const;
 };

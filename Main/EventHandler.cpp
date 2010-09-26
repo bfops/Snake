@@ -20,15 +20,17 @@ void EventHandler::Update(GameState& gameState, ZippedUniqueObjectList& gameObje
 			case SDL_KEYDOWN:
 			{
 				const SDLKey key = event.key.keysym.sym;
+				if(!gameState.IsPaused())
+					gameState.KeyHandler(key, gameObjects);
+
 				if(key == SDLK_p)
 					gameState.PauseHandler();
-
-				gameState.KeyHandler(key, gameObjects);
 				break;
 			}
 
 			case SDL_MOUSEBUTTONDOWN:
-				gameState.MouseHandler(event.button.button, gameObjects);
+				if(!gameState.IsPaused())
+					gameState.MouseHandler(event.button.button, gameObjects);
 				break;
 		}
 	}
