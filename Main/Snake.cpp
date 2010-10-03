@@ -107,41 +107,32 @@ void Snake::ChangeDirection(Direction newDirection, ZippedUniqueObjectList& game
 	}
 }
 
-Direction get_turned_direction(Direction direction, Direction turn)
+static unsigned int get_bounded_index(int unboundedIndex, int arraySize)
 {
-	// TODO: clean up
-	if(turn == Direction::left)
-	{
-		if(direction == Direction::left)
-			return Direction::down;
+	// could've used recursion, a la Haskell,
+	// but it wouldn't have been nicer
 
-		if(direction == Direction::down)
-			return Direction::right;
+	while(unboundedIndex < 0)
+		unboundedIndex += arraySize;
 
-		if(direction == Direction::right)
-			return Direction::up;
+	while(unboundedIndex >= arraySize)
+		unboundedIndex -= arraySize;
 
-		if(direction == Direction::up)
-			return Direction::left;
-	}
-	if(turn == Direction::right)
-	{
-		if(direction == Direction::left)
-			return Direction::up;
+	return unboundedIndex;
+}
 
-		if(direction == Direction::down)
-			return Direction::left;
+static Direction get_turned_direction(Direction direction, Direction turn)
+{
+	assert(turn == Direction::left || turn == Direction::right);
 
-		if(direction == Direction::right)
-			return Direction::down;
+	const Direction directions[] = {Direction::left, Direction::up, Direction::right, Direction::down};
+	const int nextDirection = (turn == Direction::left ? -1 : 1);
 
-		if(direction == Direction::up)
-			return Direction::right;
-	}
-	if(turn == Direction::up || turn == Direction::empty)
-		return direction;
+	for(unsigned int i = 0; i < countof(directions); ++i)
+		if(direction == directions[i])
+			return directions[get_bounded_index(i + nextDirection, countof(directions))];
 
-	return -direction;
+	return Direction::empty;
 }
 
 void Snake::Turn(Direction turn, ZippedUniqueObjectList& gameObjects)
