@@ -3,6 +3,7 @@
 #include "Common.hpp"
 #include "Food.hpp"
 #include "Side.hpp"
+#include "Snake.hpp"
 
 const double SnakeSegment::HUNGRY = 0;
 
@@ -11,12 +12,12 @@ static const Color24 segmentColor(0, 255, 0);
 SnakeSegment::SnakeSegment() :
 	WorldObject(snake), direction(Direction::empty)
 {
-	Init();
 }
 
-SnakeSegment::SnakeSegment(Point location, Direction _direction, unsigned int _width) :
-	WorldObject(snake), width(_width), direction(_direction)
+SnakeSegment::SnakeSegment(Snake& _parent, Point location, Direction _direction, unsigned int _width) :
+	WorldObject(snake), direction(_direction), parent(&_parent)
 {
+	width = _width;
 	color = segmentColor;
 	bounds.min = location;
 	bounds.max = location;
@@ -32,14 +33,13 @@ SnakeSegment::SnakeSegment(Point location, Direction _direction, unsigned int _w
 
 void SnakeSegment::Init()
 {
-	dead = false;
 	empty = false;
 	digestionInfo = HUNGRY;
 }
 
 void SnakeSegment::DeathCollisionHandler()
 {
-	dead = true;
+	parent->DeathNotify();
 }
 
 void SnakeSegment::FoodCollisionHandler(const Food& food)
@@ -153,11 +153,6 @@ Side SnakeSegment::GetTailSide() const
 void SnakeSegment::SetTailSide(Side side)
 {
 	bounds.SetSide(side, -direction);
-}
-
-bool SnakeSegment::IsDead() const
-{
-	return dead;
 }
 
 bool SnakeSegment::IsEmpty() const

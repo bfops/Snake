@@ -23,6 +23,8 @@ private:
 	Timer moveTimer;
 	Timer speedupTimer;
 
+	GameWorld* world;
+
 	void Grow(int amount);
 
 	inline SnakeSegment& Head();
@@ -31,7 +33,7 @@ private:
 	void Init(Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
 
 public:
-	Snake(Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
+	Snake(GameWorld& world, Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
 
 	void Reset(Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
 
@@ -41,5 +43,6 @@ public:
 	void Turn(Direction turnDirection, ZippedUniqueObjectList& gameObjects);
 
 	void Update(ZippedUniqueObjectList& gameObjects, unsigned int elapsedMilliseconds);
-	bool IsDead() const;
+
+	void DeathNotify() const;
 };

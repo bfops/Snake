@@ -28,6 +28,8 @@ private:
 
 	WallBox walls;
 
+	bool lost;
+
 	void Init();
 
 public:
@@ -39,6 +41,7 @@ public:
 	void KeyNotify(SDLKey key, ZippedUniqueObjectList& gameObjects);
 	void MouseNotify(Uint8 button, ZippedUniqueObjectList& gameObjects);
 
+	void LossNotify();
 	bool Lost() const;
 
 	Point GetCenter() const;

@@ -1,6 +1,7 @@
 #include "Snake.hpp"
 
 #include "Common.hpp"
+#include "GameWorld.hpp"
 #include "Logger.hpp"
 #include "Side.hpp"
 #include "ZippedUniqueObjectList.hpp"
@@ -8,6 +9,7 @@
 #include <boost/any.hpp>
 #include <boost/bind.hpp>
 #include <boost/random.hpp>
+#include <boost/concept_check.hpp>
 
 using namespace std;
 using namespace boost;
@@ -22,14 +24,15 @@ static const unsigned int speedupAmount(23);
 static const unsigned int growthCap(100);
 static const double linearGrowthRate(10.0 / 29.0);
 
-Snake::Snake(Point center, ZippedUniqueObjectList& gameObjects)
+Snake::Snake(GameWorld& _world, Point center, ZippedUniqueObjectList& gameObjects) :
+	world(&_world)
 {
 	Init(center, gameObjects);
 }
 
-static void add_segment(Snake::Path& path, Point location, Direction direction, ZippedUniqueObjectList& gameObjects)
+static void add_segment(Snake& snake, Snake::Path& path, Point location, Direction direction, ZippedUniqueObjectList& gameObjects)
 {
-	SnakeSegment newSegment(location, direction, snakeWidth);
+	SnakeSegment newSegment(snake, location, direction, snakeWidth);
 
 	gameObjects.removeRange(path.begin(), path.end());
 
@@ -75,7 +78,7 @@ void Snake::Init(Point center, ZippedUniqueObjectList& gameObjects)
 	length = 0;
 	projectedLength = defaultLength;
 
-	add_segment(path, headLocation, get_random_direction(), gameObjects);
+	add_segment(*this, path, headLocation, get_random_direction(), gameObjects);
 }
 
 void Snake::Reset(Point center, ZippedUniqueObjectList& gameObjects)
@@ -100,7 +103,7 @@ void Snake::ChangeDirection(Direction newDirection, ZippedUniqueObjectList& game
 		// take on the head block from the old segment
 		Side startSide = headBlock.GetSide(-newDirection);
 
-		add_segment(path, startSide.min, newDirection, gameObjects);
+		add_segment(*this, path, startSide.min, newDirection, gameObjects);
 		// stretch this segment so that its initial size
 		// is enough to cover the head block
 		Head().SetHeadSide(headBlock.GetSide(newDirection));
@@ -138,13 +141,7 @@ static Direction get_turned_direction(Direction direction, Direction turn)
 void Snake::Turn(Direction turn, ZippedUniqueObjectList& gameObjects)
 {
 	Direction direction(Head().GetDirection());
-
-	if(turn == Direction::left || turn == Direction::right)
-	{
-		ChangeDirection(get_turned_direction(direction, turn), gameObjects);
-	}
-	else
-		logger.Fatal("Invalid direction provided to Snake::Turn()");
+	ChangeDirection(get_turned_direction(direction, turn), gameObjects);
 }
 
 void Snake::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
@@ -198,11 +195,7 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 	}
 }
 
-bool Snake::IsDead() const
+void Snake::DeathNotify() const
 {
-	for(Path::const_iterator i = path.begin(), end = path.end(); i != end; ++i)
-		if(i->IsDead())
-			return true;
-
-	return false;
+	world->LossNotify();
 }

@@ -82,10 +82,11 @@ static void send_sentinel(SentinelFood& sentinel)
 void GameWorld::Init()
 {
 	foodTimer.Reset();
+	lost = false;
 }
 
 GameWorld::GameWorld(ZippedUniqueObjectList& gameObjects) :
-	player(GetCenter(), gameObjects)
+	player(*this, GetCenter(), gameObjects)
 {
 	make_walls(walls);
 	gameObjects.addRange(walls.begin(), walls.end());
@@ -195,9 +196,14 @@ void GameWorld::MouseNotify(Uint8 button, ZippedUniqueObjectList& gameObjects)
 		player.Turn(get_direction_from_button(button), gameObjects);
 }
 
+void GameWorld::LossNotify()
+{
+	lost = true;
+}
+
 bool GameWorld::Lost() const
 {
-	return player.IsDead();
+	return lost;
 }
 
 Point GameWorld::GetCenter() const

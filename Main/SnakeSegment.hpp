@@ -5,6 +5,7 @@
 
 class Food;
 class Side;
+class Snake;
 
 class SnakeSegment : public WorldObject
 {
@@ -12,7 +13,6 @@ public:
 	const static double HUNGRY;
 
 private:
-	bool dead;
 	bool empty;
 
 	double digestionInfo;
@@ -20,6 +20,8 @@ private:
 	unsigned int width;
 
 	Direction direction;
+
+	Snake* parent;
 
 	void FoodCollisionHandler(const Food& food);
 	void DeathCollisionHandler();
@@ -31,7 +33,7 @@ private:
 
 public:
 	SnakeSegment();
-	SnakeSegment(Point location, Direction direction, unsigned int segmentWidth);
+	SnakeSegment(Snake& parent, Point location, Direction direction, unsigned int segmentWidth);
 
 	void CollisionHandler(const WorldObject&);
 
