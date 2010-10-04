@@ -99,6 +99,7 @@ void GameWorld::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 	foodTimer.Update(ms);
 	player.Update(gameObjects, ms);
 
+	// TODO: use interrupts, rather than this check-loop
 	gameObjects.removeRange(foods.begin(), foods.end());
 	for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
 		if(i->IsEaten())

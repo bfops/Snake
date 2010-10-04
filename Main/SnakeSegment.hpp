@@ -55,7 +55,6 @@ public:
 	Side GetTailSide() const;
 	void SetTailSide(Side side);
 
-	bool IsDead() const;
 	bool IsEmpty() const;
 
 	double GetDigestionInfo() const;
