@@ -10,9 +10,10 @@ set(BOOST_PACKAGES filesystem date_time program_options serialization signals th
 
 find_package(Boost ${BOOST_VERSION} REQUIRED COMPONENTS ${BOOST_PACKAGES})
 find_package(SDL)
+find_package(OpenGL)
 
-include_directories(${Boost_INCLUDE_DIR} ${SDL_INCLUDE_DIR})
-link_directories(${Boost_LIBRARY_DIRS})# ${SDL_INCLUDE_DIR})
+include_directories(${Boost_INCLUDE_DIR} ${SDL_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR})
+link_directories(${Boost_LIBRARY_DIRS})
 
 include_directories("include")
 
@@ -32,3 +33,4 @@ enable_testing()
 add_subdirectory(gtest)
 add_subdirectory(Main)
 add_subdirectory(Main_test)
+add_subdirectory(gingerbread-in-c)
