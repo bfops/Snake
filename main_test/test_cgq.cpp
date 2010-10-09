@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../Main/cgq.hpp"
+#include "../main/cgq.hpp"
 
 // Blank, because we're just seeing if cqueue can compile for now ;)
 TEST(cgq, default_construction)

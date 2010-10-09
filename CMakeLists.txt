@@ -31,6 +31,6 @@ endif()
 enable_testing()
 
 add_subdirectory(gtest)
-add_subdirectory(Main)
-add_subdirectory(Main_test)
+add_subdirectory(main)
+add_subdirectory(main_test)
 add_subdirectory(gingerbread-in-c)
