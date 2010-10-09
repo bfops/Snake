@@ -38,10 +38,12 @@ public:
 	void Update(ZippedUniqueObjectList& gameObjects, unsigned int elapsedMilliseconds);
 	void Reset(ZippedUniqueObjectList& gameObjects);
 
+	/// this function handles all the World-level side-effects of collisions
+	/// (e.g. setting the "player died" variable, as well as sound effects)
+	void CollisionNotify(WorldObject::ObjectType, WorldObject::ObjectType);
 	void KeyNotify(SDLKey key, ZippedUniqueObjectList& gameObjects);
 	void MouseNotify(Uint8 button, ZippedUniqueObjectList& gameObjects);
 
-	void LossNotify();
 	bool Lost() const;
 
 	Point GetCenter() const;

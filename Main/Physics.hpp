@@ -1,6 +1,7 @@
+class GameWorld;
 class UniqueObjectList;
 
 namespace Physics
 {
-	void Update(UniqueObjectList& physicsObjects);
+	void Update(GameWorld& gameWorld, UniqueObjectList& physicsObjects);
 }

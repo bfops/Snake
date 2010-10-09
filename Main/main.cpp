@@ -32,7 +32,7 @@ static inline bool main_loop(GameWorld& gameWorld, ZippedUniqueObjectList& gameO
 
 		if(!gameState.IsPaused())
 		{
-			Physics::Update(gameObjects.physics);
+			Physics::Update(gameWorld, gameObjects.physics);
 
 			gameWorld.Update(gameObjects, gameState.GetElapsedTime());
 		}

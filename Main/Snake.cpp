@@ -24,15 +24,14 @@ static const unsigned int speedupAmount(23);
 static const unsigned int growthCap(100);
 static const double linearGrowthRate(10.0 / 29.0);
 
-Snake::Snake(GameWorld& _world, Point center, ZippedUniqueObjectList& gameObjects) :
-	world(&_world)
+Snake::Snake(Point center, ZippedUniqueObjectList& gameObjects)
 {
 	Init(center, gameObjects);
 }
 
-static void add_segment(Snake& snake, Snake::Path& path, Point location, Direction direction, ZippedUniqueObjectList& gameObjects)
+static void add_segment(Snake::Path& path, Point location, Direction direction, ZippedUniqueObjectList& gameObjects)
 {
-	SnakeSegment newSegment(snake, location, direction, snakeWidth);
+	SnakeSegment newSegment(location, direction, snakeWidth);
 
 	gameObjects.removeRange(path.begin(), path.end());
 
@@ -78,7 +77,7 @@ void Snake::Init(Point center, ZippedUniqueObjectList& gameObjects)
 	length = 0;
 	projectedLength = defaultLength;
 
-	add_segment(*this, path, headLocation, get_random_direction(), gameObjects);
+	add_segment(path, headLocation, get_random_direction(), gameObjects);
 }
 
 void Snake::Reset(Point center, ZippedUniqueObjectList& gameObjects)
@@ -103,7 +102,7 @@ void Snake::ChangeDirection(Direction newDirection, ZippedUniqueObjectList& game
 		// take on the head block from the old segment
 		Side startSide = headBlock.GetSide(-newDirection);
 
-		add_segment(*this, path, startSide.min, newDirection, gameObjects);
+		add_segment(path, startSide.min, newDirection, gameObjects);
 		// stretch this segment so that its initial size
 		// is enough to cover the head block
 		Head().SetHeadSide(headBlock.GetSide(newDirection));
@@ -193,9 +192,4 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 			}
 		}
 	}
-}
-
-void Snake::DeathNotify() const
-{
-	world->LossNotify();
 }

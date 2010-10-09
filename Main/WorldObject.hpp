@@ -10,10 +10,10 @@ class WorldObject
 public:
 	enum ObjectType
 	{
-		snake,
-		wall,
-		food,
-		sentinelFood
+		snake = 1,
+		wall = 2,
+		food = 2<<1,
+		sentinelFood = 2<<2
 	};
 
 protected:

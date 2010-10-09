@@ -2,6 +2,7 @@
 
 #include "Bounds.hpp"
 #include "collision.h"
+#include "GameWorld.hpp"
 #include "UniqueObjectList.hpp"
 #include "WorldObject.hpp"
 
@@ -26,7 +27,7 @@ namespace Physics
 		return ret;
 	}
 
-	static inline void handle_potential_collision(WorldObject* o1, WorldObject* o2)
+	static inline void handle_potential_collision(GameWorld* world, WorldObject* o1, WorldObject* o2)
 	{
 		CollidableObject c1 = world_to_collidable_object(o1);
 		CollidableObject c2 = world_to_collidable_object(o2);
@@ -35,18 +36,19 @@ namespace Physics
 		{
 			o1->CollisionHandler(*o2);
 			o2->CollisionHandler(*o1);
+			world->CollisionNotify(o1->GetObjectType(), o2->GetObjectType());
 		}
 	}
 
-	static inline void collide_with_subsequent_objects(UniqueObjectList::iterator collider, UniqueObjectList::iterator end)
+	static inline void collide_with_subsequent_objects(GameWorld* world, UniqueObjectList::iterator collider, UniqueObjectList::iterator end)
 	{
-		for_each(collider + 1, end, bind(&handle_potential_collision, *collider, _1));
+		for_each(collider + 1, end, bind(&handle_potential_collision, world, *collider, _1));
 	}
 
-	void Update(UniqueObjectList& physicsObjects)
+	void Update(GameWorld& world, UniqueObjectList& physicsObjects)
 	{
 		// don't try the last gameObject, since all have been checked against it
 		for(UniqueObjectList::iterator collider = physicsObjects.begin(), end = physicsObjects.end() - 1; collider != end; ++collider)
-			collide_with_subsequent_objects(collider, physicsObjects.end());
+			collide_with_subsequent_objects(&world, collider, physicsObjects.end());
 	}
 }

@@ -14,8 +14,8 @@ SnakeSegment::SnakeSegment() :
 {
 }
 
-SnakeSegment::SnakeSegment(Snake& _parent, Point location, Direction _direction, unsigned int _width) :
-	WorldObject(snake), direction(_direction), parent(&_parent)
+SnakeSegment::SnakeSegment(Point location, Direction _direction, unsigned int _width) :
+	WorldObject(snake), direction(_direction)
 {
 	width = _width;
 	color = segmentColor;
@@ -37,11 +37,6 @@ void SnakeSegment::Init()
 	digestionInfo = HUNGRY;
 }
 
-void SnakeSegment::DeathCollisionHandler()
-{
-	parent->DeathNotify();
-}
-
 void SnakeSegment::FoodCollisionHandler(const Food& food)
 {
 	digestionInfo = food.GetCalories();
@@ -50,9 +45,7 @@ void SnakeSegment::FoodCollisionHandler(const Food& food)
 void SnakeSegment::CollisionHandler(const WorldObject& obj)
 {
 	WorldObject::ObjectType type = obj.GetObjectType();
-	if(type == WorldObject::snake || type == WorldObject::wall)
-		DeathCollisionHandler();
-	else if(type == WorldObject::food)
+	if(type == WorldObject::food)
 		FoodCollisionHandler(*reinterpret_cast<const Food*>(&obj));
 }
 

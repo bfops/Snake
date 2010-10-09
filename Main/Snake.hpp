@@ -33,7 +33,7 @@ private:
 	void Init(Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
 
 public:
-	Snake(GameWorld& world, Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
+	Snake(Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
 
 	void Reset(Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
 
@@ -43,6 +43,4 @@ public:
 	void Turn(Direction turnDirection, ZippedUniqueObjectList& gameObjects);
 
 	void Update(ZippedUniqueObjectList& gameObjects, unsigned int elapsedMilliseconds);
-
-	void DeathNotify() const;
 };

@@ -86,7 +86,7 @@ void GameWorld::Init()
 }
 
 GameWorld::GameWorld(ZippedUniqueObjectList& gameObjects) :
-	player(*this, GetCenter(), gameObjects)
+	player(GetCenter(), gameObjects)
 {
 	make_walls(walls);
 	gameObjects.addRange(walls.begin(), walls.end());
@@ -170,7 +170,7 @@ static Direction get_direction_from_key(const SDLKey key)
 	}
 }
 
-Direction get_direction_from_button(Uint8 button)
+Direction get_direction_from_button(const Uint8 button)
 {
 	switch(button)
 	{
@@ -185,7 +185,22 @@ Direction get_direction_from_button(Uint8 button)
 	}
 }
 
-void GameWorld::KeyNotify(SDLKey key, ZippedUniqueObjectList& gameObjects)
+void GameWorld::CollisionNotify(const WorldObject::ObjectType o1, const WorldObject::ObjectType o2)
+{
+#define collisionType (o1 | o2)
+#define selfCollide !(collisionType & ~o1)
+
+	if(collisionType & WorldObject::snake)
+	{
+		if(selfCollide || collisionType & WorldObject::wall)
+			lost = true;
+	}
+
+#undef selfCollide
+#undef collisionType
+}
+
+void GameWorld::KeyNotify(const SDLKey key, ZippedUniqueObjectList& gameObjects)
 {
 	if(key == SDLK_LEFT || key == SDLK_RIGHT || key == SDLK_UP || key == SDLK_DOWN)
 		player.ChangeDirection(get_direction_from_key(key), gameObjects);
@@ -195,11 +210,6 @@ void GameWorld::MouseNotify(Uint8 button, ZippedUniqueObjectList& gameObjects)
 {
 	if(button == SDL_BUTTON_LEFT || button == SDL_BUTTON_RIGHT)
 		player.Turn(get_direction_from_button(button), gameObjects);
-}
-
-void GameWorld::LossNotify()
-{
-	lost = true;
 }
 
 bool GameWorld::Lost() const

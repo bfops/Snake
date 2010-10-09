@@ -21,7 +21,7 @@ if(MSVC)
     #
 else(MSVC)
 	add_definitions(
-		-pipe -fsigned-char -Werror -Wfatal-errors -march=native
+		-pipe -fsigned-char -Werror -march=native
 		-Wno-long-long -static -pedantic -pedantic-errors -Wall
 	)
 

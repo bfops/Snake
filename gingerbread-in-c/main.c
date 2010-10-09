@@ -46,10 +46,10 @@ static void init_event()
 	atexit(event_shutdown);
 }
 
-static void draw_square(void* x)
+/*static void draw_square(void* x)
 {
 	graphics_set_camera(NULL);
-}
+}*/
 
 int main()
 {
