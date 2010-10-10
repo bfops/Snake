@@ -10,3 +10,4 @@ target_link_libraries(gingerbread-in-c
 	${SDL_LIBRARY}
 	${OPENGL_LIBRARY}
 )
+
