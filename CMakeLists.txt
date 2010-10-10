@@ -21,7 +21,7 @@ if(MSVC)
     #
 else(MSVC)
 	add_definitions(
-		-pipe -fsigned-char -Werror -Wfatal-errors -march=native
+		-pipe -fsigned-char -Werror -errors -march=native
 		-Wno-long-long -static -pedantic -pedantic-errors -Wall
 	)
 
@@ -31,6 +31,4 @@ endif()
 enable_testing()
 
 add_subdirectory(gtest)
-add_subdirectory(Main)
-add_subdirectory(Main_test)
 add_subdirectory(gingerbread-in-c)
