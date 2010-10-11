@@ -5,33 +5,36 @@
 
 #include <SDL/SDL_events.h>
 
-void EventHandler::HandleEventQueue(GameState& gameState, ZippedUniqueObjectList& gameObjects)
+namespace EventHandler
 {
-	SDL_Event event;
-
-	while(SDL_PollEvent(&event))
+	void HandleEventQueue(GameState& gameState, ZippedUniqueObjectList& gameObjects)
 	{
-		switch(event.type)
+		SDL_Event event;
+
+		while(SDL_PollEvent(&event))
 		{
-			case SDL_QUIT:
-				gameState.QuitHandler();
-				break;
-
-			case SDL_KEYDOWN:
+			switch(event.type)
 			{
-				const SDLKey key = event.key.keysym.sym;
-				if(!gameState.IsPaused())
-					gameState.KeyHandler(key, gameObjects);
+				case SDL_QUIT:
+					gameState.QuitHandler();
+					break;
 
-				if(key == SDLK_p)
-					gameState.PauseHandler();
-				break;
+				case SDL_KEYDOWN:
+				{
+					const SDLKey key = event.key.keysym.sym;
+					if(!gameState.IsPaused())
+						gameState.KeyHandler(key, gameObjects);
+
+					if(key == SDLK_p)
+						gameState.PauseHandler();
+					break;
+				}
+
+				case SDL_MOUSEBUTTONDOWN:
+					if(!gameState.IsPaused())
+						gameState.MouseHandler(event.button.button, gameObjects);
+					break;
 			}
-
-			case SDL_MOUSEBUTTONDOWN:
-				if(!gameState.IsPaused())
-					gameState.MouseHandler(event.button.button, gameObjects);
-				break;
 		}
 	}
 }

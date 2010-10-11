@@ -21,7 +21,7 @@ static const unsigned int FPS(60);
 
 /// Returns true if we should continue playing, false otherwise.
 static inline bool main_loop(GameWorld& gameWorld, ZippedUniqueObjectList& gameObjects,
-	EventHandler& eventHandler, Screen& screen, GameState gameState)
+	Screen& screen, GameState gameState)
 {
 	while(!gameWorld.Lost() && !gameState.QuitCalled())
 	{
@@ -35,7 +35,7 @@ static inline bool main_loop(GameWorld& gameWorld, ZippedUniqueObjectList& gameO
 			gameWorld.Update(gameObjects, gameState.GetElapsedTime());
 		}
 
-		eventHandler.HandleEventQueue(gameState, gameObjects);
+		EventHandler::HandleEventQueue(gameState, gameObjects);
 
 		SDL_Delay(1000 / FPS);
 	}
@@ -59,10 +59,9 @@ int main()
 
 	ZippedUniqueObjectList gameObjects;
 	Screen screen(800, 600);
-	EventHandler eventHandler;
 	GameWorld gameWorld(gameObjects);
 
-	while(main_loop(gameWorld, gameObjects, eventHandler, screen, GameState(gameWorld)))
+	while(main_loop(gameWorld, gameObjects, screen, GameState(gameWorld)))
 		gameWorld.Reset(gameObjects);
 
 	return 0;
