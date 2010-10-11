@@ -5,7 +5,7 @@
 
 #include <SDL/SDL_events.h>
 
-void EventHandler::Update(GameState& gameState, ZippedUniqueObjectList& gameObjects)
+bool EventHandler::GetAndHandleEvent(GameState& gameState, ZippedUniqueObjectList& gameObjects)
 {
 	SDL_Event event;
 
@@ -33,5 +33,9 @@ void EventHandler::Update(GameState& gameState, ZippedUniqueObjectList& gameObje
 					gameState.MouseHandler(event.button.button, gameObjects);
 				break;
 		}
+
+		return true;
 	}
+
+	return false;
 }

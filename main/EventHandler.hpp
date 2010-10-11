@@ -6,5 +6,6 @@ class ZippedUniqueObjectList;
 class EventHandler
 {
 public:
-	void Update(GameState& gameState, ZippedUniqueObjectList& gameObjects);
+	/// returns true if an event was handled, false otherwise
+	bool GetAndHandleEvent(GameState& gameState, ZippedUniqueObjectList& gameObjects);
 };

@@ -37,7 +37,7 @@ static inline bool main_loop(GameWorld& gameWorld, ZippedUniqueObjectList& gameO
 			gameWorld.Update(gameObjects, gameState.GetElapsedTime());
 		}
 
-		eventHandler.Update(gameState, gameObjects);
+		while(eventHandler.GetAndHandleEvent(gameState, gameObjects));
 
 		this_thread::sleep(posix_time::millisec(1000 / FPS));
 	}
@@ -65,9 +65,7 @@ int main()
 	GameWorld gameWorld(gameObjects);
 
 	while(main_loop(gameWorld, gameObjects, eventHandler, screen, GameState(gameWorld)))
-	{
 		gameWorld.Reset(gameObjects);
-	}
 
 	return 0;
 }
