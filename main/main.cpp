@@ -1,5 +1,3 @@
-#include <boost/date_time.hpp>
-#include <boost/thread.hpp>
 #include <SDL/SDL.h>
 
 #include "Common.hpp"
@@ -39,7 +37,7 @@ static inline bool main_loop(GameWorld& gameWorld, ZippedUniqueObjectList& gameO
 
 		while(eventHandler.GetAndHandleEvent(gameState, gameObjects));
 
-		this_thread::sleep(posix_time::millisec(1000 / FPS));
+		SDL_Delay(1000 / FPS);
 	}
 	if(gameState.QuitCalled())
 	{
