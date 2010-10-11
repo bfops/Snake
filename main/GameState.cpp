@@ -3,19 +3,12 @@
 #include "Common.hpp"
 #include "GameWorld.hpp"
 
-using namespace boost::posix_time;
-
-static inline ptime get_current_time()
-{
-	return microsec_clock::local_time();
-}
-
 GameState::GameState(GameWorld& world) :
 	gameWorld(world)
 {
 	quit = false;
 	paused = false;
-	start = get_current_time();
+	start = SDL_GetTicks();
 }
 
 void GameState::QuitHandler()
@@ -52,12 +45,12 @@ void GameState::Update()
 {
 	if(paused)
 	{
-		start = get_current_time() - milliseconds(elapsedMilliseconds);
+		start = SDL_GetTicks() - elapsedMilliseconds;
 	}
 	else
 	{
-		elapsedMilliseconds = (get_current_time() - start).total_milliseconds();
-		start = get_current_time();
+		elapsedMilliseconds = SDL_GetTicks() - start;
+		start = SDL_GetTicks();
 	}
 }
 
