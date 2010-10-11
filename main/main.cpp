@@ -35,7 +35,7 @@ static inline bool main_loop(GameWorld& gameWorld, ZippedUniqueObjectList& gameO
 			gameWorld.Update(gameObjects, gameState.GetElapsedTime());
 		}
 
-		while(eventHandler.GetAndHandleEvent(gameState, gameObjects));
+		eventHandler.HandleEventQueue(gameState, gameObjects);
 
 		SDL_Delay(1000 / FPS);
 	}

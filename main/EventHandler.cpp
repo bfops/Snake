@@ -5,11 +5,11 @@
 
 #include <SDL/SDL_events.h>
 
-bool EventHandler::GetAndHandleEvent(GameState& gameState, ZippedUniqueObjectList& gameObjects)
+void EventHandler::HandleEventQueue(GameState& gameState, ZippedUniqueObjectList& gameObjects)
 {
 	SDL_Event event;
 
-	if(SDL_PollEvent(&event))
+	while(SDL_PollEvent(&event))
 	{
 		switch(event.type)
 		{
@@ -33,9 +33,5 @@ bool EventHandler::GetAndHandleEvent(GameState& gameState, ZippedUniqueObjectLis
 					gameState.MouseHandler(event.button.button, gameObjects);
 				break;
 		}
-
-		return true;
 	}
-
-	return false;
 }

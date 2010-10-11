@@ -7,5 +7,5 @@ class EventHandler
 {
 public:
 	/// returns true if an event was handled, false otherwise
-	bool GetAndHandleEvent(GameState& gameState, ZippedUniqueObjectList& gameObjects);
+	void HandleEventQueue(GameState& gameState, ZippedUniqueObjectList& gameObjects);
 };
