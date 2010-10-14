@@ -35,6 +35,8 @@ void WorldObject::Draw(Screen& target) const
 		error += SDL_GetError();
 		logger.Fatal(error.c_str());
 	}
+
+	SDL_FreeSurface(surface);
 }
 
 Bounds WorldObject::GetBounds() const

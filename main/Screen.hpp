@@ -13,6 +13,7 @@ private:
 
 public:
 	Screen(unsigned int width, unsigned int height);
+	~Screen();
 
 	SDL_Surface* GetSurface();
 	Point GetCenter() const;

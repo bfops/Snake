@@ -18,8 +18,14 @@ Screen::Screen(unsigned int _width, unsigned int _height) :
 		logger.Fatal(boost::format("Error creating screen: %1%") % SDL_GetError());
 }
 
+Screen::~Screen()
+{
+	SDL_FreeSurface(screen);
+}
+
 SDL_Surface* Screen::GetSurface()
 {
+	++screen->refcount;
 	return screen;
 }
 
