@@ -1,4 +1,5 @@
 *~
 *.[oa]
-build/
 *.kdev4
+*.mid
+build/
