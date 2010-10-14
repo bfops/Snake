@@ -7,7 +7,7 @@
 #include "Wall.hpp"
 
 #include <boost/array.hpp>
-#include "SDL/SDL_events.h"
+#include <SDL_events.h>
 #include <vector>
 
 class ZippedUniqueObjectList;

@@ -3,6 +3,8 @@
 #include "Common.hpp"
 #include "Logger.hpp"
 
+#include <SDL_video.h>
+
 using namespace std;
 
 static Logger::Handle logger = Logger::RequestHandle("Screen");

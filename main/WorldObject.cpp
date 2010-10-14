@@ -3,6 +3,8 @@
 #include "Logger.hpp"
 #include "Screen.hpp"
 
+#include <SDL_video.h>
+
 using namespace std;
 
 static Logger::Handle logger(Logger::RequestHandle("WorldObject"));

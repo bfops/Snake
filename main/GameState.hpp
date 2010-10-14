@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL/SDL_events.h>
+#include <SDL_events.h>
 
 class GameWorld;
 class ZippedUniqueObjectList;

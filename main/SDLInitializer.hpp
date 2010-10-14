@@ -6,9 +6,6 @@
 // instance is constructed, SDL will stay usable.
 struct SDLInitializer
 {
-private:
-	Logger::Handle logger;
-
 public:
 	SDLInitializer();
 	~SDLInitializer();

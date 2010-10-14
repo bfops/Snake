@@ -1,6 +1,8 @@
 #pragma once
 
-#include <SDL/SDL.h>
+#include <SDL_types.h>
+
+struct SDL_Surface;
 
 struct Color24
 {

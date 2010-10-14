@@ -3,6 +3,8 @@
 #include "Common.hpp"
 #include "GameWorld.hpp"
 
+#include <SDL_timer.h>
+
 GameState::GameState(GameWorld& world) :
 	gameWorld(world)
 {

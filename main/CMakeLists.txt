@@ -12,7 +12,7 @@ add_executable(GingerbreadPrototype
 	main.cpp
 	Physics.cpp
 	Screen.cpp
-	SDL.cpp
+	SDLInitializer.cpp
 	SentinelFood.cpp
 	Side.cpp
 	Snake.cpp
@@ -27,4 +27,5 @@ add_executable(GingerbreadPrototype
 target_link_libraries(GingerbreadPrototype
 	${Boost_LIBRARIES}
 	${SDL_LIBRARY}
+	SDL_mixer
 )

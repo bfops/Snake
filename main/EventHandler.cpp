@@ -3,7 +3,7 @@
 #include "Common.hpp"
 #include "GameState.hpp"
 
-#include <SDL/SDL_events.h>
+#include <SDL_events.h>
 
 namespace EventHandler
 {

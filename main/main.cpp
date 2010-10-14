@@ -8,7 +8,7 @@
 #include "Logger.hpp"
 #include "Physics.hpp"
 #include "Screen.hpp"
-#include "SDL.h"
+#include "SDLInitializer.hpp"
 #include "ZippedUniqueObjectList.hpp"
 
 using namespace boost;

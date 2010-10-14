@@ -2,6 +2,8 @@
 
 #include "Common.hpp"
 
+#include <SDL_video.h>
+
 Color24::Color24() :
 	r(0), g(0), b(0)
 {
