@@ -11,6 +11,7 @@
 #include "Screen.hpp"
 #include "SDLInitializer.hpp"
 #include "ZippedUniqueObjectList.hpp"
+#include <boost/concept_check.hpp>
 
 using namespace boost;
 using namespace std;
@@ -63,8 +64,14 @@ int main()
 	GameWorld gameWorld(gameObjects);
 
 	Mix_AllocateChannels(3);
+
+	Mix_Music* music = Mix_LoadMUS("resources/title theme.waV");
+	Mix_PlayMusic(music, -1);
+
 	while(game_loop(gameWorld, gameObjects, screen, GameState(gameWorld)))
 		gameWorld.Reset(gameObjects);
+
+	Mix_FreeMusic(music);
 
 	return 0;
 }
