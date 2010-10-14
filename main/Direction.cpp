@@ -1,7 +1,5 @@
 #include "Direction.hpp"
 
-#include "Common.hpp"
-
 const Direction Direction::empty(0, 0);
 const Direction Direction::left(-1, 0);
 const Direction Direction::right(1, 0);

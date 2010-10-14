@@ -18,5 +18,5 @@
 	if(func) \
 		DEBUGLOG(logger, string)
 #else
-#define DEBUGLOG(func, logger, __FILE__ ## " #" # __LINE__ ## ": " ## string) ;
+#define DEBUGLOGIF(func, logger, string) ;
 #endif

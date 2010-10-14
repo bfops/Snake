@@ -1,6 +1,5 @@
 #include "SnakeSegment.hpp"
 
-#include "Common.hpp"
 #include "Food.hpp"
 #include "Side.hpp"
 #include "Snake.hpp"

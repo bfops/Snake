@@ -1,6 +1,5 @@
 #include "EventHandler.hpp"
 
-#include "Common.hpp"
 #include "GameState.hpp"
 
 #include <SDL_events.h>

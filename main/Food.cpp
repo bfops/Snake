@@ -1,6 +1,5 @@
 #include "Food.hpp"
 
-#include "Common.hpp"
 #include "SentinelFood.hpp"
 
 // GAMECONSTANT: food data

@@ -1,7 +1,5 @@
 #include "Timer.hpp"
 
-#include "Common.hpp"
-
 Timer::Timer()
 {
 	Reset();

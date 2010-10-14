@@ -1,6 +1,5 @@
 #include "Screen.hpp"
 
-#include "Common.hpp"
 #include "Logger.hpp"
 
 #include <SDL_video.h>

@@ -1,7 +1,5 @@
 #include "Color24.hpp"
 
-#include "Common.hpp"
-
 #include <SDL_video.h>
 
 Color24::Color24() :

@@ -1,5 +1,6 @@
 #include "GameWorld.hpp"
 
+#include "Common.hpp"
 #include "Food.hpp"
 #include "Logger.hpp"
 #include "Wall.hpp"
@@ -7,6 +8,8 @@
 
 #include <boost/bind.hpp>
 #include <boost/random.hpp>
+#include <SDL_timer.h>
+#include <SDL_mixer.h>
 
 using namespace boost;
 using namespace std;
@@ -94,6 +97,36 @@ GameWorld::GameWorld(ZippedUniqueObjectList& gameObjects) :
 	Init();
 }
 
+// _filename is a const char*
+static int sound_playing_thread(void* _filename)
+{
+	const char* const filename = reinterpret_cast<const char* const>(_filename);
+	Mix_Chunk* const sound = Mix_LoadWAV(filename);
+	int channel;
+	if(sound == NULL || (channel = Mix_PlayChannel(-1, sound, 0)) == -1)
+	{
+		logger.Fatal(format("Error playing sound: %1%") % Mix_GetError());
+		return 1;
+	}
+
+	while(Mix_Playing(channel))
+		SDL_Delay(50);
+
+	Mix_FreeChunk(sound);
+
+	return 0;
+}
+
+static inline void play_sound(const char* filename)
+{
+	SDL_CreateThread(sound_playing_thread, reinterpret_cast<void*>(const_cast<char*>(filename)));
+}
+
+static inline void play_food_sound()
+{
+	play_sound("resources/food appear.wav");
+}
+
 void GameWorld::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 {
 	foodTimer.Update(ms);
@@ -120,6 +153,7 @@ void GameWorld::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 			Food newFood(*sentinel, foodType);
 			gameObjects.removeRange(foods.begin(), foods.end());
 			foods.push_back(newFood);
+			play_food_sound();
 			gameObjects.addRange(foods.begin(), foods.end());
 
 			gameObjects.physics.remove(*sentinel);
@@ -185,6 +219,16 @@ Direction get_direction_from_button(const Uint8 button)
 	}
 }
 
+static inline void play_death_sound()
+{
+	play_sound("resources/die.wav");
+}
+
+static inline void play_eat_sound()
+{
+	play_sound("resources/eat.wav");
+}
+
 void GameWorld::CollisionNotify(const WorldObject::ObjectType o1, const WorldObject::ObjectType o2)
 {
 #define collisionType (o1 | o2)
@@ -193,7 +237,14 @@ void GameWorld::CollisionNotify(const WorldObject::ObjectType o1, const WorldObj
 	if(collisionType & WorldObject::snake)
 	{
 		if(selfCollide || collisionType & WorldObject::wall)
+		{
 			lost = true;
+			play_death_sound();
+		}
+		else if(collisionType & WorldObject::food)
+		{
+			play_eat_sound();
+		}
 	}
 
 #undef selfCollide

@@ -1,6 +1,5 @@
 #include "GameState.hpp"
 
-#include "Common.hpp"
 #include "GameWorld.hpp"
 
 #include <SDL_timer.h>

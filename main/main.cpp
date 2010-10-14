@@ -65,7 +65,9 @@ int main()
 
 	Mix_AllocateChannels(3);
 
-	Mix_Music* music = Mix_LoadMUS("resources/title theme.waV");
+	Mix_Music* music = Mix_LoadMUS("resources/title theme.wav");
+	if(music == NULL)
+		logger.Fatal(format("Error playing music: %1%") % Mix_GetError());
 	Mix_PlayMusic(music, -1);
 
 	while(game_loop(gameWorld, gameObjects, screen, GameState(gameWorld)))

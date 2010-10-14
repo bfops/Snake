@@ -1,9 +1,7 @@
 #include "Logger.hpp"
-#include "Common.hpp"
 
 #include <cstdio>
 #include <stdexcept>
-
 #include <boost/thread/mutex.hpp>
 
 typedef boost::mutex Mut;
@@ -19,7 +17,7 @@ static void write(const char* type, const char* tag, const char* message)
 
 namespace Logger
 {
-#ifdef DEBUG
+#ifndef NDEBUG
 	void Handle::Debug(const char* message) const
 	{
 		write("D", tag, message);
