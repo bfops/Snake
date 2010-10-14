@@ -1,4 +1,5 @@
-#include <SDL/SDL.h>
+#include <SDL.h>
+#include <SDL_mixer.h>
 
 #include "Common.hpp"
 #include "EventHandler.hpp"
@@ -20,7 +21,7 @@ static const char* windowTitle("ReWritable's Snake");
 static const unsigned int FPS(60);
 
 /// Returns true if we should continue playing, false otherwise.
-static inline bool main_loop(GameWorld& gameWorld, ZippedUniqueObjectList& gameObjects,
+static inline bool game_loop(GameWorld& gameWorld, ZippedUniqueObjectList& gameObjects,
 	Screen& screen, GameState gameState)
 {
 	while(!gameWorld.Lost() && !gameState.QuitCalled())
@@ -61,7 +62,8 @@ int main()
 	Screen screen(800, 600);
 	GameWorld gameWorld(gameObjects);
 
-	while(main_loop(gameWorld, gameObjects, screen, GameState(gameWorld)))
+	Mix_AllocateChannels(3);
+	while(game_loop(gameWorld, gameObjects, screen, GameState(gameWorld)))
 		gameWorld.Reset(gameObjects);
 
 	return 0;
