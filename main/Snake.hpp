@@ -1,8 +1,8 @@
 #pragma once
 
 #include "cgq.hpp"
+#include "Counter.hpp"
 #include "SnakeSegment.hpp"
-#include "Timer.hpp"
 
 class Direction;
 class GameWorld;
@@ -20,8 +20,8 @@ private:
 
 	unsigned int speed;
 
-	Timer moveTimer;
-	Timer speedupTimer;
+	Counter moveTimer;
+	Counter speedupTimer;
 
 	GameWorld* world;
 

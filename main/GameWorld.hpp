@@ -1,9 +1,9 @@
 #pragma once
 
+#include "Counter.hpp"
 #include "Food.hpp"
 #include "SentinelFood.hpp"
 #include "Snake.hpp"
-#include "Timer.hpp"
 #include "Wall.hpp"
 
 #include <boost/array.hpp>
@@ -22,7 +22,7 @@ public:
 private:
 	SentinelList sentinels;
 
-	Timer foodTimer;
+	Counter foodTimer;
 	Menu foods;
 	Snake player;
 
