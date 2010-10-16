@@ -31,6 +31,7 @@ static const char* windowTitle("ReWritable's Snake");
 static const unsigned int FPS(60);
 static shared_ptr<GameState> gameState;
 static shared_ptr<ZippedUniqueObjectList> gameObjects;
+static shared_ptr<GameWorld> gameWorld;
 
 static const EventHandler defaultEventHandler(quit_handler, pause_handler, key_handler, mouse_handler);
 static const EventHandler pausedEventHandler(quit_handler, pause_handler, paused_key_handler, paused_mouse_handler);
@@ -42,14 +43,14 @@ static WorldUpdater paused_world_updater;
 static WorldUpdater* currentWorldUpdater;
 
 // whether or not music is on
-//#define MUSIC
+#define MUSIC
 /// Returns true if we should continue playing, false otherwise.
-static inline bool game_loop(GameWorld& gameWorld, Screen& screen, Timer& timer)
+static inline bool game_loop(Screen& screen, Timer& timer)
 {
-	while(!gameWorld.Lost() && !gameState->QuitCalled())
+	while(!gameWorld->Lost() && !gameState->QuitCalled())
 	{
 		Graphics::Update(gameObjects->graphics, screen);
-		currentWorldUpdater(gameWorld, timer);
+		currentWorldUpdater(*gameWorld, timer);
 		currentEventHandler->HandleEventQueue(*gameState, *gameObjects);
 
 		SDL_Delay(1000 / FPS);
@@ -75,8 +76,8 @@ int main()
 	Screen screen(800, 600);
 	Timer timer;
 	gameObjects = shared_ptr<ZippedUniqueObjectList>(new ZippedUniqueObjectList());
-	GameWorld gameWorld(*gameObjects);
-	gameState = shared_ptr<GameState>(new GameState(gameWorld));
+	gameWorld = shared_ptr<GameWorld>(new GameWorld(*gameObjects));
+	gameState = shared_ptr<GameState>(new GameState(*gameWorld));
 
 	currentEventHandler = &defaultEventHandler;
 	currentWorldUpdater = &default_world_updater;
@@ -90,9 +91,9 @@ int main()
 	Mix_PlayMusic(music, -1);
 #endif
 
-	while(game_loop(gameWorld, screen, timer))
+	while(game_loop(screen, timer))
 	{
-		gameWorld.Reset(*gameObjects);
+		gameWorld->Reset(*gameObjects);
 		timer.Reset();
 	}
 
@@ -126,14 +127,14 @@ static void pause_handler()
 
 static void key_handler(const SDLKey key)
 {
-	gameState->KeyHandler(key, *gameObjects);
+	gameWorld->KeyNotify(key, *gameObjects);
 }
 
 static void paused_key_handler(const SDLKey) {}
 
 static void mouse_handler(const Uint8 button)
 {
-	gameState->MouseHandler(button, *gameObjects);
+	gameWorld->MouseNotify(button, *gameObjects);
 }
 
 static void paused_mouse_handler(const Uint8 button) {}
