@@ -1,6 +1,3 @@
-#include <SDL.h>
-#include <SDL_mixer.h>
-
 #include "Common.hpp"
 #include "EventHandler.hpp"
 #include "GameState.hpp"
@@ -11,6 +8,13 @@
 #include "Screen.hpp"
 #include "SDLInitializer.hpp"
 #include "ZippedUniqueObjectList.hpp"
+
+#include <boost/bind.hpp>
+#include <boost/shared_ptr.hpp>
+#include <SDL.h>
+#include <SDL_mixer.h>
+#include <boost/concept_check.hpp>
+#include <boost/concept_check.hpp>
 #include <boost/concept_check.hpp>
 
 using namespace boost;
@@ -20,28 +24,31 @@ static Logger::Handle logger(Logger::RequestHandle("main()"));
 
 static const char* windowTitle("ReWritable's Snake");
 static const unsigned int FPS(60);
+static shared_ptr<GameState> gameState;
+static shared_ptr<ZippedUniqueObjectList> gameObjects;
+static EventHandler* currentEventHandler;
+static EventHandler defaultEventHandler, pausedEventHandler;
 
 /// Returns true if we should continue playing, false otherwise.
-static inline bool game_loop(GameWorld& gameWorld, ZippedUniqueObjectList& gameObjects,
-	Screen& screen, GameState gameState)
+static inline bool game_loop(GameWorld& gameWorld, Screen& screen)
 {
-	while(!gameWorld.Lost() && !gameState.QuitCalled())
+	while(!gameWorld.Lost() && !gameState->QuitCalled())
 	{
-		gameState.Update();
-		Graphics::Update(gameObjects.graphics, screen);
+		gameState->Update();
+		Graphics::Update(gameObjects->graphics, screen);
 
-		if(!gameState.IsPaused())
+		if(!gameState->IsPaused())
 		{
-			Physics::Update(gameWorld, gameObjects.physics);
+			Physics::Update(gameWorld, gameObjects->physics);
 
-			gameWorld.Update(gameObjects, gameState.GetElapsedTime());
+			gameWorld.Update(*gameObjects, gameState->GetElapsedTime());
 		}
 
-		EventHandler::HandleEventQueue(gameState, gameObjects);
+		currentEventHandler->HandleEventQueue(*gameState, *gameObjects);
 
 		SDL_Delay(1000 / FPS);
 	}
-	if(gameState.QuitCalled())
+	if(gameState->QuitCalled())
 	{
 		DEBUGLOG(logger, "Quit called")
 		return false;
@@ -49,6 +56,33 @@ static inline bool game_loop(GameWorld& gameWorld, ZippedUniqueObjectList& gameO
 
 	DEBUGLOG(logger, "Death")
 	return true;
+}
+
+static void quit_handler()
+{
+	gameState->QuitHandler();
+}
+static void pause_handler()
+{
+	gameState->PauseHandler();
+}
+static void normal_key_handler(const SDLKey key)
+{
+	if(!gameState->IsPaused())
+		gameState->KeyHandler(key, *gameObjects);
+}
+static void paused_key_handler(const SDLKey)
+{
+
+}
+static void normal_mouse_handler(const Uint8 button)
+{
+	if(!gameState->IsPaused())
+		gameState->MouseHandler(button, *gameObjects);
+}
+static void paused_mouse_handler(const Uint8 button)
+{
+
 }
 
 int main()
@@ -59,21 +93,32 @@ int main()
 	SDL_WM_SetCaption(windowTitle, windowTitle);
 	SDL_ShowCursor(SDL_DISABLE);
 
-	ZippedUniqueObjectList gameObjects;
 	Screen screen(800, 600);
-	GameWorld gameWorld(gameObjects);
+	gameObjects = shared_ptr<ZippedUniqueObjectList>(new ZippedUniqueObjectList());
+	GameWorld gameWorld(*gameObjects);
+	gameState = shared_ptr<GameState>(new GameState(gameWorld));
+
+	currentEventHandler = &defaultEventHandler;
+	defaultEventHandler.RegisterQuitCallback(quit_handler);
+	defaultEventHandler.RegisterPauseCallback(pause_handler);
+	defaultEventHandler.RegisterKeyCallback(normal_key_handler);
+	defaultEventHandler.RegisterMouseCallback(normal_mouse_handler);
+
+	pausedEventHandler = defaultEventHandler;
+	pausedEventHandler.RegisterKeyCallback(paused_key_handler);
+	pausedEventHandler.RegisterMouseCallback(paused_mouse_handler);
 
 	Mix_AllocateChannels(3);
 
-	Mix_Music* music = Mix_LoadMUS("resources/title theme.wav");
+	/*Mix_Music* music = Mix_LoadMUS("resources/title theme.wav");
 	if(music == NULL)
 		logger.Fatal(format("Error playing music: %1%") % Mix_GetError());
-	Mix_PlayMusic(music, -1);
+	Mix_PlayMusic(music, -1);*/
 
-	while(game_loop(gameWorld, gameObjects, screen, GameState(gameWorld)))
-		gameWorld.Reset(gameObjects);
+	while(game_loop(gameWorld, screen))
+		gameWorld.Reset(*gameObjects);
 
-	Mix_FreeMusic(music);
+	//Mix_FreeMusic(music);
 
 	return 0;
 }
