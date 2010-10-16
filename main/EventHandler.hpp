@@ -29,5 +29,5 @@ private:
 public:
 	EventHandler(QuitCallbackType, PauseCallbackType, KeyCallbackType, MouseCallbackType);
 
-	void HandleEventQueue(GameState& gameState, ZippedUniqueObjectList& gameObjects);
+	void HandleEventQueue(GameState& gameState, ZippedUniqueObjectList& gameObjects) const;
 };

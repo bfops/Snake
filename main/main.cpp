@@ -28,10 +28,10 @@ static const char* windowTitle("ReWritable's Snake");
 static const unsigned int FPS(60);
 static shared_ptr<GameState> gameState;
 static shared_ptr<ZippedUniqueObjectList> gameObjects;
-static EventHandler* currentEventHandler;
+static const EventHandler* currentEventHandler;
 
-static EventHandler defaultEventHandler(quit_handler, pause_handler, key_handler, mouse_handler);
-static EventHandler pausedEventHandler(quit_handler, pause_handler, NULL, NULL);
+static const EventHandler defaultEventHandler(quit_handler, pause_handler, key_handler, mouse_handler);
+static const EventHandler pausedEventHandler(quit_handler, pause_handler, NULL, NULL);
 
 /// Returns true if we should continue playing, false otherwise.
 static inline bool game_loop(GameWorld& gameWorld, Screen& screen)
