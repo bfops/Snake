@@ -1,7 +1,5 @@
 #include "EventHandler.hpp"
 
-#include "GameState.hpp"
-
 #include <SDL_events.h>
 
 EventHandler::EventHandler(QuitCallbackType onquit, PauseCallbackType onpause,

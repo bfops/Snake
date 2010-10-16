@@ -1,6 +1,5 @@
 #include "Common.hpp"
 #include "EventHandler.hpp"
-#include "GameState.hpp"
 #include "GameWorld.hpp"
 #include "Graphics.hpp"
 #include "Logger.hpp"
