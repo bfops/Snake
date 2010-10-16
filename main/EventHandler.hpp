@@ -10,6 +10,7 @@ class EventHandler
 {
 public:
 	typedef void (QuitCallbackType)();
+	typedef void (LossCallbackType)();
 	typedef void (PauseCallbackType)();
 	typedef void (KeyCallbackType)(SDLKey);
 	typedef void (MouseCallbackType)(Uint8 mouseButton);

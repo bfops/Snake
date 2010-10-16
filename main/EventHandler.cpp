@@ -4,7 +4,8 @@
 
 EventHandler::EventHandler(QuitCallbackType onquit, PauseCallbackType onpause,
 	KeyCallbackType onkey, MouseCallbackType onmouse) :
-	quitCallback(onquit), pauseCallback(onpause), keyCallback(onkey), mouseCallback(onmouse)
+	quitCallback(onquit), pauseCallback(onpause), keyCallback(onkey),
+	mouseCallback(onmouse)
 {
 }
 

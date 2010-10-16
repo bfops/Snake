@@ -13,7 +13,6 @@
 #include <boost/shared_ptr.hpp>
 #include <SDL.h>
 #include <SDL_mixer.h>
-#include <boost/concept_check.hpp>
 
 using namespace boost;
 using namespace std;
@@ -33,6 +32,18 @@ static const unsigned int FPS(60);
 static shared_ptr<ZippedUniqueObjectList> gameObjects;
 static shared_ptr<GameWorld> gameWorld;
 
+/// return true to loop again, false otherwise
+typedef bool (GameLoop)(Screen& renderTarget, Timer& gameTimer);
+static GameLoop default_game_loop;
+static GameLoop quit_game_loop;
+static GameLoop* currentGameLoop;
+
+/// return true to play again, false otherwise
+typedef bool (ReplayLoop)(Screen& renderTarget, Timer& gameTimer);
+static ReplayLoop default_replay_loop;
+static ReplayLoop quit_replay_loop;
+static ReplayLoop* currentReplayLoop;
+
 static const EventHandler defaultEventHandler(quit_handler, default_pause_handler,
 											  default_key_handler, default_mouse_handler);
 static const EventHandler pausedEventHandler(quit_handler, paused_pause_handler,
@@ -44,31 +55,8 @@ static WorldUpdater default_world_updater;
 static WorldUpdater paused_world_updater;
 static WorldUpdater* currentWorldUpdater;
 
-static shared_ptr<bool> quit;
-
 // whether or not music is on
 #define MUSIC
-/// Returns true if we should continue playing, false otherwise.
-static inline bool game_loop(Screen& screen, Timer& timer)
-{
-	while(!gameWorld->Lost() && !*quit)
-	{
-		Graphics::Update(gameObjects->graphics, screen);
-		currentWorldUpdater(*gameWorld, timer);
-		currentEventHandler->HandleEventQueue(*gameObjects);
-
-		SDL_Delay(1000 / FPS);
-	}
-	if(*quit)
-	{
-		DEBUGLOG(logger, "Quit called")
-		return false;
-	}
-
-	DEBUGLOG(logger, "Death")
-	return true;
-}
-
 int main()
 {
 	// keep SDL active as long as this is in scope
@@ -84,8 +72,8 @@ int main()
 
 	currentEventHandler = &defaultEventHandler;
 	currentWorldUpdater = &default_world_updater;
-
-	quit = shared_ptr<bool>(new bool(false));
+	currentGameLoop = &default_game_loop;
+	currentReplayLoop = &default_replay_loop;
 
 	Mix_AllocateChannels(3);
 
@@ -96,7 +84,7 @@ int main()
 	Mix_PlayMusic(music, -1);
 #endif
 
-	while(game_loop(screen, timer))
+	while(currentReplayLoop(screen, timer))
 	{
 		gameWorld->Reset(*gameObjects);
 		timer.Reset();
@@ -109,9 +97,44 @@ int main()
 	return 0;
 }
 
+static bool default_game_loop(Screen& screen, Timer& timer)
+{
+	Graphics::Update(gameObjects->graphics, screen);
+	currentWorldUpdater(*gameWorld, timer);
+	currentEventHandler->HandleEventQueue(*gameObjects);
+
+	if(gameWorld->Lost())
+	{
+		DEBUGLOG(logger, "DEATH")
+		return false;
+	}
+
+	return true;
+}
+
+static bool quit_game_loop(Screen&, Timer&)
+{
+	DEBUGLOG(logger, "Quit called")
+	return false;
+}
+
+static bool default_replay_loop(Screen& screen, Timer& timer)
+{
+	while(currentGameLoop(screen, timer))
+		SDL_Delay(1000 / FPS);
+
+	return true;
+}
+
+static bool quit_replay_loop(Screen&, Timer&)
+{
+	return false;
+}
+
 static void quit_handler()
 {
-	*quit = true;
+	currentGameLoop = &quit_game_loop;
+	currentReplayLoop = &quit_replay_loop;
 }
 
 static void default_pause_handler()
