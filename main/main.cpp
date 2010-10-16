@@ -48,6 +48,7 @@ static inline bool game_loop(GameWorld& gameWorld, Screen& screen)
 	while(!gameWorld.Lost() && !gameState->QuitCalled())
 	{
 		Graphics::Update(gameObjects->graphics, screen);
+		gameState->Update();
 		currentWorldUpdater(gameWorld);
 		currentEventHandler->HandleEventQueue(*gameState, *gameObjects);
 
@@ -134,13 +135,8 @@ static void paused_mouse_handler(const Uint8 button) {}
 
 static void default_world_updater(GameWorld& world)
 {
-	gameState->Update();
-
-	if(!gameState->IsPaused())
-	{
-		Physics::Update(world, gameObjects->physics);
-		world.Update(*gameObjects, gameState->GetElapsedTime());
-	}
+	Physics::Update(world, gameObjects->physics);
+	world.Update(*gameObjects, gameState->GetElapsedTime());
 }
 
 static void paused_world_updater(GameWorld&) {}
