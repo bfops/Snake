@@ -10,14 +10,11 @@ class GameState
 private:
 	GameWorld& gameWorld;
 
-	bool quit, paused;
+	bool quit;
 
 public:
 	GameState(GameWorld& gameWorld);
 
 	void QuitHandler();
-	void PauseHandler();
-
-	bool IsPaused() const;
 	bool QuitCalled() const;
 };

@@ -14,6 +14,7 @@
 #include <boost/shared_ptr.hpp>
 #include <SDL.h>
 #include <SDL_mixer.h>
+#include <boost/concept_check.hpp>
 
 using namespace boost;
 using namespace std;
@@ -21,10 +22,11 @@ using namespace std;
 static Logger::Handle logger(Logger::RequestHandle("main()"));
 
 static EventHandler::QuitCallbackType quit_handler;
-static EventHandler::PauseCallbackType pause_handler;
-static EventHandler::KeyCallbackType key_handler;
+static EventHandler::PauseCallbackType default_pause_handler;
+static EventHandler::PauseCallbackType paused_pause_handler;
+static EventHandler::KeyCallbackType default_key_handler;
 static EventHandler::KeyCallbackType paused_key_handler;
-static EventHandler::MouseCallbackType mouse_handler;
+static EventHandler::MouseCallbackType default_mouse_handler;
 static EventHandler::MouseCallbackType paused_mouse_handler;
 
 static const char* windowTitle("ReWritable's Snake");
@@ -33,8 +35,10 @@ static shared_ptr<GameState> gameState;
 static shared_ptr<ZippedUniqueObjectList> gameObjects;
 static shared_ptr<GameWorld> gameWorld;
 
-static const EventHandler defaultEventHandler(quit_handler, pause_handler, key_handler, mouse_handler);
-static const EventHandler pausedEventHandler(quit_handler, pause_handler, paused_key_handler, paused_mouse_handler);
+static const EventHandler defaultEventHandler(quit_handler, default_pause_handler,
+											  default_key_handler, default_mouse_handler);
+static const EventHandler pausedEventHandler(quit_handler, paused_pause_handler,
+											 paused_key_handler, paused_mouse_handler);
 static const EventHandler* currentEventHandler;
 
 typedef void (WorldUpdater)(GameWorld&, Timer& gameTimer);
@@ -109,30 +113,26 @@ static void quit_handler()
 	gameState->QuitHandler();
 }
 
-static void pause_handler()
+static void default_pause_handler()
 {
-	gameState->PauseHandler();
-
-	if(gameState->IsPaused())
-	{
-		currentEventHandler = &pausedEventHandler;
-		currentWorldUpdater = &paused_world_updater;
-	}
-	else
-	{
-		currentEventHandler = &defaultEventHandler;
-		currentWorldUpdater = &default_world_updater;
-	}
+	currentEventHandler = &pausedEventHandler;
+	currentWorldUpdater = &paused_world_updater;
 }
 
-static void key_handler(const SDLKey key)
+static void paused_pause_handler()
+{
+	currentEventHandler = &defaultEventHandler;
+	currentWorldUpdater = &default_world_updater;
+}
+
+static void default_key_handler(const SDLKey key)
 {
 	gameWorld->KeyNotify(key, *gameObjects);
 }
 
 static void paused_key_handler(const SDLKey) {}
 
-static void mouse_handler(const Uint8 button)
+static void default_mouse_handler(const Uint8 button)
 {
 	gameWorld->MouseNotify(button, *gameObjects);
 }
