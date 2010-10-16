@@ -65,11 +65,14 @@ static void quit_handler()
 static void pause_handler()
 {
 	gameState->PauseHandler();
+	if(gameState->IsPaused())
+		currentEventHandler = &pausedEventHandler;
+	else
+		currentEventHandler = &defaultEventHandler;
 }
 static void normal_key_handler(const SDLKey key)
 {
-	if(!gameState->IsPaused())
-		gameState->KeyHandler(key, *gameObjects);
+	gameState->KeyHandler(key, *gameObjects);
 }
 static void paused_key_handler(const SDLKey)
 {
@@ -77,8 +80,7 @@ static void paused_key_handler(const SDLKey)
 }
 static void normal_mouse_handler(const Uint8 button)
 {
-	if(!gameState->IsPaused())
-		gameState->MouseHandler(button, *gameObjects);
+	gameState->MouseHandler(button, *gameObjects);
 }
 static void paused_mouse_handler(const Uint8 button)
 {
