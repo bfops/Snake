@@ -31,7 +31,6 @@ static EventHandler::MouseCallbackType paused_mouse_handler;
 
 static const char* windowTitle("ReWritable's Snake");
 static const unsigned int FPS(60);
-static shared_ptr<GameState> gameState;
 static shared_ptr<ZippedUniqueObjectList> gameObjects;
 static shared_ptr<GameWorld> gameWorld;
 
@@ -46,20 +45,22 @@ static WorldUpdater default_world_updater;
 static WorldUpdater paused_world_updater;
 static WorldUpdater* currentWorldUpdater;
 
+static shared_ptr<bool> quit;
+
 // whether or not music is on
 #define MUSIC
 /// Returns true if we should continue playing, false otherwise.
 static inline bool game_loop(Screen& screen, Timer& timer)
 {
-	while(!gameWorld->Lost() && !gameState->QuitCalled())
+	while(!gameWorld->Lost() && !*quit)
 	{
 		Graphics::Update(gameObjects->graphics, screen);
 		currentWorldUpdater(*gameWorld, timer);
-		currentEventHandler->HandleEventQueue(*gameState, *gameObjects);
+		currentEventHandler->HandleEventQueue(*gameObjects);
 
 		SDL_Delay(1000 / FPS);
 	}
-	if(gameState->QuitCalled())
+	if(*quit)
 	{
 		DEBUGLOG(logger, "Quit called")
 		return false;
@@ -81,10 +82,11 @@ int main()
 	Timer timer;
 	gameObjects = shared_ptr<ZippedUniqueObjectList>(new ZippedUniqueObjectList());
 	gameWorld = shared_ptr<GameWorld>(new GameWorld(*gameObjects));
-	gameState = shared_ptr<GameState>(new GameState(*gameWorld));
 
 	currentEventHandler = &defaultEventHandler;
 	currentWorldUpdater = &default_world_updater;
+
+	quit = shared_ptr<bool>(new bool(false));
 
 	Mix_AllocateChannels(3);
 
@@ -110,7 +112,7 @@ int main()
 
 static void quit_handler()
 {
-	gameState->QuitHandler();
+	*quit = true;
 }
 
 static void default_pause_handler()

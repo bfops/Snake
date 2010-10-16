@@ -10,7 +10,7 @@ EventHandler::EventHandler(QuitCallbackType onquit, PauseCallbackType onpause,
 {
 }
 
-void EventHandler::HandleEventQueue(GameState& gameState, ZippedUniqueObjectList& gameObjects) const
+void EventHandler::HandleEventQueue(ZippedUniqueObjectList& gameObjects) const
 {
 	SDL_Event event;
 

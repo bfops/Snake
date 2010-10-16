@@ -4,7 +4,6 @@
 
 #include <SDL_events.h>
 
-class GameState;
 class ZippedUniqueObjectList;
 
 class EventHandler
@@ -29,5 +28,5 @@ private:
 public:
 	EventHandler(QuitCallbackType, PauseCallbackType, KeyCallbackType, MouseCallbackType);
 
-	void HandleEventQueue(GameState& gameState, ZippedUniqueObjectList& gameObjects) const;
+	void HandleEventQueue(ZippedUniqueObjectList& gameObjects) const;
 };
