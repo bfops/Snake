@@ -12,9 +12,6 @@ private:
 
 	bool quit, paused;
 
-	Uint32 start;
-	Uint32 elapsedMilliseconds;
-
 public:
 	GameState(GameWorld& gameWorld);
 
@@ -25,8 +22,4 @@ public:
 
 	bool IsPaused() const;
 	bool QuitCalled() const;
-
-	void Update();
-	/// returns elapsed time since last call (in ms)
-	unsigned int GetElapsedTime() const;
 };

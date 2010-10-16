@@ -7,6 +7,7 @@
 #include "Physics.hpp"
 #include "Screen.hpp"
 #include "SDLInitializer.hpp"
+#include "Timer.hpp"
 #include "ZippedUniqueObjectList.hpp"
 
 #include <boost/bind.hpp>
@@ -35,21 +36,20 @@ static const EventHandler defaultEventHandler(quit_handler, pause_handler, key_h
 static const EventHandler pausedEventHandler(quit_handler, pause_handler, paused_key_handler, paused_mouse_handler);
 static const EventHandler* currentEventHandler;
 
-typedef void (WorldUpdater)(GameWorld&);
+typedef void (WorldUpdater)(GameWorld&, Timer& gameTimer);
 static WorldUpdater default_world_updater;
 static WorldUpdater paused_world_updater;
 static WorldUpdater* currentWorldUpdater;
 
 // whether or not music is on
-#define MUSIC
+//#define MUSIC
 /// Returns true if we should continue playing, false otherwise.
-static inline bool game_loop(GameWorld& gameWorld, Screen& screen)
+static inline bool game_loop(GameWorld& gameWorld, Screen& screen, Timer& timer)
 {
 	while(!gameWorld.Lost() && !gameState->QuitCalled())
 	{
 		Graphics::Update(gameObjects->graphics, screen);
-		gameState->Update();
-		currentWorldUpdater(gameWorld);
+		currentWorldUpdater(gameWorld, timer);
 		currentEventHandler->HandleEventQueue(*gameState, *gameObjects);
 
 		SDL_Delay(1000 / FPS);
@@ -73,11 +73,13 @@ int main()
 	SDL_ShowCursor(SDL_DISABLE);
 
 	Screen screen(800, 600);
+	Timer timer;
 	gameObjects = shared_ptr<ZippedUniqueObjectList>(new ZippedUniqueObjectList());
 	GameWorld gameWorld(*gameObjects);
 	gameState = shared_ptr<GameState>(new GameState(gameWorld));
 
 	currentEventHandler = &defaultEventHandler;
+	currentWorldUpdater = &default_world_updater;
 
 	Mix_AllocateChannels(3);
 
@@ -88,8 +90,11 @@ int main()
 	Mix_PlayMusic(music, -1);
 #endif
 
-	while(game_loop(gameWorld, screen))
+	while(game_loop(gameWorld, screen, timer))
+	{
 		gameWorld.Reset(*gameObjects);
+		timer.Reset();
+	}
 
 #ifdef MUSIC
 	Mix_FreeMusic(music);
@@ -133,10 +138,14 @@ static void mouse_handler(const Uint8 button)
 
 static void paused_mouse_handler(const Uint8 button) {}
 
-static void default_world_updater(GameWorld& world)
+static void default_world_updater(GameWorld& world, Timer& timer)
 {
+	timer.Update();
 	Physics::Update(world, gameObjects->physics);
-	world.Update(*gameObjects, gameState->GetElapsedTime());
+	world.Update(*gameObjects, timer.GetElapsedTime());
 }
 
-static void paused_world_updater(GameWorld&) {}
+static void paused_world_updater(GameWorld&, Timer& timer)
+{
+	timer.SilentUpdate();
+}

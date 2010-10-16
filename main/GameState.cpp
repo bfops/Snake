@@ -9,7 +9,6 @@ GameState::GameState(GameWorld& world) :
 {
 	quit = false;
 	paused = false;
-	start = SDL_GetTicks();
 }
 
 void GameState::QuitHandler()
@@ -40,22 +39,4 @@ bool GameState::IsPaused() const
 bool GameState::QuitCalled() const
 {
 	return quit;
-}
-
-void GameState::Update()
-{
-	if(paused)
-	{
-		start = SDL_GetTicks() - elapsedMilliseconds;
-	}
-	else
-	{
-		elapsedMilliseconds = SDL_GetTicks() - start;
-		start = SDL_GetTicks();
-	}
-}
-
-unsigned int GameState::GetElapsedTime() const
-{
-	return elapsedMilliseconds;
 }
