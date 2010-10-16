@@ -9,7 +9,6 @@
 #include <boost/any.hpp>
 #include <boost/bind.hpp>
 #include <boost/random.hpp>
-#include <boost/concept_check.hpp>
 
 using namespace std;
 using namespace boost;
