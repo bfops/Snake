@@ -6,7 +6,6 @@
 #include "Wall.hpp"
 #include "ZippedUniqueObjectList.hpp"
 
-#include <boost/bind.hpp>
 #include <boost/random.hpp>
 #include <SDL_timer.h>
 #include <SDL_mixer.h>
@@ -105,7 +104,7 @@ static int sound_playing_thread(void* _filename)
 	int channel;
 	if(sound == NULL || (channel = Mix_PlayChannel(-1, sound, 0)) == -1)
 	{
-		logger.Fatal(format("Error playing sound: %1%") % Mix_GetError());
+		logger.Fatal(format("Error playing \"%1%\": %2%") % filename % Mix_GetError());
 		return 1;
 	}
 
