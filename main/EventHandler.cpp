@@ -19,8 +19,7 @@ void EventHandler::HandleEventQueue(GameState& gameState, ZippedUniqueObjectList
 		switch(event.type)
 		{
 			case SDL_QUIT:
-				if(quitCallback)
-					quitCallback();
+				quitCallback();
 				break;
 
 			case SDL_KEYDOWN:
@@ -28,19 +27,15 @@ void EventHandler::HandleEventQueue(GameState& gameState, ZippedUniqueObjectList
 				const SDLKey key = event.key.keysym.sym;
 
 				if(key == SDLK_p)
-				{
-					if(pauseCallback)
-						pauseCallback();
-				}
-				else if(keyCallback)
+					pauseCallback();
+				else
 					keyCallback(key);
 
 				break;
 			}
 
 			case SDL_MOUSEBUTTONDOWN:
-				if(mouseCallback)
-					mouseCallback(event.button.button);
+				mouseCallback(event.button.button);
 				break;
 		}
 	}
