@@ -13,21 +13,25 @@
 #include <boost/shared_ptr.hpp>
 #include <SDL.h>
 #include <SDL_mixer.h>
-#include <boost/concept_check.hpp>
-#include <boost/concept_check.hpp>
-#include <boost/concept_check.hpp>
 
 using namespace boost;
 using namespace std;
 
 static Logger::Handle logger(Logger::RequestHandle("main()"));
 
+static EventHandler::QuitCallbackType quit_handler;
+static EventHandler::PauseCallbackType pause_handler;
+static EventHandler::KeyCallbackType key_handler;
+static EventHandler::MouseCallbackType mouse_handler;
+
 static const char* windowTitle("ReWritable's Snake");
 static const unsigned int FPS(60);
 static shared_ptr<GameState> gameState;
 static shared_ptr<ZippedUniqueObjectList> gameObjects;
 static EventHandler* currentEventHandler;
-static EventHandler defaultEventHandler, pausedEventHandler;
+
+static EventHandler defaultEventHandler(quit_handler, pause_handler, key_handler, mouse_handler);
+static EventHandler pausedEventHandler(quit_handler, pause_handler, NULL, NULL);
 
 /// Returns true if we should continue playing, false otherwise.
 static inline bool game_loop(GameWorld& gameWorld, Screen& screen)
@@ -58,35 +62,6 @@ static inline bool game_loop(GameWorld& gameWorld, Screen& screen)
 	return true;
 }
 
-static void quit_handler()
-{
-	gameState->QuitHandler();
-}
-static void pause_handler()
-{
-	gameState->PauseHandler();
-	if(gameState->IsPaused())
-		currentEventHandler = &pausedEventHandler;
-	else
-		currentEventHandler = &defaultEventHandler;
-}
-static void normal_key_handler(const SDLKey key)
-{
-	gameState->KeyHandler(key, *gameObjects);
-}
-static void paused_key_handler(const SDLKey)
-{
-
-}
-static void normal_mouse_handler(const Uint8 button)
-{
-	gameState->MouseHandler(button, *gameObjects);
-}
-static void paused_mouse_handler(const Uint8 button)
-{
-
-}
-
 int main()
 {
 	// keep SDL active as long as this is in scope
@@ -101,14 +76,6 @@ int main()
 	gameState = shared_ptr<GameState>(new GameState(gameWorld));
 
 	currentEventHandler = &defaultEventHandler;
-	defaultEventHandler.RegisterQuitCallback(quit_handler);
-	defaultEventHandler.RegisterPauseCallback(pause_handler);
-	defaultEventHandler.RegisterKeyCallback(normal_key_handler);
-	defaultEventHandler.RegisterMouseCallback(normal_mouse_handler);
-
-	pausedEventHandler = defaultEventHandler;
-	pausedEventHandler.RegisterKeyCallback(paused_key_handler);
-	pausedEventHandler.RegisterMouseCallback(paused_mouse_handler);
 
 	Mix_AllocateChannels(3);
 
@@ -123,4 +90,26 @@ int main()
 	//Mix_FreeMusic(music);
 
 	return 0;
+}
+
+// *sigh* lambdas would make this so much nicer..
+static void quit_handler()
+{
+	gameState->QuitHandler();
+}
+static void pause_handler()
+{
+	gameState->PauseHandler();
+	if(gameState->IsPaused())
+		currentEventHandler = &pausedEventHandler;
+	else
+		currentEventHandler = &defaultEventHandler;
+}
+static void key_handler(const SDLKey key)
+{
+	gameState->KeyHandler(key, *gameObjects);
+}
+static void mouse_handler(const Uint8 button)
+{
+	gameState->MouseHandler(button, *gameObjects);
 }

@@ -10,29 +10,24 @@ class ZippedUniqueObjectList;
 class EventHandler
 {
 public:
-	typedef void (*QuitCallbackType)();
-	typedef void (*PauseCallbackType)();
-	typedef void (*KeyCallbackType)(SDLKey);
-	typedef void (*MouseCallbackType)(Uint8 mouseButton);
+	typedef void (QuitCallbackType)();
+	typedef void (PauseCallbackType)();
+	typedef void (KeyCallbackType)(SDLKey);
+	typedef void (MouseCallbackType)(Uint8 mouseButton);
 
-	// Declares a Callback Variable to store a callback function,
-	// And Defines a Registration Function to allow setting of the variable
-#define DCVADRF(type, ltype) \
-private: \
-	type##CallbackType ltype##Callback; \
-public: \
-	inline void Register##type##Callback(type##CallbackType _##ltype##Callback) \
-	{ \
-		ltype##Callback = _##ltype##Callback; \
-	}
+private:
+#define DECLARE_CALLBACK_FUNCTOR(type, ltype) \
+	type##CallbackType* const ltype##Callback;
 
-	DCVADRF(Quit, quit)
-	DCVADRF(Pause, pause)
-	DCVADRF(Key, key)
-	DCVADRF(Mouse, mouse)
+	DECLARE_CALLBACK_FUNCTOR(Quit, quit)
+	DECLARE_CALLBACK_FUNCTOR(Pause, pause)
+	DECLARE_CALLBACK_FUNCTOR(Key, key)
+	DECLARE_CALLBACK_FUNCTOR(Mouse, mouse)
 
-#undef DCVADRF
+#undef DECLARE_CALLBACK_FUNCTOR
 
 public:
+	EventHandler(QuitCallbackType, PauseCallbackType, KeyCallbackType, MouseCallbackType);
+
 	void HandleEventQueue(GameState& gameState, ZippedUniqueObjectList& gameObjects);
 };

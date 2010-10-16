@@ -4,6 +4,12 @@
 
 #include <SDL_events.h>
 
+EventHandler::EventHandler(QuitCallbackType onquit, PauseCallbackType onpause,
+	KeyCallbackType onkey, MouseCallbackType onmouse) :
+	quitCallback(onquit), pauseCallback(onpause), keyCallback(onkey), mouseCallback(onmouse)
+{
+}
+
 void EventHandler::HandleEventQueue(GameState& gameState, ZippedUniqueObjectList& gameObjects)
 {
 	SDL_Event event;
@@ -13,7 +19,8 @@ void EventHandler::HandleEventQueue(GameState& gameState, ZippedUniqueObjectList
 		switch(event.type)
 		{
 			case SDL_QUIT:
-				quitCallback();
+				if(quitCallback)
+					quitCallback();
 				break;
 
 			case SDL_KEYDOWN:
@@ -21,15 +28,19 @@ void EventHandler::HandleEventQueue(GameState& gameState, ZippedUniqueObjectList
 				const SDLKey key = event.key.keysym.sym;
 
 				if(key == SDLK_p)
-					pauseCallback();
-				else
+				{
+					if(pauseCallback)
+						pauseCallback();
+				}
+				else if(keyCallback)
 					keyCallback(key);
 
 				break;
 			}
 
 			case SDL_MOUSEBUTTONDOWN:
-				mouseCallback(event.button.button);
+				if(mouseCallback)
+					mouseCallback(event.button.button);
 				break;
 		}
 	}
