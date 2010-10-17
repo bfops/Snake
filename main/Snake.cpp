@@ -1,7 +1,6 @@
 #include "Snake.hpp"
 
 #include "Common.hpp"
-#include "GameWorld.hpp"
 #include "Logger.hpp"
 #include "Side.hpp"
 #include "ZippedUniqueObjectList.hpp"
@@ -18,8 +17,8 @@ static Logger::Handle logger(Logger::RequestHandle("Snake"));
 // GAMECONSTANT: snake management constants
 static const unsigned int defaultLength(90);
 static const unsigned int snakeWidth(20);
-static const unsigned int speedupPeriod(16000);
-static const unsigned int speedupAmount(23);
+static const unsigned int speedupPeriod(14000);
+static const unsigned int speedupAmount(18);
 static const unsigned int growthCap(100);
 static const double linearGrowthRate(10.0 / 29.0);
 

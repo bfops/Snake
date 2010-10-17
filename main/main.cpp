@@ -14,6 +14,15 @@
 #include <SDL.h>
 #include <SDL_mixer.h>
 
+// TODO: startup-timer
+// TODO: death events (separation of death from restart)
+// TODO: food disappears after a while
+// TODO: revisit growth method
+// TODO: food which makes more food appear
+// TODO: mines
+// TODO: investigate the segfaults that occur
+// when the WallBox size is increased and used in GameWorld
+
 using namespace boost;
 using namespace std;
 
@@ -28,11 +37,13 @@ static EventHandler::MouseCallbackType default_mouse_handler;
 static EventHandler::MouseCallbackType paused_mouse_handler;
 
 static const char* windowTitle("ReWritable's Snake");
-static const unsigned int FPS(60);
+// TODO: change this back to 60 once multithreading kicks in,
+// but right now, movement is a little jerky at high speed
+static const unsigned int FPS(120);
 static shared_ptr<ZippedUniqueObjectList> gameObjects;
 static shared_ptr<GameWorld> gameWorld;
 
-/// return true to loop again, false otherwise
+/// return false to kill the game loop, true otherwise
 typedef bool (GameLoop)(Screen& renderTarget, Timer& gameTimer);
 static GameLoop default_game_loop;
 static GameLoop quit_game_loop;
