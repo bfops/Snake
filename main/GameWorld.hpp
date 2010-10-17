@@ -12,12 +12,17 @@
 
 class ZippedUniqueObjectList;
 
+#define COOLERWALLS
 class GameWorld
 {
 public:
 	typedef std::vector<Food> Menu;
 	typedef std::vector<SentinelFood> SentinelList;
+#ifdef COOLERWALLS
+	typedef boost::array<Wall, 6> WallBox;
+#else
 	typedef boost::array<Wall, 4> WallBox;
+#endif
 
 private:
 	SentinelList sentinels;
