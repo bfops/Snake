@@ -14,15 +14,6 @@
 #include <SDL.h>
 #include <SDL_mixer.h>
 
-// TODO: startup-timer
-// TODO: death events (separation of death from restart)
-// TODO: food disappears after a while
-// TODO: revisit growth method
-// TODO: food which makes more food appear
-// TODO: mines
-// TODO: investigate the segfaults that occur
-// when the WallBox size is increased and used in GameWorld
-
 using namespace boost;
 using namespace std;
 
