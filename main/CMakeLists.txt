@@ -1,6 +1,5 @@
 add_executable(GingerbreadPrototype
 	Bounds.cpp
-	collision.c
 	Color24.cpp
 	Counter.cpp
 	Direction.cpp
