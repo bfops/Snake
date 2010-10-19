@@ -75,7 +75,7 @@ int main()
 	currentGameLoop = &default_game_loop;
 	currentReplayLoop = &default_replay_loop;
 
-	Mix_AllocateChannels(3);
+	Mix_AllocateChannels(4);
 
 #ifdef MUSIC
 	Mix_Music* music = Mix_LoadMUS("resources/title theme.wav");

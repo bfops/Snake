@@ -1,6 +1,7 @@
 #include "GameWorld.hpp"
 
 #include "Common.hpp"
+#include "EventHandler.hpp"
 #include "Food.hpp"
 #include "Logger.hpp"
 #include "Wall.hpp"
@@ -90,7 +91,6 @@ static void send_sentinel(SentinelFood& sentinel)
 void GameWorld::Init()
 {
 	foodTimer.Reset();
-	lost = false;
 }
 
 GameWorld::GameWorld(ZippedUniqueObjectList& gameObjects) :
@@ -243,7 +243,7 @@ void GameWorld::CollisionNotify(const WorldObject::ObjectType o1, const WorldObj
 	{
 		if(selfCollide || collisionType & WorldObject::wall)
 		{
-			lost = true;
+			EventHandler::GetCurrentEventHandler()->LossNotify();
 			play_death_sound();
 		}
 		else if(collisionType & WorldObject::food)

@@ -33,8 +33,6 @@ private:
 
 	WallBox walls;
 
-	bool lost;
-
 	void Init();
 
 public:

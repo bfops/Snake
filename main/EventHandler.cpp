@@ -40,6 +40,11 @@ void EventHandler::HandleEventQueue(ZippedUniqueObjectList& gameObjects) const
 	}
 }
 
+void EventHandler::LossNotify() const
+{
+	lossCallback();
+}
+
 const EventHandler*& EventHandler::GetCurrentEventHandler()
 {
 	static const EventHandler* eventHandler;
