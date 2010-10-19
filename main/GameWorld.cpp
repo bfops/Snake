@@ -28,10 +28,12 @@ static inline void make_walls(GameWorld::WallBox& walls)
 	walls[1] = Wall(Point(worldBounds.max.x - wallThickness, 0), wallThickness, worldBounds.max.y);
 	walls[2] = Wall(Point(0, 0), worldBounds.max.x, wallThickness);
 	walls[3] = Wall(Point(0, worldBounds.max.y - wallThickness), worldBounds.max.x, wallThickness);
+#ifdef COOLERWALLS
 	walls[4] = Wall(Point(worldBounds.max.x / 2, 0), wallThickness, worldBounds.max.y / 4);
 	walls[5] = Wall(Point(worldBounds.max.x / 2, worldBounds.max.y * 3 / 4), wallThickness, worldBounds.max.y / 4);
 	walls[6] = Wall(Point(0, worldBounds.max.y / 2), worldBounds.max.x / 4, wallThickness);
 	walls[7] = Wall(Point(worldBounds.max.x * 3 / 4, worldBounds.max.y / 2), worldBounds.max.x / 4, wallThickness);
+#endif
 }
 
 /// checks if _probability_ occurred in _randnum_

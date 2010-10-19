@@ -20,3 +20,7 @@
 #else
 #define DEBUGLOGIF(func, logger, string) ;
 #endif
+
+// random game-changing things //
+// whether or not extra walls are added for epicness
+#define COOLERWALLS
