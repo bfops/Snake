@@ -20,6 +20,7 @@ using namespace std;
 static Logger::Handle logger(Logger::RequestHandle("main()"));
 
 static EventHandler::QuitCallbackType quit_handler;
+static EventHandler::LossCallbackType loss_handler;
 static EventHandler::PauseCallbackType default_pause_handler;
 static EventHandler::PauseCallbackType paused_pause_handler;
 static EventHandler::KeyCallbackType default_key_handler;
@@ -46,11 +47,10 @@ static ReplayLoop default_replay_loop;
 static ReplayLoop quit_replay_loop;
 static ReplayLoop* currentReplayLoop;
 
-static const EventHandler defaultEventHandler(quit_handler, default_pause_handler,
+static const EventHandler defaultEventHandler(quit_handler, default_pause_handler, loss_handler,
 											  default_key_handler, default_mouse_handler);
-static const EventHandler pausedEventHandler(quit_handler, paused_pause_handler,
+static const EventHandler pausedEventHandler(quit_handler, paused_pause_handler, loss_handler,
 											 paused_key_handler, paused_mouse_handler);
-static const EventHandler* currentEventHandler;
 
 typedef void (WorldUpdater)(GameWorld&, Timer& gameTimer);
 static WorldUpdater default_world_updater;
@@ -70,7 +70,7 @@ int main()
 	gameObjects = shared_ptr<ZippedUniqueObjectList>(new ZippedUniqueObjectList());
 	gameWorld = shared_ptr<GameWorld>(new GameWorld(*gameObjects));
 
-	currentEventHandler = &defaultEventHandler;
+	EventHandler::GetCurrentEventHandler() = &defaultEventHandler;
 	currentWorldUpdater = &default_world_updater;
 	currentGameLoop = &default_game_loop;
 	currentReplayLoop = &default_replay_loop;
@@ -101,13 +101,7 @@ static bool default_game_loop(Screen& screen, Timer& timer)
 {
 	Graphics::Update(gameObjects->graphics, screen);
 	currentWorldUpdater(*gameWorld, timer);
-	currentEventHandler->HandleEventQueue(*gameObjects);
-
-	if(gameWorld->Lost())
-	{
-		DEBUGLOG(logger, "DEATH")
-		return false;
-	}
+	EventHandler::GetCurrentEventHandler()->HandleEventQueue(*gameObjects);
 
 	return true;
 }
@@ -115,6 +109,12 @@ static bool default_game_loop(Screen& screen, Timer& timer)
 static bool quit_game_loop(Screen&, Timer&)
 {
 	DEBUGLOG(logger, "Quit called")
+	return false;
+}
+
+static bool lost_game_loop(Screen&, Timer&)
+{
+	DEBUGLOG(logger, "DEATH")
 	return false;
 }
 
@@ -137,15 +137,20 @@ static void quit_handler()
 	currentReplayLoop = &quit_replay_loop;
 }
 
+static void loss_handler()
+{
+	currentGameLoop = &lost_game_loop;
+}
+
 static void default_pause_handler()
 {
-	currentEventHandler = &pausedEventHandler;
+	EventHandler::GetCurrentEventHandler() = &pausedEventHandler;
 	currentWorldUpdater = &paused_world_updater;
 }
 
 static void paused_pause_handler()
 {
-	currentEventHandler = &defaultEventHandler;
+	EventHandler::GetCurrentEventHandler() = &defaultEventHandler;
 	currentWorldUpdater = &default_world_updater;
 }
 

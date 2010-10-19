@@ -268,11 +268,6 @@ void GameWorld::MouseNotify(Uint8 button, ZippedUniqueObjectList& gameObjects)
 		player.Turn(get_direction_from_button(button), gameObjects);
 }
 
-bool GameWorld::Lost() const
-{
-	return lost;
-}
-
 Point GameWorld::GetCenter() const
 {
 	return Point(worldBounds.max.x / 2, worldBounds.max.y / 2);
