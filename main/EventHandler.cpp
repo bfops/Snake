@@ -2,9 +2,9 @@
 
 #include <SDL_events.h>
 
-EventHandler::EventHandler(QuitCallbackType onquit, PauseCallbackType onpause,
+EventHandler::EventHandler(QuitCallbackType onquit, LossCallbackType onloss, PauseCallbackType onpause,
 	KeyCallbackType onkey, MouseCallbackType onmouse) :
-	quitCallback(onquit), pauseCallback(onpause), keyCallback(onkey),
+	quitCallback(onquit), lossCallback(onloss), pauseCallback(onpause), keyCallback(onkey),
 	mouseCallback(onmouse)
 {
 }
@@ -38,4 +38,10 @@ void EventHandler::HandleEventQueue(ZippedUniqueObjectList& gameObjects) const
 				break;
 		}
 	}
+}
+
+const EventHandler*& EventHandler::GetCurrentEventHandler()
+{
+	static const EventHandler* eventHandler;
+	return eventHandler;
 }

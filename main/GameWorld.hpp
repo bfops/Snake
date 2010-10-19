@@ -49,7 +49,5 @@ public:
 	void KeyNotify(SDLKey key, ZippedUniqueObjectList& gameObjects);
 	void MouseNotify(Uint8 button, ZippedUniqueObjectList& gameObjects);
 
-	bool Lost() const;
-
 	Point GetCenter() const;
 };

@@ -12,7 +12,7 @@ public:
 	typedef void (QuitCallbackType)();
 	typedef void (LossCallbackType)();
 	typedef void (PauseCallbackType)();
-	typedef void (KeyCallbackType)(SDLKey);
+	typedef void (KeyCallbackType)(SDLKey keyPressed);
 	typedef void (MouseCallbackType)(Uint8 mouseButton);
 
 private:
@@ -20,6 +20,7 @@ private:
 	type##CallbackType* const ltype##Callback;
 
 	DECLARE_CALLBACK_FUNCTOR(Quit, quit)
+	DECLARE_CALLBACK_FUNCTOR(Loss, loss)
 	DECLARE_CALLBACK_FUNCTOR(Pause, pause)
 	DECLARE_CALLBACK_FUNCTOR(Key, key)
 	DECLARE_CALLBACK_FUNCTOR(Mouse, mouse)
@@ -27,7 +28,9 @@ private:
 #undef DECLARE_CALLBACK_FUNCTOR
 
 public:
-	EventHandler(QuitCallbackType, PauseCallbackType, KeyCallbackType, MouseCallbackType);
+	EventHandler(QuitCallbackType, LossCallbackType, PauseCallbackType, KeyCallbackType, MouseCallbackType);
 
 	void HandleEventQueue(ZippedUniqueObjectList& gameObjects) const;
+
+	static const EventHandler*& GetCurrentEventHandler();
 };
