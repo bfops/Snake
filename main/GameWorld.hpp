@@ -17,7 +17,7 @@ class GameWorld
 public:
 	typedef std::vector<Food> Menu;
 	typedef std::vector<SentinelFood> SentinelList;
-	typedef boost::array<Wall, 4> WallBox;
+	typedef boost::array<Wall, 8> WallBox;
 
 private:
 	SentinelList sentinels;
