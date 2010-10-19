@@ -65,8 +65,8 @@ TEST(cgq, copy_construction_and_assignment)
 
 TEST(cgq, finite_field_addition)
 {
-	EXPECT_EQ(2, detail::finite_field_addition(1, -3, 4));
-	EXPECT_EQ(2, detail::finite_field_addition(1, -15, 4));
+	EXPECT_EQ(2u, detail::finite_field_addition(1, -3, 4));
+	EXPECT_EQ(2u, detail::finite_field_addition(1, -15, 4));
 }
 
 TEST(cgq, forward_iteration)

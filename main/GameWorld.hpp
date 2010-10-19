@@ -11,7 +11,7 @@
 #include <SDL_events.h>
 #include <vector>
 
-class ZippedUniqueObjectList;
+struct ZippedUniqueObjectList;
 
 class GameWorld
 {

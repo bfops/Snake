@@ -16,7 +16,7 @@ inline bool is_power_of_two(T x)
 // already be in the finite field, and b may be any integer representable by a
 // long. This works for b being a positive AND negative number.
 // a - b = a + (-b). Get it?
-inline long finite_field_addition(unsigned long a, long b, unsigned long m)
+inline unsigned long finite_field_addition(unsigned long a, long b, unsigned long m)
 {
 	assert(a < m);
 	assert(is_power_of_two(m));
