@@ -6,7 +6,7 @@
 
 class Direction;
 class GameWorld;
-class ZippedUniqueObjectList;
+struct ZippedUniqueObjectList;
 
 class Snake
 {

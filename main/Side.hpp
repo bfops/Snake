@@ -2,7 +2,7 @@
 
 #include "Point.hpp"
 
-class Vector2D;
+struct Vector2D;
 
 struct Side
 {

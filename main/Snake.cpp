@@ -107,15 +107,12 @@ void Snake::ChangeDirection(Direction newDirection, ZippedUniqueObjectList& game
 	}
 }
 
-static inline unsigned int get_bounded_index(int unboundedIndex, const int arraySize)
+static inline unsigned int get_bounded_index(const int unboundedIndex, const int arraySize)
 {
-	if(unboundedIndex >= 0 && unboundedIndex < arraySize)
-		return unboundedIndex;
-
 	if(unboundedIndex < 0)
 		return get_bounded_index(unboundedIndex + arraySize, arraySize);
 
-	return get_bounded_index(unboundedIndex - arraySize, arraySize);
+	return unboundedIndex % arraySize;
 }
 
 static Direction get_turned_direction(Direction direction, Direction turn)

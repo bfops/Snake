@@ -4,7 +4,7 @@
 #include "WorldObject.hpp"
 
 class Food;
-class Side;
+struct Side;
 class Snake;
 
 class SnakeSegment : public WorldObject

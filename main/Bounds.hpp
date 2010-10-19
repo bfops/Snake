@@ -3,7 +3,7 @@
 #include "Point.hpp"
 
 class Direction;
-class Side;
+struct Side;
 
 struct Bounds
 {
