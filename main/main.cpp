@@ -57,8 +57,6 @@ static WorldUpdater default_world_updater;
 static WorldUpdater paused_world_updater;
 static WorldUpdater* currentWorldUpdater;
 
-// whether or not music is on
-#define MUSIC
 int main()
 {
 	// keep SDL active as long as this is in scope

@@ -22,5 +22,8 @@
 #endif
 
 // random game-changing things //
+
 // whether or not extra walls are added for epicness
 #define COOLERWALLS
+// whether or not music is on
+//#define MUSIC
