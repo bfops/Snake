@@ -49,11 +49,11 @@ static ReplayLoop quit_replay_loop;
 static ReplayLoop* currentReplayLoop;
 
 static const EventHandler defaultEventHandler(
-	quit_handler, default_pause_handler, loss_handler,
+	quit_handler, loss_handler, default_pause_handler,
 	default_key_handler, default_mouse_handler);
 
 static const EventHandler pausedEventHandler(
-	quit_handler, paused_pause_handler, loss_handler,
+	quit_handler, loss_handler, paused_pause_handler,
 	paused_key_handler, paused_mouse_handler);
 
 typedef void (WorldUpdater)(GameWorld&, Timer& gameTimer);
@@ -86,10 +86,7 @@ int main()
 #endif
 
 	while(currentReplayLoop(screen, timer))
-	{
-		gameWorld->Reset(*gameObjects);
-		timer.Reset();
-	}
+		SDL_Delay(1);
 
 	return 0;
 }
@@ -119,6 +116,10 @@ static bool default_replay_loop(Screen& screen, Timer& timer)
 {
 	while(currentGameLoop(screen, timer))
 		SDL_Delay(1000 / FPS);
+
+	gameWorld->Reset(*gameObjects);
+	timer.Reset();
+	currentGameLoop = &default_game_loop;
 
 	return true;
 }
