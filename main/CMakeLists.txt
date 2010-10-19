@@ -10,6 +10,7 @@ add_executable(GingerbreadPrototype
 	Graphics.cpp
 	Logger.cpp
 	main.cpp
+	Music.cpp
 	Physics.cpp
 	Screen.cpp
 	SDLInitializer.cpp

@@ -3,6 +3,7 @@
 #include "GameWorld.hpp"
 #include "Graphics.hpp"
 #include "Logger.hpp"
+#include "Music.hpp"
 #include "Physics.hpp"
 #include "Screen.hpp"
 #include "SDLInitializer.hpp"
@@ -47,10 +48,13 @@ static ReplayLoop default_replay_loop;
 static ReplayLoop quit_replay_loop;
 static ReplayLoop* currentReplayLoop;
 
-static const EventHandler defaultEventHandler(quit_handler, default_pause_handler, loss_handler,
-											  default_key_handler, default_mouse_handler);
-static const EventHandler pausedEventHandler(quit_handler, paused_pause_handler, loss_handler,
-											 paused_key_handler, paused_mouse_handler);
+static const EventHandler defaultEventHandler(
+	quit_handler, default_pause_handler, loss_handler,
+	default_key_handler, default_mouse_handler);
+
+static const EventHandler pausedEventHandler(
+	quit_handler, paused_pause_handler, loss_handler,
+	paused_key_handler, paused_mouse_handler);
 
 typedef void (WorldUpdater)(GameWorld&, Timer& gameTimer);
 static WorldUpdater default_world_updater;
@@ -78,10 +82,7 @@ int main()
 	Mix_AllocateChannels(4);
 
 #ifdef MUSIC
-	Mix_Music* music = Mix_LoadMUS("resources/title theme.wav");
-	if(music == NULL)
-		logger.Fatal(format("Error playing music: %1%") % Mix_GetError());
-	Mix_PlayMusic(music, -1);
+	Music music("resources/title theme.wav");
 #endif
 
 	while(currentReplayLoop(screen, timer))
@@ -89,10 +90,6 @@ int main()
 		gameWorld->Reset(*gameObjects);
 		timer.Reset();
 	}
-
-#ifdef MUSIC
-	Mix_FreeMusic(music);
-#endif
 
 	return 0;
 }
