@@ -6,6 +6,7 @@ add_executable(GingerbreadPrototype
 	Direction.cpp
 	EventHandler.cpp
 	Food.cpp
+	Food__FoodInfo.cpp
 	GameWorld.cpp
 	Graphics.cpp
 	Logger.cpp

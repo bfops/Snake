@@ -23,7 +23,7 @@ private:
 	Counter moveTimer;
 	Counter speedupTimer;
 
-	GameWorld* world;
+	unsigned int points;
 
 	void Grow(int amount);
 

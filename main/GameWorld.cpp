@@ -1,12 +1,14 @@
 #include "GameWorld.hpp"
 
 #include "Common.hpp"
+#include "custom_algorithm.hpp"
 #include "EventHandler.hpp"
 #include "Food.hpp"
 #include "Logger.hpp"
 #include "Wall.hpp"
 #include "ZippedUniqueObjectList.hpp"
 
+#include <functional>
 #include <boost/random.hpp>
 #include <SDL_timer.h>
 #include <SDL_mixer.h>

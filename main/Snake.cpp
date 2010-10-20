@@ -65,6 +65,7 @@ static inline Direction get_random_direction()
 
 void Snake::Init(Point center, ZippedUniqueObjectList& gameObjects)
 {
+	points = 0;
 	Point headLocation = center;
 
 	moveTimer.Reset();
@@ -140,6 +141,7 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 	speedupTimer.Update(ms);
 	moveTimer.Update(ms);
 
+	// TODO: replace with event-driven
 	for(Path::iterator i = path.begin(), end = path.end(); i != end; ++i)
 	{
 		if(i->GetDigestionInfo() != SnakeSegment::HUNGRY)
@@ -149,7 +151,7 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 			const double baseRealGrowth = min((double)growthCap, baseUncappedGrowth);
 
 			const int growthAmount = round(baseRealGrowth * foodGrowthConstant);
-			DEBUGLOG(logger, format("Growing by %1%") % growthAmount);
+			DEBUGLOG(logger, format("Growing by length %1%") % growthAmount);
 			Grow(growthAmount);
 
 			i->Digest();
