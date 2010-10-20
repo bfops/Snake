@@ -189,6 +189,5 @@ void Snake::EatFood(const Food& foodObj)
 
 	Grow(growthAmount);
 
-	DEBUGLOG(logger, format("Grew by %1%") % growthAmount);
-	DEBUGLOG(logger, format("Total points: %1%") % points);
+	DEBUGLOG(logger, format("Got %1% points! (total %2%)") % pointsGained % points);
 }
