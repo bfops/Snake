@@ -181,7 +181,12 @@ void Snake::EatFood(const Food& foodObj)
 	const int growthAmount = round(baseRealGrowth * foodGrowthConstant);
 	const int pointsGained = foodObj.GetPoints();
 
-	points += pointsGained;
+	// if adding points would make you go below 0
+	if(pointsGained < 0 && (unsigned int)(-pointsGained) > points)
+		points = 0;
+	else
+		points += pointsGained;
+
 	Grow(growthAmount);
 
 	DEBUGLOG(logger, format("Grew by %1%") % growthAmount);

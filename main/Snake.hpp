@@ -24,7 +24,7 @@ private:
 	Counter moveTimer;
 	Counter speedupTimer;
 
-	unsigned int points;
+	unsigned long long points;
 
 	void AddSegment(Point, Direction, ZippedUniqueObjectList& gameObjects);
 	void Grow(int amount);
