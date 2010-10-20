@@ -13,9 +13,10 @@ SnakeSegment::SnakeSegment() :
 {
 }
 
-SnakeSegment::SnakeSegment(Point location, Direction _direction, unsigned int _width) :
+SnakeSegment::SnakeSegment(Snake* const _parent, Point location, Direction _direction, unsigned int _width) :
 	WorldObject(snake), direction(_direction)
 {
+	parent = _parent;
 	width = _width;
 	color = segmentColor;
 	bounds.min = location;
@@ -33,12 +34,11 @@ SnakeSegment::SnakeSegment(Point location, Direction _direction, unsigned int _w
 void SnakeSegment::Init()
 {
 	empty = false;
-	digestionInfo = HUNGRY;
 }
 
 void SnakeSegment::FoodCollisionHandler(const Food& food)
 {
-	digestionInfo = food.GetCalories();
+	parent->EatFood(food);
 }
 
 void SnakeSegment::CollisionHandler(const WorldObject& obj)
@@ -150,14 +150,4 @@ void SnakeSegment::SetTailSide(Side side)
 bool SnakeSegment::IsEmpty() const
 {
 	return empty;
-}
-
-double SnakeSegment::GetDigestionInfo() const
-{
-	return digestionInfo;
-}
-
-void SnakeSegment::Digest()
-{
-	digestionInfo = HUNGRY;
 }

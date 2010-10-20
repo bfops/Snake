@@ -6,6 +6,7 @@
 
 class Direction;
 class GameWorld;
+class Food;
 struct ZippedUniqueObjectList;
 
 class Snake
@@ -25,6 +26,7 @@ private:
 
 	unsigned int points;
 
+	void AddSegment(Point, Direction, ZippedUniqueObjectList& gameObjects);
 	void Grow(int amount);
 
 	inline SnakeSegment& Head();
@@ -43,4 +45,6 @@ public:
 	void Turn(Direction turnDirection, ZippedUniqueObjectList& gameObjects);
 
 	void Update(ZippedUniqueObjectList& gameObjects, unsigned int elapsedMilliseconds);
+
+	void EatFood(const Food&);
 };

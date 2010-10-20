@@ -1,6 +1,7 @@
 #include "Snake.hpp"
 
 #include "Common.hpp"
+#include "Food.hpp"
 #include "Logger.hpp"
 #include "Side.hpp"
 #include "ZippedUniqueObjectList.hpp"
@@ -27,9 +28,9 @@ Snake::Snake(Point center, ZippedUniqueObjectList& gameObjects)
 	Init(center, gameObjects);
 }
 
-static void add_segment(Snake::Path& path, Point location, Direction direction, ZippedUniqueObjectList& gameObjects)
+void Snake::AddSegment(Point location, Direction direction, ZippedUniqueObjectList& gameObjects)
 {
-	SnakeSegment newSegment(location, direction, snakeWidth);
+	SnakeSegment newSegment(this, location, direction, snakeWidth);
 
 	gameObjects.removeRange(path.begin(), path.end());
 
@@ -76,7 +77,7 @@ void Snake::Init(Point center, ZippedUniqueObjectList& gameObjects)
 	length = 0;
 	projectedLength = defaultLength;
 
-	add_segment(path, headLocation, get_random_direction(), gameObjects);
+	AddSegment(headLocation, get_random_direction(), gameObjects);
 }
 
 void Snake::Reset(Point center, ZippedUniqueObjectList& gameObjects)
@@ -101,7 +102,7 @@ void Snake::ChangeDirection(Direction newDirection, ZippedUniqueObjectList& game
 		// take on the head block from the old segment
 		Side startSide = headBlock.GetSide(-newDirection);
 
-		add_segment(path, startSide.min, newDirection, gameObjects);
+		AddSegment(startSide.min, newDirection, gameObjects);
 		// stretch this segment so that its initial size
 		// is enough to cover the head block
 		Head().SetHeadSide(headBlock.GetSide(newDirection));
@@ -141,23 +142,6 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 	speedupTimer.Update(ms);
 	moveTimer.Update(ms);
 
-	// TODO: replace with event-driven
-	for(Path::iterator i = path.begin(), end = path.end(); i != end; ++i)
-	{
-		if(i->GetDigestionInfo() != SnakeSegment::HUNGRY)
-		{
-			const double foodGrowthConstant = i->GetDigestionInfo();
-			const double baseUncappedGrowth = projectedLength * linearGrowthRate;
-			const double baseRealGrowth = min((double)growthCap, baseUncappedGrowth);
-
-			const int growthAmount = round(baseRealGrowth * foodGrowthConstant);
-			DEBUGLOG(logger, format("Growing by length %1%") % growthAmount);
-			Grow(growthAmount);
-
-			i->Digest();
-		}
-	}
-
 	while(speedupTimer.ResetIfHasElapsed(speedupPeriod))
 		speed += speedupAmount;
 
@@ -171,6 +155,7 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 			--length;
 		}
 
+		// if we need more length, just don't shrink the tail
 		if(length < projectedLength)
 		{
 			++length;
@@ -186,4 +171,19 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 			}
 		}
 	}
+}
+
+void Snake::EatFood(const Food& foodObj)
+{
+	const double foodGrowthConstant = foodObj.GetCalories();
+	const double baseUncappedGrowth = projectedLength * linearGrowthRate;
+	const double baseRealGrowth = min((double)growthCap, baseUncappedGrowth);
+	const int growthAmount = round(baseRealGrowth * foodGrowthConstant);
+	const int pointsGained = foodObj.GetPoints();
+
+	points += pointsGained;
+	Grow(growthAmount);
+
+	DEBUGLOG(logger, format("Grew by %1%") % growthAmount);
+	DEBUGLOG(logger, format("Total points: %1%") % points);
 }

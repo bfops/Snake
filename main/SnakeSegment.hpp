@@ -13,13 +13,13 @@ public:
 	const static double HUNGRY;
 
 private:
+	// TODO: event-drive this
 	bool empty;
 
-	double digestionInfo;
-
 	unsigned int width;
-
 	Direction direction;
+
+	Snake* parent;
 
 	void FoodCollisionHandler(const Food& food);
 
@@ -30,7 +30,7 @@ private:
 
 public:
 	SnakeSegment();
-	SnakeSegment(Point location, Direction direction, unsigned int segmentWidth);
+	SnakeSegment(Snake* parent, Point location, Direction direction, unsigned int segmentWidth);
 
 	void CollisionHandler(const WorldObject&);
 
@@ -53,7 +53,4 @@ public:
 	void SetTailSide(Side side);
 
 	bool IsEmpty() const;
-
-	double GetDigestionInfo() const;
-	void Digest();
 };
