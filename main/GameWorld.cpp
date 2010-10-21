@@ -13,6 +13,7 @@
 #include <boost/random.hpp>
 #include <SDL_timer.h>
 #include <SDL_mixer.h>
+#include <boost/concept_check.hpp>
 
 using namespace boost;
 using namespace std;
@@ -22,7 +23,7 @@ static Logger::Handle logger(Logger::RequestHandle("GameWorld"));
 // GAMECONSTANT: food management
 #ifdef SURVIVAL
 static const unsigned int mineAdditionPeriod(3000);
-static const unsigned int sentinelSize(25);
+static const unsigned int sentinelSize(20);
 static const unsigned int mineSize(10);
 #else
 static const unsigned int foodAdditionPeriod(8000);
@@ -88,7 +89,7 @@ static Food::FoodInfo get_food_type(minstd_rand0& rand)
 }
 #endif
 
-static void send_sentinel(Sentinel& sentinel)
+static Sentinel get_new_sentinel()
 {
 	minstd_rand0 rand(time(NULL));
 
@@ -97,7 +98,7 @@ static void send_sentinel(Sentinel& sentinel)
 		rand() % ((worldBounds.max.y - worldBounds.min.y) - sentinelSize) + worldBounds.min.y
 	);
 
-	sentinel = Sentinel(foodLocation, sentinelSize);
+	return Sentinel(foodLocation, sentinelSize);
 }
 
 void GameWorld::Init()
@@ -176,7 +177,7 @@ mineTimer.Update(ms);
 	{
 		if(sentinel->IsInterfering())
 		{
-			send_sentinel(*sentinel);
+			*sentinel = get_new_sentinel();
 		}
 		else
 		{
@@ -203,14 +204,14 @@ mineTimer.Update(ms);
 	}
 
 #ifdef SURVIVAL
-	if(mineTimer.ResetIfHasElapsed(mineAdditionPeriod))
+	while(mineTimer.ResetIfHasElapsed(mineAdditionPeriod))
 #else
-	if(foodTimer.ResetIfHasElapsed(foodAdditionPeriod))
+	while(foodTimer.ResetIfHasElapsed(foodAdditionPeriod))
 #endif
 	{
-		sentinels.push_back(Sentinel());
-		send_sentinel(*sentinels.rbegin());
-		gameObjects.physics.add(*sentinels.rbegin());
+		gameObjects.physics.removeRange(sentinels.begin(), sentinels.end());
+		sentinels.push_back(get_new_sentinel());
+		gameObjects.physics.addRange(sentinels.begin(), sentinels.end());
 	}
 }
 

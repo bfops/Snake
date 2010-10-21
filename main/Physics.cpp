@@ -27,7 +27,7 @@ namespace Physics
 		return ret;
 	}
 
-	static inline void handle_potential_collision(GameWorld* world, WorldObject* o1, WorldObject* o2)
+	static void handle_potential_collision(GameWorld* world, WorldObject* o1, WorldObject* o2)
 	{
 		CollidableObject c1 = world_to_collidable_object(o1);
 		CollidableObject c2 = world_to_collidable_object(o2);

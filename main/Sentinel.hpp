@@ -10,7 +10,6 @@ private:
 	void Init();
 
 public:
-	Sentinel();
 	Sentinel(Point location, unsigned int size);
 
 	void CollisionHandler(const WorldObject&);

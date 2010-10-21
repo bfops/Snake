@@ -1,13 +1,5 @@
 #include "Sentinel.hpp"
 
-#include "Screen.hpp"
-
-Sentinel::Sentinel() :
-	WorldObject(sentinel)
-{
-	Init();
-}
-
 Sentinel::Sentinel(Point location, unsigned int size) :
 	WorldObject(sentinel)
 {
