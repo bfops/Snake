@@ -28,7 +28,7 @@ static const unsigned int growthCap(100);
 static const double linearGrowthRate(10.0 / 29.0);
 #ifdef SURVIVAL
 static const unsigned int survivalPointGainPeriod(10000);
-static const unsigned int survivalPointGainAmount(100);
+static const unsigned int survivalPointGainAmount(200);
 #endif
 
 Snake::Snake(Point center, ZippedUniqueObjectList& gameObjects)
@@ -167,7 +167,10 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 #endif
 
 	while(speedupTimer.ResetIfHasElapsed(speedupPeriod))
+	{
 		speed += speedupAmount;
+		DEBUGLOG(logger, format("Speeding up by %1%") % speedupAmount)
+	}
 
 	while(moveTimer.ResetIfHasElapsed(1000 / speed))
 	{
@@ -214,6 +217,7 @@ void Snake::EatFood(const Food& foodObj)
 
 	Grow(growthAmount);
 
+	DEBUGLOG(logger, format("Growing by %1%") % growthAmount)
 	DEBUGLOG(logger, format("Got %1% points! (total %2%)") % pointsGained % points);
 #endif
 }

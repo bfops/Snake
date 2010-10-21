@@ -2,7 +2,7 @@
 
 #include "WorldObject.hpp"
 
-class SentinelFood : public WorldObject
+class Sentinel : public WorldObject
 {
 private:
 	bool interfering;
@@ -10,8 +10,8 @@ private:
 	void Init();
 
 public:
-	SentinelFood();
-	SentinelFood(Point location, unsigned int size);
+	Sentinel();
+	Sentinel(Point location, unsigned int size);
 
 	void CollisionHandler(const WorldObject&);
 

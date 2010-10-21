@@ -13,7 +13,7 @@ public:
 		snake = 1,
 		wall = 1<<1,
 		food = 1<<2,
-		sentinelFood = 1<<3,
+		sentinel = 1<<3,
 		mine = 1<<4
 	};
 

@@ -29,6 +29,7 @@ private:
 	void ModifyLength(int amount);
 
 public:
+	// TODO: we shouldn't need this; kill it
 	SnakeSegment();
 	SnakeSegment(Snake* parent, Point location, Direction direction, unsigned int segmentWidth);
 

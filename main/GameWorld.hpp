@@ -2,8 +2,12 @@
 
 #include "Common.hpp"
 #include "Counter.hpp"
+#ifdef SURVIVAL
+#include "Mine.hpp"
+#else
 #include "Food.hpp"
-#include "SentinelFood.hpp"
+#endif
+#include "Sentinel.hpp"
 #include "Snake.hpp"
 #include "Wall.hpp"
 
@@ -16,8 +20,12 @@ struct ZippedUniqueObjectList;
 class GameWorld
 {
 public:
+#ifdef SURVIVAL
+	typedef std::vector<Mine> MineList;
+#else
 	typedef std::vector<Food> Menu;
-	typedef std::vector<SentinelFood> SentinelList;
+#endif
+	typedef std::vector<Sentinel> SentinelList;
 #ifdef COOLERWALLS
 	typedef boost::array<Wall, 8> WallBox;
 #else
@@ -27,8 +35,13 @@ public:
 private:
 	SentinelList sentinels;
 
+#ifdef SURVIVAL
+	Counter mineTimer;
+	MineList mines;
+#else
 	Counter foodTimer;
 	Menu foods;
+#endif
 	Snake player;
 
 	WallBox walls;

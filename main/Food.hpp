@@ -2,7 +2,7 @@
 
 #include "WorldObject.hpp"
 
-class SentinelFood;
+class Sentinel;
 
 class Food : public WorldObject
 {
@@ -27,7 +27,7 @@ private:
 public:
 	static const FoodInfo ice, celery, normal, donut;
 
-	Food(const SentinelFood& prototype, const FoodInfo& foodInfo);
+	Food(const Sentinel& prototype, unsigned int size, const FoodInfo& foodInfo);
 
 	void CollisionHandler(const WorldObject&);
 

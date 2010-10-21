@@ -5,6 +5,7 @@
 #include "EventHandler.hpp"
 #include "Food.hpp"
 #include "Logger.hpp"
+#include "Mine.hpp"
 #include "Wall.hpp"
 #include "ZippedUniqueObjectList.hpp"
 
@@ -20,11 +21,14 @@ static Logger::Handle logger(Logger::RequestHandle("GameWorld"));
 
 // GAMECONSTANT: food management
 #ifdef SURVIVAL
-static const unsigned int foodAdditionPeriod(6000);
+static const unsigned int mineAdditionPeriod(3000);
+static const unsigned int sentinelSize(25);
+static const unsigned int mineSize(10);
 #else
 static const unsigned int foodAdditionPeriod(8000);
-#endif
+static const unsigned int sentinelSize(17);
 static const unsigned int foodSize(15);
+#endif
 
 static const unsigned int wallThickness(10);
 static const Bounds worldBounds(Point(0, 0), Point(800, 600));
@@ -43,6 +47,7 @@ static inline void make_walls(GameWorld::WallBox& walls)
 #endif
 }
 
+#ifndef SURVIVAL
 /// checks if _probability_ occurred in _randnum_
 /// probability-checking can be done by seeing if
 /// _randnum_ < _probability_ * _max_number_.
@@ -81,22 +86,27 @@ static Food::FoodInfo get_food_type(minstd_rand0& rand)
 
 	return Food::normal;
 }
+#endif
 
-static void send_sentinel(SentinelFood& sentinel)
+static void send_sentinel(Sentinel& sentinel)
 {
 	minstd_rand0 rand(time(NULL));
 
 	Point foodLocation(
-		rand() % ((worldBounds.max.x - worldBounds.min.x) - foodSize) + worldBounds.min.x,
-		rand() % ((worldBounds.max.y - worldBounds.min.y) - foodSize) + worldBounds.min.y
+		rand() % ((worldBounds.max.x - worldBounds.min.x) - sentinelSize) + worldBounds.min.x,
+		rand() % ((worldBounds.max.y - worldBounds.min.y) - sentinelSize) + worldBounds.min.y
 	);
 
-	sentinel = SentinelFood(foodLocation, foodSize);
+	sentinel = Sentinel(foodLocation, sentinelSize);
 }
 
 void GameWorld::Init()
 {
+#ifdef SURVIVAL
+	mineTimer.Reset();
+#else
 	foodTimer.Reset();
+#endif
 }
 
 GameWorld::GameWorld(ZippedUniqueObjectList& gameObjects) :
@@ -138,17 +148,29 @@ static inline void play_food_sound()
 	play_sound("resources/food appear.wav");
 }
 
+static inline void play_mine_sound()
+{
+	// TODO: different sound
+	play_sound("resources/food appear.wav");
+}
+
 void GameWorld::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 {
+#ifdef SURVIVAL
+mineTimer.Update(ms);
+#else
 	foodTimer.Update(ms);
+#endif
 	player.Update(gameObjects, ms);
 
+#ifndef SURVIVAL
 	// TODO: use interrupts, rather than this check-loop
 	gameObjects.removeRange(foods.begin(), foods.end());
 	for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
 		if(i->IsEaten())
 			foods.erase(i);
 	gameObjects.addRange(foods.begin(), foods.end());
+#endif
 
 	for(SentinelList::iterator sentinel = sentinels.begin(), end = sentinels.end(); sentinel != end; ++sentinel)
 	{
@@ -158,23 +180,35 @@ void GameWorld::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 		}
 		else
 		{
+#ifdef SURVIVAL
+			Mine newMine(*sentinel, mineSize);
+			gameObjects.removeRange(mines.begin(), mines.end());
+			mines.push_back(newMine);
+			play_mine_sound();
+			gameObjects.addRange(mines.begin(), mines.end());
+#else
 			minstd_rand0 rand(time(NULL));
 			Food::FoodInfo foodType = get_food_type(rand);
 
-			Food newFood(*sentinel, foodType);
+			Food newFood(*sentinel, foodSize, foodType);
 			gameObjects.removeRange(foods.begin(), foods.end());
 			foods.push_back(newFood);
 			play_food_sound();
 			gameObjects.addRange(foods.begin(), foods.end());
+#endif
 
 			gameObjects.physics.remove(*sentinel);
 			sentinels.erase(sentinel);
 		}
 	}
 
+#ifdef SURVIVAL
+	if(mineTimer.ResetIfHasElapsed(mineAdditionPeriod))
+#else
 	if(foodTimer.ResetIfHasElapsed(foodAdditionPeriod))
+#endif
 	{
-		sentinels.push_back(SentinelFood());
+		sentinels.push_back(Sentinel());
 		send_sentinel(*sentinels.rbegin());
 		gameObjects.physics.add(*sentinels.rbegin());
 	}
@@ -187,8 +221,13 @@ void GameWorld::Reset(ZippedUniqueObjectList& gameObjects)
 	gameObjects.physics.removeRange(sentinels.begin(), sentinels.end());
 	sentinels.clear();
 
+#ifdef SURVIVAL
+	gameObjects.removeRange(mines.begin(), mines.end());
+	mines.clear();
+#else
 	gameObjects.removeRange(foods.begin(), foods.end());
 	foods.clear();
+#endif
 
 	Init();
 }

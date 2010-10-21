@@ -11,11 +11,12 @@ add_executable(GingerbreadPrototype
 	Graphics.cpp
 	Logger.cpp
 	main.cpp
+	Mine.cpp
 	Music.cpp
 	Physics.cpp
 	Screen.cpp
 	SDLInitializer.cpp
-	SentinelFood.cpp
+	Sentinel.cpp
 	Side.cpp
 	Snake.cpp
 	SnakeSegment.cpp
