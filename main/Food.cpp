@@ -1,5 +1,6 @@
 #include "Food.hpp"
 
+#include "Common.hpp"
 #include "SentinelFood.hpp"
 
 // GAMECONSTANT: food data
@@ -9,7 +10,11 @@ const Food::FoodInfo Food::normal(1.0, Color24(0, 255, 255), 100);
 const Food::FoodInfo Food::donut(3.0, Color24(200, 0, 0), 400);
 
 Food::Food(const SentinelFood& prototype, const FoodInfo& foodInfo) :
+#ifdef SURVIVAL
+	WorldObject(mine)
+#else
 	WorldObject(food)
+#endif
 {
 	eaten = false;
 	bounds = prototype.GetBounds();

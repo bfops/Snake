@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cgq.hpp"
+#include "Common.hpp"
 #include "Counter.hpp"
 #include "SnakeSegment.hpp"
 
@@ -23,6 +24,9 @@ private:
 
 	Counter moveTimer;
 	Counter speedupTimer;
+#ifdef SURVIVAL
+	Counter pointTimer;
+#endif
 
 	unsigned long long points;
 

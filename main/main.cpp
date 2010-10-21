@@ -15,6 +15,10 @@
 #include <SDL.h>
 #include <SDL_mixer.h>
 
+// TODO: make different game modes call
+// different functions, not use scattered
+// preprocessor macros
+
 using namespace boost;
 using namespace std;
 

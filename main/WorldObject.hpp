@@ -11,9 +11,10 @@ public:
 	enum ObjectType
 	{
 		snake = 1,
-		wall = 2,
-		food = 2<<1,
-		sentinelFood = 2<<2
+		wall = 1<<1,
+		food = 1<<2,
+		sentinelFood = 1<<3,
+		mine = 1<<4
 	};
 
 protected:

@@ -27,3 +27,5 @@
 #define COOLERWALLS
 // whether or not music is on
 //#define MUSIC
+// whether or not survival mode is on
+#define SURVIVAL

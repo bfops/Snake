@@ -19,7 +19,11 @@ using namespace std;
 static Logger::Handle logger(Logger::RequestHandle("GameWorld"));
 
 // GAMECONSTANT: food management
+#ifdef SURVIVAL
+static const unsigned int foodAdditionPeriod(6000);
+#else
 static const unsigned int foodAdditionPeriod(8000);
+#endif
 static const unsigned int foodSize(15);
 
 static const unsigned int wallThickness(10);
@@ -238,12 +242,12 @@ static inline void play_eat_sound()
 
 void GameWorld::CollisionNotify(const WorldObject::ObjectType o1, const WorldObject::ObjectType o2)
 {
-#define collisionType (o1 | o2)
-#define selfCollide !(collisionType & ~o1)
+	const unsigned int collisionType = o1 | o2;
+	const bool selfCollide = !(collisionType & ~o1);
 
 	if(collisionType & WorldObject::snake)
 	{
-		if(selfCollide || collisionType & WorldObject::wall)
+		if(selfCollide || collisionType & WorldObject::wall	|| collisionType & WorldObject::mine)
 		{
 			EventHandler::GetCurrentEventHandler()->LossNotify();
 			play_death_sound();
@@ -253,9 +257,6 @@ void GameWorld::CollisionNotify(const WorldObject::ObjectType o1, const WorldObj
 			play_eat_sound();
 		}
 	}
-
-#undef selfCollide
-#undef collisionType
 }
 
 void GameWorld::KeyNotify(const SDLKey key, ZippedUniqueObjectList& gameObjects)

@@ -18,10 +18,18 @@ static Logger::Handle logger(Logger::RequestHandle("Snake"));
 // GAMECONSTANT: snake management constants
 static const unsigned int defaultLength(90);
 static const unsigned int snakeWidth(20);
+#ifdef SURVIVAL
+static const unsigned int speedupPeriod(20000);
+#else
 static const unsigned int speedupPeriod(14000);
+#endif
 static const unsigned int speedupAmount(18);
 static const unsigned int growthCap(100);
 static const double linearGrowthRate(10.0 / 29.0);
+#ifdef SURVIVAL
+static const unsigned int survivalPointGainPeriod(10000);
+static const unsigned int survivalPointGainAmount(100);
+#endif
 
 Snake::Snake(Point center, ZippedUniqueObjectList& gameObjects)
 {
@@ -82,6 +90,13 @@ void Snake::Init(Point center, ZippedUniqueObjectList& gameObjects)
 
 void Snake::Reset(Point center, ZippedUniqueObjectList& gameObjects)
 {
+	moveTimer.Reset();
+	speedupTimer.Reset();
+
+#ifdef SURVIVAL
+	pointTimer.Reset();
+#endif
+
 	gameObjects.removeRange(path.begin(), path.end());
 	path.clear();
 
@@ -142,6 +157,15 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 	speedupTimer.Update(ms);
 	moveTimer.Update(ms);
 
+#ifdef SURVIVAL
+	pointTimer.Update(ms);
+	while(pointTimer.ResetIfHasElapsed(survivalPointGainPeriod))
+	{
+		points += survivalPointGainAmount;
+		DEBUGLOG(logger, format("%1% points gained! (total %2%)") % survivalPointGainAmount % points)
+	}
+#endif
+
 	while(speedupTimer.ResetIfHasElapsed(speedupPeriod))
 		speed += speedupAmount;
 
@@ -175,6 +199,7 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 
 void Snake::EatFood(const Food& foodObj)
 {
+#ifndef SURVIVAL
 	const double foodGrowthConstant = foodObj.GetCalories();
 	const double baseUncappedGrowth = projectedLength * linearGrowthRate;
 	const double baseRealGrowth = min((double)growthCap, baseUncappedGrowth);
@@ -190,4 +215,5 @@ void Snake::EatFood(const Food& foodObj)
 	Grow(growthAmount);
 
 	DEBUGLOG(logger, format("Got %1% points! (total %2%)") % pointsGained % points);
+#endif
 }
