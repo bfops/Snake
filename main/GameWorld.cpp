@@ -280,10 +280,13 @@ static inline void play_eat_sound()
 	play_sound("resources/eat.wav");
 }
 
-void GameWorld::CollisionNotify(const WorldObject::ObjectType o1, const WorldObject::ObjectType o2)
+void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
 {
-	const unsigned int collisionType = o1 | o2;
-	const bool selfCollide = !(collisionType & ~o1);
+	o1.CollisionHandler(o2);
+	o2.CollisionHandler(o1);
+
+	const unsigned int collisionType = o1.GetObjectType() | o2.GetObjectType();
+	const bool selfCollide = !(collisionType & ~o1.GetObjectType());
 
 	if(collisionType & WorldObject::snake)
 	{

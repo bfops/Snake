@@ -18,7 +18,7 @@ typedef struct
 	point max;
 } CollidableObject;
 
-bool does_collide(const CollidableObject* const restrict o1, const CollidableObject* const restrict o2);
+bool does_collide(const CollidableObject* o1, const CollidableObject* o2);
 
 #ifdef __cplusplus
 	}

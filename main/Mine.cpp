@@ -7,9 +7,11 @@ Mine::Mine(Sentinel sentinel, const unsigned int size) :
 {
 	color = mineColor;
 
+	const unsigned int prototypeSize = sentinel.GetBounds().max.x - sentinel.GetBounds().min.x;
+	const unsigned int sizeDiff = prototypeSize - size;
 	bounds.min = sentinel.GetBounds().min;
-	bounds.min.x += size / 2;
-	bounds.min.y += size / 2;
+	bounds.min.x += sizeDiff / 2;
+	bounds.min.y += sizeDiff / 2;
 	bounds.max = bounds.min;
 	bounds.max.x += size;
 	bounds.max.y += size;

@@ -18,7 +18,7 @@ namespace Physics
 	{
 		CollidableObject ret;
 
-		Bounds bounds = w->GetBounds();
+		const Bounds bounds = w->GetBounds();
 		ret.min.x = bounds.min.x;
 		ret.min.y = bounds.min.y;
 		ret.max.x = bounds.max.x;
@@ -27,17 +27,13 @@ namespace Physics
 		return ret;
 	}
 
-	static void handle_potential_collision(GameWorld* world, WorldObject* o1, WorldObject* o2)
+	static void handle_potential_collision(GameWorld* const world, WorldObject* const o1, WorldObject* const o2)
 	{
 		CollidableObject c1 = world_to_collidable_object(o1);
 		CollidableObject c2 = world_to_collidable_object(o2);
 
 		if(does_collide(&c1, &c2))
-		{
-			o1->CollisionHandler(*o2);
-			o2->CollisionHandler(*o1);
-			world->CollisionNotify(o1->GetObjectType(), o2->GetObjectType());
-		}
+			world->CollisionHandler(*o1, *o2);
 	}
 
 	static inline void collide_with_subsequent_objects(GameWorld* world, UniqueObjectList::iterator collider, UniqueObjectList::iterator end)
