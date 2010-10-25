@@ -1,7 +1,7 @@
 class GameWorld;
-class UniqueObjectList;
+class ZippedUniqueObjectList;
 
 namespace Physics
 {
-	void Update(GameWorld& gameWorld, UniqueObjectList& physicsObjects);
+	void Update(GameWorld& gameWorld, ZippedUniqueObjectList& worldObjects);
 }

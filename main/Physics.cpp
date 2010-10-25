@@ -3,8 +3,8 @@
 #include "Bounds.hpp"
 #include "collision.h"
 #include "GameWorld.hpp"
-#include "UniqueObjectList.hpp"
 #include "WorldObject.hpp"
+#include "ZippedUniqueObjectList.hpp"
 
 #include <algorithm>
 #include <boost/bind.hpp>
@@ -27,24 +27,29 @@ namespace Physics
 		return ret;
 	}
 
-	static void handle_potential_collision(GameWorld* const world, WorldObject* const o1, WorldObject* const o2)
+	static void handle_potential_collision(GameWorld* const world, ZippedUniqueObjectList& objects,
+										   WorldObject* const o1, WorldObject* const o2)
 	{
 		CollidableObject c1 = world_to_collidable_object(o1);
 		CollidableObject c2 = world_to_collidable_object(o2);
 
 		if(does_collide(&c1, &c2))
-			world->CollisionHandler(*o1, *o2);
+			world->CollisionHandler(objects, *o1, *o2);
 	}
 
-	static inline void collide_with_subsequent_objects(GameWorld* world, UniqueObjectList::iterator collider, UniqueObjectList::iterator end)
+	static inline void collide_with_subsequent_objects(
+		GameWorld* world, ZippedUniqueObjectList& worldObjects,
+		UniqueObjectList::iterator collider, UniqueObjectList::iterator end)
 	{
-		for_each(collider + 1, end, bind(&handle_potential_collision, world, *collider, _1));
+		for_each(collider + 1, end, bind(&handle_potential_collision, world, ref(worldObjects), *collider, _1));
 	}
 
-	void Update(GameWorld& world, UniqueObjectList& physicsObjects)
+	void Update(GameWorld& world, ZippedUniqueObjectList& worldObjects)
 	{
+		ZippedUniqueObjectList original(worldObjects);
 		// don't try the last gameObject, since all have been checked against it
-		for(UniqueObjectList::iterator collider = physicsObjects.begin(), end = physicsObjects.end() - 1; collider != end; ++collider)
-			collide_with_subsequent_objects(&world, collider, physicsObjects.end());
+		for(UniqueObjectList::iterator collider = original.physics.begin(), end = original.physics.end() - 1;
+			collider != end; ++collider)
+			collide_with_subsequent_objects(&world, worldObjects, collider, original.physics.end());
 	}
 }

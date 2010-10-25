@@ -93,12 +93,11 @@ static Sentinel get_new_sentinel()
 {
 	minstd_rand0 rand(time(NULL));
 
-	Point foodLocation(
-		rand() % ((worldBounds.max.x - worldBounds.min.x) - sentinelSize) + worldBounds.min.x,
-		rand() % ((worldBounds.max.y - worldBounds.min.y) - sentinelSize) + worldBounds.min.y
-	);
+#define GETSIZEDRANDOM(m) (rand() % ((worldBounds.max.m - worldBounds.min.m) - sentinelSize + 1) + worldBounds.min.m)
+	Point location(GETSIZEDRANDOM(x), GETSIZEDRANDOM(y));
+#undef GETSIZEDRANDOM
 
-	return Sentinel(foodLocation, sentinelSize);
+	return Sentinel(location, sentinelSize);
 }
 
 void GameWorld::Init()
@@ -280,7 +279,7 @@ static inline void play_eat_sound()
 	play_sound("resources/eat.wav");
 }
 
-void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
+void GameWorld::CollisionHandler(ZippedUniqueObjectList& objects, WorldObject& o1, WorldObject& o2)
 {
 	o1.CollisionHandler(o2);
 	o2.CollisionHandler(o1);

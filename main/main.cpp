@@ -173,7 +173,7 @@ static void paused_mouse_handler(const Uint8 button) {}
 static void default_world_updater(GameWorld& world, Timer& timer)
 {
 	timer.Update();
-	Physics::Update(world, gameObjects->physics);
+	Physics::Update(world, *gameObjects);
 	world.Update(*gameObjects, timer.GetElapsedTime());
 }
 

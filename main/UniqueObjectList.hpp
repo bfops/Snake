@@ -9,11 +9,11 @@ class WorldObject;
 class UniqueObjectList
 {
 public:
-	typedef std::vector<WorldObject*> List;
-	typedef List::iterator iterator;
+	typedef std::vector<WorldObject*> CollectionType;
+	typedef CollectionType::iterator iterator;
 
 private:
-	List objects;
+	CollectionType objects;
 
 public:
 	void add(WorldObject&);

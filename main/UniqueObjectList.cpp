@@ -6,7 +6,7 @@
 
 static Logger::Handle logger = Logger::RequestHandle("UniqueObjectList");
 
-static inline bool object_exists(const UniqueObjectList::List& list, const WorldObject* val)
+static inline bool object_exists(const UniqueObjectList::CollectionType& list, const WorldObject* val)
 {
 	return in(list.begin(), list.end(), val);
 }
