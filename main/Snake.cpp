@@ -27,8 +27,11 @@ static const unsigned int speedupAmount(18);
 static const unsigned int growthCap(100);
 static const double linearGrowthRate(10.0 / 29.0);
 #ifdef SURVIVAL
-static const unsigned int survivalPointGainPeriod(10000);
-static const unsigned int survivalPointGainAmount(150);
+static const unsigned int pointGainPeriod(10000);
+static const unsigned int pointGainAmount(150);
+#else
+static const unsigned int pointGainPeriod(5000);
+static const unsigned int pointGainAmount(15);
 #endif
 
 Snake::Snake(Point center, ZippedUniqueObjectList& gameObjects)
@@ -157,14 +160,12 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 	speedupTimer.Update(ms);
 	moveTimer.Update(ms);
 
-#ifdef SURVIVAL
 	pointTimer.Update(ms);
-	while(pointTimer.ResetIfHasElapsed(survivalPointGainPeriod))
+	while(pointTimer.ResetIfHasElapsed(pointGainPeriod))
 	{
-		points += survivalPointGainAmount;
-		DEBUGLOG(logger, format("%1% points gained! (total %2%)") % survivalPointGainAmount % points)
+		points += pointGainAmount;
+		DEBUGLOG(logger, format("%1% points gained! (total %2%)") % pointGainAmount % points)
 	}
-#endif
 
 	while(speedupTimer.ResetIfHasElapsed(speedupPeriod))
 	{
