@@ -248,7 +248,7 @@ public:
 		tail = buffer;
 	}
 
-	inline cgq(const cgq& other)
+	cgq(const cgq& other)
 	{
 		buffer = NULL;
 		*this = other;
