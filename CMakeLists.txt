@@ -8,9 +8,9 @@ set(Boost_USE_MULTITHREADED ON)
 
 set(BOOST_PACKAGES filesystem date_time program_options serialization signals thread system regex)
 
-find_package(Boost ${BOOST_VERSION} REQUIRED COMPONENTS ${BOOST_PACKAGES})
-find_package(SDL)
-find_package(SDL_mixer)
+find_package(Boost ${BOOST_VERSION} REQUIRED COMPONENTS ${BOOST_PACKAGES} REQUIRED)
+find_package(SDL REQUIRED)
+find_package(SDL_mixer REQUIRED)
 find_package(OpenGL)
 
 include_directories(${Boost_INCLUDE_DIR} ${SDL_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR})
