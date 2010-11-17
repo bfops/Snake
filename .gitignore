@@ -1,4 +1,10 @@
 *~
+
 *.[oa]
+
 *.kdev4
+
 build/
+CMakeCache.txt
+CMakeFiles
+*.sln
