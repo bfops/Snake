@@ -1,8 +1,16 @@
 #include "Logger.hpp"
 
+#ifdef MSVC
+#pragma warning( push, 0 )
+#endif
+
 #include <cstdio>
 #include <stdexcept>
 #include <boost/thread/mutex.hpp>
+
+#ifdef MSVC
+#pragma warning( pop )
+#endif
 
 typedef boost::mutex Mut;
 typedef boost::unique_lock<Mut> Lock;

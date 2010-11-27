@@ -15,7 +15,7 @@ void Sentinel::Init()
 	interfering = false;
 }
 
-void Sentinel::CollisionHandler(const WorldObject& obj)
+void Sentinel::CollisionHandler(const WorldObject&)
 {
 	interfering = true;
 }

@@ -1,10 +1,10 @@
 #pragma once
 
 #ifdef __cplusplus
-	#define restrict __restrict__
+	#ifndef MSVC
+	#define __restrict __restrict__
+	#endif
 	extern "C" {
-#else
-	#include <stdbool.h>
 #endif
 
 typedef struct
@@ -18,7 +18,7 @@ typedef struct
 	point max;
 } CollidableObject;
 
-bool does_collide(const CollidableObject* o1, const CollidableObject* o2);
+int does_collide(const CollidableObject* const __restrict o1, const CollidableObject* const __restrict o2);
 
 #ifdef __cplusplus
 	}

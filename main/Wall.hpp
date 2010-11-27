@@ -6,7 +6,7 @@ class Wall : public WorldObject
 {
 public:
 	Wall();
-	Wall(Point location, size_t width, size_t height);
+	Wall(Point location, unsigned long width, unsigned long height);
 
 	void CollisionHandler(const WorldObject&);
 };

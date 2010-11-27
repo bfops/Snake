@@ -1,6 +1,10 @@
 #pragma once
 // This file implements "fancier" algorithms than the STL provides natively.
 
+#ifdef MSVC
+#pragma warning( push, 0 )
+#endif
+
 #include <vector>
 #include <algorithm>
 #include <functional>

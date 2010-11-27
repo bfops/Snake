@@ -2,7 +2,15 @@
 
 #include "Logger.hpp"
 
+#ifdef MSVC
+#pragma warning( push, 0 )
+#endif
+
 #include <boost/format.hpp>
+
+#ifdef MSVC
+#pragma warning( pop )
+#endif
 
 using namespace boost;
 

@@ -1,8 +1,16 @@
 #pragma once
 
+#ifdef MSVC
+#pragma warning( push, 0 )
+#endif
+
 #include <boost/format.hpp>
 #include <cassert>
 #include <cstdio>
+
+#ifdef MSVC
+#pragma warning( pop )
+#endif
 
 namespace Logger
 {

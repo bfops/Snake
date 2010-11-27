@@ -9,11 +9,19 @@
 #include "Wall.hpp"
 #include "ZippedUniqueObjectList.hpp"
 
+#ifdef MSVC
+#pragma warning( push, 0 )
+#endif
+
 #include <functional>
 #include <boost/random.hpp>
 #include <SDL_timer.h>
 #include <SDL_mixer.h>
 #include <boost/concept_check.hpp>
+
+#ifdef MSVC
+#pragma warning( pop )
+#endif
 
 using namespace boost;
 using namespace std;
@@ -279,7 +287,8 @@ static inline void play_eat_sound()
 	play_sound("resources/eat.wav");
 }
 
-void GameWorld::CollisionHandler(ZippedUniqueObjectList& objects, WorldObject& o1, WorldObject& o2)
+// TODO: check for useless 1st parameter
+void GameWorld::CollisionHandler(ZippedUniqueObjectList&, WorldObject& o1, WorldObject& o2)
 {
 	o1.CollisionHandler(o2);
 	o2.CollisionHandler(o1);

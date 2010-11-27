@@ -30,5 +30,6 @@ add_executable(GingerbreadPrototype
 target_link_libraries(GingerbreadPrototype
 	${Boost_LIBRARIES}
 	${SDL_LIBRARY}
-	SDL_mixer
+	${SDLMAIN_LIBRARY}
+	${SDLMIXER_LIBRARY}
 )

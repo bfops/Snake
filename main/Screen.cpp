@@ -2,13 +2,21 @@
 
 #include "Logger.hpp"
 
+#ifdef MSVC
+#pragma warning( push, 0 )
+#endif
+
 #include <SDL_video.h>
+
+#ifdef MSVC
+#pragma warning( pop )
+#endif
 
 using namespace std;
 
 static Logger::Handle logger = Logger::RequestHandle("Screen");
 
-Screen::Screen(unsigned int _width, unsigned int _height) :
+Screen::Screen(unsigned long _width, unsigned long _height) :
 	width(_width), height(_height), bgColor(0, 0, 0)
 {
 	screen = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE);

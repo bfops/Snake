@@ -17,6 +17,7 @@ Food::Food(const Sentinel& prototype, const unsigned int size, const FoodInfo& f
 	calories = foodInfo.calories;
 	pointsGiven = foodInfo.points;
 
+	// prototypes are guaranteed to be squares, so \Delta x = \Delta y
 	const unsigned int prototypeSize = prototype.GetBounds().max.x - prototype.GetBounds().min.x;
 	const unsigned int sizeDiff = prototypeSize - size;
 	bounds.min = prototype.GetBounds().min;

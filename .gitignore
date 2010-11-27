@@ -1,10 +1,19 @@
+CMakeCache.txt
+build/
+ipch/
+Debug/
+x64/
+Release/
+CMakeFiles/
 *~
 
 *.[oa]
-
 *.kdev4
 
-build/
-CMakeCache.txt
-CMakeFiles
+*.cmake
 *.sln
+*.sdf
+*.opensdf
+*.suo
+*.vcxproj*
+*.vcproj

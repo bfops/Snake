@@ -3,7 +3,15 @@
 #include "Logger.hpp"
 #include "Screen.hpp"
 
+#ifdef MSVC
+#pragma warning( push, 0 )
+#endif
+
 #include <SDL_video.h>
+
+#ifdef MSVC
+#pragma warning( pop )
+#endif
 
 using namespace std;
 

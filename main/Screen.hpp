@@ -8,11 +8,11 @@ class Screen
 private:
 	SDL_Surface* screen;
 
-	const unsigned int width, height;
+	unsigned long width, height;
 	Color24 bgColor;
 
 public:
-	Screen(unsigned int width, unsigned int height);
+	Screen(unsigned long width, unsigned long height);
 	~Screen();
 
 	SDL_Surface* GetSurface();

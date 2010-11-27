@@ -2,7 +2,15 @@
 #include "Direction.hpp"
 #include "Side.hpp"
 
+#ifdef MSVC
+#pragma warning( push, 0 )
+#endif
+
 #include <cassert>
+
+#ifdef MSVC
+#pragma warning( pop )
+#endif
 
 Bounds::Bounds()
 {
@@ -31,15 +39,16 @@ Bounds::operator Side() const
 	Side retval;
 	retval.min = min;
 
+#define LOADDIFF(m) retval.dimension = max.m - min.m;
 	if(min.x == max.x)
 	{
 		retval.horizontal = false;
-		retval.dimension = (max.y - min.y);
+		LOADDIFF(y)
 	}
 	else
 	{
 		retval.horizontal = true;
-		retval.dimension = (max.x - min.x);
+		LOADDIFF(x)
 	}
 
 	return retval;

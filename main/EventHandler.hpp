@@ -2,9 +2,14 @@
 
 #include "Common.hpp"
 
+#ifdef MSVC
+#pragma warning( push, 0 )
+#endif
+
 #include <SDL_events.h>
 
-class ZippedUniqueObjectList;
+
+struct ZippedUniqueObjectList;
 
 class EventHandler
 {
@@ -16,6 +21,8 @@ public:
 	typedef void (MouseCallbackType)(Uint8 mouseButton);
 
 private:
+	EventHandler& operator=(const EventHandler&);
+
 #define DECLARE_CALLBACK_FUNCTOR(type, ltype) \
 	type##CallbackType* const ltype##Callback;
 

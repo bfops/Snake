@@ -6,8 +6,16 @@
 #include "WorldObject.hpp"
 #include "ZippedUniqueObjectList.hpp"
 
+#ifdef MSVC
+#pragma warning( push, 0 )
+#endif
+
 #include <algorithm>
 #include <boost/bind.hpp>
+
+#ifdef MSVC
+#pragma warning( pop )
+#endif
 
 using namespace std;
 using namespace boost;

@@ -6,13 +6,22 @@
 #include "Side.hpp"
 #include "ZippedUniqueObjectList.hpp"
 
+#ifdef MSVC
+#pragma warning( push, 0 )
+#endif
+
 #include <boost/any.hpp>
 #include <boost/bind.hpp>
 #include <boost/random.hpp>
 
+#ifdef MSVC
+#pragma warning( pop )
+#endif
+
 using namespace std;
 using namespace boost;
 
+const static Direction directions[] = {Direction::left, Direction::right, Direction::up, Direction::down};
 static Logger::Handle logger(Logger::RequestHandle("Snake"));
 
 // GAMECONSTANT: snake management constants
@@ -70,8 +79,7 @@ inline SnakeSegment& Snake::Tail()
 
 static inline Direction get_random_direction()
 {
-	const static Direction directions[] = {Direction::left, Direction::right, Direction::up, Direction::down};
-	uint32_t randomNumber = minstd_rand(time(NULL))();
+	uint32_t randomNumber = minstd_rand(	time(NULL))();
 	return directions[randomNumber % countof(directions)];
 }
 
@@ -127,12 +135,12 @@ void Snake::ChangeDirection(Direction newDirection, ZippedUniqueObjectList& game
 	}
 }
 
-static inline unsigned int get_bounded_index(const int unboundedIndex, const int arraySize)
+static inline unsigned int get_bounded_index(const int unboundedIndex, const unsigned int arraySize)
 {
 	if(unboundedIndex < 0)
 		return get_bounded_index(unboundedIndex + arraySize, arraySize);
 
-	return unboundedIndex % arraySize;
+	return unsigned int(unboundedIndex) % arraySize;
 }
 
 static Direction get_turned_direction(Direction direction, Direction turn)
@@ -201,9 +209,9 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 	}
 }
 
+#ifndef SURVIVAL
 void Snake::EatFood(const Food& foodObj)
 {
-#ifndef SURVIVAL
 	const double foodGrowthConstant = foodObj.GetCalories();
 	const double baseUncappedGrowth = projectedLength * linearGrowthRate;
 	const double baseRealGrowth = min((double)growthCap, baseUncappedGrowth);
@@ -220,5 +228,9 @@ void Snake::EatFood(const Food& foodObj)
 
 	DEBUGLOG(logger, format("Growing by %1%") % growthAmount)
 	DEBUGLOG(logger, format("Got %1% points! (total %2%)") % pointsGained % points);
-#endif
 }
+#else
+void Snake::EatFood(const Food&)
+{
+}
+#endif

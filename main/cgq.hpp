@@ -1,8 +1,16 @@
 #pragma once
 
+#ifdef MSVC
+#pragma warning( push, 0 )
+#endif
+
 #include <cstddef>
 #include <cassert>
 #include <algorithm>
+
+#ifdef MSVC
+#pragma warning( pop )
+#endif
 
 namespace detail {
 
@@ -15,7 +23,7 @@ inline bool is_power_of_two(T x)
 // Returns a + b in the finite field [0, m) where m is a power of two. A must
 // already be in the finite field, and b may be any integer representable by a
 // long. This works for b being a positive AND negative number.
-// a - b = a + (-b). Get it?
+// a - b = a + (-b).
 inline unsigned long finite_field_addition(unsigned long a, long b, unsigned long m)
 {
 	assert(a < m);
@@ -26,7 +34,7 @@ inline unsigned long finite_field_addition(unsigned long a, long b, unsigned lon
 		if(b > -long(m))
 			return finite_field_addition(a, m + b, m);
 		else
-			return finite_field_addition(a, -(-b & (m - 1)), m);
+			return finite_field_addition(a, -(-b & long(m - 1)), m);
 	}
 
 	return (a + b) & (m - 1);
@@ -59,7 +67,7 @@ public:
 	public:
 		typedef std::bidirectional_iterator_tag iterator_category;
 		typedef TargetTy value_type;
-		typedef cgq::difference_type difference_type;
+		typedef typename cgq::difference_type difference_type;
 		typedef value_type* pointer;
 		typedef value_type& reference;
 
@@ -122,7 +130,7 @@ public:
 
 		inline bidirectional_iterator& operator++()
 		{
-			loc = buffer + detail::finite_field_addition(loc - buffer, 1, capacity);
+			loc = buffer + ::detail::finite_field_addition(loc - buffer, 1, capacity);
 			return *this;
 		}
 
@@ -135,7 +143,7 @@ public:
 
 		inline bidirectional_iterator& operator--()
 		{
-			loc = buffer + detail::finite_field_addition(loc - buffer, -1, capacity);
+			loc = buffer + ::detail::finite_field_addition(loc - buffer, -1, capacity);
 			return *this;
 		}
 
@@ -202,7 +210,7 @@ private:
 	template <class T>
 	static inline T next_power_of_two(T k)
 	{
-		if(detail::is_power_of_two(k))
+		if(::detail::is_power_of_two(k))
 			return k;
 
 		if (k == 0)
@@ -218,7 +226,7 @@ private:
 	// the field is the buffer. Negative numbers are acceptable.
 	inline pointer move_pointer(pointer p, difference_type n)
 	{
-		return buffer + detail::finite_field_addition(p - buffer, n, capacity);
+		return buffer + ::detail::finite_field_addition(p - buffer, n, capacity);
 	}
 
 	/// This function resizes the buffer to any size, with no error checking.

@@ -9,6 +9,10 @@ class Food : public WorldObject
 public:
 	struct FoodInfo
 	{
+	private:
+		FoodInfo& operator=(const FoodInfo&);
+
+	public:
 		const double calories;
 		const Color24 color;
 		const int points;

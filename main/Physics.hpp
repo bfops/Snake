@@ -1,5 +1,5 @@
 class GameWorld;
-class ZippedUniqueObjectList;
+struct ZippedUniqueObjectList;
 
 namespace Physics
 {

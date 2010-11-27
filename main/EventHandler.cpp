@@ -1,6 +1,14 @@
 #include "EventHandler.hpp"
 
+#ifdef MSVC
+#pragma warning( push, 0 )
+#endif
+
 #include <SDL_events.h>
+
+#ifdef MSVC
+#pragma warning( pop )
+#endif
 
 EventHandler::EventHandler(QuitCallbackType onquit, LossCallbackType onloss, PauseCallbackType onpause,
 	KeyCallbackType onkey, MouseCallbackType onmouse) :
@@ -9,7 +17,8 @@ EventHandler::EventHandler(QuitCallbackType onquit, LossCallbackType onloss, Pau
 {
 }
 
-void EventHandler::HandleEventQueue(ZippedUniqueObjectList& gameObjects) const
+// TODO: check for useless 1st param
+void EventHandler::HandleEventQueue(ZippedUniqueObjectList&) const
 {
 	SDL_Event event;
 

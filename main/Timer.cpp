@@ -1,6 +1,14 @@
 #include "Timer.hpp"
 
+#ifdef MSVC
+#pragma warning( push, 0 )
+#endif
+
 #include <SDL_timer.h>
+
+#ifdef MSVC
+#pragma warning( pop )
+#endif
 
 // may switch (back) to boost later, so this
 // allows for easy switching of timing methods

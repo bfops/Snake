@@ -1,8 +1,16 @@
 #pragma once
 
+#ifdef MSVC
+#pragma warning( push, 0 )
+#endif
+
 #include <algorithm>
 #include <boost/bind.hpp>
 #include <vector>
+
+#ifdef MSVC
+#pragma warning( pop )
+#endif
 
 class WorldObject;
 

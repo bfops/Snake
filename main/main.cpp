@@ -10,10 +10,18 @@
 #include "Timer.hpp"
 #include "ZippedUniqueObjectList.hpp"
 
+#ifdef MSVC
+#pragma warning( push, 0 )
+#endif
+
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <SDL.h>
 #include <SDL_mixer.h>
+
+#ifdef MSVC
+#pragma warning( pop )
+#endif
 
 // TODO: make different game modes call
 // different functions, not use scattered
@@ -37,8 +45,9 @@ static const char* windowTitle("ReWritable's Snake");
 // TODO: change this back to 60 once multithreading kicks in,
 // but right now, movement is a little jerky at high speed
 static const unsigned int FPS(120);
-static shared_ptr<ZippedUniqueObjectList> gameObjects;
-static shared_ptr<GameWorld> gameWorld;
+static boost::shared_ptr<ZippedUniqueObjectList> gameObjects;
+static boost::shared_ptr<GameWorld> gameWorld;
+
 
 /// return false to kill the game loop, true otherwise
 typedef bool (GameLoop)(Screen& renderTarget, Timer& gameTimer);
@@ -65,7 +74,7 @@ static WorldUpdater default_world_updater;
 static WorldUpdater paused_world_updater;
 static WorldUpdater* currentWorldUpdater;
 
-int main()
+int main(int, char*[])
 {
 	// keep SDL active as long as this is in scope
 	SDLInitializer keepSDLInitialized;
@@ -75,8 +84,8 @@ int main()
 
 	Screen screen(800, 600);
 	Timer timer;
-	gameObjects = shared_ptr<ZippedUniqueObjectList>(new ZippedUniqueObjectList());
-	gameWorld = shared_ptr<GameWorld>(new GameWorld(*gameObjects));
+	gameObjects = boost::shared_ptr<ZippedUniqueObjectList>(new ZippedUniqueObjectList());
+	gameWorld = boost::shared_ptr<GameWorld>(new GameWorld(*gameObjects));
 
 	EventHandler::GetCurrentEventHandler() = &defaultEventHandler;
 	currentWorldUpdater = &default_world_updater;
@@ -168,7 +177,7 @@ static void default_mouse_handler(const Uint8 button)
 	gameWorld->MouseNotify(button, *gameObjects);
 }
 
-static void paused_mouse_handler(const Uint8 button) {}
+static void paused_mouse_handler(const Uint8) {}
 
 static void default_world_updater(GameWorld& world, Timer& timer)
 {

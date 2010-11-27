@@ -11,9 +11,17 @@
 #include "Snake.hpp"
 #include "Wall.hpp"
 
+#ifdef MSVC
+#pragma warning( push, 0 )
+#endif
+
 #include <boost/array.hpp>
 #include <SDL_events.h>
 #include <vector>
+
+#ifdef MSVC
+#pragma warning( pop )
+#endif
 
 struct ZippedUniqueObjectList;
 

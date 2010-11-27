@@ -11,7 +11,7 @@ Wall::Wall() :
 	color = wallColor;
 }
 
-Wall::Wall(Point loc, size_t w, size_t h) :
+Wall::Wall(Point loc, unsigned long w, unsigned long h) :
 	WorldObject(wall)
 {
 	color = wallColor;
@@ -19,6 +19,6 @@ Wall::Wall(Point loc, size_t w, size_t h) :
 	bounds.max = Point(loc.x + w - 1, loc.y + h - 1);
 }
 
-void Wall::CollisionHandler(const WorldObject& obj)
+void Wall::CollisionHandler(const WorldObject&)
 {
 }
