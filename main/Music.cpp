@@ -16,7 +16,7 @@ using namespace boost;
 
 static Logger::Handle logger(Logger::RequestHandle("Music"));
 
-Music::Music(const char*const filename)
+Music::Music(const char* const filename)
 {
 	music = Mix_LoadMUS(filename);
 	if(music == NULL)

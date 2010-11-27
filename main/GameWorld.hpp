@@ -16,8 +16,8 @@
 #endif
 
 #include <boost/array.hpp>
+#include <list>
 #include <SDL_events.h>
-#include <vector>
 
 #ifdef MSVC
 #pragma warning( pop )
@@ -29,11 +29,11 @@ class GameWorld
 {
 public:
 #ifdef SURVIVAL
-	typedef std::vector<Mine> MineList;
+	typedef std::list<Mine> MineList;
 #else
-	typedef std::vector<Food> Menu;
+	typedef std::list<Food> Menu;
 #endif
-	typedef std::vector<Sentinel> SentinelList;
+	typedef std::list<Sentinel> SentinelList;
 #ifdef COOLERWALLS
 	typedef boost::array<Wall, 8> WallBox;
 #else

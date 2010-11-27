@@ -24,9 +24,7 @@ private:
 
 	Counter moveTimer;
 	Counter speedupTimer;
-#ifdef SURVIVAL
 	Counter pointTimer;
-#endif
 
 	unsigned long long points;
 

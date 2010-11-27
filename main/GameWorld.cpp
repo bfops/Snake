@@ -13,6 +13,7 @@
 #pragma warning( push, 0 )
 #endif
 
+#include <cmath>
 #include <functional>
 #include <boost/random.hpp>
 #include <SDL_timer.h>
@@ -174,13 +175,16 @@ mineTimer.Update(ms);
 #ifndef SURVIVAL
 	// TODO: use interrupts, rather than this check-loop
 	gameObjects.removeRange(foods.begin(), foods.end());
-	for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
-		if(i->IsEaten())
-			foods.erase(i);
+	for(Menu::iterator i = foods.begin(), end = foods.end(); i != end;)
+	{
+		const Menu::iterator current = i++;
+		if(current->IsEaten())
+			foods.erase(current);
+	}
 	gameObjects.addRange(foods.begin(), foods.end());
 #endif
 
-	for(SentinelList::iterator sentinel = sentinels.begin(), end = sentinels.end(); sentinel != end; ++sentinel)
+	for(SentinelList::iterator sentinel = sentinels.begin(), end = sentinels.end(); sentinel != end;)
 	{
 		if(sentinel->IsInterfering())
 		{
@@ -188,8 +192,10 @@ mineTimer.Update(ms);
 		}
 		else
 		{
+			const SentinelList::iterator current = sentinel++;
+
 #ifdef SURVIVAL
-			Mine newMine(*sentinel, mineSize);
+			Mine newMine(*current, mineSize);
 			gameObjects.removeRange(mines.begin(), mines.end());
 			mines.push_back(newMine);
 			play_mine_sound();
@@ -198,15 +204,15 @@ mineTimer.Update(ms);
 			minstd_rand0 rand(time(NULL));
 			Food::FoodInfo foodType = get_food_type(rand);
 
-			Food newFood(*sentinel, foodSize, foodType);
+			Food newFood(*current, foodSize, foodType);
 			gameObjects.removeRange(foods.begin(), foods.end());
 			foods.push_back(newFood);
 			play_food_sound();
 			gameObjects.addRange(foods.begin(), foods.end());
 #endif
 
-			gameObjects.physics.remove(*sentinel);
-			sentinels.erase(sentinel);
+			gameObjects.physics.remove(*current);
+			sentinels.erase(current);
 		}
 	}
 
