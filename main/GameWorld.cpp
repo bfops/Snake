@@ -166,7 +166,7 @@ static inline void play_mine_sound()
 void GameWorld::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
 {
 #ifdef SURVIVAL
-mineTimer.Update(ms);
+	mineTimer.Update(ms);
 #else
 	foodTimer.Update(ms);
 #endif
