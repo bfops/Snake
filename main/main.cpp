@@ -48,7 +48,6 @@ static const unsigned int FPS(120);
 static boost::shared_ptr<ZippedUniqueObjectList> gameObjects;
 static boost::shared_ptr<GameWorld> gameWorld;
 
-
 /// return false to kill the game loop, true otherwise
 typedef bool (GameLoop)(Screen& renderTarget, Timer& gameTimer);
 static GameLoop default_game_loop;

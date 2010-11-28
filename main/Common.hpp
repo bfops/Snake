@@ -25,12 +25,3 @@ inline int round(const double d)
 #else
 #define DEBUGLOGIF(func, logger, string) ;
 #endif
-
-// random game-changing things //
-
-// whether or not extra walls are added for epicness
-#define COOLERWALLS
-// whether or not music is on
-#define MUSIC
-// whether or not survival mode is on
-//#define SURVIVAL

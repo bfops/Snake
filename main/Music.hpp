@@ -10,6 +10,9 @@
 #pragma warning( pop )
 #endif
 
+// whether or not music is on
+#define MUSIC
+
 class Music
 {
 private:
