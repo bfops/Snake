@@ -1,0 +1,11 @@
+This is ReWritable's effort at making a cross-platform version of Snake
+
+--------------------------------------------
+DEPENDENCIES
+--------------------------------------------
+To compile, you will need:
+-Boost C++ libraries (http://www.boost.org/users/download/)
+-SDL SDK (http://www.libsdl.org/)
+-SDL Runtime (http://www.libsdl.org/)
+
+To work with the audio files, you'll need a MIDI editor
