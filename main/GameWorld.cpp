@@ -293,8 +293,7 @@ static inline void play_eat_sound()
 	play_sound("resources/eat.wav");
 }
 
-// TODO: check for useless 1st parameter
-void GameWorld::CollisionHandler(ZippedUniqueObjectList&, WorldObject& o1, WorldObject& o2)
+void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
 {
 	o1.CollisionHandler(o2);
 	o2.CollisionHandler(o1);

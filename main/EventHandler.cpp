@@ -17,8 +17,7 @@ EventHandler::EventHandler(QuitCallbackType onquit, LossCallbackType onloss, Pau
 {
 }
 
-// TODO: check for useless 1st param
-void EventHandler::HandleEventQueue(ZippedUniqueObjectList&) const
+void EventHandler::HandleEventQueue() const
 {
 	SDL_Event event;
 

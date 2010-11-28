@@ -37,7 +37,7 @@ private:
 public:
 	EventHandler(QuitCallbackType, LossCallbackType, PauseCallbackType, KeyCallbackType, MouseCallbackType);
 
-	void HandleEventQueue(ZippedUniqueObjectList& gameObjects) const;
+	void HandleEventQueue() const;
 	void LossNotify() const;
 
 	static const EventHandler*& GetCurrentEventHandler();

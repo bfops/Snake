@@ -1,30 +1,59 @@
 add_executable(GingerbreadPrototype
 	Bounds.cpp
+	Bounds.hpp
+	cgq.hpp
 	collision.c
+	collision.h
 	Color24.cpp
+	Color24.hpp
+	Common.hpp
 	Counter.cpp
+	Counter.hpp
+	custom_algorithm.hpp
 	Direction.cpp
+	Direction.hpp
 	EventHandler.cpp
+	EventHandler.hpp
 	Food.cpp
+	Food.hpp
 	Food__FoodInfo.cpp
 	GameWorld.cpp
+	GameWorld.hpp
 	Graphics.cpp
+	Graphics.hpp
 	Logger.cpp
+	Logger.hpp
 	main.cpp
 	Mine.cpp
+	Mine.hpp
 	Music.cpp
+	Music.hpp
 	Physics.cpp
+	Physics.hpp
+	Point.hpp
 	Screen.cpp
+	Screen.hpp
 	SDLInitializer.cpp
+	SDLInitializer.hpp
 	Sentinel.cpp
+	Sentinel.hpp
 	Side.cpp
+	Side.hpp
 	Snake.cpp
+	Snake.hpp
 	SnakeSegment.cpp
+	SnakeSegment.hpp
 	Timer.cpp
+	Timer.hpp
 	UniqueObjectList.cpp
+	UniqueObjectList.hpp
 	Vector2D.cpp
+	Vector2D.hpp
 	Wall.cpp
+	Wall.hpp
 	WorldObject.cpp
+	WorldObject.hpp
+	ZippedUniqueObjectList.hpp
 )
 
 target_link_libraries(GingerbreadPrototype

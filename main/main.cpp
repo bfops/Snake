@@ -107,7 +107,7 @@ static bool default_game_loop(Screen& screen, Timer& timer)
 {
 	Graphics::Update(gameObjects->graphics, screen);
 	currentWorldUpdater(*gameWorld, timer);
-	EventHandler::GetCurrentEventHandler()->HandleEventQueue(*gameObjects);
+	EventHandler::GetCurrentEventHandler()->HandleEventQueue();
 
 	return true;
 }

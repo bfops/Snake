@@ -71,7 +71,7 @@ public:
 
 	/// this function handles all the World-level
 	/// side-effects of collisions (e.g. sound effects)
-	void CollisionHandler(ZippedUniqueObjectList& gameObjects, WorldObject&, WorldObject&);
+	void CollisionHandler(WorldObject&, WorldObject&);
 	void KeyNotify(SDLKey key, ZippedUniqueObjectList& gameObjects);
 	void MouseNotify(Uint8 button, ZippedUniqueObjectList& gameObjects);
 
