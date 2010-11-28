@@ -13,14 +13,20 @@ static inline bool object_exists(const UniqueObjectList::CollectionType& list, c
 
 void UniqueObjectList::add(WorldObject& pObj)
 {
-	DEBUGLOGIF(object_exists(objects, &pObj), logger, boost::format("Object %1% already exists.") % &pObj)
+	Lock();
 
+	DEBUGLOGIF(object_exists(objects, &pObj), logger, boost::format("Object %1% already exists.") % &pObj)
 	objects.push_back(&pObj);
+
+	Unlock();
 }
 
 void UniqueObjectList::remove(WorldObject& pObj)
 {
-	DEBUGLOGIF(!object_exists(objects, &pObj), logger, boost::format("Object %1% does not exist.") % &pObj)
+	Lock();
 
+	DEBUGLOGIF(!object_exists(objects, &pObj), logger, boost::format("Object %1% does not exist.") % &pObj)
 	unordered_find_and_remove(objects, &pObj);
+
+	Unlock();
 }

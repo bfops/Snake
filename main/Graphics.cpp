@@ -15,16 +15,12 @@
 #pragma warning( pop )
 #endif
 
-using namespace std;
 using namespace boost;
 
 namespace Graphics
 {
-	void Update(UniqueObjectList& objects, Screen& target)
+	void Update(UniqueObjectList& graphicsObjects, Screen& target)
 	{
-		// this allows for future mutexes to only lock this command,
-		// as oppose to the whole function
-		UniqueObjectList graphicsObjects(objects);
 		target.Clear();
 
 		for_each(graphicsObjects.begin(), graphicsObjects.end(), bind(&WorldObject::Draw, _1, ref(target)));

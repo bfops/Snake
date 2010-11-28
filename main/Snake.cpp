@@ -79,7 +79,7 @@ inline SnakeSegment& Snake::Tail()
 
 static inline Direction get_random_direction()
 {
-	uint32_t randomNumber = minstd_rand(	time(NULL))();
+	uint32_t randomNumber = minstd_rand(time(NULL))();
 	return directions[randomNumber % countof(directions)];
 }
 
@@ -90,6 +90,7 @@ void Snake::Init(Point center, ZippedUniqueObjectList& gameObjects)
 
 	moveTimer.Reset();
 	speedupTimer.Reset();
+	pointTimer.Reset();
 
 	speed = 100;
 

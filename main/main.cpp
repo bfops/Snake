@@ -16,6 +16,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/thread.hpp>
 #include <SDL.h>
 #include <SDL_mixer.h>
 
@@ -48,17 +49,13 @@ static const unsigned int FPS(120);
 static boost::shared_ptr<ZippedUniqueObjectList> gameObjects;
 static boost::shared_ptr<GameWorld> gameWorld;
 
-/// return false to kill the game loop, true otherwise
-typedef bool (GameLoop)(Screen& renderTarget, Timer& gameTimer);
-static GameLoop default_game_loop;
-static GameLoop quit_game_loop;
-static GameLoop* currentGameLoop;
+static void graphics_loop();
 
-/// return true to play again, false otherwise
-typedef bool (ReplayLoop)(Screen& renderTarget, Timer& gameTimer);
-static ReplayLoop default_replay_loop;
-static ReplayLoop quit_replay_loop;
-static ReplayLoop* currentReplayLoop;
+/// return false to kill the game loop, true otherwise
+typedef bool (GameLoop)(Timer& gameTimer);
+static GameLoop default_game_loop;
+static GameLoop lost_game_loop;
+static GameLoop* currentGameLoop;
 
 static const EventHandler defaultEventHandler(
 	quit_handler, loss_handler, default_pause_handler,
@@ -73,15 +70,17 @@ static WorldUpdater default_world_updater;
 static WorldUpdater paused_world_updater;
 static WorldUpdater* currentWorldUpdater;
 
+bool quit;
+
 int main(int, char*[])
 {
+	quit = false;
 	// keep SDL active as long as this is in scope
 	SDLInitializer keepSDLInitialized;
 
 	SDL_WM_SetCaption(windowTitle, windowTitle);
 	SDL_ShowCursor(SDL_DISABLE);
 
-	Screen screen(800, 600);
 	Timer timer;
 	gameObjects = boost::shared_ptr<ZippedUniqueObjectList>(new ZippedUniqueObjectList());
 	gameWorld = boost::shared_ptr<GameWorld>(new GameWorld(*gameObjects));
@@ -89,7 +88,6 @@ int main(int, char*[])
 	EventHandler::GetCurrentEventHandler() = &defaultEventHandler;
 	currentWorldUpdater = &default_world_updater;
 	currentGameLoop = &default_game_loop;
-	currentReplayLoop = &default_replay_loop;
 
 	Mix_AllocateChannels(4);
 
@@ -97,54 +95,50 @@ int main(int, char*[])
 	Music music("resources/title theme.wav");
 #endif
 
-	while(currentReplayLoop(screen, timer))
-		SDL_Delay(1);
+	thread graphicsThread(graphics_loop);
+	while(!quit)
+	{
+		while(currentGameLoop(timer))
+			SDL_Delay(1000 / FPS);
+
+		gameWorld->Reset(*gameObjects);
+		timer.Reset();
+		currentGameLoop = &default_game_loop;
+	}
 
 	return 0;
 }
 
-static bool default_game_loop(Screen& screen, Timer& timer)
+static void graphics_loop()
 {
-	Graphics::Update(gameObjects->graphics, screen);
+	Screen screen(800, 600);
+
+	while(!quit)
+	{
+		gameObjects->graphics.Lock();
+		Graphics::Update(gameObjects->graphics, screen);
+		gameObjects->graphics.Unlock();
+		SDL_Delay(1000 / FPS);
+	}
+}
+
+static bool default_game_loop(Timer& timer)
+{
 	currentWorldUpdater(*gameWorld, timer);
 	EventHandler::GetCurrentEventHandler()->HandleEventQueue();
 
 	return true;
 }
 
-static bool quit_game_loop(Screen&, Timer&)
-{
-	DEBUGLOG(logger, "Quit called")
-	return false;
-}
-
-static bool lost_game_loop(Screen&, Timer&)
+static bool lost_game_loop(Timer&)
 {
 	DEBUGLOG(logger, "DEATH")
 	return false;
 }
 
-static bool default_replay_loop(Screen& screen, Timer& timer)
-{
-	while(currentGameLoop(screen, timer))
-		SDL_Delay(1000 / FPS);
-
-	gameWorld->Reset(*gameObjects);
-	timer.Reset();
-	currentGameLoop = &default_game_loop;
-
-	return true;
-}
-
-static bool quit_replay_loop(Screen&, Timer&)
-{
-	return false;
-}
-
 static void quit_handler()
 {
-	currentGameLoop = &quit_game_loop;
-	currentReplayLoop = &quit_replay_loop;
+	quit = true;
 }
 
 static void loss_handler()

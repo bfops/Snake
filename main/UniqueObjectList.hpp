@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <boost/bind.hpp>
+#include <boost/thread/mutex.hpp>
 #include <vector>
 
 #ifdef MSVC
@@ -21,16 +22,29 @@ public:
 	typedef CollectionType::iterator iterator;
 
 private:
+	boost::mutex mutex;
 	CollectionType objects;
 
 public:
+	UniqueObjectList()
+	{
+	}
+
+	UniqueObjectList(const UniqueObjectList& obj) :
+		objects(obj.objects)
+	{
+	}
+
 	void add(WorldObject&);
+
 	template<typename Iter>
 	inline void addRange(Iter begin, Iter end)
 	{
 		std::for_each(begin, end, boost::bind(&UniqueObjectList::add, this, _1));
 	}
+
 	void remove(WorldObject&);
+
 	template<typename Iter>
 	inline void removeRange(Iter begin, Iter end)
 	{
@@ -41,8 +55,19 @@ public:
 	{
 		return objects.begin();
 	}
+
 	inline iterator end()
 	{
 		return objects.end();
+	}
+
+	inline void Lock()
+	{
+		mutex.lock();
+	}
+
+	inline void Unlock()
+	{
+		mutex.unlock();
 	}
 };
