@@ -106,6 +106,9 @@ int main(int, char*[])
 		currentGameLoop = &default_game_loop;
 	}
 
+	// wait to get ownership of everything
+	gameObjects->graphics.Lock();
+
 	return 0;
 }
 
