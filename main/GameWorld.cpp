@@ -13,12 +13,13 @@
 #pragma warning( push, 0 )
 #endif
 
+#include <boost/concept_check.hpp>
+#include <boost/random.hpp>
+#include <boost/thread.hpp>
 #include <cmath>
 #include <functional>
-#include <boost/random.hpp>
 #include <SDL_timer.h>
 #include <SDL_mixer.h>
-#include <boost/concept_check.hpp>
 
 #ifdef MSVC
 #pragma warning( pop )
@@ -127,29 +128,25 @@ GameWorld::GameWorld(ZippedUniqueObjectList& gameObjects) :
 	Init();
 }
 
-// _filename is a const char*
-static int sound_playing_thread(void* _filename)
+static void sound_playing_thread(const char* const filename)
 {
-	const char* const filename = reinterpret_cast<const char* const>(_filename);
 	Mix_Chunk* const sound = Mix_LoadWAV(filename);
 	int channel;
 	if(sound == NULL || (channel = Mix_PlayChannel(-1, sound, 0)) == -1)
 	{
 		logger.Fatal(format("Error playing \"%1%\": %2%") % filename % Mix_GetError());
-		return 1;
+		return;
 	}
 
 	while(Mix_Playing(channel))
 		SDL_Delay(50);
 
 	Mix_FreeChunk(sound);
-
-	return 0;
 }
 
 static inline void play_sound(const char* filename)
 {
-	SDL_CreateThread(sound_playing_thread, reinterpret_cast<void*>(const_cast<char*>(filename)));
+	thread(sound_playing_thread, filename);
 }
 
 static inline void play_food_sound()
@@ -159,8 +156,7 @@ static inline void play_food_sound()
 
 static inline void play_mine_sound()
 {
-	// TODO: different sound
-	play_sound("resources/food appear.wav");
+	play_sound("resources/mine appear.wav");
 }
 
 void GameWorld::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
