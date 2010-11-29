@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Common.hpp"
-#include "Counter.hpp"
 #include "Mine.hpp"
 #include "Food.hpp"
 #include "Sentinel.hpp"
 #include "Snake.hpp"
+#include "Timer.hpp"
 #include "Wall.hpp"
 
 #ifdef MSVC
@@ -44,9 +44,9 @@ public:
 private:
 	SentinelList sentinels;
 
-	Counter mineTimer;
+	Timer mineTimer;
 	MineList mines;
-	Counter foodTimer;
+	Timer foodTimer;
 	Menu foods;
 	Snake player;
 
@@ -57,7 +57,7 @@ private:
 public:
 	GameWorld(ZippedUniqueObjectList& gameObjects);
 
-	void Update(ZippedUniqueObjectList& gameObjects, unsigned int elapsedMilliseconds);
+	void Update(ZippedUniqueObjectList& gameObjects);
 	void Reset(ZippedUniqueObjectList& gameObjects);
 
 	/// this function handles all the World-level

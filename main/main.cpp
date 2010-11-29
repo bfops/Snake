@@ -1,3 +1,4 @@
+#include "Clock.hpp"
 #include "Common.hpp"
 #include "EventHandler.hpp"
 #include "GameWorld.hpp"
@@ -52,7 +53,7 @@ static boost::shared_ptr<GameWorld> gameWorld;
 static void graphics_loop();
 
 /// return false to kill the game loop, true otherwise
-typedef bool (GameLoop)(Timer& gameTimer);
+typedef bool (GameLoop)();
 static GameLoop default_game_loop;
 static GameLoop lost_game_loop;
 static GameLoop* currentGameLoop;
@@ -65,7 +66,7 @@ static const EventHandler pausedEventHandler(
 	quit_handler, loss_handler, paused_pause_handler,
 	paused_key_handler, paused_mouse_handler);
 
-typedef void (WorldUpdater)(GameWorld&, Timer& gameTimer);
+typedef void (WorldUpdater)(GameWorld&);
 static WorldUpdater default_world_updater;
 static WorldUpdater paused_world_updater;
 static WorldUpdater* currentWorldUpdater;
@@ -81,7 +82,6 @@ int main(int, char*[])
 	SDL_WM_SetCaption(windowTitle, windowTitle);
 	SDL_ShowCursor(SDL_DISABLE);
 
-	Timer timer;
 	gameObjects = boost::shared_ptr<ZippedUniqueObjectList>(new ZippedUniqueObjectList());
 	gameWorld = boost::shared_ptr<GameWorld>(new GameWorld(*gameObjects));
 
@@ -98,11 +98,10 @@ int main(int, char*[])
 	thread graphicsThread(graphics_loop);
 	while(!quit)
 	{
-		while(currentGameLoop(timer))
+		while(currentGameLoop())
 			SDL_Delay(1000 / FPS);
 
 		gameWorld->Reset(*gameObjects);
-		timer.Reset();
 		currentGameLoop = &default_game_loop;
 	}
 
@@ -125,15 +124,15 @@ static void graphics_loop()
 	}
 }
 
-static bool default_game_loop(Timer& timer)
+static bool default_game_loop()
 {
-	currentWorldUpdater(*gameWorld, timer);
+	currentWorldUpdater(*gameWorld);
 	EventHandler::GetCurrentEventHandler()->HandleEventQueue();
 
 	return true;
 }
 
-static bool lost_game_loop(Timer&)
+static bool lost_game_loop()
 {
 	DEBUGLOG(logger, "DEATH")
 	return false;
@@ -153,12 +152,14 @@ static void default_pause_handler()
 {
 	EventHandler::GetCurrentEventHandler() = &pausedEventHandler;
 	currentWorldUpdater = &paused_world_updater;
+	Clock::Get().Pause();
 }
 
 static void paused_pause_handler()
 {
 	EventHandler::GetCurrentEventHandler() = &defaultEventHandler;
 	currentWorldUpdater = &default_world_updater;
+	Clock::Get().Unpause();
 }
 
 static void default_key_handler(const SDLKey key)
@@ -175,14 +176,12 @@ static void default_mouse_handler(const Uint8 button)
 
 static void paused_mouse_handler(const Uint8) {}
 
-static void default_world_updater(GameWorld& world, Timer& timer)
+static void default_world_updater(GameWorld& world)
 {
-	timer.Update();
 	Physics::Update(world, *gameObjects);
-	world.Update(*gameObjects, timer.GetElapsedTime());
+	world.Update(*gameObjects);
 }
 
-static void paused_world_updater(GameWorld&, Timer& timer)
+static void paused_world_updater(GameWorld&)
 {
-	timer.SilentUpdate();
 }

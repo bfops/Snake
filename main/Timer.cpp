@@ -1,21 +1,6 @@
 #include "Timer.hpp"
 
-#ifdef MSVC
-#pragma warning( push, 0 )
-#endif
-
-#include <SDL_timer.h>
-
-#ifdef MSVC
-#pragma warning( pop )
-#endif
-
-// may switch (back) to boost later, so this
-// allows for easy switching of timing methods
-static inline unsigned int get_current_time()
-{
-	return SDL_GetTicks();
-}
+#include "Clock.hpp"
 
 Timer::Timer()
 {
@@ -24,25 +9,21 @@ Timer::Timer()
 
 void Timer::Reset()
 {
-	elapsedMilliseconds = 0;
-	lastTime = get_current_time();
+	lastTime = Clock::Get().GetTime();
+	elapsed = 0;
 }
 
-void Timer::Update()
+bool Timer::ResetIfHasElapsed(unsigned int c)
 {
-	const unsigned int newTime = get_current_time();
-	elapsedMilliseconds += newTime - lastTime;
-	lastTime = newTime;
-}
+	const unsigned long currentTime = Clock::Get().GetTime();
+	elapsed += currentTime - lastTime;
+	lastTime = currentTime;
 
-void Timer::SilentUpdate()
-{
-	lastTime = get_current_time();
-}
+	if(elapsed >= c)
+	{
+		elapsed -= c;
+		return true;
+	}
 
-unsigned int Timer::GetElapsedTime()
-{
-	const unsigned int retval = elapsedMilliseconds;
-	elapsedMilliseconds = 0;
-	return retval;
+	return false;
 }

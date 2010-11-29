@@ -159,14 +159,9 @@ static inline void play_mine_sound()
 	play_sound("resources/mine appear.wav");
 }
 
-void GameWorld::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
+void GameWorld::Update(ZippedUniqueObjectList& gameObjects)
 {
-#ifdef SURVIVAL
-	mineTimer.Update(ms);
-#else
-	foodTimer.Update(ms);
-#endif
-	player.Update(gameObjects, ms);
+	player.Update(gameObjects);
 
 #ifndef SURVIVAL
 	// TODO: use interrupts, rather than this check-loop

@@ -164,12 +164,8 @@ void Snake::Turn(Direction turn, ZippedUniqueObjectList& gameObjects)
 	ChangeDirection(get_turned_direction(direction, turn), gameObjects);
 }
 
-void Snake::Update(ZippedUniqueObjectList& gameObjects, unsigned int ms)
+void Snake::Update(ZippedUniqueObjectList& gameObjects)
 {
-	speedupTimer.Update(ms);
-	moveTimer.Update(ms);
-
-	pointTimer.Update(ms);
 	while(pointTimer.ResetIfHasElapsed(pointGainPeriod))
 	{
 		points += pointGainAmount;

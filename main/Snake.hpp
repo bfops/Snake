@@ -2,8 +2,8 @@
 
 #include "cgq.hpp"
 #include "Common.hpp"
-#include "Counter.hpp"
 #include "SnakeSegment.hpp"
+#include "Timer.hpp"
 
 class Direction;
 class GameWorld;
@@ -22,9 +22,9 @@ private:
 
 	unsigned int speed;
 
-	Counter moveTimer;
-	Counter speedupTimer;
-	Counter pointTimer;
+	Timer moveTimer;
+	Timer speedupTimer;
+	Timer pointTimer;
 
 	unsigned long long points;
 
@@ -46,7 +46,7 @@ public:
 	/// turn the snake relative to the direction provided
 	void Turn(Direction turnDirection, ZippedUniqueObjectList& gameObjects);
 
-	void Update(ZippedUniqueObjectList& gameObjects, unsigned int elapsedMilliseconds);
+	void Update(ZippedUniqueObjectList& gameObjects);
 
 	void EatFood(const Food&);
 };

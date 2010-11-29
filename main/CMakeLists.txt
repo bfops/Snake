@@ -2,13 +2,13 @@ add_executable(GingerbreadPrototype
 	Bounds.cpp
 	Bounds.hpp
 	cgq.hpp
+	Clock.cpp
+	Clock.hpp
 	collision.c
 	collision.h
 	Color24.cpp
 	Color24.hpp
 	Common.hpp
-	Counter.cpp
-	Counter.hpp
 	custom_algorithm.hpp
 	Direction.cpp
 	Direction.hpp

@@ -3,16 +3,14 @@
 class Timer
 {
 private:
-	unsigned int lastTime;
-	unsigned int elapsedMilliseconds;
+	unsigned long lastTime;
+	unsigned long elapsed;
 
 public:
 	Timer();
-
 	void Reset();
-	void Update();
-	/// pretend to update, without updating elapsedMilliseconds count
-	void SilentUpdate();
-	/// return elapsed time since last call (in ms)
-	unsigned int GetElapsedTime();
+	/// if at least _count_ has elapsed, reset the counter
+	/// (accounting for overflow if more than _count_ has elapsed).
+	/// Returns true if the counter was reset, false otherwise.
+	bool ResetIfHasElapsed(unsigned int ms);
 };
