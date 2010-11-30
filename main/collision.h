@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef __cplusplus
-	#ifndef MSVC
+	#ifdef __GNUC__
 	#define __restrict __restrict__
 	#endif
 	extern "C" {
