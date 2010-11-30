@@ -1,32 +1,22 @@
 #include "Clock.hpp"
 
-#ifdef MSVC
-#pragma warning(push, 0)
-#endif
+static Clock gameClock;
 
-#include <SDL_timer.h>
-
-#ifdef MSVC
-#pragma warning(pop)
-#endif
-
-static Clock clock;
-
-static inline unsigned long get_raw_time()
+static inline boost::posix_time::ptime get_raw_time()
 {
-	return SDL_GetTicks();
+	return boost::posix_time::microsec_clock::universal_time();
 }
 
 void Clock::UpdateTime()
 {
-	const unsigned long rawTime = get_raw_time();
-	time += rawTime - lastTime;
+	const boost::posix_time::ptime rawTime = get_raw_time();
+	time += (rawTime - lastTime).total_milliseconds();
 	lastTime = rawTime;
 }
 
 Clock& Clock::Get()
 {
-	return clock;
+	return gameClock;
 }
 
 Clock::Clock() :
@@ -36,7 +26,9 @@ Clock::Clock() :
 
 unsigned long Clock::GetTime()
 {
-	UpdateTime();
+	if(!paused)
+		UpdateTime();
+
 	return time;
 }
 
