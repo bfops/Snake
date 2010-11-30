@@ -13,9 +13,13 @@
 #pragma warning( pop )
 #endif
 
+#define DOLOCKEDU(obj, stuff) { \
+	UniqueObjectList::Lock uniqueLock(obj); \
+	stuff \
+}
+
 class WorldObject;
 
-// TODO: RAII locking (rather than functions)
 class UniqueObjectList
 {
 public:
@@ -23,10 +27,29 @@ public:
 	typedef CollectionType::iterator iterator;
 
 private:
-	boost::mutex mutex;
 	CollectionType objects;
 
 public:
+	class Lock
+	{
+	private:
+		boost::mutex& m;
+
+	public:
+		Lock(UniqueObjectList& _m) :
+			m(_m.mutex)
+		{
+			m.lock();
+		}
+
+		~Lock()
+		{
+			m.unlock();
+		}
+	};
+
+	boost::mutex mutex;
+
 	UniqueObjectList()
 	{
 	}
@@ -60,15 +83,5 @@ public:
 	inline iterator end()
 	{
 		return objects.end();
-	}
-
-	inline void Lock()
-	{
-		mutex.lock();
-	}
-
-	inline void Unlock()
-	{
-		mutex.unlock();
 	}
 };

@@ -53,13 +53,11 @@ void Snake::AddSegment(Point location, Direction direction, ZippedUniqueObjectLi
 {
 	SnakeSegment newSegment(this, location, direction, snakeWidth);
 	
-	gameObjects.Lock();
-	gameObjects.RemoveRange(path.begin(), path.end());
-	
-	path.push_front(newSegment);
-
-	gameObjects.AddRange(path.begin(), path.end());
-	gameObjects.Unlock();
+	DOLOCKEDZ(gameObjects,
+		gameObjects.RemoveRange(path.begin(), path.end());
+		path.push_front(newSegment);
+		gameObjects.AddRange(path.begin(), path.end());
+	)
 }
 
 void Snake::Grow(int amount)
@@ -111,10 +109,10 @@ void Snake::Reset(Point center, ZippedUniqueObjectList& gameObjects)
 #ifdef SURVIVAL
 	pointTimer.Reset();
 #endif
-
-	gameObjects.Lock();
-	gameObjects.RemoveRange(path.begin(), path.end());
-	gameObjects.Unlock();
+	
+	DOLOCKEDZ(gameObjects,
+		gameObjects.RemoveRange(path.begin(), path.end());
+	)
 	path.clear();
 
 	Init(center, gameObjects);
@@ -204,9 +202,9 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects)
 
 			if(Tail().IsEmpty())
 			{
-				gameObjects.Lock();
-				gameObjects.Remove(Tail());
-				gameObjects.Unlock();
+				DOLOCKEDZ(gameObjects, 
+					gameObjects.Remove(Tail());
+				)
 				path.pop_back();
 			}
 		}

@@ -145,27 +145,27 @@ void GameWorld::FoodLoop(ZippedUniqueObjectList& gameObjects)
 	while(!reset)
 	{
 		// TODO: use interrupts, rather than this check-loop
-		gameObjects.Lock();
-		gameObjects.RemoveRange(foods.begin(), foods.end());
-		gameObjects.Unlock();
+		DOLOCKEDZ(gameObjects,
+			gameObjects.RemoveRange(foods.begin(), foods.end());
+		)
 		for(Menu::iterator i = foods.begin(), end = foods.end(); i != end;)
 		{
 			const Menu::iterator current = i++;
 			if(current->IsEaten())
 				foods.erase(current);
 		}
-		gameObjects.Lock();
-		gameObjects.AddRange(foods.begin(), foods.end());
-		gameObjects.Unlock();
+		DOLOCKEDZ(gameObjects,
+			gameObjects.AddRange(foods.begin(), foods.end());
+		)
 
 		bool foodAdded = false;
 		for(SentinelList::iterator sentinel = sentinels.begin(), end = sentinels.end(); sentinel != end;)
 		{
 			if(sentinel->IsInterfering())
 			{
-				gameObjects.Lock();
-				*sentinel = get_new_sentinel(foodSentinelSize);
-				gameObjects.Unlock();
+				DOLOCKEDZ(gameObjects,
+					*sentinel = get_new_sentinel(foodSentinelSize);
+				)
 			}
 			else
 			{
@@ -174,14 +174,15 @@ void GameWorld::FoodLoop(ZippedUniqueObjectList& gameObjects)
 				minstd_rand0 rand(time(NULL));
 				Food::FoodInfo foodType = get_food_type(rand);
 
-				Food newFood(*current, foodSize, foodType);
-				gameObjects.Lock();
-				gameObjects.RemoveRange(foods.begin(), foods.end());
-				foods.push_back(newFood);
+				DOLOCKEDZ(gameObjects, 
+					Food newFood(*current, foodSize, foodType);
 
-				gameObjects.AddRange(foods.begin(), foods.end());
-				gameObjects.physics.Remove(*current);
-				gameObjects.Unlock();
+					gameObjects.RemoveRange(foods.begin(), foods.end());
+					foods.push_back(newFood);
+
+					gameObjects.AddRange(foods.begin(), foods.end());
+					gameObjects.physics.Remove(*current);
+				)
 
 				sentinels.erase(current);
 				foodAdded = true;
@@ -193,20 +194,20 @@ void GameWorld::FoodLoop(ZippedUniqueObjectList& gameObjects)
 
 		if(foodTimer.ResetIfHasElapsed(foodAdditionPeriod))
 		{
-			gameObjects.physics.Lock();
-			gameObjects.physics.RemoveRange(sentinels.begin(), sentinels.end());
-			sentinels.push_back(get_new_sentinel(foodSentinelSize));
-			gameObjects.physics.AddRange(sentinels.begin(), sentinels.end());
-			gameObjects.physics.Unlock();
+			DOLOCKEDU(gameObjects.physics, 
+				gameObjects.physics.RemoveRange(sentinels.begin(), sentinels.end());
+				sentinels.push_back(get_new_sentinel(foodSentinelSize));
+				gameObjects.physics.AddRange(sentinels.begin(), sentinels.end());
+			)
 		}
 
 		SDL_Delay(100);
 	}
 	
-	gameObjects.Lock();
-	gameObjects.RemoveRange(foods.begin(), foods.end());
-	gameObjects.RemoveRange(sentinels.begin(), sentinels.end());
-	gameObjects.Unlock();
+	DOLOCKEDZ(gameObjects,
+		gameObjects.RemoveRange(foods.begin(), foods.end());
+		gameObjects.RemoveRange(sentinels.begin(), sentinels.end());
+	)
 }
 
 void GameWorld::MineLoop(ZippedUniqueObjectList& gameObjects)
@@ -222,23 +223,23 @@ void GameWorld::MineLoop(ZippedUniqueObjectList& gameObjects)
 		{
 			if(sentinel->IsInterfering())
 			{
-				gameObjects.Lock();
-				*sentinel = get_new_sentinel(mineSentinelSize);
-				gameObjects.Unlock();
+				DOLOCKEDZ(gameObjects,
+					*sentinel = get_new_sentinel(mineSentinelSize);
+				)
 			}
 			else
 			{
 				const SentinelList::iterator current = sentinel++;
 
 				Mine newMine(*current, mineSize);
-				gameObjects.Lock();
 
-				gameObjects.RemoveRange(mines.begin(), mines.end());
-				mines.push_back(newMine);
-				gameObjects.AddRange(mines.begin(), mines.end());
-				gameObjects.physics.Remove(*current);
+				DOLOCKEDZ(gameObjects,
+					gameObjects.RemoveRange(mines.begin(), mines.end());
+					mines.push_back(newMine);
+					gameObjects.AddRange(mines.begin(), mines.end());
+					gameObjects.physics.Remove(*current);
+				)
 
-				gameObjects.Unlock();
 				sentinels.erase(current);
 				mineAdded = true;
 			}
@@ -249,18 +250,18 @@ void GameWorld::MineLoop(ZippedUniqueObjectList& gameObjects)
 
 		while(mineTimer.ResetIfHasElapsed(mineAdditionPeriod))
 		{
-			gameObjects.Lock();
-			gameObjects.physics.RemoveRange(sentinels.begin(), sentinels.end());
-			sentinels.push_back(get_new_sentinel(mineSentinelSize));
-			gameObjects.physics.AddRange(sentinels.begin(), sentinels.end());
-			gameObjects.Unlock();
+			DOLOCKEDU(gameObjects.physics,
+				gameObjects.physics.RemoveRange(sentinels.begin(), sentinels.end());
+				sentinels.push_back(get_new_sentinel(mineSentinelSize));
+				gameObjects.physics.AddRange(sentinels.begin(), sentinels.end());
+			)
 		}
 	}
 
-	gameObjects.Lock();
-	gameObjects.RemoveRange(mines.begin(), mines.end());
-	gameObjects.RemoveRange(sentinels.begin(), sentinels.end());
-	gameObjects.Unlock();
+	DOLOCKEDZ(gameObjects,
+		gameObjects.RemoveRange(mines.begin(), mines.end());
+		gameObjects.RemoveRange(sentinels.begin(), sentinels.end());
+	)
 }
 
 void GameWorld::Init(ZippedUniqueObjectList& gameObjects)
@@ -278,10 +279,11 @@ GameWorld::GameWorld(ZippedUniqueObjectList& gameObjects) :
 	player(GetCenter(), gameObjects)
 {
 	make_walls(walls);
-	gameObjects.Lock();
-	gameObjects.AddRange(walls.begin(), walls.end());
-	gameObjects.Unlock();
 
+	DOLOCKEDZ(gameObjects,
+		gameObjects.AddRange(walls.begin(), walls.end());
+	)
+	
 	Init(gameObjects);
 }
 

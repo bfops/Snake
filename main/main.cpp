@@ -120,9 +120,9 @@ static void graphics_loop()
 
 	while(!quit)
 	{
-		gameObjects->graphics.Lock();
-		Graphics::Update(gameObjects->graphics, screen);
-		gameObjects->graphics.Unlock();
+		DOLOCKEDU(gameObjects->graphics, 
+			Graphics::Update(gameObjects->graphics, screen);
+		)
 		SDL_Delay(1000 / FPS);
 	}
 }
@@ -167,9 +167,9 @@ static void paused_mouse_handler(const Uint8) {}
 
 static void default_world_updater(GameWorld& world)
 {
-	gameObjects->physics.Lock();
-	Physics::Update(world, gameObjects->physics);
-	gameObjects->physics.Unlock();
+	DOLOCKEDU(gameObjects->physics,
+		Physics::Update(world, gameObjects->physics);
+	)
 	world.Update(*gameObjects);
 }
 

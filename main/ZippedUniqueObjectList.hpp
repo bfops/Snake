@@ -2,9 +2,27 @@
 
 #include "UniqueObjectList.hpp"
 
+#define DOLOCKEDZ(obj, stuff) { \
+	ZippedUniqueObjectList::Lock uniqueLock(obj); \
+	stuff \
+}
+
 struct ZippedUniqueObjectList
 {
 #define DOBOTH(func) graphics.func; physics.func;
+	
+	class Lock
+	{
+	private:
+		UniqueObjectList::Lock l1, l2;
+
+	public:
+		Lock(ZippedUniqueObjectList& l) :
+			l1(l.graphics), l2(l.physics)
+		{
+		}
+	};
+
 	UniqueObjectList graphics, physics;
 
 	inline void Add(WorldObject& obj)
@@ -29,14 +47,5 @@ struct ZippedUniqueObjectList
 		DOBOTH(RemoveRange(begin, end))
 	}
 
-	inline void Lock()
-	{
-		DOBOTH(Lock())
-	}
-
-	inline void Unlock()
-	{
-		DOBOTH(Unlock())
-	}
 #undef DOBOTH
 };
