@@ -58,6 +58,6 @@ namespace Physics
 		// don't try the last gameObject, since all have been checked against it
 		for(UniqueObjectList::iterator collider = physicsObjects.begin(), end = physicsObjects.end();
 			collider != end - 1; ++collider)
-			collide_with_subsequent_objects(&world, collider, end));
+			collide_with_subsequent_objects(&world, collider, end);
 	}
 }
