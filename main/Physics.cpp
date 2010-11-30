@@ -52,9 +52,12 @@ namespace Physics
 
 	void Update(GameWorld& world, UniqueObjectList& physicsObjects)
 	{
+		if(physicsObjects.begin() == physicsObjects.end())
+			return;
+
 		// don't try the last gameObject, since all have been checked against it
-		for(UniqueObjectList::iterator collider = physicsObjects.begin(), end = physicsObjects.end() - 1;
-			collider != end; ++collider)
-			collide_with_subsequent_objects(&world, collider, physicsObjects.end());
+		for(UniqueObjectList::iterator collider = physicsObjects.begin(), end = physicsObjects.end();
+			collider != end - 1; ++collider)
+			collide_with_subsequent_objects(&world, collider, end));
 	}
 }
