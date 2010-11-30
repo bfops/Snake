@@ -12,7 +12,6 @@ const Food::FoodInfo Food::donut(3.0, Color24(200, 0, 0), 400);
 Food::Food(const Sentinel& prototype, const unsigned int size, const FoodInfo& foodInfo) :
 	WorldObject(food)
 {
-	eaten = false;
 	color = foodInfo.color;
 	calories = foodInfo.calories;
 	pointsGiven = foodInfo.points;
@@ -28,20 +27,8 @@ Food::Food(const Sentinel& prototype, const unsigned int size, const FoodInfo& f
 	bounds.max.y += size;
 }
 
-void Food::SnakeCollisionHandler()
+void Food::CollisionHandler(const WorldObject&)
 {
-	eaten = true;
-}
-
-void Food::CollisionHandler(const WorldObject& obj)
-{
-	if(obj.GetObjectType() == snake)
-		SnakeCollisionHandler();
-}
-
-bool Food::IsEaten() const
-{
-	return eaten;
 }
 
 double Food::GetCalories() const

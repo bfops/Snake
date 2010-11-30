@@ -21,7 +21,6 @@ public:
 	};
 
 private:
-	bool eaten;
 	// growth amount is proportional to this
 	double calories;
 	int pointsGiven;
@@ -34,8 +33,7 @@ public:
 	Food(const Sentinel& prototype, unsigned int size, const FoodInfo& foodInfo);
 
 	void CollisionHandler(const WorldObject&);
-
-	bool IsEaten() const;
+	
 	double GetCalories() const;
 	int GetPoints() const;
 };

@@ -46,6 +46,9 @@ private:
 	void FoodLoop(ZippedUniqueObjectList& gameObjects);
 	void MineLoop(ZippedUniqueObjectList& gameObjects);
 
+	Menu foods;
+	boost::mutex foodMutex;
+
 	boost::thread foodThread;
 	boost::thread mineThread;
 	bool reset;

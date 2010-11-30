@@ -25,3 +25,7 @@ inline int round(const double d)
 #else
 #define DEBUGLOGIF(func, logger, string) ;
 #endif
+
+#define DOLOCKED(mutex, thingsToDo) mutex.lock(); \
+	thingsToDo \
+	mutex.unlock();

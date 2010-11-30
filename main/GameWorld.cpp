@@ -139,25 +139,10 @@ static Sentinel get_new_sentinel(unsigned long sentinelSize)
 void GameWorld::FoodLoop(ZippedUniqueObjectList& gameObjects)
 {
 	Timer foodTimer;
-	Menu foods;
 	SentinelList sentinels;
 
 	while(!reset)
 	{
-		// TODO: use interrupts, rather than this check-loop
-		DOLOCKEDZ(gameObjects,
-			gameObjects.RemoveRange(foods.begin(), foods.end());
-		)
-		for(Menu::iterator i = foods.begin(), end = foods.end(); i != end;)
-		{
-			const Menu::iterator current = i++;
-			if(current->IsEaten())
-				foods.erase(current);
-		}
-		DOLOCKEDZ(gameObjects,
-			gameObjects.AddRange(foods.begin(), foods.end());
-		)
-
 		bool foodAdded = false;
 		for(SentinelList::iterator sentinel = sentinels.begin(), end = sentinels.end(); sentinel != end;)
 		{
@@ -175,12 +160,13 @@ void GameWorld::FoodLoop(ZippedUniqueObjectList& gameObjects)
 				Food::FoodInfo foodType = get_food_type(rand);
 
 				DOLOCKEDZ(gameObjects, 
-					Food newFood(*current, foodSize, foodType);
+					DOLOCKED(foodMutex,
+						gameObjects.RemoveRange(foods.begin(), foods.end());
+						Food newFood(*current, foodSize, foodType);
+						foods.push_back(newFood);
+						gameObjects.AddRange(foods.begin(), foods.end());
+					)
 
-					gameObjects.RemoveRange(foods.begin(), foods.end());
-					foods.push_back(newFood);
-
-					gameObjects.AddRange(foods.begin(), foods.end());
 					gameObjects.physics.Remove(*current);
 				)
 
@@ -205,7 +191,9 @@ void GameWorld::FoodLoop(ZippedUniqueObjectList& gameObjects)
 	}
 	
 	DOLOCKEDZ(gameObjects,
-		gameObjects.RemoveRange(foods.begin(), foods.end());
+		DOLOCKED(foodMutex,
+			gameObjects.RemoveRange(foods.begin(), foods.end());
+		)
 		gameObjects.RemoveRange(sentinels.begin(), sentinels.end());
 	)
 }
@@ -368,6 +356,17 @@ void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
 		}
 		else if(collisionType & WorldObject::food)
 		{
+			DOLOCKED(foodMutex,
+				Food* const toRemove = reinterpret_cast<Food*>((o1.GetObjectType() == WorldObject::food) ? &o1 : &o2);
+				for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
+				{
+					if(&*i == toRemove)
+					{
+						foods.erase(i);
+						break;
+					}
+				}
+			)
 			play_eat_sound();
 		}
 	}
