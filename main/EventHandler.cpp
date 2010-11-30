@@ -1,13 +1,13 @@
 #include "EventHandler.hpp"
 
 #ifdef MSVC
-#pragma warning( push, 0 )
+#pragma warning(push, 0)
 #endif
 
 #include <SDL_events.h>
 
 #ifdef MSVC
-#pragma warning( pop )
+#pragma warning(pop)
 #endif
 
 EventHandler::EventHandler(QuitCallbackType onquit, LossCallbackType onloss, PauseCallbackType onpause,

@@ -1,13 +1,13 @@
 #pragma once
 
 #ifdef MSVC
-#pragma warning( push, 0 )
+#pragma warning(push, 0)
 #endif
 
 #include <SDL_mixer.h>
 
 #ifdef MSVC
-#pragma warning( pop )
+#pragma warning(pop)
 #endif
 
 // whether or not music is on

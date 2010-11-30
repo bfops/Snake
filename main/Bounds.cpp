@@ -3,13 +3,13 @@
 #include "Side.hpp"
 
 #ifdef MSVC
-#pragma warning( push, 0 )
+#pragma warning(push, 0)
 #endif
 
 #include <cassert>
 
 #ifdef MSVC
-#pragma warning( pop )
+#pragma warning(pop)
 #endif
 
 Bounds::Bounds()

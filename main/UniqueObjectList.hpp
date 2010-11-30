@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef MSVC
-#pragma warning( push, 0 )
+#pragma warning(push, 0)
 #endif
 
 #include <algorithm>
@@ -10,12 +10,12 @@
 #include <vector>
 
 #ifdef MSVC
-#pragma warning( pop )
+#pragma warning(pop)
 #endif
 
-#define DOLOCKEDU(obj, stuff) { \
+#define DOLOCKEDU(obj, thingsToDo) { \
 	UniqueObjectList::Lock uniqueLock(obj); \
-	stuff \
+	thingsToDo \
 }
 
 class WorldObject;

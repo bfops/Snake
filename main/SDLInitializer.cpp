@@ -3,14 +3,14 @@
 #include "Logger.hpp"
 
 #ifdef MSVC
-#pragma warning( push, 0 )
+#pragma warning(push, 0)
 #endif
 
 #include <SDL.h>
 #include <SDL_mixer.h>
 
 #ifdef MSVC
-#pragma warning( pop )
+#pragma warning(pop)
 #endif
 
 static Logger::Handle logger(Logger::RequestHandle("SDL"));

@@ -9,7 +9,7 @@
 #include "Wall.hpp"
 
 #ifdef MSVC
-#pragma warning( push, 0 )
+#pragma warning(push, 0)
 #endif
 
 #include <boost/array.hpp>
@@ -18,7 +18,7 @@
 #include <SDL_events.h>
 
 #ifdef MSVC
-#pragma warning( pop )
+#pragma warning(pop)
 #endif
 
 // random game-changing things //

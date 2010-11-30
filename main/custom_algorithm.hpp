@@ -2,7 +2,7 @@
 // This file implements "fancier" algorithms than the STL provides natively.
 
 #ifdef MSVC
-#pragma warning( push, 0 )
+#pragma warning(push, 0)
 #endif
 
 #include <vector>

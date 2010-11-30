@@ -1,7 +1,7 @@
 #include "Logger.hpp"
 
 #ifdef MSVC
-#pragma warning( push, 0 )
+#pragma warning(push, 0)
 #endif
 
 #include <cstdio>
@@ -9,7 +9,7 @@
 #include <boost/thread/mutex.hpp>
 
 #ifdef MSVC
-#pragma warning( pop )
+#pragma warning(pop)
 #endif
 
 typedef boost::mutex Mut;

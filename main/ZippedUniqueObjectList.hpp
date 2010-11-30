@@ -2,9 +2,9 @@
 
 #include "UniqueObjectList.hpp"
 
-#define DOLOCKEDZ(obj, stuff) { \
+#define DOLOCKEDZ(obj, thingsToDo) { \
 	ZippedUniqueObjectList::Lock uniqueLock(obj); \
-	stuff \
+	thingsToDo \
 }
 
 struct ZippedUniqueObjectList

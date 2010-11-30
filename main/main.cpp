@@ -12,7 +12,7 @@
 #include "ZippedUniqueObjectList.hpp"
 
 #ifdef MSVC
-#pragma warning( push, 0 )
+#pragma warning(push, 0)
 #endif
 
 #include <boost/bind.hpp>
@@ -22,7 +22,7 @@
 #include <SDL_mixer.h>
 
 #ifdef MSVC
-#pragma warning( pop )
+#pragma warning(pop)
 #endif
 
 // TODO: make different game modes call

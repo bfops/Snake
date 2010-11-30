@@ -7,7 +7,7 @@
 #include "ZippedUniqueObjectList.hpp"
 
 #ifdef MSVC
-#pragma warning( push, 0 )
+#pragma warning(push, 0)
 #endif
 
 #include <boost/any.hpp>
@@ -15,7 +15,7 @@
 #include <boost/random.hpp>
 
 #ifdef MSVC
-#pragma warning( pop )
+#pragma warning(pop)
 #endif
 
 using namespace std;
