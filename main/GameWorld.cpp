@@ -32,14 +32,10 @@ static Logger::Handle logger(Logger::RequestHandle("GameWorld"));
 // GAMECONSTANT: food management
 static const unsigned int mineAdditionPeriod(3000);
 static const unsigned int mineSize(10);
+static const unsigned int mineSentinelSize(20);
 static const unsigned int foodAdditionPeriod(8000);
 static const unsigned int foodSize(15);
-
-#ifdef SURVIVAL
-static const unsigned int sentinelSize(20);
-#else
-static const unsigned int sentinelSize(17);
-#endif
+static const unsigned int foodSentinelSize(17);
 
 static const unsigned int wallThickness(10);
 static const Bounds worldBounds(Point(0, 0), Point(800, 600));
@@ -129,7 +125,7 @@ static Food::FoodInfo get_food_type(minstd_rand0& rand)
 	return Food::normal;
 }
 
-static Sentinel get_new_sentinel()
+static Sentinel get_new_sentinel(unsigned long sentinelSize)
 {
 	minstd_rand0 rand(time(NULL));
 
@@ -166,8 +162,7 @@ void GameWorld::FoodLoop(ZippedUniqueObjectList& gameObjects)
 		{
 			if(sentinel->IsInterfering())
 			{
-				// TODO: pass size as parameter
-				*sentinel = get_new_sentinel();
+				*sentinel = get_new_sentinel(foodSentinelSize);
 			}
 			else
 			{
@@ -194,7 +189,7 @@ void GameWorld::FoodLoop(ZippedUniqueObjectList& gameObjects)
 		{
 			gameObjects.physics.Lock();
 			gameObjects.physics.RemoveRange(sentinels.begin(), sentinels.end());
-			sentinels.push_back(get_new_sentinel());
+			sentinels.push_back(get_new_sentinel(foodSentinelSize));
 			gameObjects.physics.AddRange(sentinels.begin(), sentinels.end());
 			gameObjects.physics.Unlock();
 		}
@@ -239,7 +234,7 @@ void GameWorld::Update(ZippedUniqueObjectList& gameObjects)
 	{
 		if(sentinel->IsInterfering())
 		{
-			*sentinel = get_new_sentinel();
+			*sentinel = get_new_sentinel(mineSentinelSize);
 		}
 		else
 		{
@@ -262,7 +257,7 @@ void GameWorld::Update(ZippedUniqueObjectList& gameObjects)
 	{
 		gameObjects.Lock();
 		gameObjects.physics.RemoveRange(sentinels.begin(), sentinels.end());
-		sentinels.push_back(get_new_sentinel());
+		sentinels.push_back(get_new_sentinel(mineSentinelSize));
 		gameObjects.physics.AddRange(sentinels.begin(), sentinels.end());
 		gameObjects.Unlock();
 	}
