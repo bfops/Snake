@@ -38,7 +38,9 @@ void SnakeSegment::Init()
 
 void SnakeSegment::FoodCollisionHandler(const Food& food)
 {
+#ifndef SURVIVAL
 	parent->EatFood(food);
+#endif
 }
 
 void SnakeSegment::CollisionHandler(const WorldObject& obj)

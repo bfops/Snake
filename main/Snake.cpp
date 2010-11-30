@@ -27,6 +27,7 @@ static Logger::Handle logger(Logger::RequestHandle("Snake"));
 // GAMECONSTANT: snake management constants
 static const unsigned int defaultLength(90);
 static const unsigned int snakeWidth(20);
+static const unsigned long defaultSpeed(100);
 #ifdef SURVIVAL
 static const unsigned int speedupPeriod(20000);
 #else
@@ -51,12 +52,14 @@ Snake::Snake(Point center, ZippedUniqueObjectList& gameObjects)
 void Snake::AddSegment(Point location, Direction direction, ZippedUniqueObjectList& gameObjects)
 {
 	SnakeSegment newSegment(this, location, direction, snakeWidth);
-
-	gameObjects.removeRange(path.begin(), path.end());
-
+	
+	gameObjects.Lock();
+	gameObjects.RemoveRange(path.begin(), path.end());
+	
 	path.push_front(newSegment);
 
-	gameObjects.addRange(path.begin(), path.end());
+	gameObjects.AddRange(path.begin(), path.end());
+	gameObjects.Unlock();
 }
 
 void Snake::Grow(int amount)
@@ -92,11 +95,11 @@ void Snake::Init(Point center, ZippedUniqueObjectList& gameObjects)
 	speedupTimer.Reset();
 	pointTimer.Reset();
 
-	speed = 100;
+	speed = defaultSpeed;
 
 	length = 0;
 	projectedLength = defaultLength;
-
+	
 	AddSegment(headLocation, get_random_direction(), gameObjects);
 }
 
@@ -109,7 +112,9 @@ void Snake::Reset(Point center, ZippedUniqueObjectList& gameObjects)
 	pointTimer.Reset();
 #endif
 
-	gameObjects.removeRange(path.begin(), path.end());
+	gameObjects.Lock();
+	gameObjects.RemoveRange(path.begin(), path.end());
+	gameObjects.Unlock();
 	path.clear();
 
 	Init(center, gameObjects);
@@ -199,14 +204,15 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects)
 
 			if(Tail().IsEmpty())
 			{
-				gameObjects.remove(Tail());
+				gameObjects.Lock();
+				gameObjects.Remove(Tail());
+				gameObjects.Unlock();
 				path.pop_back();
 			}
 		}
 	}
 }
 
-#ifndef SURVIVAL
 void Snake::EatFood(const Food& foodObj)
 {
 	const double foodGrowthConstant = foodObj.GetCalories();
@@ -226,8 +232,3 @@ void Snake::EatFood(const Food& foodObj)
 	DEBUGLOG(logger, format("Growing by %1%") % growthAmount)
 	DEBUGLOG(logger, format("Got %1% points! (total %2%)") % pointsGained % points);
 }
-#else
-void Snake::EatFood(const Food&)
-{
-}
-#endif

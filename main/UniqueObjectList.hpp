@@ -15,6 +15,7 @@
 
 class WorldObject;
 
+// TODO: RAII locking (rather than functions)
 class UniqueObjectList
 {
 public:
@@ -35,20 +36,20 @@ public:
 	{
 	}
 
-	void add(WorldObject&);
+	void Add(WorldObject&);
 
 	template<typename Iter>
-	inline void addRange(Iter begin, Iter end)
+	inline void AddRange(Iter begin, Iter end)
 	{
-		std::for_each(begin, end, boost::bind(&UniqueObjectList::add, this, _1));
+		std::for_each(begin, end, boost::bind(&UniqueObjectList::Add, this, _1));
 	}
 
-	void remove(WorldObject&);
+	void Remove(WorldObject&);
 
 	template<typename Iter>
-	inline void removeRange(Iter begin, Iter end)
+	inline void RemoveRange(Iter begin, Iter end)
 	{
-		std::for_each(begin, end, boost::bind(&UniqueObjectList::remove, this, _1));
+		std::for_each(begin, end, boost::bind(&UniqueObjectList::Remove, this, _1));
 	}
 
 	inline iterator begin()

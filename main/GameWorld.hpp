@@ -13,6 +13,7 @@
 #endif
 
 #include <boost/array.hpp>
+#include <boost/thread.hpp>
 #include <list>
 #include <SDL_events.h>
 
@@ -42,17 +43,19 @@ public:
 #endif
 
 private:
+	void FoodLoop(ZippedUniqueObjectList& gameObjects);
+
+	boost::thread foodThread;
+	bool reset;
 	SentinelList sentinels;
 
 	Timer mineTimer;
 	MineList mines;
-	Timer foodTimer;
-	Menu foods;
 	Snake player;
 
 	WallBox walls;
 
-	void Init();
+	void Init(ZippedUniqueObjectList& gameObjects);
 
 public:
 	GameWorld(ZippedUniqueObjectList& gameObjects);

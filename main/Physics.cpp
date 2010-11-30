@@ -39,6 +39,7 @@ namespace Physics
 		CollidableObject c1 = world_to_collidable_object(o1);
 		CollidableObject c2 = world_to_collidable_object(o2);
 
+
 		if(does_collide(&c1, &c2))
 			world->CollisionHandler(*o1, *o2);
 	}
@@ -51,7 +52,10 @@ namespace Physics
 
 	void Update(GameWorld& world, ZippedUniqueObjectList& worldObjects)
 	{
+		// TODO: pull this up to the caller level (in new thread)
+		worldObjects.Lock();
 		ZippedUniqueObjectList original(worldObjects);
+		worldObjects.Unlock();
 		// don't try the last gameObject, since all have been checked against it
 		for(UniqueObjectList::iterator collider = original.physics.begin(), end = original.physics.end() - 1;
 			collider != end; ++collider)

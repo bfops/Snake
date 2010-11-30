@@ -4,28 +4,39 @@
 
 struct ZippedUniqueObjectList
 {
+#define DOBOTH(func) graphics.func; physics.func;
 	UniqueObjectList graphics, physics;
 
-	inline void add(WorldObject& obj)
+	inline void Add(WorldObject& obj)
 	{
-		graphics.add(obj);
-		physics.add(obj);
+		DOBOTH(Add(obj))
 	}
+
 	template<typename Iter>
-	inline void addRange(Iter begin, Iter end)
+	inline void AddRange(Iter begin, Iter end)
 	{
-		std::for_each(begin, end, boost::bind(&UniqueObjectList::add, &graphics, _1));
-		std::for_each(begin, end, boost::bind(&UniqueObjectList::add, &physics, _1));
+		DOBOTH(AddRange(begin, end))
 	}
-	inline void remove(WorldObject& obj)
+
+	inline void Remove(WorldObject& obj)
 	{
-		graphics.remove(obj);
-		physics.remove(obj);
+		DOBOTH(Remove(obj))
 	}
+
 	template<typename Iter>
-	inline void removeRange(Iter begin, Iter end)
+	inline void RemoveRange(Iter begin, Iter end)
 	{
-		std::for_each(begin, end, boost::bind(&UniqueObjectList::remove, &graphics, _1));
-		std::for_each(begin, end, boost::bind(&UniqueObjectList::remove, &physics, _1));
+		DOBOTH(RemoveRange(begin, end))
 	}
+
+	inline void Lock()
+	{
+		DOBOTH(Lock())
+	}
+
+	inline void Unlock()
+	{
+		DOBOTH(Unlock())
+	}
+#undef DOBOTH
 };
