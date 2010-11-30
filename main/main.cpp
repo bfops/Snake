@@ -52,12 +52,6 @@ static boost::shared_ptr<GameWorld> gameWorld;
 
 static void graphics_loop();
 
-/// return false to kill the game loop, true otherwise
-typedef bool (GameLoop)();
-static GameLoop default_game_loop;
-static GameLoop lost_game_loop;
-static GameLoop* currentGameLoop;
-
 static const EventHandler defaultEventHandler(
 	quit_handler, loss_handler, default_pause_handler,
 	default_key_handler, default_mouse_handler);
@@ -71,11 +65,12 @@ static WorldUpdater default_world_updater;
 static WorldUpdater paused_world_updater;
 static WorldUpdater* currentWorldUpdater;
 
-bool quit;
+bool quit, lost;
 
 int main(int, char*[])
 {
 	quit = false;
+	lost = false;
 	// keep SDL active as long as this is in scope
 	SDLInitializer keepSDLInitialized;
 
@@ -87,26 +82,33 @@ int main(int, char*[])
 
 	EventHandler::GetCurrentEventHandler() = &defaultEventHandler;
 	currentWorldUpdater = &default_world_updater;
-	currentGameLoop = &default_game_loop;
 
-	Mix_AllocateChannels(4);
+	Mix_AllocateChannels(5);
 
 #ifdef MUSIC
 	Music music("resources/title theme.wav");
 #endif
-
+	
 	thread graphicsThread(graphics_loop);
 	while(!quit)
 	{
-		while(currentGameLoop())
+		while(!lost && !quit)
+		{
+			currentWorldUpdater(*gameWorld);
+			EventHandler::GetCurrentEventHandler()->HandleEventQueue();
 			SDL_Delay(1000 / FPS);
-
-		gameWorld->Reset(*gameObjects);
-		currentGameLoop = &default_game_loop;
+		}
+		if(lost)
+		{
+			DEBUGLOG(logger, "DEATH")
+			gameWorld->Reset(*gameObjects);
+		}
+		lost = false;
 	}
+	DEBUGLOG(logger, "Quit called")
 
-	// wait to get ownership of everything
-	gameObjects->graphics.Lock();
+	// wait for everything to complete
+	graphicsThread.join();
 
 	return 0;
 }
@@ -124,20 +126,6 @@ static void graphics_loop()
 	}
 }
 
-static bool default_game_loop()
-{
-	currentWorldUpdater(*gameWorld);
-	EventHandler::GetCurrentEventHandler()->HandleEventQueue();
-
-	return true;
-}
-
-static bool lost_game_loop()
-{
-	DEBUGLOG(logger, "DEATH")
-	return false;
-}
-
 static void quit_handler()
 {
 	quit = true;
@@ -145,7 +133,7 @@ static void quit_handler()
 
 static void loss_handler()
 {
-	currentGameLoop = &lost_game_loop;
+	lost = true;
 }
 
 static void default_pause_handler()
