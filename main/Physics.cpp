@@ -50,15 +50,11 @@ namespace Physics
 		for_each(collider + 1, end, bind(&handle_potential_collision, world, *collider, _1));
 	}
 
-	void Update(GameWorld& world, ZippedUniqueObjectList& worldObjects)
+	void Update(GameWorld& world, UniqueObjectList& physicsObjects)
 	{
-		// TODO: pull this up to the caller level (in new thread)
-		worldObjects.Lock();
-		ZippedUniqueObjectList original(worldObjects);
-		worldObjects.Unlock();
 		// don't try the last gameObject, since all have been checked against it
-		for(UniqueObjectList::iterator collider = original.physics.begin(), end = original.physics.end() - 1;
+		for(UniqueObjectList::iterator collider = physicsObjects.begin(), end = physicsObjects.end() - 1;
 			collider != end; ++collider)
-			collide_with_subsequent_objects(&world, collider, original.physics.end());
+			collide_with_subsequent_objects(&world, collider, physicsObjects.end());
 	}
 }

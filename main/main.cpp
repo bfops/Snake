@@ -83,7 +83,8 @@ int main(int, char*[])
 	EventHandler::GetCurrentEventHandler() = &defaultEventHandler;
 	currentWorldUpdater = &default_world_updater;
 
-	Mix_AllocateChannels(5);
+	// TODO: knock this back down once "not enough channels" bug is fixed
+	Mix_AllocateChannels(100);
 
 #ifdef MUSIC
 	Music music("resources/title theme.wav");
@@ -166,7 +167,9 @@ static void paused_mouse_handler(const Uint8) {}
 
 static void default_world_updater(GameWorld& world)
 {
-	Physics::Update(world, *gameObjects);
+	gameObjects->physics.Lock();
+	Physics::Update(world, gameObjects->physics);
+	gameObjects->physics.Unlock();
 	world.Update(*gameObjects);
 }
 
