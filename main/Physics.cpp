@@ -39,7 +39,6 @@ namespace Physics
 		CollidableObject c1 = world_to_collidable_object(o1);
 		CollidableObject c2 = world_to_collidable_object(o2);
 
-
 		if(does_collide(&c1, &c2))
 			world->CollisionHandler(*o1, *o2);
 	}

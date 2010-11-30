@@ -11,7 +11,7 @@
 #endif
 
 // whether or not music is on
-#define MUSIC
+//#define MUSIC
 
 class Music
 {
