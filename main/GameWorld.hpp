@@ -44,13 +44,12 @@ public:
 
 private:
 	void FoodLoop(ZippedUniqueObjectList& gameObjects);
+	void MineLoop(ZippedUniqueObjectList& gameObjects);
 
 	boost::thread foodThread;
+	boost::thread mineThread;
 	bool reset;
-	SentinelList sentinels;
 
-	Timer mineTimer;
-	MineList mines;
 	Snake player;
 
 	WallBox walls;

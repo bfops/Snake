@@ -158,11 +158,14 @@ void GameWorld::FoodLoop(ZippedUniqueObjectList& gameObjects)
 		gameObjects.AddRange(foods.begin(), foods.end());
 		gameObjects.Unlock();
 
+		bool foodAdded = false;
 		for(SentinelList::iterator sentinel = sentinels.begin(), end = sentinels.end(); sentinel != end;)
 		{
 			if(sentinel->IsInterfering())
 			{
+				gameObjects.Lock();
 				*sentinel = get_new_sentinel(foodSentinelSize);
+				gameObjects.Unlock();
 			}
 			else
 			{
@@ -175,15 +178,18 @@ void GameWorld::FoodLoop(ZippedUniqueObjectList& gameObjects)
 				gameObjects.Lock();
 				gameObjects.RemoveRange(foods.begin(), foods.end());
 				foods.push_back(newFood);
-				play_food_sound();
 
 				gameObjects.AddRange(foods.begin(), foods.end());
 				gameObjects.physics.Remove(*current);
 				gameObjects.Unlock();
 
 				sentinels.erase(current);
+				foodAdded = true;
 			}
 		}
+		// only one sound should be played, no matter how many spawned at once
+		if(foodAdded)
+			play_food_sound();
 
 		if(foodTimer.ResetIfHasElapsed(foodAdditionPeriod))
 		{
@@ -199,8 +205,62 @@ void GameWorld::FoodLoop(ZippedUniqueObjectList& gameObjects)
 	
 	gameObjects.Lock();
 	gameObjects.RemoveRange(foods.begin(), foods.end());
+	gameObjects.RemoveRange(sentinels.begin(), sentinels.end());
 	gameObjects.Unlock();
-	foods.clear();
+}
+
+void GameWorld::MineLoop(ZippedUniqueObjectList& gameObjects)
+{
+	Timer mineTimer;
+	MineList mines;
+	SentinelList sentinels;
+
+	while(!reset)
+	{
+		bool mineAdded = false;
+		for(SentinelList::iterator sentinel = sentinels.begin(), end = sentinels.end(); sentinel != end;)
+		{
+			if(sentinel->IsInterfering())
+			{
+				gameObjects.Lock();
+				*sentinel = get_new_sentinel(mineSentinelSize);
+				gameObjects.Unlock();
+			}
+			else
+			{
+				const SentinelList::iterator current = sentinel++;
+
+				Mine newMine(*current, mineSize);
+				gameObjects.Lock();
+
+				gameObjects.RemoveRange(mines.begin(), mines.end());
+				mines.push_back(newMine);
+				gameObjects.AddRange(mines.begin(), mines.end());
+				gameObjects.physics.Remove(*current);
+
+				gameObjects.Unlock();
+				sentinels.erase(current);
+				mineAdded = true;
+			}
+		}
+		// only play ONE sound, no matter how many got added at once
+		if(mineAdded)
+			play_mine_sound();
+
+		while(mineTimer.ResetIfHasElapsed(mineAdditionPeriod))
+		{
+			gameObjects.Lock();
+			gameObjects.physics.RemoveRange(sentinels.begin(), sentinels.end());
+			sentinels.push_back(get_new_sentinel(mineSentinelSize));
+			gameObjects.physics.AddRange(sentinels.begin(), sentinels.end());
+			gameObjects.Unlock();
+		}
+	}
+
+	gameObjects.Lock();
+	gameObjects.RemoveRange(mines.begin(), mines.end());
+	gameObjects.RemoveRange(sentinels.begin(), sentinels.end());
+	gameObjects.Unlock();
 }
 
 void GameWorld::Init(ZippedUniqueObjectList& gameObjects)
@@ -208,7 +268,7 @@ void GameWorld::Init(ZippedUniqueObjectList& gameObjects)
 	reset = false;
 
 #ifdef SURVIVAL
-	mineTimer.Reset();
+	mineThread = thread(boost::bind(&GameWorld::MineLoop, this, _1), boost::ref(gameObjects));
 #else
 	foodThread = thread(boost::bind(&GameWorld::FoodLoop, this, _1), boost::ref(gameObjects));
 #endif
@@ -228,40 +288,6 @@ GameWorld::GameWorld(ZippedUniqueObjectList& gameObjects) :
 void GameWorld::Update(ZippedUniqueObjectList& gameObjects)
 {
 	player.Update(gameObjects);
-	
-#ifdef SURVIVAL
-	for(SentinelList::iterator sentinel = sentinels.begin(), end = sentinels.end(); sentinel != end;)
-	{
-		if(sentinel->IsInterfering())
-		{
-			*sentinel = get_new_sentinel(mineSentinelSize);
-		}
-		else
-		{
-			const SentinelList::iterator current = sentinel++;
-
-			Mine newMine(*current, mineSize);
-			gameObjects.Lock();
-			gameObjects.RemoveRange(mines.begin(), mines.end());
-			mines.push_back(newMine);
-			play_mine_sound();
-			gameObjects.AddRange(mines.begin(), mines.end());
-
-			gameObjects.physics.Remove(*current);
-			gameObjects.Unlock();
-			sentinels.erase(current);
-		}
-	}
-
-	while(mineTimer.ResetIfHasElapsed(mineAdditionPeriod))
-	{
-		gameObjects.Lock();
-		gameObjects.physics.RemoveRange(sentinels.begin(), sentinels.end());
-		sentinels.push_back(get_new_sentinel(mineSentinelSize));
-		gameObjects.physics.AddRange(sentinels.begin(), sentinels.end());
-		gameObjects.Unlock();
-	}
-#endif
 }
 
 void GameWorld::Reset(ZippedUniqueObjectList& gameObjects)
@@ -269,18 +295,9 @@ void GameWorld::Reset(ZippedUniqueObjectList& gameObjects)
 	reset = true;
 	player.Reset(GetCenter(), gameObjects);
 
-	gameObjects.Lock();
-	gameObjects.physics.RemoveRange(sentinels.begin(), sentinels.end());
-#ifdef SURVIVAL
-	gameObjects.RemoveRange(mines.begin(), mines.end());
-	mines.clear();
-#endif
-	gameObjects.Unlock();
-
-	sentinels.clear();
-
 	// wait for everything to finish
 	foodThread.join();
+	mineThread.join();
 
 	Init(gameObjects);
 }
