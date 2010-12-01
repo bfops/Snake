@@ -120,9 +120,7 @@ static void graphics_loop()
 
 	while(!quit)
 	{
-		DOLOCKED(gameObjects->graphics.mutex, 
-			Graphics::Update(gameObjects->graphics, screen);
-		)
+		Graphics::Update(gameObjects->graphics, screen);
 		SDL_Delay(1000 / FPS);
 	}
 }

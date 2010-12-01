@@ -1,5 +1,6 @@
 #include "Graphics.hpp"
 
+#include "Common.hpp"
 #include "Screen.hpp"
 #include "UniqueObjectList.hpp"
 #include "WorldObject.hpp"
@@ -19,8 +20,12 @@ using namespace boost;
 
 namespace Graphics
 {
-	void Update(UniqueObjectList& graphicsObjects, Screen& target)
+	void Update(UniqueObjectList& realGraphicsObjects, Screen& target)
 	{
+		DOLOCKED(realGraphicsObjects.mutex,
+			UniqueObjectList graphicsObjects(realGraphicsObjects);
+		)
+
 		target.Clear();
 
 		for_each(graphicsObjects.begin(), graphicsObjects.end(), bind(&WorldObject::Draw, _1, ref(target)));
