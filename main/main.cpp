@@ -51,6 +51,7 @@ static boost::shared_ptr<ZippedUniqueObjectList> gameObjects;
 static boost::shared_ptr<GameWorld> gameWorld;
 
 static void graphics_loop();
+static void physics_loop();
 
 static const EventHandler defaultEventHandler(
 	quit_handler, loss_handler, default_pause_handler,
@@ -91,8 +92,11 @@ int main(int, char*[])
 #endif
 	
 	thread graphicsThread(graphics_loop);
+	thread physicsThread(physics_loop);
+
 	while(!quit)
 	{
+		// TODO: replace "lost" with a [mutex + interrupt]
 		while(!lost && !quit)
 		{
 			currentWorldUpdater(*gameWorld);
@@ -110,6 +114,7 @@ int main(int, char*[])
 
 	// wait for everything to complete
 	graphicsThread.join();
+	physicsThread.join();
 
 	return 0;
 }
@@ -122,6 +127,15 @@ static void graphics_loop()
 	{
 		Graphics::Update(gameObjects->graphics, screen);
 		SDL_Delay(1000 / FPS);
+	}
+}
+
+static void physics_loop()
+{
+	while(!quit)
+	{
+		Physics::Update(*gameWorld, gameObjects->physics);
+		SDL_Delay(5);
 	}
 }
 
@@ -165,7 +179,6 @@ static void paused_mouse_handler(const Uint8) {}
 
 static void default_world_updater(GameWorld& world)
 {
-	Physics::Update(world, gameObjects->physics);
 	world.Update();
 }
 
