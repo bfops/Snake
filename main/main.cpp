@@ -102,7 +102,7 @@ int main(int, char*[])
 		if(lost)
 		{
 			DEBUGLOG(logger, "DEATH")
-			gameWorld->Reset(*gameObjects);
+			gameWorld->Reset();
 		}
 		lost = false;
 	}
@@ -120,7 +120,7 @@ static void graphics_loop()
 
 	while(!quit)
 	{
-		DOLOCKEDU(gameObjects->graphics, 
+		DOLOCKED(gameObjects->graphics.mutex, 
 			Graphics::Update(gameObjects->graphics, screen);
 		)
 		SDL_Delay(1000 / FPS);
@@ -153,24 +153,22 @@ static void paused_pause_handler()
 
 static void default_key_handler(const SDLKey key)
 {
-	gameWorld->KeyNotify(key, *gameObjects);
+	gameWorld->KeyNotify(key);
 }
 
 static void paused_key_handler(const SDLKey) {}
 
 static void default_mouse_handler(const Uint8 button)
 {
-	gameWorld->MouseNotify(button, *gameObjects);
+	gameWorld->MouseNotify(button);
 }
 
 static void paused_mouse_handler(const Uint8) {}
 
 static void default_world_updater(GameWorld& world)
 {
-	DOLOCKEDU(gameObjects->physics,
-		Physics::Update(world, gameObjects->physics);
-	)
-	world.Update(*gameObjects);
+	Physics::Update(world, gameObjects->physics);
+	world.Update();
 }
 
 static void paused_world_updater(GameWorld&)

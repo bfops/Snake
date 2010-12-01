@@ -2,27 +2,15 @@
 
 #include "UniqueObjectList.hpp"
 
-#define DOLOCKEDZ(obj, thingsToDo) { \
-	ZippedUniqueObjectList::Lock uniqueLock(obj); \
-	thingsToDo \
-}
+#define DOLOCKEDZ(obj, stuffToDo) DOLOCKED(obj.graphics.mutex, \
+	DOLOCKED(obj.physics.mutex, \
+		stuffToDo \
+	) \
+)
 
 struct ZippedUniqueObjectList
 {
 #define DOBOTH(func) graphics.func; physics.func;
-	
-	class Lock
-	{
-	private:
-		UniqueObjectList::Lock l1, l2;
-
-	public:
-		Lock(ZippedUniqueObjectList& l) :
-			l1(l.graphics), l2(l.physics)
-		{
-		}
-	};
-
 	UniqueObjectList graphics, physics;
 
 	inline void Add(WorldObject& obj)

@@ -24,7 +24,7 @@
 // random game-changing things //
 
 // whether or not extra walls are added for epicness
-#define COOLERWALLS
+//#define COOLERWALLS
 // whether or not survival mode is on
 //#define SURVIVAL
 
@@ -43,8 +43,10 @@ public:
 #endif
 
 private:
-	void FoodLoop(ZippedUniqueObjectList& gameObjects);
-	void MineLoop(ZippedUniqueObjectList& gameObjects);
+	void FoodLoop();
+	void MineLoop();
+
+	ZippedUniqueObjectList& gameObjects;
 
 	Menu foods;
 	boost::mutex foodMutex;
@@ -57,19 +59,19 @@ private:
 
 	WallBox walls;
 
-	void Init(ZippedUniqueObjectList& gameObjects);
+	void Init();
 
 public:
 	GameWorld(ZippedUniqueObjectList& gameObjects);
 
-	void Update(ZippedUniqueObjectList& gameObjects);
-	void Reset(ZippedUniqueObjectList& gameObjects);
+	void Update();
+	void Reset();
 
 	/// this function handles all the World-level
 	/// side-effects of collisions (e.g. sound effects)
 	void CollisionHandler(WorldObject&, WorldObject&);
-	void KeyNotify(SDLKey key, ZippedUniqueObjectList& gameObjects);
-	void MouseNotify(Uint8 button, ZippedUniqueObjectList& gameObjects);
+	void KeyNotify(SDLKey key);
+	void MouseNotify(Uint8 button);
 
 	Point GetCenter() const;
 };

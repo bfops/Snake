@@ -13,11 +13,6 @@
 #pragma warning(pop)
 #endif
 
-#define DOLOCKEDU(obj, thingsToDo) { \
-	UniqueObjectList::Lock uniqueLock(obj); \
-	thingsToDo \
-}
-
 class WorldObject;
 
 class UniqueObjectList
@@ -30,24 +25,6 @@ private:
 	CollectionType objects;
 
 public:
-	class Lock
-	{
-	private:
-		boost::mutex& m;
-
-	public:
-		Lock(UniqueObjectList& _m) :
-			m(_m.mutex)
-		{
-			m.lock();
-		}
-
-		~Lock()
-		{
-			m.unlock();
-		}
-	};
-
 	boost::mutex mutex;
 
 	UniqueObjectList()

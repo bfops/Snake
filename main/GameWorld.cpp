@@ -136,7 +136,8 @@ static Sentinel get_new_sentinel(unsigned long sentinelSize)
 	return Sentinel(location, sentinelSize);
 }
 
-void GameWorld::FoodLoop(ZippedUniqueObjectList& gameObjects)
+// TODO: factor food & mines together
+void GameWorld::FoodLoop()
 {
 	Timer foodTimer;
 	SentinelList sentinels;
@@ -176,11 +177,14 @@ void GameWorld::FoodLoop(ZippedUniqueObjectList& gameObjects)
 		}
 		// only one sound should be played, no matter how many spawned at once
 		if(foodAdded)
+		{
 			play_food_sound();
+			logger.Debug("Food spawn!");
+		}
 
 		if(foodTimer.ResetIfHasElapsed(foodAdditionPeriod))
 		{
-			DOLOCKEDU(gameObjects.physics, 
+			DOLOCKED(gameObjects.physics.mutex, 
 				gameObjects.physics.RemoveRange(sentinels.begin(), sentinels.end());
 				sentinels.push_back(get_new_sentinel(foodSentinelSize));
 				gameObjects.physics.AddRange(sentinels.begin(), sentinels.end());
@@ -198,7 +202,7 @@ void GameWorld::FoodLoop(ZippedUniqueObjectList& gameObjects)
 	)
 }
 
-void GameWorld::MineLoop(ZippedUniqueObjectList& gameObjects)
+void GameWorld::MineLoop()
 {
 	Timer mineTimer;
 	MineList mines;
@@ -234,11 +238,14 @@ void GameWorld::MineLoop(ZippedUniqueObjectList& gameObjects)
 		}
 		// only play ONE sound, no matter how many got added at once
 		if(mineAdded)
+		{
 			play_mine_sound();
+			logger.Debug("Mine spawn!");
+		}
 
 		while(mineTimer.ResetIfHasElapsed(mineAdditionPeriod))
 		{
-			DOLOCKEDU(gameObjects.physics,
+			DOLOCKED(gameObjects.physics.mutex,
 				gameObjects.physics.RemoveRange(sentinels.begin(), sentinels.end());
 				sentinels.push_back(get_new_sentinel(mineSentinelSize));
 				gameObjects.physics.AddRange(sentinels.begin(), sentinels.end());
@@ -252,19 +259,19 @@ void GameWorld::MineLoop(ZippedUniqueObjectList& gameObjects)
 	)
 }
 
-void GameWorld::Init(ZippedUniqueObjectList& gameObjects)
+void GameWorld::Init()
 {
 	reset = false;
 
 #ifdef SURVIVAL
-	mineThread = thread(boost::bind(&GameWorld::MineLoop, this, _1), boost::ref(gameObjects));
+	mineThread = thread(boost::bind(&GameWorld::MineLoop, this));
 #else
-	foodThread = thread(boost::bind(&GameWorld::FoodLoop, this, _1), boost::ref(gameObjects));
+	foodThread = thread(boost::bind(&GameWorld::FoodLoop, this));
 #endif
 }
 
-GameWorld::GameWorld(ZippedUniqueObjectList& gameObjects) :
-	player(GetCenter(), gameObjects)
+GameWorld::GameWorld(ZippedUniqueObjectList& _gameObjects) :
+	gameObjects(_gameObjects), player(GetCenter(), gameObjects)
 {
 	make_walls(walls);
 
@@ -272,15 +279,15 @@ GameWorld::GameWorld(ZippedUniqueObjectList& gameObjects) :
 		gameObjects.AddRange(walls.begin(), walls.end());
 	)
 	
-	Init(gameObjects);
+	Init();
 }
 
-void GameWorld::Update(ZippedUniqueObjectList& gameObjects)
+void GameWorld::Update()
 {
 	player.Update(gameObjects);
 }
 
-void GameWorld::Reset(ZippedUniqueObjectList& gameObjects)
+void GameWorld::Reset()
 {
 	reset = true;
 	player.Reset(GetCenter(), gameObjects);
@@ -289,7 +296,7 @@ void GameWorld::Reset(ZippedUniqueObjectList& gameObjects)
 	foodThread.join();
 	mineThread.join();
 
-	Init(gameObjects);
+	Init();
 }
 
 static Direction get_direction_from_key(const SDLKey key)
@@ -357,6 +364,9 @@ void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
 		else if(collisionType & WorldObject::food)
 		{
 			DOLOCKED(foodMutex,
+				DOLOCKEDZ(gameObjects,
+					gameObjects.RemoveRange(foods.begin(), foods.end());
+				)
 				Food* const toRemove = reinterpret_cast<Food*>((o1.GetObjectType() == WorldObject::food) ? &o1 : &o2);
 				for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
 				{
@@ -366,19 +376,22 @@ void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
 						break;
 					}
 				}
+				DOLOCKEDZ(gameObjects,
+					gameObjects.AddRange(foods.begin(), foods.end());
+				)
 			)
 			play_eat_sound();
 		}
 	}
 }
 
-void GameWorld::KeyNotify(const SDLKey key, ZippedUniqueObjectList& gameObjects)
+void GameWorld::KeyNotify(const SDLKey key)
 {
 	if(key == SDLK_LEFT || key == SDLK_RIGHT || key == SDLK_UP || key == SDLK_DOWN)
 		player.ChangeDirection(get_direction_from_key(key), gameObjects);
 }
 
-void GameWorld::MouseNotify(Uint8 button, ZippedUniqueObjectList& gameObjects)
+void GameWorld::MouseNotify(Uint8 button)
 {
 	if(button == SDL_BUTTON_LEFT || button == SDL_BUTTON_RIGHT)
 		player.Turn(get_direction_from_button(button), gameObjects);

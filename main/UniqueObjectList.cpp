@@ -11,14 +11,14 @@ static inline bool object_exists(const UniqueObjectList::CollectionType& list, c
 	return in(list.begin(), list.end(), val);
 }
 
-void UniqueObjectList::Add(WorldObject& pObj)
+void UniqueObjectList::Add(WorldObject& obj)
 {
-	DEBUGLOGIF(object_exists(objects, &pObj), logger, boost::format("Object %1% already exists.") % &pObj)
-	objects.push_back(&pObj);
+	DEBUGLOGIF(object_exists(objects, &obj), logger, boost::format("Object %1% already exists.") % &obj)
+	objects.push_back(&obj);
 }
 
-void UniqueObjectList::Remove(WorldObject& pObj)
+void UniqueObjectList::Remove(WorldObject& obj)
 {
-	DEBUGLOGIF(!object_exists(objects, &pObj), logger, boost::format("Object %1% does not exist.") % &pObj)
-	unordered_find_and_remove(objects, &pObj);
+	DEBUGLOGIF(!object_exists(objects, &obj), logger, boost::format("Object %1% does not exist.") % &obj)
+	unordered_find_and_remove(objects, &obj);
 }
