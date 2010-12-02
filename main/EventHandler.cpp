@@ -53,7 +53,7 @@ void EventHandler::LossNotify() const
 	lossCallback();
 }
 
-const EventHandler*& EventHandler::GetCurrentEventHandler()
+const EventHandler*& EventHandler::Get()
 {
 	static const EventHandler* eventHandler;
 	return eventHandler;

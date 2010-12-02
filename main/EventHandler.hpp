@@ -40,5 +40,5 @@ public:
 	void HandleEventQueue() const;
 	void LossNotify() const;
 
-	static const EventHandler*& GetCurrentEventHandler();
+	static const EventHandler*& Get();
 };

@@ -61,17 +61,11 @@ static const EventHandler pausedEventHandler(
 	quit_handler, loss_handler, paused_pause_handler,
 	paused_key_handler, paused_mouse_handler);
 
-typedef void (WorldUpdater)(GameWorld&);
-static WorldUpdater default_world_updater;
-static WorldUpdater paused_world_updater;
-static WorldUpdater* currentWorldUpdater;
-
-bool quit, lost;
+bool quit, lost, paused;
 
 int main(int, char*[])
 {
-	quit = false;
-	lost = false;
+	quit = lost = paused = false;
 	// keep SDL active as long as this is in scope
 	SDLInitializer keepSDLInitialized;
 
@@ -81,8 +75,7 @@ int main(int, char*[])
 	gameObjects = boost::shared_ptr<ZippedUniqueObjectList>(new ZippedUniqueObjectList());
 	gameWorld = boost::shared_ptr<GameWorld>(new GameWorld(*gameObjects));
 
-	EventHandler::GetCurrentEventHandler() = &defaultEventHandler;
-	currentWorldUpdater = &default_world_updater;
+	EventHandler::Get() = &defaultEventHandler;
 
 	// TODO: knock this back down once "not enough channels" bug is fixed
 	Mix_AllocateChannels(100);
@@ -99,8 +92,10 @@ int main(int, char*[])
 		// TODO: replace "lost" with a [mutex + interrupt]
 		while(!lost && !quit)
 		{
-			currentWorldUpdater(*gameWorld);
-			EventHandler::GetCurrentEventHandler()->HandleEventQueue();
+			if(!paused)
+				gameWorld->Update();
+
+			EventHandler::Get()->HandleEventQueue();
 			SDL_Delay(1000 / FPS);
 		}
 		if(lost)
@@ -151,15 +146,15 @@ static void loss_handler()
 
 static void default_pause_handler()
 {
-	EventHandler::GetCurrentEventHandler() = &pausedEventHandler;
-	currentWorldUpdater = &paused_world_updater;
+	EventHandler::Get() = &pausedEventHandler;
+	paused = true;
 	Clock::Get().Pause();
 }
 
 static void paused_pause_handler()
 {
-	EventHandler::GetCurrentEventHandler() = &defaultEventHandler;
-	currentWorldUpdater = &default_world_updater;
+	EventHandler::Get() = &defaultEventHandler;
+	paused = false;
 	Clock::Get().Unpause();
 }
 
@@ -176,12 +171,3 @@ static void default_mouse_handler(const Uint8 button)
 }
 
 static void paused_mouse_handler(const Uint8) {}
-
-static void default_world_updater(GameWorld& world)
-{
-	world.Update();
-}
-
-static void paused_world_updater(GameWorld&)
-{
-}
