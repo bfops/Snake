@@ -1,4 +1,4 @@
-This is ReWritable's effort at making a cross-platform version of Snake
+This is a combined (mainly mine) effort at making a cross-platform version of Snake!
 
 --------------------------------------------
 DEPENDENCIES
@@ -8,4 +8,4 @@ To compile, you will need:
 -SDL SDK (http://www.libsdl.org/)
 -SDL Runtime (http://www.libsdl.org/)
 
-To work with the audio files, you'll need a MIDI editor
+To work with the audio files, you'll need a MIDI editor (I'm using Finale 2011)
