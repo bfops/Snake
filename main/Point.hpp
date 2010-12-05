@@ -2,4 +2,6 @@
 
 #include "Vector2D.hpp"
 
-typedef Vector2D Point;
+struct Point : public Vector2D
+{
+};
