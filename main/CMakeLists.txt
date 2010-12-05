@@ -31,6 +31,7 @@ add_executable(GingerbreadPrototype
 	Physics.cpp
 	Physics.hpp
 	Point.hpp
+	Point.cpp
 	Screen.cpp
 	Screen.hpp
 	SDLInitializer.cpp
