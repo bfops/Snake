@@ -296,6 +296,8 @@ void GameWorld::Reset()
 	foodThread.join();
 	mineThread.join();
 
+	foods.clear();
+
 	Init();
 }
 
