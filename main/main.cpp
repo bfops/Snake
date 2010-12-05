@@ -75,7 +75,9 @@ int main(int, char*[])
 	gameObjects = boost::shared_ptr<ZippedUniqueObjectList>(new ZippedUniqueObjectList());
 	gameWorld = boost::shared_ptr<GameWorld>(new GameWorld(*gameObjects));
 
-	EventHandler::Get() = &defaultEventHandler;
+	DOLOCKED(EventHandler::mutex,
+		EventHandler::Get() = &defaultEventHandler;
+	)
 
 	// TODO: knock this back down once "not enough channels" bug is fixed
 	Mix_AllocateChannels(100);
@@ -95,7 +97,9 @@ int main(int, char*[])
 			if(!paused)
 				gameWorld->Update();
 
-			EventHandler::Get()->HandleEventQueue();
+			DOLOCKED(EventHandler::Get()->mutex,
+				EventHandler::Get()->HandleEventQueue();
+			)
 			SDL_Delay(1000 / FPS);
 		}
 		if(lost)
@@ -146,14 +150,18 @@ static void loss_handler()
 
 static void default_pause_handler()
 {
-	EventHandler::Get() = &pausedEventHandler;
+	DOLOCKED(EventHandler::mutex,
+		EventHandler::Get() = &pausedEventHandler;
+	)
 	paused = true;
 	Clock::Get().Pause();
 }
 
 static void paused_pause_handler()
 {
-	EventHandler::Get() = &defaultEventHandler;
+	DOLOCKED(EventHandler::mutex,
+		EventHandler::Get() = &defaultEventHandler;
+	)
 	paused = false;
 	Clock::Get().Unpause();
 }

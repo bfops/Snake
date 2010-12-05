@@ -6,8 +6,12 @@
 #pragma warning(push, 0)
 #endif
 
+#include <boost/thread/mutex.hpp>
 #include <SDL_events.h>
 
+#ifdef MSVC
+#pragma warning(pop)
+#endif
 
 struct ZippedUniqueObjectList;
 
@@ -35,6 +39,8 @@ private:
 #undef DECLARE_CALLBACK_FUNCTOR
 
 public:
+	static boost::mutex mutex;
+
 	EventHandler(QuitCallbackType, LossCallbackType, PauseCallbackType, KeyCallbackType, MouseCallbackType);
 
 	void HandleEventQueue() const;
