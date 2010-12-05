@@ -32,7 +32,7 @@ public:
 
 	Food(const Sentinel& prototype, unsigned int size, const FoodInfo& foodInfo);
 
-	void CollisionHandler(const WorldObject&);
+	void CollisionHandler(WorldObject&) const;
 	
 	double GetCalories() const;
 	int GetPoints() const;

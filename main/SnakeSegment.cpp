@@ -36,18 +36,16 @@ void SnakeSegment::Init()
 	empty = false;
 }
 
-void SnakeSegment::FoodCollisionHandler(const Food& food)
+void SnakeSegment::CollisionHandler(WorldObject& obj) const
+{
+	obj.CollisionHandler(*this);
+}
+
+void SnakeSegment::CollisionHandler(const Food& food)
 {
 #ifndef SURVIVAL
 	parent->EatFood(food);
 #endif
-}
-
-void SnakeSegment::CollisionHandler(const WorldObject& obj)
-{
-	WorldObject::ObjectType type = obj.GetObjectType();
-	if(type == WorldObject::food)
-		FoodCollisionHandler(*reinterpret_cast<const Food*>(&obj));
 }
 
 void SnakeSegment::ModifyLength(int amount)

@@ -19,6 +19,7 @@ Wall::Wall(Point loc, unsigned long w, unsigned long h) :
 	bounds.max = Point(loc.x + w - 1, loc.y + h - 1);
 }
 
-void Wall::CollisionHandler(const WorldObject&)
+void Wall::CollisionHandler(WorldObject& obj) const
 {
+	obj.CollisionHandler(*this);
 }

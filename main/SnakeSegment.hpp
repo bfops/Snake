@@ -21,8 +21,6 @@ private:
 
 	Snake* parent;
 
-	void FoodCollisionHandler(const Food& food);
-
 	void Init();
 
 	/// change length by _amount_
@@ -32,8 +30,9 @@ public:
 	// TODO: we shouldn't need this; kill it with fire
 	SnakeSegment();
 	SnakeSegment(Snake* parent, Point location, Direction direction, unsigned int segmentWidth);
-
-	void CollisionHandler(const WorldObject&);
+	
+	void CollisionHandler(WorldObject&) const;
+	void CollisionHandler(const Food&);
 
 	/// increase length
 	SnakeSegment& operator++();

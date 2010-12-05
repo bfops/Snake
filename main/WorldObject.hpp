@@ -4,6 +4,11 @@
 #include "Color24.hpp"
 
 class Screen;
+class Food;
+class Mine;
+class Sentinel;
+class SnakeSegment;
+class Wall;
 
 class WorldObject
 {
@@ -24,9 +29,15 @@ protected:
 
 public:
 	WorldObject(ObjectType);
+	
+	virtual void CollisionHandler(WorldObject&) const;
+	virtual void CollisionHandler(const Food&);
+	virtual void CollisionHandler(const Mine&);
+	virtual void CollisionHandler(const Sentinel&);
+	virtual void CollisionHandler(const SnakeSegment&);
+	virtual void CollisionHandler(const Wall&);
 
 	ObjectType GetObjectType() const;
-	virtual void CollisionHandler(const WorldObject& colidee) = 0;
 	void Draw(Screen& target) const;
 
 	Bounds GetBounds() const;

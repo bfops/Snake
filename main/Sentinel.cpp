@@ -15,9 +15,39 @@ void Sentinel::Init()
 	interfering = false;
 }
 
-void Sentinel::CollisionHandler(const WorldObject&)
+void Sentinel::Interfere()
 {
 	interfering = true;
+}
+
+void Sentinel::CollisionHandler(WorldObject& obj) const
+{
+	obj.CollisionHandler(*this);
+}
+
+void Sentinel::CollisionHandler(const Food&)
+{
+	Interfere();
+}
+
+void Sentinel::CollisionHandler(const Mine&)
+{
+	Interfere();
+}
+
+void Sentinel::CollisionHandler(const SnakeSegment&)
+{
+	Interfere();
+}
+
+void Sentinel::CollisionHandler(const Sentinel&)
+{
+	Interfere();
+}
+
+void Sentinel::CollisionHandler(const Wall&)
+{
+	Interfere();
 }
 
 bool Sentinel::IsInterfering() const

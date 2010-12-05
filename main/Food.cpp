@@ -27,8 +27,9 @@ Food::Food(const Sentinel& prototype, const unsigned int size, const FoodInfo& f
 	bounds.max.y += size;
 }
 
-void Food::CollisionHandler(const WorldObject&)
+void Food::CollisionHandler(WorldObject& obj) const
 {
+	obj.CollisionHandler(*this);
 }
 
 double Food::GetCalories() const

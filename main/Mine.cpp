@@ -17,6 +17,7 @@ Mine::Mine(Sentinel sentinel, const unsigned int size) :
 	bounds.max.y += size;
 }
 
-void Mine::CollisionHandler(const WorldObject&)
+void Mine::CollisionHandler(WorldObject& obj) const
 {
+	obj.CollisionHandler(*this);
 }

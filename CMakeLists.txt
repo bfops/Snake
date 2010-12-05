@@ -27,7 +27,7 @@ if(MSVC)
 		/wd4365 /wd4244 /wd4514 /wd4710 /wd4242
 		/wd4267 /wd4946 /wd4625 /wd4626 /wd4371
 		/wd4619 /wd4571 /wd4996 /wd4548 /wd4512
-		/D "MSVC"
+		/wd4266 /D "MSVC"
 	)
 else(MSVC)
 	add_definitions(

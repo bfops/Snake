@@ -27,6 +27,31 @@ WorldObject::ObjectType WorldObject::GetObjectType() const
 	return type;
 }
 
+void WorldObject::CollisionHandler(WorldObject&) const
+{
+	logger.Fatal(boost::format("Subclass %1% did not override CollisionHandler()") % GetObjectType());
+}
+
+void WorldObject::CollisionHandler(const Food&)
+{
+}
+
+void WorldObject::CollisionHandler(const Mine&)
+{
+}
+
+void WorldObject::CollisionHandler(const Sentinel&)
+{
+}
+
+void WorldObject::CollisionHandler(const SnakeSegment&)
+{
+}
+
+void WorldObject::CollisionHandler(const Wall&)
+{
+}
+
 void WorldObject::Draw(Screen& target) const
 {
 	SDL_Surface* surface = target.GetSurface();

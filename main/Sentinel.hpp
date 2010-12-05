@@ -10,12 +10,18 @@ class Sentinel : public WorldObject
 private:
 	bool interfering;
 
+	void Interfere();
 	void Init();
 
 public:
 	Sentinel(Point location, unsigned int size);
-
-	void CollisionHandler(const WorldObject&);
+	
+	void CollisionHandler(WorldObject&) const;
+	void CollisionHandler(const Food&);
+	void CollisionHandler(const Mine&);
+	void CollisionHandler(const SnakeSegment&);
+	void CollisionHandler(const Sentinel&);
+	void CollisionHandler(const Wall&);
 
 	bool IsInterfering() const;
 };
