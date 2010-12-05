@@ -296,6 +296,8 @@ void GameWorld::Reset()
 	foodThread.join();
 	mineThread.join();
 
+	foods.clear();
+
 	Init();
 }
 
@@ -358,7 +360,9 @@ void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
 	{
 		if(selfCollide || collisionType & WorldObject::wall	|| collisionType & WorldObject::mine)
 		{
-			EventHandler::Get()->LossNotify();
+			DOLOCKED(EventHandler::mutex,
+				EventHandler::Get()->LossNotify();
+			)
 			play_death_sound();
 		}
 		else if(collisionType & WorldObject::food)
