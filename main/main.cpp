@@ -50,8 +50,8 @@ static const unsigned int FPS(120);
 static boost::shared_ptr<ZippedUniqueObjectList> gameObjects;
 static boost::shared_ptr<GameWorld> gameWorld;
 
-static void graphics_loop();
 static void physics_loop();
+static void game_loop();
 
 static const EventHandler defaultEventHandler(
 	quit_handler, loss_handler, default_pause_handler,
@@ -86,47 +86,27 @@ int main(int, char*[])
 	Music music("resources/title theme.wav");
 #endif
 	
-	thread graphicsThread(graphics_loop);
-	thread physicsThread(physics_loop);
-
-	while(!quit)
-	{
-		// TODO: replace "lost" with a [mutex + interrupt]
-		while(!lost && !quit)
-		{
-			if(!paused)
-				gameWorld->Update();
-
-			DOLOCKED(EventHandler::Get()->mutex,
-				EventHandler::Get()->HandleEventQueue();
-			)
-			SDL_Delay(1000 / FPS);
-		}
-		if(lost)
-		{
-			DEBUGLOG(logger, "DEATH")
-			gameWorld->Reset();
-		}
-		lost = false;
-	}
-	DEBUGLOG(logger, "Quit called")
-
-	// wait for everything to complete
-	graphicsThread.join();
-	physicsThread.join();
-
-	return 0;
-}
-
-static void graphics_loop()
-{
+	Timer screenUpdate;
 	Screen screen(800, 600);
 
+	thread physicsThread(physics_loop);
+	thread gameThread(game_loop);
+
 	while(!quit)
 	{
-		Graphics::Update(gameObjects->graphics, screen);
-		SDL_Delay(1000 / FPS);
+		if(screenUpdate.ResetIfHasElapsed(1000 / FPS))
+			Graphics::Update(gameObjects->graphics, screen);
+
+		DOLOCKED(EventHandler::Get()->mutex,
+			EventHandler::Get()->HandleEventQueue();
+		)
 	}
+
+	// wait for everything to complete
+	physicsThread.join();
+	gameThread.join();
+
+	return 0;
 }
 
 static void physics_loop()
@@ -136,6 +116,28 @@ static void physics_loop()
 		Physics::Update(*gameWorld, gameObjects->physics);
 		SDL_Delay(5);
 	}
+}
+
+static void game_loop()
+{
+	while(!quit)
+	{
+		// TODO: replace "lost" with a [mutex + interrupt]
+		while(!lost && !quit)
+		{
+			if(!paused)
+				gameWorld->Update();
+
+			SDL_Delay(5);
+		}
+		if(lost)
+		{
+			DEBUGLOG(logger, "DEATH")
+			gameWorld->Reset();
+		}
+		lost = false;
+	}
+	DEBUGLOG(logger, "Quit called")
 }
 
 static void quit_handler()

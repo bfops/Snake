@@ -6,7 +6,7 @@
 #pragma warning(push, 0)
 #endif
 
-#include <boost/thread/mutex.hpp>
+#include <boost/thread/recursive_mutex.hpp>
 #include <SDL_events.h>
 
 #ifdef MSVC
@@ -39,7 +39,7 @@ private:
 #undef DECLARE_CALLBACK_FUNCTOR
 
 public:
-	static boost::mutex mutex;
+	static boost::recursive_mutex mutex;
 
 	EventHandler(QuitCallbackType, LossCallbackType, PauseCallbackType, KeyCallbackType, MouseCallbackType);
 
