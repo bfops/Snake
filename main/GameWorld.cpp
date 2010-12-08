@@ -43,15 +43,15 @@ static const Bounds worldBounds(Point(0, 0), Point(800, 600));
 
 static inline void make_walls(GameWorld::WallBox& walls)
 {
-	walls[0] = Wall(Point(0, 0), wallThickness, worldBounds.max.y);
-	walls[1] = Wall(Point(worldBounds.max.x - wallThickness, 0), wallThickness, worldBounds.max.y);
-	walls[2] = Wall(Point(0, 0), worldBounds.max.x, wallThickness);
-	walls[3] = Wall(Point(0, worldBounds.max.y - wallThickness), worldBounds.max.x, wallThickness);
+	walls.push_back(Wall(Point(0, 0), wallThickness, worldBounds.max.y));
+	walls.push_back(Wall(Point(worldBounds.max.x - wallThickness, 0), wallThickness, worldBounds.max.y));
+	walls.push_back(Wall(Point(0, 0), worldBounds.max.x, wallThickness));
+	walls.push_back(Wall(Point(0, worldBounds.max.y - wallThickness), worldBounds.max.x, wallThickness));
 #ifdef COOLERWALLS
-	walls[4] = Wall(Point(worldBounds.max.x / 2, 0), wallThickness, worldBounds.max.y / 4);
-	walls[5] = Wall(Point(worldBounds.max.x / 2, worldBounds.max.y * 3 / 4), wallThickness, worldBounds.max.y / 4);
-	walls[6] = Wall(Point(0, worldBounds.max.y / 2), worldBounds.max.x / 4, wallThickness);
-	walls[7] = Wall(Point(worldBounds.max.x * 3 / 4, worldBounds.max.y / 2), worldBounds.max.x / 4, wallThickness);
+	walls.push_back(Wall(Point(worldBounds.max.x / 2, 0), wallThickness, worldBounds.max.y / 4));
+	walls.push_back(Wall(Point(worldBounds.max.x / 2, worldBounds.max.y * 3 / 4), wallThickness, worldBounds.max.y / 4));
+	walls.push_back(Wall(Point(0, worldBounds.max.y / 2), worldBounds.max.x / 4, wallThickness));
+	walls.push_back(Wall(Point(worldBounds.max.x * 3 / 4, worldBounds.max.y / 2), worldBounds.max.x / 4, wallThickness));
 #endif
 }
 
@@ -226,7 +226,6 @@ GameWorld::GameWorld(ZippedUniqueObjectList& _gameObjects) :
 	gameObjects(_gameObjects), player(GetCenter(), gameObjects)
 {
 	make_walls(walls);
-
 	DOLOCKEDZ(gameObjects,
 		gameObjects.AddRange(walls.begin(), walls.end());
 	)

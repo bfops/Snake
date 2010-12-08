@@ -36,11 +36,7 @@ public:
 	typedef std::list<Mine> MineList;
 	typedef std::list<Food> Menu;
 	typedef std::list<Sentinel> SentinelList;
-#ifdef COOLERWALLS
-	typedef boost::array<Wall, 8> WallBox;
-#else
-	typedef boost::array<Wall, 4> WallBox;
-#endif
+	typedef std::vector<Wall> WallBox;
 
 private:
 	void FoodLoop();
