@@ -34,12 +34,17 @@ namespace Physics
 		return ret;
 	}
 
+	static inline bool does_collide(const WorldObject& o1, const WorldObject& o2)
+	{
+		const CollidableObject c1 = world_to_collidable_object(&o1);
+		const CollidableObject c2 = world_to_collidable_object(&o2);
+
+		return does_collide(&c1, &c2) != 0;
+	}
+	
 	static void handle_potential_collision(GameWorld* const world, WorldObject* const o1, WorldObject* const o2)
 	{
-		CollidableObject c1 = world_to_collidable_object(o1);
-		CollidableObject c2 = world_to_collidable_object(o2);
-
-		if(does_collide(&c1, &c2))
+		if(does_collide(*o1, *o2))
 			world->CollisionHandler(*o1, *o2);
 	}
 
@@ -62,5 +67,19 @@ namespace Physics
 		for(UniqueObjectList::iterator collider = physicsObjects.begin(), end = physicsObjects.end();
 			collider != end - 1; ++collider)
 			collide_with_subsequent_objects(&world, collider, end);
+	}
+
+	bool AnyCollide(WorldObject& obj, UniqueObjectList& realPhysicsObjects)
+	{
+		DOLOCKED(realPhysicsObjects.mutex,
+			UniqueObjectList physicsObjects(realPhysicsObjects);
+		)
+
+		for(UniqueObjectList::iterator collider = physicsObjects.begin(), end = physicsObjects.end();
+			collider != end; ++collider)
+			if(does_collide(obj, **collider))
+				return true;
+
+		return false;
 	}
 }

@@ -6,6 +6,7 @@
 #include "Food.hpp"
 #include "Logger.hpp"
 #include "Mine.hpp"
+#include "Physics.hpp"
 #include "Wall.hpp"
 #include "ZippedUniqueObjectList.hpp"
 
@@ -108,8 +109,10 @@ static bool probability_hit(unsigned int& randnum, double probability, unsigned 
 	return false;
 }
 
-static Food::FoodInfo get_food_type(minstd_rand0& rand)
+static Food::FoodInfo get_food_type()
 {
+	minstd_rand0 rand(time(NULL));
+
 	const unsigned int randMax = 100;
 	unsigned int randnum = rand() % (randMax + 1);
 
@@ -136,59 +139,32 @@ static Sentinel get_new_sentinel(unsigned long sentinelSize)
 	return Sentinel(location, sentinelSize);
 }
 
-// TODO: factor food & mines together
+// TODO: factor [food & mine] loops together
 void GameWorld::FoodLoop()
 {
 	Timer foodTimer;
-	SentinelList sentinels;
 
 	while(!reset)
 	{
-		bool foodAdded = false;
-		for(SentinelList::iterator sentinel = sentinels.begin(), end = sentinels.end(); sentinel != end;)
+		while(foodTimer.ResetIfHasElapsed(foodAdditionPeriod))
 		{
-			if(sentinel->IsInterfering())
+			Sentinel sentinel(get_new_sentinel(foodSentinelSize));
+			while(Physics::AnyCollide(sentinel, gameObjects.physics))
 			{
-				DOLOCKEDZ(gameObjects,
-					*sentinel = get_new_sentinel(foodSentinelSize);
-				)
+				sentinel = get_new_sentinel(foodSentinelSize);
+				SDL_Delay(10);
 			}
-			else
-			{
-				const SentinelList::iterator current = sentinel++;
 
-				minstd_rand0 rand(time(NULL));
-				Food::FoodInfo foodType = get_food_type(rand);
-
-				DOLOCKEDZ(gameObjects, 
-					DOLOCKED(foodMutex,
-						gameObjects.RemoveRange(foods.begin(), foods.end());
-						Food newFood(*current, foodSize, foodType);
-						foods.push_back(newFood);
-						gameObjects.AddRange(foods.begin(), foods.end());
-					)
-
-					gameObjects.physics.Remove(*current);
+			DOLOCKEDZ(gameObjects,
+				DOLOCKED(foodMutex,
+					gameObjects.RemoveRange(foods.begin(), foods.end());
+					foods.push_back(Food(sentinel, foodSize, get_food_type()));
+					gameObjects.AddRange(foods.begin(), foods.end());
 				)
-
-				sentinels.erase(current);
-				foodAdded = true;
-			}
-		}
-		// only one sound should be played, no matter how many spawned at once
-		if(foodAdded)
-		{
-			play_food_sound();
-			logger.Debug("Food spawn!");
-		}
-
-		if(foodTimer.ResetIfHasElapsed(foodAdditionPeriod))
-		{
-			DOLOCKED(gameObjects.physics.mutex, 
-				gameObjects.physics.RemoveRange(sentinels.begin(), sentinels.end());
-				sentinels.push_back(get_new_sentinel(foodSentinelSize));
-				gameObjects.physics.AddRange(sentinels.begin(), sentinels.end());
 			)
+
+			play_food_sound();
+			logger.Debug("Food spawn");
 		}
 
 		SDL_Delay(100);
@@ -198,7 +174,6 @@ void GameWorld::FoodLoop()
 		DOLOCKED(foodMutex,
 			gameObjects.RemoveRange(foods.begin(), foods.end());
 		)
-		gameObjects.RemoveRange(sentinels.begin(), sentinels.end());
 	)
 }
 
@@ -206,56 +181,33 @@ void GameWorld::MineLoop()
 {
 	Timer mineTimer;
 	MineList mines;
-	SentinelList sentinels;
 
 	while(!reset)
 	{
-		bool mineAdded = false;
-		for(SentinelList::iterator sentinel = sentinels.begin(), end = sentinels.end(); sentinel != end;)
-		{
-			if(sentinel->IsInterfering())
-			{
-				DOLOCKEDZ(gameObjects,
-					*sentinel = get_new_sentinel(mineSentinelSize);
-				)
-			}
-			else
-			{
-				const SentinelList::iterator current = sentinel++;
-
-				Mine newMine(*current, mineSize);
-
-				DOLOCKEDZ(gameObjects,
-					gameObjects.RemoveRange(mines.begin(), mines.end());
-					mines.push_back(newMine);
-					gameObjects.AddRange(mines.begin(), mines.end());
-					gameObjects.physics.Remove(*current);
-				)
-
-				sentinels.erase(current);
-				mineAdded = true;
-			}
-		}
-		// only play ONE sound, no matter how many got added at once
-		if(mineAdded)
-		{
-			play_mine_sound();
-			logger.Debug("Mine spawn!");
-		}
-
 		while(mineTimer.ResetIfHasElapsed(mineAdditionPeriod))
 		{
-			DOLOCKED(gameObjects.physics.mutex,
-				gameObjects.physics.RemoveRange(sentinels.begin(), sentinels.end());
-				sentinels.push_back(get_new_sentinel(mineSentinelSize));
-				gameObjects.physics.AddRange(sentinels.begin(), sentinels.end());
+			Sentinel sentinel(get_new_sentinel(mineSentinelSize));
+			while(Physics::AnyCollide(sentinel, gameObjects.physics))
+			{
+				sentinel = get_new_sentinel(mineSentinelSize);
+				SDL_Delay(10);
+			}
+
+			DOLOCKEDZ(gameObjects,
+				gameObjects.RemoveRange(mines.begin(), mines.end());
+				mines.push_back(Mine(sentinel, mineSize));
+				gameObjects.AddRange(mines.begin(), mines.end());
 			)
+
+			play_mine_sound();
+			logger.Debug("Mine spawn");
 		}
+
+		SDL_Delay(100);
 	}
 
 	DOLOCKEDZ(gameObjects,
 		gameObjects.RemoveRange(mines.begin(), mines.end());
-		gameObjects.RemoveRange(sentinels.begin(), sentinels.end());
 	)
 }
 
