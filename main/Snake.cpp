@@ -105,10 +105,7 @@ void Snake::Reset(Point center, ZippedUniqueObjectList& gameObjects)
 {
 	moveTimer.Reset();
 	speedupTimer.Reset();
-
-#ifdef SURVIVAL
 	pointTimer.Reset();
-#endif
 	
 	DOLOCKEDZ(gameObjects,
 		gameObjects.RemoveRange(path.begin(), path.end());

@@ -26,7 +26,7 @@
 // whether or not extra walls are added for epicness
 //#define COOLERWALLS
 // whether or not survival mode is on
-//#define SURVIVAL
+#define SURVIVAL
 
 struct ZippedUniqueObjectList;
 
@@ -47,8 +47,7 @@ private:
 	Menu foods;
 	boost::mutex foodMutex;
 
-	boost::thread foodThread;
-	boost::thread mineThread;
+	boost::thread spawnThread;
 	bool reset;
 
 	Snake player;

@@ -25,10 +25,6 @@
 #pragma warning(pop)
 #endif
 
-// TODO: make different game modes call
-// different functions, not use scattered
-// preprocessor macros
-
 using namespace boost;
 using namespace std;
 

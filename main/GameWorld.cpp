@@ -216,9 +216,9 @@ void GameWorld::Init()
 	reset = false;
 
 #ifdef SURVIVAL
-	mineThread = thread(boost::bind(&GameWorld::MineLoop, this));
+	spawnThread = thread(boost::bind(&GameWorld::MineLoop, this));
 #else
-	foodThread = thread(boost::bind(&GameWorld::FoodLoop, this));
+	spawnThread = thread(boost::bind(&GameWorld::FoodLoop, this));
 #endif
 }
 
@@ -244,8 +244,7 @@ void GameWorld::Reset()
 	player.Reset(GetCenter(), gameObjects);
 
 	// wait for everything to finish
-	foodThread.join();
-	mineThread.join();
+	spawnThread.join();
 
 	foods.clear();
 

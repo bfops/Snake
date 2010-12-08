@@ -43,9 +43,7 @@ void SnakeSegment::CollisionHandler(WorldObject& obj) const
 
 void SnakeSegment::CollisionHandler(const Food& food)
 {
-#ifndef SURVIVAL
 	parent->EatFood(food);
-#endif
 }
 
 void SnakeSegment::ModifyLength(int amount)
