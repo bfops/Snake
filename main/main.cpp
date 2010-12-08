@@ -44,9 +44,7 @@ static EventHandler::MouseCallbackType default_mouse_handler;
 static EventHandler::MouseCallbackType paused_mouse_handler;
 
 static const char* windowTitle("ReWritable's Snake");
-// TODO: change this back to 60 once multithreading kicks in,
-// but right now, movement is a little jerky at high speed
-static const unsigned int FPS(120);
+static const unsigned int FPS(60);
 static boost::shared_ptr<ZippedUniqueObjectList> gameObjects;
 static boost::shared_ptr<GameWorld> gameWorld;
 
@@ -122,7 +120,7 @@ static void game_loop()
 {
 	while(!quit)
 	{
-		// TODO: replace "lost" with a [mutex + interrupt]
+		// TODO: replace _lost_ with a [mutex + interrupt]
 		while(!lost && !quit)
 		{
 			if(!paused)
