@@ -26,7 +26,7 @@ public:
 	void Load(std::istream& configInput);
 
 	template <typename _T>
-	void Get(const std::string fieldName, _T& dest) const
+	void Pop(const std::string& fieldName, _T& dest) const
 	{
 		const FieldMap::const_iterator result = fields.find(fieldName);
 

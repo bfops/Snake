@@ -24,6 +24,7 @@
 #include <SDL_timer.h>
 #include <SDL_mixer.h>
 #include <string>
+#include <sstream>
 
 #ifdef MSVC
 #pragma warning(pop)
@@ -33,18 +34,34 @@ using namespace boost;
 
 static Logger::Handle logger(Logger::RequestHandle("GameWorld"));
 
-static inline void make_walls(GameWorld::WallBox& walls, const unsigned int wallThickness, const Bounds& worldBounds)
+static inline std::string get_wall_name(const unsigned short i, const char* specifier)
 {
-	walls.push_back(Wall(Point(0, 0), wallThickness, worldBounds.max.y));
-	walls.push_back(Wall(Point(worldBounds.max.x - wallThickness, 0), wallThickness, worldBounds.max.y));
-	walls.push_back(Wall(Point(0, 0), worldBounds.max.x, wallThickness));
-	walls.push_back(Wall(Point(0, worldBounds.max.y - wallThickness), worldBounds.max.x, wallThickness));
-#ifdef COOLERWALLS
-	walls.push_back(Wall(Point(worldBounds.max.x / 2, 0), wallThickness, worldBounds.max.y / 4));
-	walls.push_back(Wall(Point(worldBounds.max.x / 2, worldBounds.max.y * 3 / 4), wallThickness, worldBounds.max.y / 4));
-	walls.push_back(Wall(Point(0, worldBounds.max.y / 2), worldBounds.max.x / 4, wallThickness));
-	walls.push_back(Wall(Point(worldBounds.max.x * 3 / 4, worldBounds.max.y / 2), worldBounds.max.x / 4, wallThickness));
-#endif
+	std::stringstream s;
+	s << "wall"
+	  << i
+	  << specifier;
+
+	return s.str();
+}
+
+static inline void make_walls(GameWorld::WallBox& walls)
+{
+	walls.clear();
+
+	const unsigned short nWalls = Config::Get().numberOfWalls;
+	for(unsigned short i = 0; i < nWalls; ++i)
+	{
+		unsigned int x, y, w, h;
+		Config::Get().loader.Pop(get_wall_name(i, "MinX"), x);
+		Config::Get().loader.Pop(get_wall_name(i, "MinY"), y);
+		Config::Get().loader.Pop(get_wall_name(i, "MaxX"), w);
+		Config::Get().loader.Pop(get_wall_name(i, "MaxY"), h);
+
+		w -= x;
+		h -= y;
+
+		walls.push_back(Wall(Point(x, y), w, h));
+	}
 }
 
 static void sound_playing_thread(const std::string& filename)
@@ -212,7 +229,7 @@ void GameWorld::Init(const bool survival)
 GameWorld::GameWorld(ZippedUniqueObjectList& _gameObjects) :
 	gameObjects(_gameObjects), player(GetCenter(), gameObjects)
 {
-	make_walls(walls, Config::Get().wallThickness, Config::Get().worldBounds);
+	make_walls(walls);
 	DOLOCKEDZ(gameObjects,
 		gameObjects.AddRange(walls.begin(), walls.end());
 	)

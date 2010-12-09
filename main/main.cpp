@@ -113,53 +113,55 @@ int main(int, char*[])
 // TODO: place this config-loading responsibility inside ConfigLoader
 static void load_game_config(istream& inputStream)
 {
+	// TODO: fail on loading errors
 	Config& config = Config::Get();
-	const ConfigLoader in(inputStream);
+	config.loader = ConfigLoader(inputStream);
 
-	in.Get("survival", config.survival);
-	in.Get("music", config.music);
-	in.Get("FPS", config.FPS);
+	config.loader.Pop("survival", config.survival);
+	config.loader.Pop("music", config.music);
+	config.loader.Pop("FPS", config.FPS);
 
-	in.Get("resourceEat", config.resources.eat);
-	in.Get("resourceSpawn", config.resources.spawn);
-	in.Get("resourceDie", config.resources.die);
-	in.Get("resourceIntro", config.resources.gameIntro);
-	in.Get("resourceTheme", config.resources.theme);
-	in.Get("resourceStartup", config.resources.startup);
+	config.loader.Pop("resourceEat", config.resources.eat);
+	config.loader.Pop("resourceSpawn", config.resources.spawn);
+	config.loader.Pop("resourceDie", config.resources.die);
+	config.loader.Pop("resourceIntro", config.resources.gameIntro);
+	config.loader.Pop("resourceTheme", config.resources.theme);
+	config.loader.Pop("resourceStartup", config.resources.startup);
 	
-	in.Get("wallThickness", config.wallThickness);
-	in.Get("worldBoundsMinX", config.worldBounds.min.x);
-	in.Get("worldBoundsMinY", config.worldBounds.min.y);
-	in.Get("worldBoundsMaxX", config.worldBounds.max.x);
-	in.Get("worldBoundsMaxY", config.worldBounds.max.y);
+	config.loader.Pop("numberOfWalls", config.numberOfWalls);
+
+	config.loader.Pop("worldBoundsMinX", config.worldBounds.min.x);
+	config.loader.Pop("worldBoundsMinY", config.worldBounds.min.y);
+	config.loader.Pop("worldBoundsMaxX", config.worldBounds.max.x);
+	config.loader.Pop("worldBoundsMaxY", config.worldBounds.max.y);
 
 	if(config.survival)
 	{
-		in.Get("mineAdditionPeriod", config.spawnPeriod);
-		in.Get("mineSize", config.spawnSize);
-		in.Get("mineSentinelSize", config.sentinelSize);
+		config.loader.Pop("mineAdditionPeriod", config.spawnPeriod);
+		config.loader.Pop("mineSize", config.spawnSize);
+		config.loader.Pop("mineSentinelSize", config.sentinelSize);
 
-		in.Get("survivalPointGainPeriod", config.pointGainPeriod);
-		in.Get("survivalPointGainAmount", config.pointGainAmount);
-		in.Get("survivalSnakeSpeedupPeriod", config.snake.speedupPeriod);
+		config.loader.Pop("survivalPointGainPeriod", config.pointGainPeriod);
+		config.loader.Pop("survivalPointGainAmount", config.pointGainAmount);
+		config.loader.Pop("survivalSnakeSpeedupPeriod", config.snake.speedupPeriod);
 	}
 	else
 	{
-		in.Get("foodAdditionPeriod", config.spawnPeriod);
-		in.Get("foodSize", config.spawnSize);
-		in.Get("foodSentinelSize", config.sentinelSize);
+		config.loader.Pop("foodAdditionPeriod", config.spawnPeriod);
+		config.loader.Pop("foodSize", config.spawnSize);
+		config.loader.Pop("foodSentinelSize", config.sentinelSize);
 
-		in.Get("normalPointGainPeriod", config.pointGainPeriod);
-		in.Get("normalPointGainAmount", config.pointGainAmount);
-		in.Get("normalSnakeSpeedupPeriod", config.snake.speedupPeriod);
+		config.loader.Pop("normalPointGainPeriod", config.pointGainPeriod);
+		config.loader.Pop("normalPointGainAmount", config.pointGainAmount);
+		config.loader.Pop("normalSnakeSpeedupPeriod", config.snake.speedupPeriod);
 	}
 
-	in.Get("snakeDefaultLength", config.snake.startingLength);
-	in.Get("snakeWidth", config.snake.width);
-	in.Get("snakeDefaultSpeed", config.snake.startingSpeed);
-	in.Get("snakeSpeedupAmount", config.snake.speedupAmount);
-	in.Get("snakeGrowthCap", config.snake.growthCap);
-	in.Get("snakeGrowthRate", config.snake.growthRate);
+	config.loader.Pop("snakeDefaultLength", config.snake.startingLength);
+	config.loader.Pop("snakeWidth", config.snake.width);
+	config.loader.Pop("snakeDefaultSpeed", config.snake.startingSpeed);
+	config.loader.Pop("snakeSpeedupAmount", config.snake.speedupAmount);
+	config.loader.Pop("snakeGrowthCap", config.snake.growthCap);
+	config.loader.Pop("snakeGrowthRate", config.snake.growthRate);
 }
 
 static void physics_loop()

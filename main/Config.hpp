@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Bounds.hpp"
+#include "ConfigLoader.hpp"
 
 #ifdef MSVC
 #pragma warning(push, 0)
@@ -40,16 +41,19 @@ struct Config
 
 	unsigned short FPS;
 
+	unsigned short numberOfWalls;
+
 	unsigned int spawnPeriod, spawnSize;
 	unsigned int sentinelSize;
 
-	unsigned int wallThickness;
 	Bounds worldBounds;
 
 	unsigned int pointGainPeriod, pointGainAmount;
 
 	SnakeConfig snake;
 	Resources resources;
+
+	ConfigLoader loader;
 
 	static Config& Get();
 };
