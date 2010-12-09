@@ -1,7 +1,7 @@
 #include "GameWorld.hpp"
 
 #include "Common.hpp"
-#include "ConfigLoader.hpp"
+#include "Config.hpp"
 #include "custom_algorithm.hpp"
 #include "EventHandler.hpp"
 #include "Food.hpp"
@@ -31,30 +31,6 @@
 using namespace boost;
 
 static Logger::Handle logger(Logger::RequestHandle("GameWorld"));
-
-static inline GameWorld::Config get_game_config(std::istream& inputStream)
-{
-	GameWorld::Config config;
-	const ConfigLoader in(inputStream);
-
-	in.Get("wallThickness", config.wallThickness);
-	in.Get("worldBoundsMinX", config.worldBounds.min.x);
-	in.Get("worldBoundsMinY", config.worldBounds.min.y);
-	in.Get("worldBoundsMaxX", config.worldBounds.max.x);
-	in.Get("worldBoundsMaxY", config.worldBounds.max.y);
-
-#ifdef SURVIVAL
-	in.Get("mineAdditionPeriod", config.spawnPeriod);
-	in.Get("mineSize", config.spawnSize);
-	in.Get("mineSentinelSize", config.sentinelSize);
-#else
-	in.Get("foodAdditionPeriod", config.spawnPeriod);
-	in.Get("foodSize", config.spawnSize);
-	in.Get("foodSentinelSize", config.sentinelSize);
-#endif
-
-	return config;
-}
 
 static inline void make_walls(GameWorld::WallBox& walls, const unsigned int wallThickness, const Bounds& worldBounds)
 {
@@ -161,19 +137,19 @@ void GameWorld::FoodLoop()
 
 	while(!reset)
 	{
-		while(foodTimer.ResetIfHasElapsed(config.spawnPeriod))
+		while(foodTimer.ResetIfHasElapsed(Config::Get().spawnPeriod))
 		{
-			Sentinel sentinel(get_new_sentinel(config.sentinelSize, config.worldBounds));
+			Sentinel sentinel(get_new_sentinel(Config::Get().sentinelSize, Config::Get().worldBounds));
 			while(Physics::AnyCollide(sentinel, gameObjects.physics))
 			{
-				sentinel = get_new_sentinel(config.sentinelSize, config.worldBounds);
+				sentinel = get_new_sentinel(Config::Get().sentinelSize, Config::Get().worldBounds);
 				SDL_Delay(10);
 			}
 
 			DOLOCKEDZ(gameObjects,
 				DOLOCKED(foodMutex,
 					gameObjects.RemoveRange(foods.begin(), foods.end());
-					foods.push_back(Food(sentinel, config.spawnSize, get_food_type()));
+					foods.push_back(Food(sentinel, Config::Get().spawnSize, get_food_type()));
 					gameObjects.AddRange(foods.begin(), foods.end());
 				)
 			)
@@ -199,18 +175,18 @@ void GameWorld::MineLoop()
 
 	while(!reset)
 	{
-		while(mineTimer.ResetIfHasElapsed(config.spawnPeriod))
+		while(mineTimer.ResetIfHasElapsed(Config::Get().spawnPeriod))
 		{
-			Sentinel sentinel(get_new_sentinel(config.sentinelSize, config.worldBounds));
+			Sentinel sentinel(get_new_sentinel(Config::Get().sentinelSize, Config::Get().worldBounds));
 			while(Physics::AnyCollide(sentinel, gameObjects.physics))
 			{
-				sentinel = get_new_sentinel(config.sentinelSize, config.worldBounds);
+				sentinel = get_new_sentinel(Config::Get().sentinelSize, Config::Get().worldBounds);
 				SDL_Delay(10);
 			}
 
 			DOLOCKEDZ(gameObjects,
 				gameObjects.RemoveRange(mines.begin(), mines.end());
-				mines.push_back(Mine(sentinel, config.spawnSize));
+				mines.push_back(Mine(sentinel, Config::Get().spawnSize));
 				gameObjects.AddRange(mines.begin(), mines.end());
 			)
 
@@ -226,26 +202,25 @@ void GameWorld::MineLoop()
 	)
 }
 
-void GameWorld::Init()
+void GameWorld::Init(const bool survival)
 {
 	reset = false;
 
-#ifdef SURVIVAL
-	spawnThread = thread(boost::bind(&GameWorld::MineLoop, this));
-#else
-	spawnThread = thread(boost::bind(&GameWorld::FoodLoop, this));
-#endif
+	if(survival)
+		spawnThread = thread(boost::bind(&GameWorld::MineLoop, this));
+	else
+		spawnThread = thread(boost::bind(&GameWorld::FoodLoop, this));
 }
 
 GameWorld::GameWorld(ZippedUniqueObjectList& _gameObjects) :
-	gameObjects(_gameObjects), config(get_game_config(std::ifstream("game.cfg"))), player(GetCenter(), gameObjects)
+	gameObjects(_gameObjects), player(GetCenter(), gameObjects)
 {
-	make_walls(walls, config.wallThickness, config.worldBounds);
+	make_walls(walls, Config::Get().wallThickness, Config::Get().worldBounds);
 	DOLOCKEDZ(gameObjects,
 		gameObjects.AddRange(walls.begin(), walls.end());
 	)
 	
-	Init();
+	Init(Config::Get().survival);
 }
 
 void GameWorld::Update()
@@ -263,7 +238,7 @@ void GameWorld::Reset()
 
 	foods.clear();
 
-	Init();
+	Init(Config::Get().survival);
 }
 
 static Direction get_direction_from_key(const SDLKey key)
@@ -368,5 +343,5 @@ void GameWorld::MouseNotify(Uint8 button)
 
 Point GameWorld::GetCenter() const
 {
-	return Point(config.worldBounds.max.x / 2, config.worldBounds.max.y / 2);
+	return Point(Config::Get().worldBounds.max.x / 2, Config::Get().worldBounds.max.y / 2);
 }

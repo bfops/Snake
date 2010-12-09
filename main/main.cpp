@@ -1,5 +1,7 @@
 #include "Clock.hpp"
 #include "Common.hpp"
+#include "Config.hpp"
+#include "ConfigLoader.hpp"
 #include "EventHandler.hpp"
 #include "GameWorld.hpp"
 #include "Graphics.hpp"
@@ -44,6 +46,7 @@ static const unsigned int FPS(60);
 static boost::shared_ptr<ZippedUniqueObjectList> gameObjects;
 static boost::shared_ptr<GameWorld> gameWorld;
 
+static void load_game_config(istream& inputStream);
 static void physics_loop();
 static void game_loop();
 
@@ -59,6 +62,10 @@ bool quit, lost, paused;
 
 int main(int, char*[])
 {
+	{
+		std::ifstream configFile("game.cfg");
+		load_game_config(configFile);
+	}
 	quit = lost = paused = false;
 	// keep SDL active as long as this is in scope
 	SDLInitializer keepSDLInitialized;
@@ -101,6 +108,48 @@ int main(int, char*[])
 	gameThread.join();
 
 	return 0;
+}
+
+// TODO: place this config-loading responsibility inside ConfigLoader
+static void load_game_config(istream& inputStream)
+{
+	Config& config = Config::Get();
+	const ConfigLoader in(inputStream);
+
+	in.Get("survival", config.survival);
+	in.Get("wallThickness", config.wallThickness);
+	in.Get("worldBoundsMinX", config.worldBounds.min.x);
+	in.Get("worldBoundsMinY", config.worldBounds.min.y);
+	in.Get("worldBoundsMaxX", config.worldBounds.max.x);
+	in.Get("worldBoundsMaxY", config.worldBounds.max.y);
+
+	if(config.survival)
+	{
+		in.Get("mineAdditionPeriod", config.spawnPeriod);
+		in.Get("mineSize", config.spawnSize);
+		in.Get("mineSentinelSize", config.sentinelSize);
+
+		in.Get("survivalPointGainPeriod", config.pointGainPeriod);
+		in.Get("survivalPointGainAmount", config.pointGainAmount);
+		in.Get("survivalSnakeSpeedupPeriod", config.snake.speedupPeriod);
+	}
+	else
+	{
+		in.Get("foodAdditionPeriod", config.spawnPeriod);
+		in.Get("foodSize", config.spawnSize);
+		in.Get("foodSentinelSize", config.sentinelSize);
+
+		in.Get("normalPointGainPeriod", config.pointGainPeriod);
+		in.Get("normalPointGainAmount", config.pointGainAmount);
+		in.Get("normalSnakeSpeedupPeriod", config.snake.speedupPeriod);
+	}
+
+	in.Get("snakeDefaultLength", config.snake.startingLength);
+	in.Get("snakeWidth", config.snake.width);
+	in.Get("snakeDefaultSpeed", config.snake.startingSpeed);
+	in.Get("snakeSpeedupAmount", config.snake.speedupAmount);
+	in.Get("snakeGrowthCap", config.snake.growthCap);
+	in.Get("snakeGrowthRate", config.snake.growthRate);
 }
 
 static void physics_loop()

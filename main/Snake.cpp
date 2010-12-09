@@ -1,6 +1,7 @@
 #include "Snake.hpp"
 
 #include "Common.hpp"
+#include "Config.hpp"
 #include "Food.hpp"
 #include "Logger.hpp"
 #include "Side.hpp"
@@ -24,26 +25,6 @@ using namespace boost;
 const static Direction directions[] = {Direction::left, Direction::right, Direction::up, Direction::down};
 static Logger::Handle logger(Logger::RequestHandle("Snake"));
 
-// GAMECONSTANT: snake management constants
-static const unsigned int defaultLength(90);
-static const unsigned int snakeWidth(20);
-static const unsigned long defaultSpeed(100);
-#ifdef SURVIVAL
-static const unsigned int speedupPeriod(20000);
-#else
-static const unsigned int speedupPeriod(14000);
-#endif
-static const unsigned int speedupAmount(18);
-static const unsigned int growthCap(100);
-static const double linearGrowthRate(10.0 / 29.0);
-#ifdef SURVIVAL
-static const unsigned int pointGainPeriod(10000);
-static const unsigned int pointGainAmount(150);
-#else
-static const unsigned int pointGainPeriod(5000);
-static const unsigned int pointGainAmount(15);
-#endif
-
 Snake::Snake(Point center, ZippedUniqueObjectList& gameObjects)
 {
 	Init(center, gameObjects);
@@ -51,7 +32,7 @@ Snake::Snake(Point center, ZippedUniqueObjectList& gameObjects)
 
 void Snake::AddSegment(Point location, Direction direction, ZippedUniqueObjectList& gameObjects)
 {
-	SnakeSegment newSegment(this, location, direction, snakeWidth);
+	SnakeSegment newSegment(this, location, direction, Config::Get().snake.width);
 	
 	DOLOCKEDZ(gameObjects,
 		gameObjects.RemoveRange(path.begin(), path.end());
@@ -62,8 +43,8 @@ void Snake::AddSegment(Point location, Direction direction, ZippedUniqueObjectLi
 
 void Snake::Grow(int amount)
 {
-	if((int)projectedLength + amount < (int)defaultLength)
-		projectedLength = defaultLength;
+	if((int)projectedLength + amount < (int)Config::Get().snake.startingLength)
+		projectedLength = Config::Get().snake.startingLength;
 	else
 		projectedLength += amount;
 }
@@ -93,10 +74,10 @@ void Snake::Init(Point center, ZippedUniqueObjectList& gameObjects)
 	speedupTimer.Reset();
 	pointTimer.Reset();
 
-	speed = defaultSpeed;
+	speed = Config::Get().snake.startingSpeed;
 
 	length = 0;
-	projectedLength = defaultLength;
+	projectedLength = Config::Get().snake.startingLength;
 	
 	AddSegment(headLocation, get_random_direction(), gameObjects);
 }
@@ -119,7 +100,7 @@ void Snake::ChangeDirection(Direction newDirection, ZippedUniqueObjectList& game
 {
 	Direction direction(Head().GetDirection());
 
-	if(newDirection != direction && newDirection != -direction && Head().GetWidth() >= 2 * snakeWidth)
+	if(newDirection != direction && newDirection != -direction && Head().GetWidth() >= 2 * Config::Get().snake.width)
 	{
 		// the point to start is the _direction_
 		// side of the current head
@@ -166,16 +147,16 @@ void Snake::Turn(Direction turn, ZippedUniqueObjectList& gameObjects)
 
 void Snake::Update(ZippedUniqueObjectList& gameObjects)
 {
-	while(pointTimer.ResetIfHasElapsed(pointGainPeriod))
+	while(pointTimer.ResetIfHasElapsed(Config::Get().pointGainPeriod))
 	{
-		points += pointGainAmount;
-		DEBUGLOG(logger, format("%1% points gained! (total %2%)") % pointGainAmount % points)
+		points += Config::Get().pointGainAmount;
+		DEBUGLOG(logger, format("%1% points gained! (total %2%)") % Config::Get().pointGainAmount % points)
 	}
 
-	while(speedupTimer.ResetIfHasElapsed(speedupPeriod))
+	while(speedupTimer.ResetIfHasElapsed(Config::Get().snake.speedupPeriod))
 	{
-		speed += speedupAmount;
-		DEBUGLOG(logger, format("Speeding up by %1%") % speedupAmount)
+		speed += Config::Get().snake.speedupAmount;
+		DEBUGLOG(logger, format("Speeding up by %1%") % Config::Get().snake.speedupAmount)
 	}
 
 	while(moveTimer.ResetIfHasElapsed(1000 / speed))
@@ -211,8 +192,8 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects)
 void Snake::EatFood(const Food& foodObj)
 {
 	const double foodGrowthConstant = foodObj.GetCalories();
-	const double baseUncappedGrowth = projectedLength * linearGrowthRate;
-	const double baseRealGrowth = min((double)growthCap, baseUncappedGrowth);
+	const double baseUncappedGrowth = projectedLength * Config::Get().snake.growthRate;
+	const double baseRealGrowth = min((double)Config::Get().snake.growthCap, baseUncappedGrowth);
 	const int growthAmount = round(baseRealGrowth * foodGrowthConstant);
 	const int pointsGained = foodObj.GetPoints();
 

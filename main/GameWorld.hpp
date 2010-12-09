@@ -25,8 +25,6 @@
 
 // whether or not extra walls are added for epicness
 //#define COOLERWALLS
-// whether or not survival mode is on
-//#define SURVIVAL
 
 struct ZippedUniqueObjectList;
 
@@ -38,22 +36,11 @@ public:
 	typedef std::list<Sentinel> SentinelList;
 	typedef std::vector<Wall> WallBox;
 
-	struct Config
-	{
-		unsigned int spawnPeriod;
-		unsigned int spawnSize;
-		unsigned int sentinelSize;
-
-		unsigned int wallThickness;
-		Bounds worldBounds;
-	};
-
 private:
 	void FoodLoop();
 	void MineLoop();
 
 	ZippedUniqueObjectList& gameObjects;
-	const Config config;
 
 	Menu foods;
 	boost::mutex foodMutex;
@@ -65,7 +52,7 @@ private:
 
 	WallBox walls;
 
-	void Init();
+	void Init(bool survivalMode);
 
 public:
 	GameWorld(ZippedUniqueObjectList& gameObjects);
