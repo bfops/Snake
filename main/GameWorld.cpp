@@ -1,6 +1,7 @@
 #include "GameWorld.hpp"
 
 #include "Common.hpp"
+#include "ConfigLoader.hpp"
 #include "custom_algorithm.hpp"
 #include "EventHandler.hpp"
 #include "Food.hpp"
@@ -18,6 +19,7 @@
 #include <boost/random.hpp>
 #include <boost/thread.hpp>
 #include <cmath>
+#include <fstream>
 #include <functional>
 #include <SDL_timer.h>
 #include <SDL_mixer.h>
@@ -30,18 +32,31 @@ using namespace boost;
 
 static Logger::Handle logger(Logger::RequestHandle("GameWorld"));
 
-// GAMECONSTANT: food management
-static const unsigned int mineAdditionPeriod(3000);
-static const unsigned int mineSize(10);
-static const unsigned int mineSentinelSize(20);
-static const unsigned int foodAdditionPeriod(8000);
-static const unsigned int foodSize(15);
-static const unsigned int foodSentinelSize(17);
+static inline GameWorld::Config get_game_config(std::istream& inputStream)
+{
+	GameWorld::Config config;
+	const ConfigLoader in(inputStream);
 
-static const unsigned int wallThickness(10);
-static const Bounds worldBounds(Point(0, 0), Point(800, 600));
+	in.Get("wallThickness", config.wallThickness);
+	in.Get("worldBoundsMinX", config.worldBounds.min.x);
+	in.Get("worldBoundsMinY", config.worldBounds.min.y);
+	in.Get("worldBoundsMaxX", config.worldBounds.max.x);
+	in.Get("worldBoundsMaxY", config.worldBounds.max.y);
 
-static inline void make_walls(GameWorld::WallBox& walls)
+#ifdef SURVIVAL
+	in.Get("mineAdditionPeriod", config.spawnPeriod);
+	in.Get("mineSize", config.spawnSize);
+	in.Get("mineSentinelSize", config.sentinelSize);
+#else
+	in.Get("foodAdditionPeriod", config.spawnPeriod);
+	in.Get("foodSize", config.spawnSize);
+	in.Get("foodSentinelSize", config.sentinelSize);
+#endif
+
+	return config;
+}
+
+static inline void make_walls(GameWorld::WallBox& walls, const unsigned int wallThickness, const Bounds& worldBounds)
 {
 	walls.push_back(Wall(Point(0, 0), wallThickness, worldBounds.max.y));
 	walls.push_back(Wall(Point(worldBounds.max.x - wallThickness, 0), wallThickness, worldBounds.max.y));
@@ -128,7 +143,7 @@ static Food::FoodInfo get_food_type()
 	return Food::normal;
 }
 
-static Sentinel get_new_sentinel(unsigned long sentinelSize)
+static Sentinel get_new_sentinel(unsigned long sentinelSize, const Bounds& worldBounds)
 {
 	minstd_rand0 rand(time(NULL));
 
@@ -146,19 +161,19 @@ void GameWorld::FoodLoop()
 
 	while(!reset)
 	{
-		while(foodTimer.ResetIfHasElapsed(foodAdditionPeriod))
+		while(foodTimer.ResetIfHasElapsed(config.spawnPeriod))
 		{
-			Sentinel sentinel(get_new_sentinel(foodSentinelSize));
+			Sentinel sentinel(get_new_sentinel(config.sentinelSize, config.worldBounds));
 			while(Physics::AnyCollide(sentinel, gameObjects.physics))
 			{
-				sentinel = get_new_sentinel(foodSentinelSize);
+				sentinel = get_new_sentinel(config.sentinelSize, config.worldBounds);
 				SDL_Delay(10);
 			}
 
 			DOLOCKEDZ(gameObjects,
 				DOLOCKED(foodMutex,
 					gameObjects.RemoveRange(foods.begin(), foods.end());
-					foods.push_back(Food(sentinel, foodSize, get_food_type()));
+					foods.push_back(Food(sentinel, config.spawnSize, get_food_type()));
 					gameObjects.AddRange(foods.begin(), foods.end());
 				)
 			)
@@ -184,18 +199,18 @@ void GameWorld::MineLoop()
 
 	while(!reset)
 	{
-		while(mineTimer.ResetIfHasElapsed(mineAdditionPeriod))
+		while(mineTimer.ResetIfHasElapsed(config.spawnPeriod))
 		{
-			Sentinel sentinel(get_new_sentinel(mineSentinelSize));
+			Sentinel sentinel(get_new_sentinel(config.sentinelSize, config.worldBounds));
 			while(Physics::AnyCollide(sentinel, gameObjects.physics))
 			{
-				sentinel = get_new_sentinel(mineSentinelSize);
+				sentinel = get_new_sentinel(config.sentinelSize, config.worldBounds);
 				SDL_Delay(10);
 			}
 
 			DOLOCKEDZ(gameObjects,
 				gameObjects.RemoveRange(mines.begin(), mines.end());
-				mines.push_back(Mine(sentinel, mineSize));
+				mines.push_back(Mine(sentinel, config.spawnSize));
 				gameObjects.AddRange(mines.begin(), mines.end());
 			)
 
@@ -223,9 +238,9 @@ void GameWorld::Init()
 }
 
 GameWorld::GameWorld(ZippedUniqueObjectList& _gameObjects) :
-	gameObjects(_gameObjects), player(GetCenter(), gameObjects)
+	gameObjects(_gameObjects), config(get_game_config(std::ifstream("game.cfg"))), player(GetCenter(), gameObjects)
 {
-	make_walls(walls);
+	make_walls(walls, config.wallThickness, config.worldBounds);
 	DOLOCKEDZ(gameObjects,
 		gameObjects.AddRange(walls.begin(), walls.end());
 	)
@@ -353,5 +368,5 @@ void GameWorld::MouseNotify(Uint8 button)
 
 Point GameWorld::GetCenter() const
 {
-	return Point(worldBounds.max.x / 2, worldBounds.max.y / 2);
+	return Point(config.worldBounds.max.x / 2, config.worldBounds.max.y / 2);
 }

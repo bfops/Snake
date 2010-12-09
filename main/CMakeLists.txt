@@ -9,6 +9,8 @@ add_executable(GingerbreadPrototype
 	Color24.cpp
 	Color24.hpp
 	Common.hpp
+	ConfigLoader.hpp
+	ConfigLoader.cpp
 	custom_algorithm.hpp
 	Direction.cpp
 	Direction.hpp
