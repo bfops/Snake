@@ -53,6 +53,7 @@ struct Config
 	SnakeConfig snake;
 	Resources resources;
 
+	// TODO: remove ConfigLoader from Config
 	ConfigLoader loader;
 
 	static Config& Get();

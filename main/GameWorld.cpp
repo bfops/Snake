@@ -144,7 +144,7 @@ static Sentinel get_new_sentinel(unsigned long sentinelSize, const Bounds& world
 	return Sentinel(location, sentinelSize);
 }
 
-// TODO: factor [food & mine] loops together
+// TODO: factor [food & mine] loops together (possibly make each a class?)
 void GameWorld::FoodLoop()
 {
 	Timer foodTimer;

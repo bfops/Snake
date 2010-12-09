@@ -78,7 +78,6 @@ int main(int, char*[])
 		EventHandler::Get() = &defaultEventHandler;
 	)
 
-	// TODO: knock this back down once "not enough channels" bug is fixed
 	Mix_AllocateChannels(100);
 
 	if(Config::Get().music)
@@ -113,7 +112,7 @@ int main(int, char*[])
 // TODO: place this config-loading responsibility inside ConfigLoader
 static void load_game_config(istream& inputStream)
 {
-	// TODO: fail on loading errors
+	// TODO: fail on [errors in loading]
 	Config& config = Config::Get();
 	config.loader = ConfigLoader(inputStream);
 
@@ -177,7 +176,6 @@ static void game_loop()
 {
 	while(!quit)
 	{
-		// TODO: replace _lost_ with a [mutex + interrupt]
 		while(!lost && !quit)
 		{
 			if(!paused)
