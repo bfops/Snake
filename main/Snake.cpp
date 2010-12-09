@@ -96,6 +96,14 @@ void Snake::Reset(Point center, ZippedUniqueObjectList& gameObjects)
 	Init(center, gameObjects);
 }
 
+void Snake::EmptyTailNotify(ZippedUniqueObjectList& gameObjects)
+{
+	DOLOCKEDZ(gameObjects,
+		gameObjects.Remove(Tail());
+	)
+	path.pop_back();
+}
+
 void Snake::ChangeDirection(Direction newDirection, ZippedUniqueObjectList& gameObjects)
 {
 	Direction direction(Head().GetDirection());
@@ -161,31 +169,19 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects)
 
 	while(moveTimer.ResetIfHasElapsed(1000 / speed))
 	{
-		++Head();
+		Head().Grow(gameObjects);
 
 		if(length > projectedLength)
 		{
-			--Tail();
+			Tail().Shrink(gameObjects);
 			--length;
 		}
 
 		// if we need more length, just don't shrink the tail
 		if(length < projectedLength)
-		{
 			++length;
-		}
 		else
-		{
-			--Tail();
-
-			if(Tail().IsEmpty())
-			{
-				DOLOCKEDZ(gameObjects, 
-					gameObjects.Remove(Tail());
-				)
-				path.pop_back();
-			}
-		}
+			Tail().Shrink(gameObjects);
 	}
 }
 

@@ -27,13 +27,6 @@ SnakeSegment::SnakeSegment(Snake* const _parent, Point location, Direction _dire
 		bounds.max.y += width;
 	else
 		bounds.max.x += width;
-
-	Init();
-}
-
-void SnakeSegment::Init()
-{
-	empty = false;
 }
 
 void SnakeSegment::CollisionHandler(WorldObject& obj) const
@@ -46,54 +39,33 @@ void SnakeSegment::CollisionHandler(const Food& food)
 	parent->EatFood(food);
 }
 
-void SnakeSegment::ModifyLength(int amount)
+void SnakeSegment::ModifyLength(const int amount, ZippedUniqueObjectList& gameObjects)
 {
-	if(!empty)
+	if(amount > 0)
 	{
-		if(amount > 0)
-		{
-			Side headSide = GetHeadSide();
-			headSide.ApplyVector(direction, amount);
-			SetHeadSide(headSide);
-		}
-		else
-		{
-			Side tailSide = GetTailSide();
-			tailSide.ApplyVector(direction, -amount);
-			SetTailSide(tailSide);
-		}
-
-		if(bounds.min.x >= bounds.max.x || bounds.min.y >= bounds.max.y)
-			empty = true;
+		Side headSide = GetHeadSide();
+		headSide.ApplyVector(direction, amount);
+		SetHeadSide(headSide);
 	}
+	else
+	{
+		Side tailSide = GetTailSide();
+		tailSide.ApplyVector(direction, -amount);
+		SetTailSide(tailSide);
+	}
+
+	if(bounds.min.x >= bounds.max.x || bounds.min.y >= bounds.max.y)
+		parent->EmptyTailNotify(gameObjects);
 }
 
-SnakeSegment& SnakeSegment::operator++()
+void SnakeSegment::Grow(ZippedUniqueObjectList& gameObjects)
 {
-	ModifyLength(1);
-	return *this;
+	ModifyLength(1, gameObjects);
 }
 
-SnakeSegment SnakeSegment::operator++(int)
+void SnakeSegment::Shrink(ZippedUniqueObjectList& gameObjects)
 {
-	SnakeSegment returnvalue(*this);
-	++(*this);
-
-	return returnvalue;
-}
-
-SnakeSegment& SnakeSegment::operator--()
-{
-	ModifyLength(-1);
-	return *this;
-}
-
-SnakeSegment SnakeSegment::operator--(int)
-{
-	SnakeSegment returnvalue(*this);
-	--(*this);
-
-	return returnvalue;
+	ModifyLength(-1, gameObjects);
 }
 
 unsigned int SnakeSegment::GetWidth() const
@@ -143,9 +115,4 @@ Side SnakeSegment::GetTailSide() const
 void SnakeSegment::SetTailSide(Side side)
 {
 	bounds.SetSide(side, -direction);
-}
-
-bool SnakeSegment::IsEmpty() const
-{
-	return empty;
 }

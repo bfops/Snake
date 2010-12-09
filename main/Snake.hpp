@@ -41,6 +41,8 @@ public:
 
 	void Reset(Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
 
+	void EmptyTailNotify(ZippedUniqueObjectList& gameObjects);
+
 	/// change the Snake's direction to that provided
 	void ChangeDirection(Direction newDirection, ZippedUniqueObjectList& gameObjects);
 	/// turn the snake relative to the direction provided
