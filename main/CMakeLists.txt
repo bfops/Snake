@@ -1,4 +1,6 @@
 add_executable(GingerbreadPrototype
+	game.cfg
+
 	Bounds.cpp
 	Bounds.hpp
 	cgq.hpp

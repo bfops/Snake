@@ -10,15 +10,13 @@
 #pragma warning(pop)
 #endif
 
-// whether or not music is on
-//#define MUSIC
-
 class Music
 {
 private:
 	Mix_Music* music;
 
 public:
+	Music();
 	Music(const char* const filename);
 	~Music();
 };

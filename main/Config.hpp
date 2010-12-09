@@ -6,27 +6,26 @@ struct Config
 {
 	struct SnakeConfig
 	{
-		unsigned int startingLength;
-		unsigned int width;
+		unsigned int startingLength, width;
 		unsigned int startingSpeed;
 
-		unsigned int speedupPeriod;
-		unsigned int speedupAmount;
+		unsigned int speedupPeriod, speedupAmount;
 
 		double growthRate;
 		unsigned int growthCap;
 	};
 
-	bool survival;
-	unsigned int spawnPeriod;
-	unsigned int spawnSize;
+	bool survival, music;
+
+	unsigned short FPS;
+
+	unsigned int spawnPeriod, spawnSize;
 	unsigned int sentinelSize;
 
 	unsigned int wallThickness;
 	Bounds worldBounds;
 
-	unsigned int pointGainPeriod;
-	unsigned int pointGainAmount;
+	unsigned int pointGainPeriod, pointGainAmount;
 
 	SnakeConfig snake;
 

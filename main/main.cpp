@@ -42,7 +42,6 @@ static EventHandler::MouseCallbackType default_mouse_handler;
 static EventHandler::MouseCallbackType paused_mouse_handler;
 
 static const char* windowTitle("ReWritable's Snake");
-static const unsigned int FPS(60);
 static boost::shared_ptr<ZippedUniqueObjectList> gameObjects;
 static boost::shared_ptr<GameWorld> gameWorld;
 
@@ -62,10 +61,9 @@ bool quit, lost, paused;
 
 int main(int, char*[])
 {
-	{
-		std::ifstream configFile("game.cfg");
-		load_game_config(configFile);
-	}
+	Music* music = NULL;
+	std::ifstream configFile("game.cfg");
+	load_game_config(configFile);
 	quit = lost = paused = false;
 	// keep SDL active as long as this is in scope
 	SDLInitializer keepSDLInitialized;
@@ -83,9 +81,8 @@ int main(int, char*[])
 	// TODO: knock this back down once "not enough channels" bug is fixed
 	Mix_AllocateChannels(100);
 
-#ifdef MUSIC
-	Music music("resources/title theme.wav");
-#endif
+	if(Config::Get().music)
+		music = new Music("resources/title theme.wav");
 	
 	Timer screenUpdate;
 	Screen screen(800, 600);
@@ -95,7 +92,7 @@ int main(int, char*[])
 
 	while(!quit)
 	{
-		if(screenUpdate.ResetIfHasElapsed(1000 / FPS))
+		if(screenUpdate.ResetIfHasElapsed(1000 / Config::Get().FPS))
 			Graphics::Update(gameObjects->graphics, screen);
 
 		DOLOCKED(EventHandler::Get()->mutex,
@@ -107,6 +104,9 @@ int main(int, char*[])
 	physicsThread.join();
 	gameThread.join();
 
+	if(music)
+		delete music;
+
 	return 0;
 }
 
@@ -117,6 +117,9 @@ static void load_game_config(istream& inputStream)
 	const ConfigLoader in(inputStream);
 
 	in.Get("survival", config.survival);
+	in.Get("music", config.music);
+	in.Get("FPS", config.FPS);
+	
 	in.Get("wallThickness", config.wallThickness);
 	in.Get("worldBoundsMinX", config.worldBounds.min.x);
 	in.Get("worldBoundsMinY", config.worldBounds.min.y);
