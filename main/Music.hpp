@@ -5,6 +5,7 @@
 #endif
 
 #include <SDL_mixer.h>
+#include <string>
 
 #ifdef MSVC
 #pragma warning(pop)
@@ -17,6 +18,6 @@ private:
 
 public:
 	Music();
-	Music(const char* const filename);
+	Music(const std::string& filename);
 	~Music();
 };

@@ -23,6 +23,7 @@
 #include <functional>
 #include <SDL_timer.h>
 #include <SDL_mixer.h>
+#include <string>
 
 #ifdef MSVC
 #pragma warning(pop)
@@ -46,13 +47,14 @@ static inline void make_walls(GameWorld::WallBox& walls, const unsigned int wall
 #endif
 }
 
-static void sound_playing_thread(const char* const filename)
+static void sound_playing_thread(const std::string& filename)
 {
-	Mix_Chunk* const sound = Mix_LoadWAV(filename);
+	Mix_Chunk* const sound = Mix_LoadWAV(filename.c_str());
+
 	int channel;
 	if(sound == NULL || (channel = Mix_PlayChannel(-1, sound, 0)) == -1)
 	{
-		logger.Fatal(format("Error playing \"%1%\": %2%") % filename % Mix_GetError());
+		logger.Fatal(format("Error playing sound \"%1%\": %2%") % filename.c_str() % Mix_GetError());
 		return;
 	}
 
@@ -63,19 +65,14 @@ static void sound_playing_thread(const char* const filename)
 	Mix_FreeChunk(sound);
 }
 
-static inline void play_sound(const char* filename)
+static inline void play_sound(const std::string& filename)
 {
 	thread(sound_playing_thread, filename);
 }
 
-static inline void play_food_sound()
+static inline void play_spawn_sound()
 {
-	play_sound("resources/food appear.wav");
-}
-
-static inline void play_mine_sound()
-{
-	play_sound("resources/mine appear.wav");
+	play_sound(Config::Get().resources.spawn);
 }
 
 /// checks if _probability_ occurred in _randnum_
@@ -154,7 +151,7 @@ void GameWorld::FoodLoop()
 				)
 			)
 
-			play_food_sound();
+			play_spawn_sound();
 			logger.Debug("Food spawn");
 		}
 
@@ -190,7 +187,7 @@ void GameWorld::MineLoop()
 				gameObjects.AddRange(mines.begin(), mines.end());
 			)
 
-			play_mine_sound();
+			play_spawn_sound();
 			logger.Debug("Mine spawn");
 		}
 
@@ -280,12 +277,12 @@ Direction get_direction_from_button(const Uint8 button)
 
 static inline void play_death_sound()
 {
-	play_sound("resources/die.wav");
+	play_sound(Config::Get().resources.die);
 }
 
 static inline void play_eat_sound()
 {
-	play_sound("resources/eat.wav");
+	play_sound(Config::Get().resources.eat);
 }
 
 void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)

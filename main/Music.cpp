@@ -7,6 +7,7 @@
 #endif
 
 #include <boost/format.hpp>
+#include <string>
 
 #ifdef MSVC
 #pragma warning(pop)
@@ -21,11 +22,11 @@ Music::Music()
 	music = NULL;
 }
 
-Music::Music(const char* const filename)
+Music::Music(const std::string& filename)
 {
-	music = Mix_LoadMUS(filename);
+	music = Mix_LoadMUS(filename.c_str());
 	if(music == NULL)
-		logger.Fatal(format("Error playing music: %1%") % Mix_GetError());
+		logger.Fatal(format("Error playing music \"%1%\": %2%") % filename.c_str() % Mix_GetError());
 	Mix_PlayMusic(music, -1);
 }
 

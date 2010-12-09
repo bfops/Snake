@@ -82,7 +82,7 @@ int main(int, char*[])
 	Mix_AllocateChannels(100);
 
 	if(Config::Get().music)
-		music = new Music("resources/title theme.wav");
+		music = new Music(Config::Get().resources.theme);
 	
 	Timer screenUpdate;
 	Screen screen(800, 600);
@@ -119,6 +119,13 @@ static void load_game_config(istream& inputStream)
 	in.Get("survival", config.survival);
 	in.Get("music", config.music);
 	in.Get("FPS", config.FPS);
+
+	in.Get("resourceEat", config.resources.eat);
+	in.Get("resourceSpawn", config.resources.spawn);
+	in.Get("resourceDie", config.resources.die);
+	in.Get("resourceIntro", config.resources.gameIntro);
+	in.Get("resourceTheme", config.resources.theme);
+	in.Get("resourceStartup", config.resources.startup);
 	
 	in.Get("wallThickness", config.wallThickness);
 	in.Get("worldBoundsMinX", config.worldBounds.min.x);
