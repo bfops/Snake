@@ -98,10 +98,9 @@ public:
 			capacity = other.capacity;
 		}
 
-		// Since operator== is much less used than operator!= on iterators,
-		// we use a double negative. It's all in the name of efficiency! I swear!
 		inline bool operator==(const bidirectional_iterator& other)
 		{
+			// operator== is much less used than operator!= on iterators
 			return !(*this != other);
 		}
 
@@ -229,7 +228,7 @@ private:
 		return buffer + ::detail::finite_field_addition(p - buffer, n, capacity);
 	}
 
-	/// This function resizes the buffer to any size, with no error checking.
+	// This function resizes the buffer to any size, with no error checking.
 	void resize(size_type newSize)
 	{
 		invariant_checker c(this);
@@ -398,7 +397,7 @@ public:
 		--numElems;
 	}
 
-	/// Returns the number of elements in the queue. Runs in O(1).
+	// Returns the number of elements in the queue. Runs in O(1).
 	inline size_type size() const
 	{
 		return numElems;
@@ -412,13 +411,13 @@ public:
 		return ret;
 	}
 
-	/// This predicate answers the question "is the queue empty".
+	// This predicate answers the question "is the queue empty".
 	inline bool empty() const
 	{
 		return size() == 0;
 	}
 
-	/// Removes all elements from the queue.
+	// Removes all elements from the queue.
 	inline void clear()
 	{
 		invariant_checker c(this);

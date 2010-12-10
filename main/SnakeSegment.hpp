@@ -19,7 +19,7 @@ private:
 
 	Snake* parent;
 
-	/// change length by _amount_
+	// change length by _amount_
 	void ModifyLength(int amount, ZippedUniqueObjectList& gameObjects);
 
 public:

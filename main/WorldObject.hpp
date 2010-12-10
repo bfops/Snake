@@ -29,6 +29,7 @@ protected:
 
 public:
 	WorldObject(ObjectType);
+	WorldObject(ObjectType, const Color24 color);
 	
 	virtual void CollisionHandler(WorldObject&) const;
 	virtual void CollisionHandler(const Food&);

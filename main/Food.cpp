@@ -10,9 +10,8 @@ const Food::FoodInfo Food::normal(1.0, Color24(0, 255, 255), 100);
 const Food::FoodInfo Food::donut(3.0, Color24(200, 0, 0), 400);
 
 Food::Food(const Sentinel& prototype, const unsigned int size, const FoodInfo& foodInfo) :
-	WorldObject(food)
+	WorldObject(food, foodInfo.color)
 {
-	color = foodInfo.color;
 	calories = foodInfo.calories;
 	pointsGiven = foodInfo.points;
 

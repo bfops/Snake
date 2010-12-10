@@ -10,6 +10,6 @@ struct Side
 	unsigned int dimension;
 	bool horizontal;
 
-	/// shift _this_ by _vector_ (scaled by _scale_)
+	// shift _this_ by _vector_ (scaled by _scale_)
 	void ApplyVector(Vector2D vector, unsigned int scale);
 };

@@ -12,6 +12,7 @@
 
 struct SDL_Surface;
 
+// 24-bit color
 struct Color24
 {
 private:

@@ -72,18 +72,18 @@ static inline void play_spawn_sound()
 	play_sound(Config::Get().resources.spawn);
 }
 
-/// checks if _probability_ occurred in _randnum_
-/// probability-checking can be done by seeing if
-/// _randnum_ < _probability_ * _max_number_.
-/// However, this means if we check for 1/6,
-/// and then check for 1/3, since (_max_)(1/6)
-/// is encompassed in (_max_)(1/3), this can lead
-/// to unexpected results. Therefore, the region
-/// used in calculation is subtracted from _randnum_,
-/// so that it may be called again without having to
-/// account for these side-effects. (if the probability
-/// was hit, we can assume they won't be checking for
-/// more probabilities)
+// checks if _probability_ occurred in _randnum_
+// probability-checking can be done by seeing if
+// _randnum_ < _probability_ * _max_number_.
+// However, this means if we check for 1/6,
+// and then check for 1/3, since (_max_)(1/6)
+// is encompassed in (_max_)(1/3), this can lead
+// to unexpected results. Therefore, the region
+// used in calculation is subtracted from _randnum_,
+// so that it may be called again without having to
+// account for these side-effects. (if the probability
+// was hit, we can assume they won't be checking for
+// more probabilities)
 static bool probability_hit(unsigned int& randnum, double probability, unsigned int randMax)
 {
 	unsigned int border = round(randMax * probability);

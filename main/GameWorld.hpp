@@ -21,11 +21,6 @@
 #pragma warning(pop)
 #endif
 
-// random game-changing things //
-
-// whether or not extra walls are added for epicness
-//#define COOLERWALLS
-
 struct ZippedUniqueObjectList;
 
 class GameWorld
@@ -33,7 +28,6 @@ class GameWorld
 public:
 	typedef std::list<Mine> MineList;
 	typedef std::list<Food> Menu;
-	typedef std::list<Sentinel> SentinelList;
 	typedef std::vector<Wall> WallBox;
 
 private:
@@ -60,8 +54,8 @@ public:
 	void Update();
 	void Reset();
 
-	/// this function handles all the World-level
-	/// side-effects of collisions (e.g. sound effects)
+	// this function handles all the World-level
+	// side-effects of collisions (e.g. sound effects)
 	void CollisionHandler(WorldObject&, WorldObject&);
 	void KeyNotify(SDLKey key);
 	void MouseNotify(Uint8 button);

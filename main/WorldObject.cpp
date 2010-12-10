@@ -20,6 +20,11 @@ WorldObject::WorldObject(ObjectType _type) :
 {
 }
 
+WorldObject::WorldObject(ObjectType _type, const Color24 _color) :
+	type(_type), color(_color)
+{
+}
+
 WorldObject::ObjectType WorldObject::GetObjectType() const
 {
 	return type;

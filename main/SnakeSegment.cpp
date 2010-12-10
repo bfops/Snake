@@ -9,16 +9,15 @@ const double SnakeSegment::HUNGRY = 0;
 static const Color24 segmentColor(0, 255, 0);
 
 SnakeSegment::SnakeSegment() :
-	WorldObject(snake), direction(Direction::empty)
+	WorldObject(snake, segmentColor), direction(Direction::empty)
 {
 }
 
 SnakeSegment::SnakeSegment(Snake* const _parent, Point location, Direction _direction, unsigned int _width) :
-	WorldObject(snake), direction(_direction)
+	WorldObject(snake, segmentColor), direction(_direction)
 {
 	parent = _parent;
 	width = _width;
-	color = segmentColor;
 	bounds.min = location;
 	bounds.max = location;
 

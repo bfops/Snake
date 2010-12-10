@@ -43,9 +43,9 @@ public:
 
 	void EmptyTailNotify(ZippedUniqueObjectList& gameObjects);
 
-	/// change the Snake's direction to that provided
+	// change the Snake's direction to that provided
 	void ChangeDirection(Direction newDirection, ZippedUniqueObjectList& gameObjects);
-	/// turn the snake relative to the direction provided
+	// turn the snake relative to the direction provided
 	void Turn(Direction turnDirection, ZippedUniqueObjectList& gameObjects);
 
 	void Update(ZippedUniqueObjectList& gameObjects);
