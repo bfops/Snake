@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Bounds.hpp"
-#include "ConfigLoader.hpp"
 
 #ifdef MSVC
 #pragma warning(push, 0)
 #endif
 
 #include <string>
+#include <vector>
 
 #ifdef MSVC
 #pragma warning(pop)
@@ -36,25 +36,26 @@ struct Config
 		// musical
 		std::string gameIntro, theme, startup;
 	};
+	
+	struct WallData
+	{
+		unsigned int x, y, w, h;
+	};
 
 	bool survival, music;
 
 	unsigned short FPS;
 
-	unsigned short numberOfWalls;
-
 	unsigned int spawnPeriod, spawnSize;
 	unsigned int sentinelSize;
 
 	Bounds worldBounds;
+	std::vector<WallData> wallData;
 
 	unsigned int pointGainPeriod, pointGainAmount;
 
 	SnakeConfig snake;
 	Resources resources;
-
-	// TODO: remove ConfigLoader from Config
-	ConfigLoader loader;
 
 	static Config& Get();
 };

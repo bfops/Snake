@@ -25,16 +25,18 @@ public:
 
 	void Load(std::istream& configInput);
 
+	// returns true iff the field was found
 	template <typename _T>
-	void Pop(const std::string& fieldName, _T& dest) const
+	bool Pop(const std::string& fieldName, _T& dest) const
 	{
 		const FieldMap::const_iterator result = fields.find(fieldName);
 
-		// TODO: error here
 		if(result == fields.end())
-			return;
+			return false;
 
 		std::stringstream in(result->second);
 		in >> dest;
+
+		return true;
 	}
 };

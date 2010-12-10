@@ -34,33 +34,15 @@ using namespace boost;
 
 static Logger::Handle logger(Logger::RequestHandle("GameWorld"));
 
-static inline std::string get_wall_name(const unsigned short i, const char* specifier)
-{
-	std::stringstream s;
-	s << "wall"
-	  << i
-	  << specifier;
-
-	return s.str();
-}
-
 static inline void make_walls(GameWorld::WallBox& walls)
 {
 	walls.clear();
 
-	const unsigned short nWalls = Config::Get().numberOfWalls;
-	for(unsigned short i = 0; i < nWalls; ++i)
+	for each(const Config::WallData& wallData in Config::Get().wallData)
 	{
-		unsigned int x, y, w, h;
-		Config::Get().loader.Pop(get_wall_name(i, "MinX"), x);
-		Config::Get().loader.Pop(get_wall_name(i, "MinY"), y);
-		Config::Get().loader.Pop(get_wall_name(i, "MaxX"), w);
-		Config::Get().loader.Pop(get_wall_name(i, "MaxY"), h);
-
-		w -= x;
-		h -= y;
-
-		walls.push_back(Wall(Point(x, y), w, h));
+		const Point upperLeftBound(wallData.x, wallData.y);
+		const Wall newWall(upperLeftBound, wallData.w, wallData.h);
+		walls.push_back(newWall);
 	}
 }
 
