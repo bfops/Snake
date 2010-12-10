@@ -1,5 +1,9 @@
 #include "ConfigLoader.hpp"
 
+#include "Logger.hpp"
+
+static Logger::Handle logger = Logger::RequestHandle("ConfigLoader");
+
 ConfigLoader::ConfigLoader()
 {
 }
@@ -17,7 +21,9 @@ void ConfigLoader::Load(std::istream& in)
 		std::string value;
 		in >> key >> value;
 
-		// TODO: check for overwrite first
-		fields[key] = value;
+		if(fields.find(key) == fields.end())
+			fields[key] = value;
+		else
+			logger.Debug(boost::format("Field \"%1%\" already exists") % key);
 	}
 }
