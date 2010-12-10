@@ -14,15 +14,13 @@
 
 using namespace std;
 
-static Logger::Handle logger = Logger::RequestHandle("Screen");
-
 Screen::Screen(unsigned long _width, unsigned long _height) :
 	width(_width), height(_height), bgColor(0, 0, 0)
 {
 	screen = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE);
 
 	if(screen == NULL)
-		logger.Fatal(boost::format("Error creating screen: %1%") % SDL_GetError());
+		Logger::Fatal(boost::format("Error creating screen: %1%") % SDL_GetError());
 }
 
 Screen::~Screen()
@@ -49,7 +47,7 @@ Point Screen::GetBounds() const
 void Screen::Update()
 {
 	if(SDL_Flip(screen) != 0)
-		logger.Fatal(boost::format("Error updating screen: %1%") % SDL_GetError());
+		Logger::Fatal(boost::format("Error updating screen: %1%") % SDL_GetError());
 }
 
 void Screen::Clear()

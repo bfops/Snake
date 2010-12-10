@@ -12,29 +12,23 @@
 #pragma warning(pop)
 #endif
 
-typedef boost::mutex Mut;
-typedef boost::unique_lock<Mut> Lock;
-
-static Mut ioProtection;
-
-static void write(const char* type, const char* tag, const char* message)
+static inline void write(const char* type, const char* message)
 {
-	Lock w(ioProtection);
-	printf("%s -> [%s]: %s\n", type, tag, message);
+	printf("[%s] %s\n", type, message);
 }
 
 namespace Logger
 {
 #ifndef NDEBUG
-	void Handle::Debug(const char* message) const
+	void Debug(const char* message)
 	{
-		write("D", tag, message);
+		write("Debug", message);
 	}
 #endif
 
-	void Handle::Fatal(const char* message) const
+	void Fatal(const char* message)
 	{
-		write("F", tag, message);
+		write("Fatal", message);
 		throw std::runtime_error(message);
 	}
 }

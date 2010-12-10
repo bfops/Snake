@@ -30,8 +30,6 @@
 using namespace boost;
 using namespace std;
 
-static Logger::Handle logger(Logger::RequestHandle("main()"));
-
 static EventHandler::QuitCallbackType quit_handler;
 static EventHandler::LossCallbackType loss_handler;
 static EventHandler::PauseCallbackType default_pause_handler;
@@ -132,12 +130,12 @@ static void game_loop()
 		}
 		if(lost)
 		{
-			DEBUGLOG(logger, "DEATH")
+			Logger::Debug("DEATH");
 			gameWorld->Reset();
 		}
 		lost = false;
 	}
-	DEBUGLOG(logger, "Quit called")
+	Logger::Debug("Quit called");
 }
 
 static void quit_handler()

@@ -32,8 +32,6 @@
 
 using namespace boost;
 
-static Logger::Handle logger(Logger::RequestHandle("GameWorld"));
-
 static inline void make_walls(GameWorld::WallBox& walls)
 {
 	walls.clear();
@@ -53,7 +51,7 @@ static void sound_playing_thread(const std::string& filename)
 	int channel;
 	if(sound == NULL || (channel = Mix_PlayChannel(-1, sound, 0)) == -1)
 	{
-		logger.Fatal(format("Error playing sound \"%1%\": %2%") % filename.c_str() % Mix_GetError());
+		Logger::Fatal(format("Error playing sound \"%1%\": %2%") % filename.c_str() % Mix_GetError());
 		return;
 	}
 
@@ -151,7 +149,7 @@ void GameWorld::FoodLoop()
 			)
 
 			play_spawn_sound();
-			logger.Debug("Food spawn");
+			Logger::Debug("Food spawn");
 		}
 
 		SDL_Delay(100);
@@ -187,7 +185,7 @@ void GameWorld::MineLoop()
 			)
 
 			play_spawn_sound();
-			logger.Debug("Mine spawn");
+			Logger::Debug("Mine spawn");
 		}
 
 		SDL_Delay(100);
@@ -254,7 +252,7 @@ static Direction get_direction_from_key(const SDLKey key)
 			return Direction::down;
 
 		default:
-			logger.Fatal("Invalid key somehow passed to get_direction_from_key");
+			Logger::Fatal("Invalid key somehow passed to get_direction_from_key");
 			return Direction::empty;
 	}
 }

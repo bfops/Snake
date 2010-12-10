@@ -4,8 +4,6 @@
 #include "custom_algorithm.hpp"
 #include "Logger.hpp"
 
-static Logger::Handle logger = Logger::RequestHandle("UniqueObjectList");
-
 static inline bool object_exists(const UniqueObjectList::CollectionType& list, const WorldObject* val)
 {
 	return in(list.begin(), list.end(), val);
@@ -13,12 +11,16 @@ static inline bool object_exists(const UniqueObjectList::CollectionType& list, c
 
 void UniqueObjectList::Add(WorldObject& obj)
 {
-	DEBUGLOGIF(object_exists(objects, &obj), logger, boost::format("Object %1% already exists.") % &obj)
+	if(object_exists(objects, &obj))
+		Logger::Debug(boost::format("Object %1% already exists.") % &obj);
+
 	objects.push_back(&obj);
 }
 
 void UniqueObjectList::Remove(WorldObject& obj)
 {
-	DEBUGLOGIF(!object_exists(objects, &obj), logger, boost::format("Object %1% does not exist.") % &obj)
+	if(!object_exists(objects, &obj))
+		Logger::Debug(boost::format("Object %1% does not exist.") % &obj);
+
 	unordered_find_and_remove(objects, &obj);
 }

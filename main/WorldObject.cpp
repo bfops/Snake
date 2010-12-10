@@ -15,8 +15,6 @@
 
 using namespace std;
 
-static Logger::Handle logger(Logger::RequestHandle("WorldObject"));
-
 WorldObject::WorldObject(ObjectType _type) :
 	type(_type)
 {
@@ -29,7 +27,7 @@ WorldObject::ObjectType WorldObject::GetObjectType() const
 
 void WorldObject::CollisionHandler(WorldObject&) const
 {
-	logger.Fatal(boost::format("Subclass %1% did not override CollisionHandler()") % GetObjectType());
+	Logger::Fatal(boost::format("Subclass %1% did not override CollisionHandler()") % GetObjectType());
 }
 
 void WorldObject::CollisionHandler(const Food&)
@@ -66,7 +64,7 @@ void WorldObject::Draw(Screen& target) const
 	{
 		string error = "Error drawing to screen: ";
 		error += SDL_GetError();
-		logger.Fatal(error.c_str());
+		Logger::Fatal(error.c_str());
 	}
 
 	SDL_FreeSurface(surface);

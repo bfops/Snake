@@ -2,8 +2,6 @@
 
 #include "Logger.hpp"
 
-static Logger::Handle logger = Logger::RequestHandle("ConfigLoader");
-
 ConfigLoader::ConfigLoader()
 {
 }
@@ -24,6 +22,6 @@ void ConfigLoader::Load(std::istream& in)
 		if(fields.find(key) == fields.end())
 			fields[key] = value;
 		else
-			logger.Debug(boost::format("Field \"%1%\" already exists") % key);
+			Logger::Debug(boost::format("Field \"%1%\" already exists") % key);
 	}
 }

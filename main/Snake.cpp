@@ -23,7 +23,6 @@ using namespace std;
 using namespace boost;
 
 const static Direction directions[] = {Direction::left, Direction::right, Direction::up, Direction::down};
-static Logger::Handle logger(Logger::RequestHandle("Snake"));
 
 Snake::Snake(Point center, ZippedUniqueObjectList& gameObjects)
 {
@@ -158,13 +157,13 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects)
 	while(pointTimer.ResetIfHasElapsed(Config::Get().pointGainPeriod))
 	{
 		points += Config::Get().pointGainAmount;
-		DEBUGLOG(logger, format("%1% points gained! (total %2%)") % Config::Get().pointGainAmount % points)
+		Logger::Debug(format("%1% points gained! (total %2%)") % Config::Get().pointGainAmount % points);
 	}
 
 	while(speedupTimer.ResetIfHasElapsed(Config::Get().snake.speedupPeriod))
 	{
 		speed += Config::Get().snake.speedupAmount;
-		DEBUGLOG(logger, format("Speeding up by %1%") % Config::Get().snake.speedupAmount)
+		Logger::Debug(format("Speeding up by %1%") % Config::Get().snake.speedupAmount);
 	}
 
 	while(moveTimer.ResetIfHasElapsed(1000 / speed))
@@ -201,6 +200,6 @@ void Snake::EatFood(const Food& foodObj)
 
 	Grow(growthAmount);
 
-	DEBUGLOG(logger, format("Growing by %1%") % growthAmount)
-	DEBUGLOG(logger, format("Got %1% points! (total %2%)") % pointsGained % points);
+	Logger::Debug(format("Growing by %1%") % growthAmount);
+	Logger::Debug(format("Got %1% points! (total %2%)") % pointsGained % points);
 }

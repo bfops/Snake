@@ -15,8 +15,6 @@
 
 using namespace boost;
 
-static Logger::Handle logger(Logger::RequestHandle("Music"));
-
 Music::Music()
 {
 	music = NULL;
@@ -26,7 +24,7 @@ Music::Music(const std::string& filename)
 {
 	music = Mix_LoadMUS(filename.c_str());
 	if(music == NULL)
-		logger.Fatal(format("Error playing music \"%1%\": %2%") % filename.c_str() % Mix_GetError());
+		Logger::Fatal(format("Error playing music \"%1%\": %2%") % filename.c_str() % Mix_GetError());
 	Mix_PlayMusic(music, -1);
 }
 

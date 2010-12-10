@@ -11,21 +11,6 @@ inline int round(const double d)
 #define DEBUG
 #endif
 
-#ifdef DEBUG
-#define DEBUGLOG(logger, string) \
-	logger.Debug(string);
-#else
-#define DEBUGLOG(logger, string) ;
-#endif
-
-#ifdef DEBUG
-#define DEBUGLOGIF(func, logger, string) \
-	if(func) \
-		DEBUGLOG(logger, string)
-#else
-#define DEBUGLOGIF(func, logger, string) ;
-#endif
-
 #define DOLOCKED(mutex, thingsToDo) mutex.lock(); \
 	thingsToDo \
 	mutex.unlock();
