@@ -64,8 +64,6 @@ int main(int, char*[])
 {
 	Music* music = NULL;
 	std::ifstream configFile("game.cfg");
-	if(!load_game_config(configFile))
-		logger.Fatal("Loading failed!");
 
 	quit = lost = paused = false;
 	// keep SDL active as long as this is in scope
@@ -110,89 +108,6 @@ int main(int, char*[])
 		delete music;
 
 	return 0;
-}
-
-static inline std::string get_wall_data_name(const unsigned short i, const char* specifier)
-{
-	std::stringstream s;
-	s << "wall"
-	  << i
-	  << specifier;
-
-	return s.str();
-}
-// TODO: place this config-loading responsibility inside ConfigLoader
-static bool load_game_config(istream& inputStream)
-{
-	bool success = true;
-	// TODO: fail on [errors in loading]
-	Config& config = Config::Get();
-	ConfigLoader in(inputStream);
-
-	success &= in.Pop("survival", config.survival);
-	success &= in.Pop("music", config.music);
-	success &= in.Pop("FPS", config.FPS);
-
-	success &= in.Pop("resourceEat", config.resources.eat);
-	success &= in.Pop("resourceSpawn", config.resources.spawn);
-	success &= in.Pop("resourceDie", config.resources.die);
-	success &= in.Pop("resourceIntro", config.resources.gameIntro);
-	success &= in.Pop("resourceTheme", config.resources.theme);
-	success &= in.Pop("resourceStartup", config.resources.startup);
-
-	bool wallLoaded = true;
-	for(unsigned short i = 0; wallLoaded; ++i)
-	{
-		unsigned int x, y, w, h;
-		wallLoaded &= in.Pop(get_wall_data_name(i, "MinX"), x);
-		wallLoaded &= in.Pop(get_wall_data_name(i, "MinY"), y);
-		wallLoaded &= in.Pop(get_wall_data_name(i, "MaxX"), w);
-		wallLoaded &= in.Pop(get_wall_data_name(i, "MaxY"), h);
-
-		if(wallLoaded)
-		{
-			w -= x;
-			h -= y;
-
-			const Config::WallData newWall = {x, y, w, h};;
-			config.wallData.push_back(newWall);
-		}
-	}
-
-	success &= in.Pop("worldBoundsMinX", config.worldBounds.min.x);
-	success &= in.Pop("worldBoundsMinY", config.worldBounds.min.y);
-	success &= in.Pop("worldBoundsMaxX", config.worldBounds.max.x);
-	success &= in.Pop("worldBoundsMaxY", config.worldBounds.max.y);
-
-	if(config.survival)
-	{
-		success &= in.Pop("mineAdditionPeriod", config.spawnPeriod);
-		success &= in.Pop("mineSize", config.spawnSize);
-		success &= in.Pop("mineSentinelSize", config.sentinelSize);
-
-		success &= in.Pop("survivalPointGainPeriod", config.pointGainPeriod);
-		success &= in.Pop("survivalPointGainAmount", config.pointGainAmount);
-		success &= in.Pop("survivalSnakeSpeedupPeriod", config.snake.speedupPeriod);
-	}
-	else
-	{
-		success &= in.Pop("foodAdditionPeriod", config.spawnPeriod);
-		success &= in.Pop("foodSize", config.spawnSize);
-		success &= in.Pop("foodSentinelSize", config.sentinelSize);
-
-		success &= in.Pop("normalPointGainPeriod", config.pointGainPeriod);
-		success &= in.Pop("normalPointGainAmount", config.pointGainAmount);
-		success &= in.Pop("normalSnakeSpeedupPeriod", config.snake.speedupPeriod);
-	}
-
-	success &= in.Pop("snakeDefaultLength", config.snake.startingLength);
-	success &= in.Pop("snakeWidth", config.snake.width);
-	success &= in.Pop("snakeDefaultSpeed", config.snake.startingSpeed);
-	success &= in.Pop("snakeSpeedupAmount", config.snake.speedupAmount);
-	success &= in.Pop("snakeGrowthCap", config.snake.growthCap);
-	success &= in.Pop("snakeGrowthRate", config.snake.growthRate);
-
-	return success;
 }
 
 static void physics_loop()

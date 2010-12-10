@@ -57,5 +57,8 @@ struct Config
 	SnakeConfig snake;
 	Resources resources;
 
-	static Config& Get();
+	Config();
+	Config(std::istream& configInputStream);
+
+	static const Config& Get();
 };
