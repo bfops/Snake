@@ -24,14 +24,14 @@ using namespace boost;
 
 const static Direction directions[] = {Direction::left, Direction::right, Direction::up, Direction::down};
 
-Snake::Snake(Point center, ZippedUniqueObjectList& gameObjects)
+Snake::Snake(const Point center, ZippedUniqueObjectList& gameObjects)
 {
 	Init(center, gameObjects);
 }
 
-void Snake::AddSegment(Point location, Direction direction, ZippedUniqueObjectList& gameObjects)
+void Snake::AddSegment(const Point location, const Direction direction, ZippedUniqueObjectList& gameObjects)
 {
-	SnakeSegment newSegment(this, location, direction, Config::Get().snake.width);
+	const SnakeSegment newSegment(this, location, direction, Config::Get().snake.width);
 	
 	DOLOCKEDZ(gameObjects,
 		gameObjects.RemoveRange(path.begin(), path.end());
@@ -40,7 +40,7 @@ void Snake::AddSegment(Point location, Direction direction, ZippedUniqueObjectLi
 	)
 }
 
-void Snake::Grow(int amount)
+void Snake::Grow(const int amount)
 {
 	if((int)projectedLength + amount < (int)Config::Get().snake.startingLength)
 		projectedLength = Config::Get().snake.startingLength;
@@ -64,7 +64,7 @@ static inline Direction get_random_direction()
 	return directions[randomNumber % countof(directions)];
 }
 
-void Snake::Init(Point center, ZippedUniqueObjectList& gameObjects)
+void Snake::Init(const Point center, ZippedUniqueObjectList& gameObjects)
 {
 	points = 0;
 	Point headLocation = center;
@@ -81,7 +81,7 @@ void Snake::Init(Point center, ZippedUniqueObjectList& gameObjects)
 	AddSegment(headLocation, get_random_direction(), gameObjects);
 }
 
-void Snake::Reset(Point center, ZippedUniqueObjectList& gameObjects)
+void Snake::Reset(const Point center, ZippedUniqueObjectList& gameObjects)
 {
 	moveTimer.Reset();
 	speedupTimer.Reset();
@@ -98,24 +98,27 @@ void Snake::Reset(Point center, ZippedUniqueObjectList& gameObjects)
 void Snake::EmptyTailNotify(ZippedUniqueObjectList& gameObjects)
 {
 	DOLOCKEDZ(gameObjects,
-		gameObjects.Remove(Tail());
+		gameObjects.RemoveRange(path.begin(), path.end());
 	)
 	path.pop_back();
+	DOLOCKEDZ(gameObjects,
+		gameObjects.AddRange(path.begin(), path.end());
+	)
 }
 
-void Snake::ChangeDirection(Direction newDirection, ZippedUniqueObjectList& gameObjects)
+void Snake::ChangeDirection(const Direction newDirection, ZippedUniqueObjectList& gameObjects)
 {
-	Direction direction(Head().GetDirection());
+	const Direction direction(Head().GetDirection());
 
 	if(newDirection != direction && newDirection != -direction && Head().GetWidth() >= 2 * Config::Get().snake.width)
 	{
 		// the point to start is the _direction_
 		// side of the current head
-		Bounds headBlock = Head().GetHeadSquare();
+		const Bounds headBlock = Head().GetHeadSquare();
 		// remove the head block from this segment
 		Head().SetHeadSide(headBlock.GetSide(-direction));
 		// take on the head block from the old segment
-		Side startSide = headBlock.GetSide(-newDirection);
+		const Side startSide = headBlock.GetSide(-newDirection);
 
 		AddSegment(startSide.min, newDirection, gameObjects);
 		// stretch this segment so that its initial size
@@ -132,7 +135,7 @@ static inline unsigned int get_bounded_index(const int unboundedIndex, const uns
 	return unsigned int(unboundedIndex) % arraySize;
 }
 
-static Direction get_turned_direction(Direction direction, Direction turn)
+static Direction get_turned_direction(const Direction direction, const Direction turn)
 {
 	assert(turn == Direction::left || turn == Direction::right);
 
@@ -146,27 +149,27 @@ static Direction get_turned_direction(Direction direction, Direction turn)
 	return Direction::empty;
 }
 
-void Snake::Turn(Direction turn, ZippedUniqueObjectList& gameObjects)
+void Snake::Turn(const Direction turn, ZippedUniqueObjectList& gameObjects)
 {
-	Direction direction(Head().GetDirection());
+	const Direction direction(Head().GetDirection());
 	ChangeDirection(get_turned_direction(direction, turn), gameObjects);
 }
 
 void Snake::Update(ZippedUniqueObjectList& gameObjects)
 {
-	while(pointTimer.ResetIfHasElapsed(Config::Get().pointGainPeriod))
+	if(pointTimer.ResetIfHasElapsed(Config::Get().pointGainPeriod))
 	{
 		points += Config::Get().pointGainAmount;
 		Logger::Debug(format("%1% points gained! (total %2%)") % Config::Get().pointGainAmount % points);
 	}
 
-	while(speedupTimer.ResetIfHasElapsed(Config::Get().snake.speedupPeriod))
+	if(speedupTimer.ResetIfHasElapsed(Config::Get().snake.speedupPeriod))
 	{
 		speed += Config::Get().snake.speedupAmount;
 		Logger::Debug(format("Speeding up by %1%") % Config::Get().snake.speedupAmount);
 	}
 
-	while(moveTimer.ResetIfHasElapsed(1000 / speed))
+	if(moveTimer.ResetIfHasElapsed(1000 / speed))
 	{
 		Head().Grow(gameObjects);
 

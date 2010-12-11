@@ -131,7 +131,7 @@ void GameWorld::FoodLoop()
 
 	while(!reset)
 	{
-		while(foodTimer.ResetIfHasElapsed(Config::Get().spawnPeriod))
+		if(foodTimer.ResetIfHasElapsed(Config::Get().spawnPeriod))
 		{
 			Sentinel sentinel(get_new_sentinel(Config::Get().sentinelSize, Config::Get().worldBounds));
 			while(Physics::AnyCollide(sentinel, gameObjects.physics))
@@ -142,9 +142,8 @@ void GameWorld::FoodLoop()
 
 			DOLOCKEDZ(gameObjects,
 				DOLOCKED(foodMutex,
-					gameObjects.RemoveRange(foods.begin(), foods.end());
 					foods.push_back(Food(sentinel, Config::Get().spawnSize, get_food_type()));
-					gameObjects.AddRange(foods.begin(), foods.end());
+					gameObjects.Add(*foods.rbegin());
 				)
 			)
 
@@ -169,7 +168,7 @@ void GameWorld::MineLoop()
 
 	while(!reset)
 	{
-		while(mineTimer.ResetIfHasElapsed(Config::Get().spawnPeriod))
+		if(mineTimer.ResetIfHasElapsed(Config::Get().spawnPeriod))
 		{
 			Sentinel sentinel(get_new_sentinel(Config::Get().sentinelSize, Config::Get().worldBounds));
 			while(Physics::AnyCollide(sentinel, gameObjects.physics))
@@ -179,9 +178,8 @@ void GameWorld::MineLoop()
 			}
 
 			DOLOCKEDZ(gameObjects,
-				gameObjects.RemoveRange(mines.begin(), mines.end());
 				mines.push_back(Mine(sentinel, Config::Get().spawnSize));
-				gameObjects.AddRange(mines.begin(), mines.end());
+				gameObjects.Add(*mines.rbegin());
 			)
 
 			play_spawn_sound();
@@ -302,21 +300,18 @@ void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
 		else if(collisionType & WorldObject::food)
 		{
 			DOLOCKED(foodMutex,
-				DOLOCKEDZ(gameObjects,
-					gameObjects.RemoveRange(foods.begin(), foods.end());
-				)
 				Food* const toRemove = reinterpret_cast<Food*>((o1.GetObjectType() == WorldObject::food) ? &o1 : &o2);
 				for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
 				{
 					if(&*i == toRemove)
 					{
+						DOLOCKEDZ(gameObjects,
+							gameObjects.Remove(*i);
+						)
 						foods.erase(i);
 						break;
 					}
 				}
-				DOLOCKEDZ(gameObjects,
-					gameObjects.AddRange(foods.begin(), foods.end());
-				)
 			)
 			play_eat_sound();
 		}
