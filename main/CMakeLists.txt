@@ -3,7 +3,6 @@ add_executable(GingerbreadPrototype
 
 	Bounds.cpp
 	Bounds.hpp
-	cgq.hpp
 	Clock.cpp
 	Clock.hpp
 	collision.c

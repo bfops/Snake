@@ -20,7 +20,7 @@
 #endif
 
 using namespace std;
-using namespace boost;
+using boost::minstd_rand;
 
 const static Direction directions[] = {Direction::left, Direction::right, Direction::up, Direction::down};
 
@@ -33,10 +33,11 @@ void Snake::AddSegment(const Point location, const Direction direction, ZippedUn
 {
 	const SnakeSegment newSegment(this, location, direction, Config::Get().snake.width);
 	
-	DOLOCKEDZ(gameObjects,
-		gameObjects.RemoveRange(path.begin(), path.end());
+	DOLOCKED(pathMutex,
 		path.push_front(newSegment);
-		gameObjects.AddRange(path.begin(), path.end());
+		DOLOCKEDZ(gameObjects,
+			gameObjects.Add(Head());
+		)
 	)
 }
 
@@ -78,7 +79,9 @@ void Snake::Init(const Point center, ZippedUniqueObjectList& gameObjects)
 	length = 0;
 	projectedLength = Config::Get().snake.startingLength;
 	
-	AddSegment(headLocation, get_random_direction(), gameObjects);
+	DOLOCKED(pathMutex,
+		AddSegment(headLocation, get_random_direction(), gameObjects);
+	)
 }
 
 void Snake::Reset(const Point center, ZippedUniqueObjectList& gameObjects)
@@ -87,44 +90,53 @@ void Snake::Reset(const Point center, ZippedUniqueObjectList& gameObjects)
 	speedupTimer.Reset();
 	pointTimer.Reset();
 	
-	DOLOCKEDZ(gameObjects,
-		gameObjects.RemoveRange(path.begin(), path.end());
+	DOLOCKED(pathMutex,
+		DOLOCKEDZ(gameObjects,
+			gameObjects.RemoveRange(path.begin(), path.end());
+		)
+		path.clear();
 	)
-	path.clear();
 
 	Init(center, gameObjects);
 }
 
 void Snake::EmptyTailNotify(ZippedUniqueObjectList& gameObjects)
 {
-	DOLOCKEDZ(gameObjects,
-		gameObjects.RemoveRange(path.begin(), path.end());
-	)
-	path.pop_back();
-	DOLOCKEDZ(gameObjects,
-		gameObjects.AddRange(path.begin(), path.end());
+	DOLOCKED(pathMutex,
+		DOLOCKEDZ(gameObjects,
+			gameObjects.Remove(Tail());
+		)
+		path.pop_back();
 	)
 }
 
 void Snake::ChangeDirection(const Direction newDirection, ZippedUniqueObjectList& gameObjects)
 {
-	const Direction direction(Head().GetDirection());
+	DOLOCKED(pathMutex,
+		const Direction direction(Head().GetDirection());
 
-	if(newDirection != direction && newDirection != -direction && Head().GetWidth() >= 2 * Config::Get().snake.width)
-	{
-		// the point to start is the _direction_
-		// side of the current head
-		const Bounds headBlock = Head().GetHeadSquare();
-		// remove the head block from this segment
-		Head().SetHeadSide(headBlock.GetSide(-direction));
-		// take on the head block from the old segment
-		const Side startSide = headBlock.GetSide(-newDirection);
+		if(newDirection != direction && newDirection != -direction && Head().GetWidth() >= 2 * Config::Get().snake.width)
+		{
+			// the point to start is the _direction_
+			// side of the current head
+			const Bounds headBlock = Head().GetHeadSquare();
+			// shrink the segment so it doesn't include _headBlock_
+			Head().SetHeadSide(headBlock.GetSide(-direction));
+			// the new segment should include _headBlock_
+			const Side startSide = headBlock.GetSide(-newDirection);
 
-		AddSegment(startSide.min, newDirection, gameObjects);
-		// stretch this segment so that its initial size
-		// is enough to cover the head block
-		Head().SetHeadSide(headBlock.GetSide(newDirection));
-	}
+			boost::format output = boost::format("Adding (%5%,%6%),(%7%,%8%) \
+								 Head: (%1%,%2%),(%3%,%4%)") %
+								 Head().GetBounds().min.x % Head().GetBounds().min.y %
+								 Head().GetBounds().max.x % Head().GetBounds().max.y;
+			AddSegment(startSide.min, newDirection, gameObjects);
+			// stretch this segment so that its initial size
+			// is enough to cover the head block
+			Head().SetHeadSide(headBlock.GetSide(newDirection));
+			Logger::Debug(output % Head().GetBounds().min.x % Head().GetBounds().min.y %
+				Head().GetBounds().max.x % Head().GetBounds().max.y);
+		}
+	)
 }
 
 static inline unsigned int get_bounded_index(const int unboundedIndex, const unsigned int arraySize)
@@ -151,7 +163,10 @@ static Direction get_turned_direction(const Direction direction, const Direction
 
 void Snake::Turn(const Direction turn, ZippedUniqueObjectList& gameObjects)
 {
-	const Direction direction(Head().GetDirection());
+	Direction direction;
+	DOLOCKED(pathMutex,
+		direction = Direction(Head().GetDirection());
+	)
 	ChangeDirection(get_turned_direction(direction, turn), gameObjects);
 }
 
@@ -160,30 +175,32 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects)
 	if(pointTimer.ResetIfHasElapsed(Config::Get().pointGainPeriod))
 	{
 		points += Config::Get().pointGainAmount;
-		Logger::Debug(format("%1% points gained! (total %2%)") % Config::Get().pointGainAmount % points);
+		Logger::Debug(boost::format("%1% points gained! (total %2%)") % Config::Get().pointGainAmount % points);
 	}
 
 	if(speedupTimer.ResetIfHasElapsed(Config::Get().snake.speedupPeriod))
 	{
 		speed += Config::Get().snake.speedupAmount;
-		Logger::Debug(format("Speeding up by %1%") % Config::Get().snake.speedupAmount);
+		Logger::Debug(boost::format("Speeding up by %1%") % Config::Get().snake.speedupAmount);
 	}
 
 	if(moveTimer.ResetIfHasElapsed(1000 / speed))
 	{
-		Head().Grow(gameObjects);
+		DOLOCKED(pathMutex,
+			Head().Grow(gameObjects);
 
-		if(length > projectedLength)
-		{
-			Tail().Shrink(gameObjects);
-			--length;
-		}
+			if(length > projectedLength)
+			{
+				Tail().Shrink(gameObjects);
+				--length;
+			}
 
-		// if we need more length, just don't shrink the tail
-		if(length < projectedLength)
-			++length;
-		else
-			Tail().Shrink(gameObjects);
+			// if we need more length, just don't shrink the tail
+			if(length < projectedLength)
+				++length;
+			else
+				Tail().Shrink(gameObjects);
+		)
 	}
 }
 
@@ -203,6 +220,6 @@ void Snake::EatFood(const Food& foodObj)
 
 	Grow(growthAmount);
 
-	Logger::Debug(format("Growing by %1%") % growthAmount);
-	Logger::Debug(format("Got %1% points! (total %2%)") % pointsGained % points);
+	Logger::Debug(boost::format("Growing by %1%") % growthAmount);
+	Logger::Debug(boost::format("Got %1% points! (total %2%)") % pointsGained % points);
 }

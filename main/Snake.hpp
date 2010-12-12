@@ -1,9 +1,19 @@
 #pragma once
 
-#include "cgq.hpp"
 #include "Common.hpp"
 #include "SnakeSegment.hpp"
 #include "Timer.hpp"
+
+#ifdef MSVC
+#pragma warning(push, 0)
+#endif
+
+#include <boost/thread/recursive_mutex.hpp>
+#include <list>
+
+#ifdef MSVC
+#pragma warning(pop)
+#endif
 
 class Direction;
 class GameWorld;
@@ -13,9 +23,11 @@ struct ZippedUniqueObjectList;
 class Snake
 {
 public:
-	typedef cgq<SnakeSegment> Path;
+	typedef std::list<SnakeSegment> Path;
 
 private:
+	boost::recursive_mutex pathMutex;
+
 	unsigned int length;
 	unsigned int projectedLength;
 	Path path;
