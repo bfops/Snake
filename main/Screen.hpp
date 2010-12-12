@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Color24.hpp"
-#include "Point.hpp"
+
+struct Point;
 
 class Screen
 {

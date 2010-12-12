@@ -1,10 +1,7 @@
 #include "SnakeSegment.hpp"
 
-#include "Food.hpp"
 #include "Side.hpp"
 #include "Snake.hpp"
-
-const double SnakeSegment::HUNGRY = 0;
 
 static const Color24 segmentColor(0, 255, 0);
 

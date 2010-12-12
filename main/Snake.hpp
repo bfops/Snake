@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Common.hpp"
 #include "SnakeSegment.hpp"
 #include "Timer.hpp"
 

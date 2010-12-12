@@ -1,9 +1,7 @@
 #pragma once
 
-#include "Common.hpp"
 #include "Mine.hpp"
 #include "Food.hpp"
-#include "Sentinel.hpp"
 #include "Snake.hpp"
 #include "Timer.hpp"
 #include "Wall.hpp"
@@ -12,7 +10,6 @@
 #pragma warning(push, 0)
 #endif
 
-#include <boost/array.hpp>
 #include <boost/thread.hpp>
 #include <list>
 #include <SDL_events.h>

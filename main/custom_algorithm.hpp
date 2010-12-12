@@ -11,6 +11,10 @@
 
 #include <boost/bind/bind.hpp>
 
+#ifdef MSVC
+#pragma warning(pop)
+#endif
+
 // Removes an element _i_ from a vector _v_ in constant time. The only caveat
 // is that the order of the vector will not necessarily be maintained.
 template <typename _T>

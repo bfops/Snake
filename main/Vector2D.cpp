@@ -1,7 +1,5 @@
 #include "Vector2D.hpp"
 
-#include "Common.hpp"
-
 Vector2D::Vector2D() :
 	x(0), y(0)
 {

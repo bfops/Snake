@@ -8,6 +8,7 @@
 #include "Logger.hpp"
 #include "Mine.hpp"
 #include "Physics.hpp"
+#include "Sentinel.hpp"
 #include "Wall.hpp"
 #include "ZippedUniqueObjectList.hpp"
 
@@ -18,13 +19,10 @@
 #include <boost/bind.hpp>
 #include <boost/random.hpp>
 #include <boost/thread.hpp>
-#include <cmath>
-#include <fstream>
 #include <functional>
 #include <SDL_timer.h>
 #include <SDL_mixer.h>
 #include <string>
-#include <sstream>
 
 #ifdef MSVC
 #pragma warning(pop)

@@ -1,7 +1,6 @@
 #include "Clock.hpp"
 #include "Common.hpp"
 #include "Config.hpp"
-#include "ConfigLoader.hpp"
 #include "EventHandler.hpp"
 #include "GameWorld.hpp"
 #include "Graphics.hpp"
@@ -21,7 +20,6 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
 #include <SDL.h>
-#include <SDL_mixer.h>
 
 #ifdef MSVC
 #pragma warning(pop)

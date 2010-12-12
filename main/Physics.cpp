@@ -1,10 +1,10 @@
 #include "Physics.hpp"
 
 #include "Bounds.hpp"
+#include "Common.hpp"
 #include "collision.h"
 #include "GameWorld.hpp"
-#include "WorldObject.hpp"
-#include "ZippedUniqueObjectList.hpp"
+#include "UniqueObjectList.hpp"
 
 #ifdef MSVC
 #pragma warning(push, 0)

@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Sentinel.hpp"
 #include "WorldObject.hpp"
+
+class Sentinel;
 
 class Mine : public WorldObject
 {

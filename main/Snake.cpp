@@ -11,7 +11,6 @@
 #pragma warning(push, 0)
 #endif
 
-#include <boost/any.hpp>
 #include <boost/bind.hpp>
 #include <boost/random.hpp>
 

@@ -1,6 +1,7 @@
 #include "Screen.hpp"
 
 #include "Logger.hpp"
+#include "Point.hpp"
 
 #ifdef MSVC
 #pragma warning(push, 0)

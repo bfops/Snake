@@ -4,7 +4,6 @@
 #pragma warning(push, 0)
 #endif
 
-#include <algorithm>
 #include <boost/bind.hpp>
 #include <boost/thread/mutex.hpp>
 #include <vector>

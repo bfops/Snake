@@ -6,7 +6,6 @@
 
 #include <cstdio>
 #include <stdexcept>
-#include <boost/thread/mutex.hpp>
 
 #ifdef MSVC
 #pragma warning(pop)

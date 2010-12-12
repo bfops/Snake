@@ -10,9 +10,6 @@ struct ZippedUniqueObjectList;
 
 class SnakeSegment : public WorldObject
 {
-public:
-	const static double HUNGRY;
-
 private:
 	unsigned int width;
 	Direction direction;

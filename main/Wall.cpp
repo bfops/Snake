@@ -1,7 +1,6 @@
 #include "Wall.hpp"
 
 #include "Color24.hpp"
-#include "Common.hpp"
 
 static const Color24 wallColor(255, 0, 0);
 

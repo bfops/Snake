@@ -1,4 +1,5 @@
 #include "Bounds.hpp"
+
 #include "Direction.hpp"
 #include "Side.hpp"
 
@@ -54,13 +55,13 @@ Bounds::operator Side() const
 	return retval;
 }
 
-static inline bool validDirection(Direction direction)
+static inline bool validDirection(const Direction direction)
 {
 	return (direction == Direction::left || direction == Direction::right
 		|| direction == Direction::up || direction == Direction::down);
 }
 
-static void transfer_side(const Bounds& input, Bounds& output, Direction whichSide)
+static void transfer_side(const Bounds& input, Bounds& output, const Direction whichSide)
 {
 	assert(validDirection(whichSide));
 	if(whichSide == Direction::left)

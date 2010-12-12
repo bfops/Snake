@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Common.hpp"
-
 #ifdef MSVC
 #pragma warning(push, 0)
 #endif
