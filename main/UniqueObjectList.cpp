@@ -3,7 +3,7 @@
 #include "custom_algorithm.hpp"
 #include "Logger.hpp"
 
-static inline bool object_exists(const UniqueObjectList::CollectionType& list, const WorldObject* val)
+static inline bool object_exists(const UniqueObjectList::CollectionType& list, const WorldObject* const val)
 {
 	return in(list.begin(), list.end(), val);
 }

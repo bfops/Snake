@@ -28,7 +28,8 @@ private:
 	boost::recursive_mutex pathMutex;
 
 	unsigned int length;
-	unsigned int projectedLength;
+	unsigned int targetLength;
+	// all the segments in the snake
 	Path path;
 
 	unsigned int speed;
@@ -39,7 +40,7 @@ private:
 
 	unsigned long long points;
 
-	void AddSegment(Point, Direction, ZippedUniqueObjectList& gameObjects);
+	void AddSegment(Point location, Direction directionOfTravel, ZippedUniqueObjectList& gameObjects);
 	void Grow(int amount);
 
 	inline SnakeSegment& Head();
@@ -52,7 +53,7 @@ public:
 
 	void Reset(Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
 
-	void EmptyTailNotify(ZippedUniqueObjectList& gameObjects);
+	void RemoveEmptyTail(ZippedUniqueObjectList& gameObjects);
 
 	// change the Snake's direction to that provided
 	void ChangeDirection(Direction newDirection, ZippedUniqueObjectList& gameObjects);

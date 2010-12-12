@@ -3,7 +3,9 @@
 class Timer
 {
 private:
+	// the time, last time the time was checked
 	unsigned long lastTime;
+	// the amount of time elapsed
 	unsigned long elapsed;
 
 public:

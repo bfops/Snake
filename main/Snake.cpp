@@ -42,10 +42,10 @@ void Snake::AddSegment(const Point location, const Direction direction, ZippedUn
 
 void Snake::Grow(const int amount)
 {
-	if(projectedLength + amount < Config::Get().snake.startingLength)
-		projectedLength = Config::Get().snake.startingLength;
+	if(targetLength + amount < Config::Get().snake.startingLength)
+		targetLength = Config::Get().snake.startingLength;
 	else
-		projectedLength += amount;
+		targetLength += amount;
 }
 
 inline SnakeSegment& Snake::Head()
@@ -76,7 +76,7 @@ void Snake::Init(const Point center, ZippedUniqueObjectList& gameObjects)
 	speed = Config::Get().snake.startingSpeed;
 
 	length = 0;
-	projectedLength = Config::Get().snake.startingLength;
+	targetLength = Config::Get().snake.startingLength;
 	
 	DOLOCKED(pathMutex,
 		AddSegment(headLocation, get_random_direction(), gameObjects);
@@ -99,7 +99,7 @@ void Snake::Reset(const Point center, ZippedUniqueObjectList& gameObjects)
 	Init(center, gameObjects);
 }
 
-void Snake::EmptyTailNotify(ZippedUniqueObjectList& gameObjects)
+void Snake::RemoveEmptyTail(ZippedUniqueObjectList& gameObjects)
 {
 	DOLOCKED(pathMutex,
 		DOLOCKEDZ(gameObjects,
@@ -114,7 +114,7 @@ void Snake::ChangeDirection(const Direction newDirection, ZippedUniqueObjectList
 	DOLOCKED(pathMutex,
 		const Direction direction(Head().GetDirection());
 
-		if(newDirection != direction && newDirection != -direction && Head().GetWidth() >= 2 * Config::Get().snake.width)
+		if(newDirection != direction && newDirection != -direction && Head().GetLength() >= 2 * Config::Get().snake.width)
 		{
 			// the point to start is the _direction_
 			// side of the current head
@@ -180,19 +180,21 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects)
 	if(moveTimer.ResetIfHasElapsed(1000 / speed))
 	{
 		DOLOCKED(pathMutex,
-			Head().Grow(gameObjects);
+			Head().Grow();
 
-			if(length > projectedLength)
+			if(length > targetLength)
 			{
-				Tail().Shrink(gameObjects);
+				if(Tail().Shrink())
+					RemoveEmptyTail(gameObjects);
 				--length;
 			}
 
 			// if we need more length, just don't shrink the tail
-			if(length < projectedLength)
+			if(length < targetLength)
 				++length;
 			else
-				Tail().Shrink(gameObjects);
+				if(Tail().Shrink())
+					RemoveEmptyTail(gameObjects);
 		)
 	}
 }
@@ -200,7 +202,7 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects)
 void Snake::EatFood(const Food& foodObj)
 {
 	const double foodGrowthConstant = foodObj.GetCalories();
-	const double baseUncappedGrowth = projectedLength * Config::Get().snake.growthRate;
+	const double baseUncappedGrowth = targetLength * Config::Get().snake.growthRate;
 	const double baseRealGrowth = min((double)Config::Get().snake.growthCap, baseUncappedGrowth);
 	const int growthAmount = round(baseRealGrowth * foodGrowthConstant);
 	const int pointsGained = foodObj.GetPoints();

@@ -16,7 +16,8 @@ void Timer::Reset()
 bool Timer::ResetIfHasElapsed(unsigned int c)
 {
 	const unsigned long currentTime = Clock::Get().GetTime();
-	elapsed += currentTime - lastTime;
+	const unsigned long deltaT = currentTime - lastTime;
+	elapsed += deltaT;
 	lastTime = currentTime;
 
 	if(elapsed >= c)

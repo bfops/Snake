@@ -19,6 +19,7 @@ class UniqueObjectList
 public:
 	typedef std::vector<WorldObject*> CollectionType;
 	typedef CollectionType::iterator iterator;
+	typedef CollectionType::const_iterator const_iterator;
 
 private:
 	CollectionType objects;
@@ -37,16 +38,18 @@ public:
 
 	void Add(WorldObject&);
 
+	// add the objects from _begin_ to _end_ to this list
 	template<typename Iter>
-	inline void AddRange(Iter begin, Iter end)
+	inline void AddRange(const Iter begin, const Iter end)
 	{
 		std::for_each(begin, end, boost::bind(&UniqueObjectList::Add, this, _1));
 	}
 
 	void Remove(WorldObject&);
 
+	// remove the objects from _begin_ to _end_ from this list
 	template<typename Iter>
-	inline void RemoveRange(Iter begin, Iter end)
+	inline void RemoveRange(const Iter begin, const Iter end)
 	{
 		std::for_each(begin, end, boost::bind(&UniqueObjectList::Remove, this, _1));
 	}
@@ -56,7 +59,17 @@ public:
 		return objects.begin();
 	}
 
+	inline const_iterator begin() const
+	{
+		return objects.begin();
+	}
+
 	inline iterator end()
+	{
+		return objects.end();
+	}
+
+	inline const_iterator end() const
 	{
 		return objects.end();
 	}

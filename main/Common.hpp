@@ -7,6 +7,8 @@ inline int round(const double d)
 	return int(d + 0.5);
 }
 
-#define DOLOCKED(mutex, thingsToDo) mutex.lock(); \
+// execute _thingsToDo_ while _mutex_ is locked
+#define DOLOCKED(mutex, thingsToDo) \
+	mutex.lock(); \
 	thingsToDo \
 	mutex.unlock();

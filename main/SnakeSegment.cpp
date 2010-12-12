@@ -6,11 +6,12 @@
 static const Color24 segmentColor(0, 255, 0);
 
 SnakeSegment::SnakeSegment() :
-	WorldObject(snake, segmentColor), direction(Direction::empty)
+	WorldObject(snake, segmentColor)
 {
 }
 
-SnakeSegment::SnakeSegment(Snake* const _parent, Point location, Direction _direction, unsigned int _width) :
+SnakeSegment::SnakeSegment(Snake* const _parent, const Point location,
+	const Direction _direction, const unsigned int _width) :
 	WorldObject(snake, segmentColor), direction(_direction)
 {
 	parent = _parent;
@@ -18,7 +19,7 @@ SnakeSegment::SnakeSegment(Snake* const _parent, Point location, Direction _dire
 	bounds.min = location;
 	bounds.max = location;
 
-	// account for segment orientation
+	// if it's moving horizontally, its width is vertical
 	if(direction == Direction::left || direction == Direction::right)
 		bounds.max.y += width;
 	else
@@ -35,37 +36,40 @@ void SnakeSegment::CollisionHandler(const Food& food)
 	parent->EatFood(food);
 }
 
-void SnakeSegment::ModifyLength(const int amount, ZippedUniqueObjectList& gameObjects)
+void SnakeSegment::ModifyLength(const int amount)
 {
 	if(amount > 0)
 	{
+		// move the front side forward by _amount_ (i.e. grow)
 		Side headSide = GetHeadSide();
 		headSide.ApplyVector(direction, amount);
 		SetHeadSide(headSide);
 	}
 	else
 	{
+		// move the back side forward by _amount_ (i.e. shrink)
 		Side tailSide = GetTailSide();
 		tailSide.ApplyVector(direction, -amount);
 		SetTailSide(tailSide);
 	}
-
-	if(bounds.min.x >= bounds.max.x || bounds.min.y >= bounds.max.y)
-		parent->EmptyTailNotify(gameObjects);
 }
 
-void SnakeSegment::Grow(ZippedUniqueObjectList& gameObjects)
+void SnakeSegment::Grow()
 {
-	ModifyLength(1, gameObjects);
+	ModifyLength(1);
 }
 
-void SnakeSegment::Shrink(ZippedUniqueObjectList& gameObjects)
+bool SnakeSegment::Shrink()
 {
-	ModifyLength(-1, gameObjects);
+	ModifyLength(-1);
+
+	// if bounds are exceeded, this segment is empty
+	return (bounds.min.x >= bounds.max.x || bounds.min.y >= bounds.max.y);
 }
 
-unsigned int SnakeSegment::GetWidth() const
+unsigned int SnakeSegment::GetLength() const
 {
+	// if moving horizontally, the length is delta X, otherwise delta y
 	if(direction == Direction::left || direction == Direction::right)
 		return bounds.max.x - bounds.min.x - 1;
 
@@ -79,8 +83,7 @@ Direction SnakeSegment::GetDirection() const
 
 Bounds SnakeSegment::GetHeadSquare() const
 {
-	// front side of the head square
-	Side frontSide = GetHeadSide();
+	const Side frontSide = GetHeadSide();
 	// back side of the head square; to be a square,
 	// this must be _width_ away from _frontSide_
 	Side backSide = frontSide;
@@ -95,6 +98,7 @@ Bounds SnakeSegment::GetHeadSquare() const
 
 Side SnakeSegment::GetHeadSide() const
 {
+	// the _direction_ side is the front
 	return bounds.GetSide(direction);
 }
 
@@ -105,6 +109,7 @@ void SnakeSegment::SetHeadSide(Side side)
 
 Side SnakeSegment::GetTailSide() const
 {
+	// the -_direction_ side is the back
 	return bounds.GetSide(-direction);
 }
 

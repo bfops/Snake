@@ -9,7 +9,7 @@ Wall::Wall() :
 {
 }
 
-Wall::Wall(Point loc, unsigned long w, unsigned long h) :
+Wall::Wall(const Point loc, const unsigned long w, const unsigned long h) :
 	WorldObject(wall, wallColor)
 {
 	bounds.min = loc;
