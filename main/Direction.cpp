@@ -11,6 +11,11 @@ Direction::Direction(int x, int y) :
 {
 }
 
+Direction::Direction() :
+	direction(empty)
+{
+}
+
 Direction::operator Vector2D() const
 {
 	return direction;
