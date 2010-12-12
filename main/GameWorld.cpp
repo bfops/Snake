@@ -28,18 +28,23 @@
 #pragma warning(pop)
 #endif
 
-using namespace boost;
+using boost::format;
+using boost::thread;
+using boost::minstd_rand0;
+
+static void make_new_wall(GameWorld::WallBox& walls, const Config::WallData& wallData)
+{
+	const Point upperLeftBound(wallData.x, wallData.y);
+	const Wall newWall(upperLeftBound, wallData.w, wallData.h);
+	walls.push_back(newWall);
+}
 
 static inline void make_walls(GameWorld::WallBox& walls)
 {
 	walls.clear();
 
-	for each(const Config::WallData& wallData in Config::Get().wallData)
-	{
-		const Point upperLeftBound(wallData.x, wallData.y);
-		const Wall newWall(upperLeftBound, wallData.w, wallData.h);
-		walls.push_back(newWall);
-	}
+	for_each(Config::Get().wallData.begin(), Config::Get().wallData.end(),
+		boost::bind(&make_new_wall, boost::ref(walls), _1));
 }
 
 static void sound_playing_thread(const std::string& filename)
