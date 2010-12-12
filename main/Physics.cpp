@@ -69,12 +69,8 @@ namespace Physics
 			collide_with_subsequent_objects(&world, collider, end);
 	}
 
-	bool AnyCollide(WorldObject& obj, UniqueObjectList& realPhysicsObjects)
+	bool AnyCollide(WorldObject& obj, UniqueObjectList& physicsObjects)
 	{
-		DOLOCKED(realPhysicsObjects.mutex,
-			UniqueObjectList physicsObjects(realPhysicsObjects);
-		)
-
 		for(UniqueObjectList::iterator collider = physicsObjects.begin(), end = physicsObjects.end();
 			collider != end; ++collider)
 			if(does_collide(obj, **collider))

@@ -5,7 +5,7 @@
 #endif
 
 #include <boost/bind.hpp>
-#include <boost/thread/mutex.hpp>
+#include <boost/thread/recursive_mutex.hpp>
 #include <vector>
 
 #ifdef MSVC
@@ -24,7 +24,7 @@ private:
 	CollectionType objects;
 
 public:
-	boost::mutex mutex;
+	boost::recursive_mutex mutex;
 
 	UniqueObjectList()
 	{
