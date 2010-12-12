@@ -42,7 +42,7 @@ void Snake::AddSegment(const Point location, const Direction direction, ZippedUn
 
 void Snake::Grow(const int amount)
 {
-	if((int)projectedLength + amount < (int)Config::Get().snake.startingLength)
+	if(projectedLength + amount < Config::Get().snake.startingLength)
 		projectedLength = Config::Get().snake.startingLength;
 	else
 		projectedLength += amount;
@@ -124,16 +124,10 @@ void Snake::ChangeDirection(const Direction newDirection, ZippedUniqueObjectList
 			// the new segment should include _headBlock_
 			const Side startSide = headBlock.GetSide(-newDirection);
 
-			boost::format output = boost::format("Adding (%5%,%6%),(%7%,%8%) \
-								 Head: (%1%,%2%),(%3%,%4%)") %
-								 Head().GetBounds().min.x % Head().GetBounds().min.y %
-								 Head().GetBounds().max.x % Head().GetBounds().max.y;
 			AddSegment(startSide.min, newDirection, gameObjects);
 			// stretch this segment so that its initial size
 			// is enough to cover the head block
 			Head().SetHeadSide(headBlock.GetSide(newDirection));
-			Logger::Debug(output % Head().GetBounds().min.x % Head().GetBounds().min.y %
-				Head().GetBounds().max.x % Head().GetBounds().max.y);
 		}
 	)
 }
@@ -212,7 +206,7 @@ void Snake::EatFood(const Food& foodObj)
 	const int pointsGained = foodObj.GetPoints();
 
 	// if adding points would make you go below 0
-	if(pointsGained < 0 && (unsigned int)(-pointsGained) > points)
+	if(pointsGained < 0 && points + pointsGained < 0)
 		points = 0;
 	else
 		points += pointsGained;
