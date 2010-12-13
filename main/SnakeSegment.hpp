@@ -8,6 +8,7 @@ struct Side;
 class Snake;
 struct ZippedUniqueObjectList;
 
+// rectangular segment of snake
 class SnakeSegment : public WorldObject
 {
 private:

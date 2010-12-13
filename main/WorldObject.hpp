@@ -13,6 +13,7 @@ class Wall;
 class WorldObject
 {
 public:
+	// must be exponents of 2 because they are ORd together later
 	enum ObjectType
 	{
 		snake = 1,
@@ -24,6 +25,7 @@ public:
 
 protected:
 	ObjectType type;
+	// the rectangular bounds of this object
 	Bounds bounds;
 	Color24 color;
 
@@ -37,10 +39,10 @@ public:
 	virtual void CollisionHandler(const Sentinel&);
 	virtual void CollisionHandler(const SnakeSegment&);
 	virtual void CollisionHandler(const Wall&);
-
+	
 	ObjectType GetObjectType() const;
-	void Draw(Screen& target) const;
-
 	Bounds GetBounds() const;
-	Color24 GetColor() const;
+
+	// draw this object to _target_
+	void Draw(Screen& target) const;
 };

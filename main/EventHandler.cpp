@@ -12,10 +12,12 @@
 
 boost::recursive_mutex EventHandler::mutex;
 
+static const EventHandler* eventHandler;
+
 EventHandler::EventHandler(QuitCallbackType onquit, LossCallbackType onloss, PauseCallbackType onpause,
 	KeyCallbackType onkey, MouseCallbackType onmouse) :
-	quitCallback(onquit), lossCallback(onloss), pauseCallback(onpause), keyCallback(onkey),
-	mouseCallback(onmouse)
+	QuitCallback(onquit), LossCallback(onloss), PauseCallback(onpause), KeyCallback(onkey),
+	MouseCallback(onmouse)
 {
 }
 
@@ -28,7 +30,7 @@ void EventHandler::HandleEventQueue() const
 		switch(event.type)
 		{
 			case SDL_QUIT:
-				quitCallback();
+				QuitCallback();
 				break;
 
 			case SDL_KEYDOWN:
@@ -36,27 +38,21 @@ void EventHandler::HandleEventQueue() const
 				const SDLKey key = event.key.keysym.sym;
 
 				if(key == SDLK_p)
-					pauseCallback();
+					PauseCallback();
 				else
-					keyCallback(key);
+					KeyCallback(key);
 
 				break;
 			}
 
 			case SDL_MOUSEBUTTONDOWN:
-				mouseCallback(event.button.button);
+				MouseCallback(event.button.button);
 				break;
 		}
 	}
 }
 
-void EventHandler::LossNotify() const
-{
-	lossCallback();
-}
-
 const EventHandler*& EventHandler::Get()
 {
-	static const EventHandler* eventHandler;
 	return eventHandler;
 }

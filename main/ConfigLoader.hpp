@@ -16,18 +16,18 @@
 class ConfigLoader
 {
 private:
+	// essentially a vector of (fieldName, fieldData) pairs
 	typedef std::map<const std::string, std::string> FieldMap;
 	FieldMap fields;
 
-public:
-	ConfigLoader();
-	ConfigLoader(std::istream& configInput);
-
 	void Load(std::istream& configInput);
 
-	// returns true iff the field was found
+public:
+	ConfigLoader(std::istream& configInput);
+
+	// returns true iff _fieldName_ was found
 	template <typename _T>
-	bool Pop(const std::string& fieldName, _T& dest) const
+	bool Get(const std::string& fieldName, _T& dest) const
 	{
 		const FieldMap::const_iterator result = fields.find(fieldName);
 

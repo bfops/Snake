@@ -14,6 +14,8 @@
 
 class WorldObject;
 
+// maintain a unique list of WorldObject*s, with
+// debug-only assertations of uniqueness
 class UniqueObjectList
 {
 public:

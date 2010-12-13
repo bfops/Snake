@@ -9,13 +9,11 @@ class Food : public WorldObject
 public:
 	struct FoodInfo
 	{
-	private:
-		FoodInfo& operator=(const FoodInfo&);
-
 	public:
-		const double calories;
-		const Color24 color;
-		const int points;
+		// proportional to how much the snake grows when eating
+		double calories;
+		Color24 color;
+		int pointsGiven;
 
 		FoodInfo(double calories, Color24 color, int pointsGiven);
 	};

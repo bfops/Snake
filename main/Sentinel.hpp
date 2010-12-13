@@ -2,9 +2,9 @@
 
 #include "WorldObject.hpp"
 
+// a square sentinel to check for collisions
 class Sentinel : public WorldObject
 {
-private:
 public:
 	Sentinel(Point location, unsigned int size);
 	

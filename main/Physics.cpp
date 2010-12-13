@@ -21,9 +21,9 @@ using namespace boost;
 
 namespace Physics
 {
-	static inline CollidableObject world_to_collidable_object(const WorldObject* w)
+	static inline ObjectBounds get_world_object_bounds(const WorldObject* w)
 	{
-		CollidableObject ret;
+		ObjectBounds ret;
 
 		const Bounds bounds = w->GetBounds();
 		ret.min.x = bounds.min.x;
@@ -36,8 +36,8 @@ namespace Physics
 
 	static inline bool does_collide(const WorldObject& o1, const WorldObject& o2)
 	{
-		const CollidableObject c1 = world_to_collidable_object(&o1);
-		const CollidableObject c2 = world_to_collidable_object(&o2);
+		const ObjectBounds c1 = get_world_object_bounds(&o1);
+		const ObjectBounds c2 = get_world_object_bounds(&o2);
 
 		return does_collide(&c1, &c2) != 0;
 	}

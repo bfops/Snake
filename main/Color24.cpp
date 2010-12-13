@@ -20,7 +20,7 @@ Color24::Color24(ColorType _r, ColorType _g, ColorType _b) :
 {
 }
 
-Uint32 Color24::GetRGBMap(SDL_Surface* surface) const
+Uint32 Color24::GetRGBMap(const SDL_Surface* const surface) const
 {
 	return SDL_MapRGB(surface->format, red, green, blue);
 }

@@ -13,8 +13,15 @@
 #pragma warning(pop)
 #endif
 
+// game configuration
 struct Config
 {
+private:
+	Config(std::istream& configInputStream);
+
+	static const Config gameConfig;
+
+public:
 	struct SnakeConfig
 	{
 		unsigned int startingLength, width;
@@ -26,6 +33,7 @@ struct Config
 		unsigned int growthCap;
 	};
 
+	// resource paths
 	struct Resources
 	{
 		// SFX
@@ -34,31 +42,37 @@ struct Config
 		std::string die;
 
 		// musical
-		std::string gameIntro, theme, startup;
+		std::string gameIntro;
+		std::string theme;
+		std::string startup;
 	};
 	
-	struct WallData
+	struct Rectangle
 	{
 		unsigned int x, y, w, h;
 	};
 
-	bool survival, music;
+	// whether or not survival mode is on
+	bool survival;
+	// whether or not music is on
+	bool music;
 
 	unsigned short FPS;
 
-	unsigned int spawnPeriod, spawnSize;
+	unsigned int spawnPeriod;
+	// square size of spawns
+	unsigned int spawnSize;
+	// square size of sentinels
 	unsigned int sentinelSize;
 
 	Bounds worldBounds;
-	std::vector<WallData> wallData;
+	std::vector<Rectangle> wallData;
 
 	unsigned int pointGainPeriod, pointGainAmount;
 
 	SnakeConfig snake;
 	Resources resources;
 
-	Config();
-	Config(std::istream& configInputStream);
-
+	// get the (only) configuration data
 	static const Config& Get();
 };

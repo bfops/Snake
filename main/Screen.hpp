@@ -7,10 +7,10 @@ struct Point;
 class Screen
 {
 private:
-	SDL_Surface* screen;
+	SDL_Surface* const screen;
 
-	unsigned long width, height;
-	Color24 bgColor;
+	const unsigned long width, height;
+	const Color24 bgColor;
 
 public:
 	Screen(unsigned long width, unsigned long height);

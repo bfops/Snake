@@ -32,7 +32,7 @@ using boost::format;
 using boost::thread;
 using boost::minstd_rand0;
 
-static void make_new_wall(GameWorld::WallBox& walls, const Config::WallData& wallData)
+static void make_new_wall(GameWorld::WallBox& walls, const Config::Rectangle& wallData)
 {
 	const Point upperLeftBound(wallData.x, wallData.y);
 	const Wall newWall(upperLeftBound, wallData.w, wallData.h);
@@ -253,7 +253,6 @@ static Direction get_direction_from_key(const SDLKey key)
 			return Direction::down;
 
 		default:
-			Logger::Fatal("Invalid key somehow passed to get_direction_from_key");
 			return Direction::empty;
 	}
 }
@@ -296,7 +295,7 @@ void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
 		if(selfCollide || collisionType & WorldObject::wall	|| collisionType & WorldObject::mine)
 		{
 			DOLOCKED(EventHandler::mutex,
-				EventHandler::Get()->LossNotify();
+				EventHandler::Get()->LossCallback();
 			)
 			play_death_sound();
 		}

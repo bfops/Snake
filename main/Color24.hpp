@@ -5,12 +5,11 @@
 #endif
 
 #include <SDL_types.h>
+#include <SDL_video.h>
 
 #ifdef MSVC
 #pragma warning(pop)
 #endif
-
-struct SDL_Surface;
 
 // 24-bit color
 struct Color24
@@ -38,5 +37,6 @@ public:
 	Color24();
 	Color24(ColorType red, ColorType green, ColorType blue);
 
-	Uint32 GetRGBMap(SDL_Surface*) const;
+	// convert to an SDL RGBMap corresponding to _surface_
+	Uint32 GetRGBMap(const SDL_Surface* _surface_) const;
 };

@@ -26,9 +26,9 @@ Bounds::Bounds(Side side) :
 	min(side.min), max(side.min)
 {
 	if(side.horizontal)
-		max.x += side.dimension;
+		max.x += side.length;
 	else
-		max.y += side.dimension;
+		max.y += side.length;
 }
 
 Bounds::operator Side() const
@@ -40,7 +40,7 @@ Bounds::operator Side() const
 	Side retval;
 	retval.min = min;
 
-#define LOADDIFF(m) retval.dimension = max.m - min.m;
+#define LOADDIFF(m) retval.length = max.m - min.m;
 	if(min.x == max.x)
 	{
 		retval.horizontal = false;

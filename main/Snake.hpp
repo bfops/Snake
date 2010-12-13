@@ -43,7 +43,9 @@ private:
 	void AddSegment(Point location, Direction directionOfTravel, ZippedUniqueObjectList& gameObjects);
 	void Grow(int amount);
 
+	// return the first segment
 	inline SnakeSegment& Head();
+	// return the last segment
 	inline SnakeSegment& Tail();
 
 	void Init(Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
@@ -53,6 +55,7 @@ public:
 
 	void Reset(Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
 
+	// remove the tail, since it's empty
 	void RemoveEmptyTail(ZippedUniqueObjectList& gameObjects);
 
 	// change the Snake's direction to that provided

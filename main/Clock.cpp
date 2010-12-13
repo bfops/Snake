@@ -1,6 +1,6 @@
 #include "Clock.hpp"
 
-static Clock gameClock;
+Clock Clock::gameClock;
 
 static inline boost::posix_time::ptime get_raw_time()
 {

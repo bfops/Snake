@@ -13,36 +13,34 @@
 
 struct ZippedUniqueObjectList;
 
-class EventHandler
+// when specific events happen, it redirects calls to their
+// respective callback functions.
+// Depends on SDL for event data
+struct EventHandler
 {
-public:
 	typedef void (QuitCallbackType)();
 	typedef void (LossCallbackType)();
 	typedef void (PauseCallbackType)();
 	typedef void (KeyCallbackType)(SDLKey keyPressed);
 	typedef void (MouseCallbackType)(Uint8 mouseButton);
 
-private:
-	EventHandler& operator=(const EventHandler&);
+	static boost::recursive_mutex mutex;
 
-#define DECLARE_CALLBACK_FUNCTOR(type, ltype) \
-	type##CallbackType* const ltype##Callback;
+#define DECLARE_CALLBACK_FUNCTOR(type) \
+	type##CallbackType* ##type##Callback;
 
-	DECLARE_CALLBACK_FUNCTOR(Quit, quit)
-	DECLARE_CALLBACK_FUNCTOR(Loss, loss)
-	DECLARE_CALLBACK_FUNCTOR(Pause, pause)
-	DECLARE_CALLBACK_FUNCTOR(Key, key)
-	DECLARE_CALLBACK_FUNCTOR(Mouse, mouse)
+	DECLARE_CALLBACK_FUNCTOR(Quit)
+	DECLARE_CALLBACK_FUNCTOR(Loss)
+	DECLARE_CALLBACK_FUNCTOR(Pause)
+	DECLARE_CALLBACK_FUNCTOR(Key)
+	DECLARE_CALLBACK_FUNCTOR(Mouse)
 
 #undef DECLARE_CALLBACK_FUNCTOR
 
-public:
-	static boost::recursive_mutex mutex;
-
 	EventHandler(QuitCallbackType, LossCallbackType, PauseCallbackType, KeyCallbackType, MouseCallbackType);
 
+	// get and handle the queue of events from SDL
 	void HandleEventQueue() const;
-	void LossNotify() const;
 
 	static const EventHandler*& Get();
 };

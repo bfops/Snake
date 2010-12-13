@@ -2,10 +2,6 @@
 
 #include "Logger.hpp"
 
-ConfigLoader::ConfigLoader()
-{
-}
-
 ConfigLoader::ConfigLoader(std::istream& in)
 {
 	Load(in);

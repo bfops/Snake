@@ -79,8 +79,3 @@ Bounds WorldObject::GetBounds() const
 {
 	return bounds;
 }
-
-Color24 WorldObject::GetColor() const
-{
-	return color;
-}

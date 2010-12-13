@@ -1,5 +1,6 @@
 #pragma once
 
+// basic functionality for checking if intervals have elapsed
 class Timer
 {
 private:

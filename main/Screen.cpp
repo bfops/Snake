@@ -16,10 +16,9 @@
 using namespace std;
 
 Screen::Screen(unsigned long _width, unsigned long _height) :
-	width(_width), height(_height), bgColor(0, 0, 0)
+	screen(SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE)), width(_width),
+	height(_height), bgColor(0, 0, 0)
 {
-	screen = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE);
-
 	if(screen == NULL)
 		Logger::Fatal(boost::format("Error creating screen: %1%") % SDL_GetError());
 }
