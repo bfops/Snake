@@ -10,6 +10,7 @@ struct Vector2D
 
 	// negation operator
 	Vector2D operator-() const;
+
 	bool operator==(const Vector2D&) const;
 	bool operator!=(const Vector2D&) const;
 };

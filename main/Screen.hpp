@@ -1,25 +1,27 @@
 #pragma once
 
 #include "Color24.hpp"
+#include "WorldObject.hpp"
 
 struct Point;
 
 class Screen
 {
 private:
-	SDL_Surface* const screen;
-
-	const unsigned long width, height;
-	const Color24 bgColor;
+	SDL_Surface* surface;
+	unsigned long width, height;
+	Color24 bgColor;
 
 public:
 	Screen(unsigned long width, unsigned long height);
 	~Screen();
 
-	SDL_Surface* GetSurface();
 	Point GetCenter() const;
 	Point GetBounds() const;
 
-	void Update();
-	void Clear();
+	// get the SDL_Surface* representing the screen
+	SDL_Surface* GetSurface() const;
+
+	void Update() const;
+	void Clear() const;
 };

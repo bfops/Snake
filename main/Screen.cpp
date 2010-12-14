@@ -15,23 +15,26 @@
 
 using namespace std;
 
-Screen::Screen(unsigned long _width, unsigned long _height) :
-	screen(SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE)), width(_width),
-	height(_height), bgColor(0, 0, 0)
+Screen::Screen(unsigned long _width, unsigned long _height)
 {
-	if(screen == NULL)
+	surface = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE);
+	width = _width;
+	height = _height;
+	bgColor = Color24(0, 0, 0);
+
+	if(surface == NULL)
 		Logger::Fatal(boost::format("Error creating screen: %1%") % SDL_GetError());
 }
 
 Screen::~Screen()
 {
-	SDL_FreeSurface(screen);
+	SDL_FreeSurface(surface);
 }
 
-SDL_Surface* Screen::GetSurface()
+SDL_Surface* Screen::GetSurface() const
 {
-	++screen->refcount;
-	return screen;
+	++surface->refcount;
+	return surface;
 }
 
 Point Screen::GetCenter() const
@@ -44,17 +47,18 @@ Point Screen::GetBounds() const
 	return Point(width, height);
 }
 
-void Screen::Update()
+void Screen::Update() const
 {
-	if(SDL_Flip(screen) != 0)
+	if(SDL_Flip(surface) != 0)
 		Logger::Fatal(boost::format("Error updating screen: %1%") % SDL_GetError());
 }
 
-void Screen::Clear()
+void Screen::Clear() const
 {
 	SDL_Rect blank;
 	blank.x = blank.y = 0;
 	blank.w = width;
 	blank.h = height;
-	SDL_FillRect(screen, &blank, bgColor.GetRGBMap(screen));
+
+	SDL_FillRect(surface, &blank, bgColor.GetRGBMap(surface));
 }

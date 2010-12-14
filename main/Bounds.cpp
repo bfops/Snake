@@ -1,7 +1,7 @@
 #include "Bounds.hpp"
 
 #include "Direction.hpp"
-#include "Side.hpp"
+#include "Line.hpp"
 
 #ifdef MSVC
 #pragma warning(push, 0)
@@ -22,7 +22,7 @@ Bounds::Bounds(Point _min, Point _max) :
 {
 }
 
-Bounds::Bounds(Side side) :
+Bounds::Bounds(Line side) :
 	min(side.min), max(side.min)
 {
 	if(side.horizontal)
@@ -31,13 +31,13 @@ Bounds::Bounds(Side side) :
 		max.y += side.length;
 }
 
-Bounds::operator Side() const
+Bounds::operator Line() const
 {
 	// it's gotta be a line (i.e. one dimension is 0)
 	// in order to be a side
 	assert(min.x == max.x || min.y == max.y);
 
-	Side retval;
+	Line retval;
 	retval.min = min;
 
 #define LOADDIFF(m) retval.length = max.m - min.m;
@@ -86,7 +86,7 @@ static void transfer_side(const Bounds& input, Bounds& output, const Direction w
 	}
 }
 
-Side Bounds::GetSide(Direction whichSide) const
+Line Bounds::GetSide(Direction whichSide) const
 {
 	assert(validDirection(whichSide));
 
@@ -108,7 +108,7 @@ Side Bounds::GetSide(Direction whichSide) const
 	return retval;
 }
 
-void Bounds::SetSide(Side side, Direction whichSide)
+void Bounds::SetSide(Line side, Direction whichSide)
 {
 	assert(validDirection(whichSide));
 	transfer_side(side, *this, whichSide);

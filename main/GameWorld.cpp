@@ -32,14 +32,19 @@ using boost::format;
 using boost::thread;
 using boost::minstd_rand0;
 
-static void make_new_wall(GameWorld::WallBox& walls, const Config::Rectangle& wallData)
+static inline Point get_world_center()
+{
+	return Point(Config::Get().worldBounds.max.x / 2, Config::Get().worldBounds.max.y / 2);
+}
+
+static void make_new_wall(GameWorld::WallList& walls, const Config::Rectangle& wallData)
 {
 	const Point upperLeftBound(wallData.x, wallData.y);
 	const Wall newWall(upperLeftBound, wallData.w, wallData.h);
 	walls.push_back(newWall);
 }
 
-static inline void make_walls(GameWorld::WallBox& walls)
+static inline void make_walls(GameWorld::WallList& walls)
 {
 	walls.clear();
 
@@ -197,25 +202,25 @@ void GameWorld::MineLoop()
 	)
 }
 
-void GameWorld::Init(const bool survival)
+void GameWorld::Init()
 {
 	reset = false;
 
-	if(survival)
+	if(Config::Get().survival)
 		spawnThread = thread(boost::bind(&GameWorld::MineLoop, this));
 	else
 		spawnThread = thread(boost::bind(&GameWorld::FoodLoop, this));
 }
 
 GameWorld::GameWorld(ZippedUniqueObjectList& _gameObjects) :
-	gameObjects(_gameObjects), player(GetCenter(), gameObjects)
+	gameObjects(_gameObjects), player(get_world_center(), gameObjects)
 {
 	make_walls(walls);
 	DOLOCKEDZ(gameObjects,
 		gameObjects.AddRange(walls.begin(), walls.end());
 	)
 	
-	Init(Config::Get().survival);
+	Init();
 }
 
 void GameWorld::Update()
@@ -226,14 +231,14 @@ void GameWorld::Update()
 void GameWorld::Reset()
 {
 	reset = true;
-	player.Reset(GetCenter(), gameObjects);
+	player.Reset(get_world_center(), gameObjects);
 
 	// wait for everything to finish
 	spawnThread.join();
 
 	foods.clear();
 
-	Init(Config::Get().survival);
+	Init();
 }
 
 static Direction get_direction_from_key(const SDLKey key)
@@ -330,9 +335,4 @@ void GameWorld::MouseNotify(Uint8 button)
 {
 	if(button == SDL_BUTTON_LEFT || button == SDL_BUTTON_RIGHT)
 		player.Turn(get_direction_from_button(button), gameObjects);
-}
-
-Point GameWorld::GetCenter() const
-{
-	return Point(Config::Get().worldBounds.max.x / 2, Config::Get().worldBounds.max.y / 2);
 }

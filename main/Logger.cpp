@@ -11,23 +11,41 @@
 #pragma warning(pop)
 #endif
 
-static inline void write(const char* type, const char* message)
+static inline void write(const char* const type, const char* const message)
 {
 	printf("[%s] %s\n", type, message);
 }
 
 namespace Logger
 {
-#ifndef NDEBUG
-	void Debug(const char* message)
+#ifdef NDEBUG
+	void Debug(const char* const)
+	{
+	}
+
+	void Debug(const boost::format&)
+	{
+	}
+#else
+	void Debug(const char* const message)
 	{
 		write("Debug", message);
 	}
+
+	void Debug(const boost::format& message)
+	{
+		return Debug(message.str().c_str());
+	}
 #endif
 
-	void Fatal(const char* message)
+	void Fatal(const char* const message)
 	{
 		write("Fatal", message);
 		throw std::runtime_error(message);
+	}
+
+	void Fatal(const boost::format& message)
+	{
+		return Fatal(message.str().c_str());
 	}
 }

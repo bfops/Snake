@@ -1,6 +1,6 @@
 #include "SnakeSegment.hpp"
 
-#include "Side.hpp"
+#include "Line.hpp"
 #include "Snake.hpp"
 
 static const Color24 segmentColor(0, 255, 0);
@@ -41,14 +41,14 @@ void SnakeSegment::ModifyLength(const int amount)
 	if(amount > 0)
 	{
 		// move the front side forward by _amount_ (i.e. grow)
-		Side headSide = GetHeadSide();
+		Line headSide = GetHeadSide();
 		headSide.ApplyVector(direction, amount);
 		SetHeadSide(headSide);
 	}
 	else
 	{
 		// move the back side forward by _amount_ (i.e. shrink)
-		Side tailSide = GetTailSide();
+		Line tailSide = GetTailSide();
 		tailSide.ApplyVector(direction, -amount);
 		SetTailSide(tailSide);
 	}
@@ -83,10 +83,10 @@ Direction SnakeSegment::GetDirection() const
 
 Bounds SnakeSegment::GetHeadSquare() const
 {
-	const Side frontSide = GetHeadSide();
+	const Line frontSide = GetHeadSide();
 	// back side of the head square; to be a square,
 	// this must be _width_ away from _frontSide_
-	Side backSide = frontSide;
+	Line backSide = frontSide;
 	backSide.ApplyVector(-direction, width);
 
 	Bounds headSquare;
@@ -96,24 +96,24 @@ Bounds SnakeSegment::GetHeadSquare() const
 	return headSquare;
 }
 
-Side SnakeSegment::GetHeadSide() const
+Line SnakeSegment::GetHeadSide() const
 {
 	// the _direction_ side is the front
 	return bounds.GetSide(direction);
 }
 
-void SnakeSegment::SetHeadSide(Side side)
+void SnakeSegment::SetHeadSide(Line side)
 {
 	bounds.SetSide(side, direction);
 }
 
-Side SnakeSegment::GetTailSide() const
+Line SnakeSegment::GetTailSide() const
 {
 	// the -_direction_ side is the back
 	return bounds.GetSide(-direction);
 }
 
-void SnakeSegment::SetTailSide(Side side)
+void SnakeSegment::SetTailSide(Line side)
 {
 	bounds.SetSide(side, -direction);
 }

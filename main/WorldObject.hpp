@@ -25,9 +25,9 @@ public:
 
 protected:
 	ObjectType type;
+	Color24 color;
 	// the rectangular bounds of this object
 	Bounds bounds;
-	Color24 color;
 
 public:
 	WorldObject(ObjectType);

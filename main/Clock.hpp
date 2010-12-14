@@ -29,6 +29,7 @@ public:
 	static Clock& Get();
 
 	unsigned long GetTime();
+
 	void Pause();
 	void Unpause();
 };

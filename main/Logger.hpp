@@ -5,8 +5,6 @@
 #endif
 
 #include <boost/format.hpp>
-#include <cassert>
-#include <cstdio>
 
 #ifdef MSVC
 #pragma warning(pop)
@@ -14,14 +12,11 @@
 
 namespace Logger
 {
-#ifdef NDEBUG
-	inline void Debug(const char*) {}
-	inline void Debug(const boost::format&) {}
-#else
-	void Debug(const char* message);
-	inline void Debug(const boost::format& message) { return Debug(message.str().c_str()); }
-#endif
+	// log debug output
+	void Debug(const char* const message);
+	void Debug(const boost::format& message);
 
-	void Fatal(const char* message);
-	inline void Fatal(const boost::format& message) { return Fatal(message.str().c_str()); }
+	// log fatal errors
+	void Fatal(const char* const message);
+	void Fatal(const boost::format& message);
 };

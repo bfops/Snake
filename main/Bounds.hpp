@@ -3,7 +3,7 @@
 #include "Point.hpp"
 
 class Direction;
-struct Side;
+struct Line;
 
 // define the bounds of a rectangle
 struct Bounds
@@ -12,12 +12,12 @@ struct Bounds
 
 	Bounds();
 	Bounds(Point min, Point max);
-	Bounds(Side);
+	Bounds(Line);
 
-	operator Side() const;
+	operator Line() const;
 	
 	// get the _whichSide_ side of this rectangle
-	Side GetSide(Direction whichSide) const;
+	Line GetSide(Direction whichSide) const;
 	// set the _whichSide_ side of this rectangle
-	void SetSide(Side sideBounds, Direction whichSide);
+	void SetSide(Line sideBounds, Direction whichSide);
 };

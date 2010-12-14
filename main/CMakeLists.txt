@@ -26,6 +26,8 @@ add_executable(GingerbreadPrototype
 	GameWorld.hpp
 	Graphics.cpp
 	Graphics.hpp
+	Line.cpp
+	Line.hpp
 	Logger.cpp
 	Logger.hpp
 	main.cpp
@@ -43,8 +45,6 @@ add_executable(GingerbreadPrototype
 	SDLInitializer.hpp
 	Sentinel.cpp
 	Sentinel.hpp
-	Side.cpp
-	Side.hpp
 	Snake.cpp
 	Snake.hpp
 	SnakeSegment.cpp

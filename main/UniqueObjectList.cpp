@@ -8,6 +8,35 @@ static inline bool object_exists(const UniqueObjectList::CollectionType& list, c
 	return in(list.begin(), list.end(), val);
 }
 
+UniqueObjectList::UniqueObjectList()
+{
+}
+
+UniqueObjectList::UniqueObjectList(const UniqueObjectList& obj) :
+	objects(obj.objects)
+{
+}
+
+UniqueObjectList::iterator UniqueObjectList::begin()
+{
+	return objects.begin();
+}
+
+UniqueObjectList::const_iterator UniqueObjectList::begin() const
+{
+	return objects.begin();
+}
+
+UniqueObjectList::iterator UniqueObjectList::end()
+{
+	return objects.end();
+}
+
+UniqueObjectList::const_iterator UniqueObjectList::end() const
+{
+	return objects.end();
+}
+
 void UniqueObjectList::Add(WorldObject& obj)
 {
 	if(object_exists(objects, &obj))

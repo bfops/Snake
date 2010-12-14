@@ -38,15 +38,17 @@ private:
 	Timer speedupTimer;
 	Timer pointTimer;
 
+	// player points
 	unsigned long long points;
 
+	// add segment to the front
 	void AddSegment(Point location, Direction directionOfTravel, ZippedUniqueObjectList& gameObjects);
 	void Grow(int amount);
 
 	// return the first segment
-	inline SnakeSegment& Head();
+	SnakeSegment& Head();
 	// return the last segment
-	inline SnakeSegment& Tail();
+	SnakeSegment& Tail();
 
 	void Init(Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
 
@@ -55,8 +57,7 @@ public:
 
 	void Reset(Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
 
-	// remove the tail, since it's empty
-	void RemoveEmptyTail(ZippedUniqueObjectList& gameObjects);
+	void RemoveTail(ZippedUniqueObjectList& gameObjects);
 
 	// change the Snake's direction to that provided
 	void ChangeDirection(Direction newDirection, ZippedUniqueObjectList& gameObjects);

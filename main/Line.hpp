@@ -4,7 +4,8 @@
 
 struct Vector2D;
 
-struct Side
+// express a vertical or horizontal
+struct Line
 {
 	// (min x, min y)
 	Point min;

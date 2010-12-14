@@ -4,7 +4,7 @@
 #include "WorldObject.hpp"
 
 class Food;
-struct Side;
+struct Line;
 class Snake;
 struct ZippedUniqueObjectList;
 
@@ -39,11 +39,11 @@ public:
 	Bounds GetHeadSquare() const;
 
 	// get the frontmost side of this segment
-	Side GetHeadSide() const;
+	Line GetHeadSide() const;
 	// set the frontmost side of this segment
-	void SetHeadSide(Side side);
+	void SetHeadSide(Line side);
 	// get the backmost side of this segment
-	Side GetTailSide() const;
+	Line GetTailSide() const;
 	// set the backmost side of this segment
-	void SetTailSide(Side side);
+	void SetTailSide(Line side);
 };

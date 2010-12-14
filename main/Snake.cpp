@@ -4,7 +4,7 @@
 #include "Config.hpp"
 #include "Food.hpp"
 #include "Logger.hpp"
-#include "Side.hpp"
+#include "Line.hpp"
 #include "ZippedUniqueObjectList.hpp"
 
 #ifdef MSVC
@@ -99,7 +99,7 @@ void Snake::Reset(const Point center, ZippedUniqueObjectList& gameObjects)
 	Init(center, gameObjects);
 }
 
-void Snake::RemoveEmptyTail(ZippedUniqueObjectList& gameObjects)
+void Snake::RemoveTail(ZippedUniqueObjectList& gameObjects)
 {
 	DOLOCKED(pathMutex,
 		DOLOCKEDZ(gameObjects,
@@ -122,7 +122,7 @@ void Snake::ChangeDirection(const Direction newDirection, ZippedUniqueObjectList
 			// shrink the segment so it doesn't include _headBlock_
 			Head().SetHeadSide(headBlock.GetSide(-direction));
 			// the new segment should include _headBlock_
-			const Side startSide = headBlock.GetSide(-newDirection);
+			const Line startSide = headBlock.GetSide(-newDirection);
 
 			AddSegment(startSide.min, newDirection, gameObjects);
 			// stretch this segment so that its initial size
@@ -185,7 +185,7 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects)
 			if(length > targetLength)
 			{
 				if(Tail().Shrink())
-					RemoveEmptyTail(gameObjects);
+					RemoveTail(gameObjects);
 				--length;
 			}
 
@@ -194,7 +194,7 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects)
 				++length;
 			else
 				if(Tail().Shrink())
-					RemoveEmptyTail(gameObjects);
+					RemoveTail(gameObjects);
 		)
 	}
 }

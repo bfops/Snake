@@ -2,14 +2,17 @@
 
 #include "UniqueObjectList.hpp"
 
-#define DOLOCKEDZ(obj, stuffToDo) DOLOCKED(obj.graphics.mutex, \
-	DOLOCKED(obj.physics.mutex, \
-		stuffToDo \
-	) \
-)
+// do _stuffToDo_ while _obj_'s internal mutexes are locked
+#define DOLOCKEDZ(obj, stuffToDo) \
+	DOLOCKED(obj.graphics.mutex, \
+		DOLOCKED(obj.physics.mutex, \
+			stuffToDo \
+		) \
+	)
 
 struct ZippedUniqueObjectList
 {
+	// apply _func_ to _graphics_ and _physics_
 #define DOBOTH(func) graphics.func; physics.func;
 	UniqueObjectList graphics, physics;
 

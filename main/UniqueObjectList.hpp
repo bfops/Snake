@@ -29,16 +29,16 @@ private:
 public:
 	boost::recursive_mutex mutex;
 
-	UniqueObjectList()
-	{
-	}
-
-	UniqueObjectList(const UniqueObjectList& obj) :
-		objects(obj.objects)
-	{
-	}
+	UniqueObjectList();
+	UniqueObjectList(const UniqueObjectList& obj);
 
 	void Add(WorldObject&);
+	void Remove(WorldObject&);
+
+	iterator begin();
+	const_iterator begin() const;
+	iterator end();
+	const_iterator end() const;
 
 	// add the objects from _begin_ to _end_ to this list
 	template<typename Iter>
@@ -47,32 +47,10 @@ public:
 		std::for_each(begin, end, boost::bind(&UniqueObjectList::Add, this, _1));
 	}
 
-	void Remove(WorldObject&);
-
 	// remove the objects from _begin_ to _end_ from this list
 	template<typename Iter>
 	inline void RemoveRange(const Iter begin, const Iter end)
 	{
 		std::for_each(begin, end, boost::bind(&UniqueObjectList::Remove, this, _1));
-	}
-
-	inline iterator begin()
-	{
-		return objects.begin();
-	}
-
-	inline const_iterator begin() const
-	{
-		return objects.begin();
-	}
-
-	inline iterator end()
-	{
-		return objects.end();
-	}
-
-	inline const_iterator end() const
-	{
-		return objects.end();
 	}
 };

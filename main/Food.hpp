@@ -19,7 +19,7 @@ public:
 	};
 
 private:
-	// growth amount is proportional to this
+	// snake growth amount is proportional to this
 	double calories;
 	int pointsGiven;
 
@@ -28,7 +28,7 @@ private:
 public:
 	static const FoodInfo ice, celery, normal, donut;
 
-	Food(const Sentinel& prototype, unsigned int size, const FoodInfo& foodInfo);
+	Food(const Sentinel& prototype, unsigned int foodSize, const FoodInfo& foodInfo);
 
 	void CollisionHandler(WorldObject&) const;
 	

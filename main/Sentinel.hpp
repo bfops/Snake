@@ -2,7 +2,8 @@
 
 #include "WorldObject.hpp"
 
-// a square sentinel to check for collisions
+// Sentinels are sent out before spawns to check for collisions
+// and thus clear a small (square) area for spawns
 class Sentinel : public WorldObject
 {
 public:
