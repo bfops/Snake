@@ -61,7 +61,7 @@ int main(int, char*[])
 	Music* music = NULL;
 
 	quit = lost = paused = false;
-	// keep SDL active as long as this is in scope
+
 	SDLInitializer keepSDLInitialized;
 
 	SDL_WM_SetCaption(windowTitle, windowTitle);
@@ -74,13 +74,13 @@ int main(int, char*[])
 		EventHandler::Get() = &defaultEventHandler;
 	)
 
-	Mix_AllocateChannels(100);
+	Mix_AllocateChannels(1);
 
 	if(Config::Get().music)
 		music = new Music(Config::Get().resources.theme);
 	
 	Timer screenUpdate;
-	Screen screen(800, 600);
+	const Screen screen(800, 600);
 
 	thread physicsThread(physics_loop);
 	thread gameThread(game_loop);

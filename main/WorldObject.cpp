@@ -56,7 +56,7 @@ void WorldObject::CollisionHandler(const Wall&)
 {
 }
 
-void WorldObject::Draw(Screen& target) const
+void WorldObject::Draw(const Screen& target) const
 {
 	SDL_Surface* const surface = target.GetSurface();
 

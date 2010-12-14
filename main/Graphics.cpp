@@ -20,7 +20,7 @@ using namespace boost;
 
 namespace Graphics
 {
-	void Update(UniqueObjectList& graphicsObjects, Screen& target)
+	void Update(UniqueObjectList& graphicsObjects, const Screen& target)
 	{
 		target.Clear();
 

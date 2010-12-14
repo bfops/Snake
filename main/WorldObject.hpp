@@ -44,5 +44,5 @@ public:
 	Bounds GetBounds() const;
 
 	// draw this object to _target_
-	void Draw(Screen& target) const;
+	void Draw(const Screen& target) const;
 };
