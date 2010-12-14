@@ -60,7 +60,7 @@ inline SnakeSegment& Snake::Tail()
 
 static inline Direction get_random_direction()
 {
-	uint32_t randomNumber = minstd_rand(time(NULL))();
+	const uint32_t randomNumber = minstd_rand(time(NULL))();
 	return directions[randomNumber % countof(directions)];
 }
 
@@ -114,14 +114,12 @@ void Snake::ChangeDirection(const Direction newDirection, ZippedUniqueObjectList
 	DOLOCKED(pathMutex,
 		const Direction direction(Head().GetDirection());
 
+		// the new segment must be long enough to not collide with another segment if it turns
 		if(newDirection != direction && newDirection != -direction && Head().GetLength() >= 2 * Config::Get().snake.width)
 		{
-			// the point to start is the _direction_
-			// side of the current head
+			// Get the square "head" block of the foremost segment, and make it the start of the new segment
 			const Bounds headBlock = Head().GetHeadSquare();
-			// shrink the segment so it doesn't include _headBlock_
 			Head().SetHeadSide(headBlock.GetSide(-direction));
-			// the new segment should include _headBlock_
 			const Line startSide = headBlock.GetSide(-newDirection);
 
 			AddSegment(startSide.min, newDirection, gameObjects);
@@ -132,6 +130,7 @@ void Snake::ChangeDirection(const Direction newDirection, ZippedUniqueObjectList
 	)
 }
 
+// essentially "modulo" with negative numbers
 static inline unsigned int get_bounded_index(const int unboundedIndex, const unsigned int arraySize)
 {
 	if(unboundedIndex < 0)
@@ -156,9 +155,8 @@ static Direction get_turned_direction(const Direction direction, const Direction
 
 void Snake::Turn(const Direction turn, ZippedUniqueObjectList& gameObjects)
 {
-	Direction direction;
 	DOLOCKED(pathMutex,
-		direction = Direction(Head().GetDirection());
+		const Direction direction = Direction(Head().GetDirection());
 	)
 	ChangeDirection(get_turned_direction(direction, turn), gameObjects);
 }

@@ -5,9 +5,10 @@ Vector2D::Vector2D() :
 {
 }
 
-Vector2D::Vector2D(const int _x, const int _y) :
-	x(_x), y(_y)
+Vector2D::Vector2D(const int _x, const int _y)
 {
+	x = _x;
+	y = _y;
 }
 
 Vector2D Vector2D::operator-() const

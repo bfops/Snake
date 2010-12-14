@@ -21,7 +21,7 @@ using namespace boost;
 
 namespace Physics
 {
-	static inline ObjectBounds get_world_object_bounds(const WorldObject* w)
+	static inline ObjectBounds get_world_object_bounds(const WorldObject* const w)
 	{
 		ObjectBounds ret;
 
@@ -48,8 +48,8 @@ namespace Physics
 			world->CollisionHandler(*o1, *o2);
 	}
 
-	static inline void collide_with_subsequent_objects(GameWorld* world, UniqueObjectList::iterator collider,
-		UniqueObjectList::iterator end)
+	static inline void collide_with_subsequent_objects(GameWorld* const world,
+		const UniqueObjectList::const_iterator collider, const UniqueObjectList::const_iterator end)
 	{
 		for_each(collider + 1, end, bind(&handle_potential_collision, world, *collider, _1));
 	}
@@ -57,21 +57,21 @@ namespace Physics
 	void Update(GameWorld& world, UniqueObjectList& realPhysicsObjects)
 	{
 		DOLOCKED(realPhysicsObjects.mutex,
-			UniqueObjectList physicsObjects(realPhysicsObjects);
+			const UniqueObjectList physicsObjects(realPhysicsObjects);
 		)
 
 		if(physicsObjects.begin() == physicsObjects.end())
 			return;
 
 		// don't try the last gameObject, since all have been checked against it
-		for(UniqueObjectList::iterator collider = physicsObjects.begin(), end = physicsObjects.end();
+		for(UniqueObjectList::const_iterator collider = physicsObjects.begin(), end = physicsObjects.end();
 			collider != end - 1; ++collider)
 			collide_with_subsequent_objects(&world, collider, end);
 	}
 
-	bool AnyCollide(WorldObject& obj, UniqueObjectList& physicsObjects)
+	bool AnyCollide(const WorldObject& obj, const UniqueObjectList& physicsObjects)
 	{
-		for(UniqueObjectList::iterator collider = physicsObjects.begin(), end = physicsObjects.end();
+		for(UniqueObjectList::const_iterator collider = physicsObjects.begin(), end = physicsObjects.end();
 			collider != end; ++collider)
 			if(does_collide(obj, **collider))
 				return true;

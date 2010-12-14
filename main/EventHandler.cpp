@@ -15,10 +15,13 @@ boost::recursive_mutex EventHandler::mutex;
 static const EventHandler* eventHandler;
 
 EventHandler::EventHandler(QuitCallbackType onquit, LossCallbackType onloss, PauseCallbackType onpause,
-	KeyCallbackType onkey, MouseCallbackType onmouse) :
-	QuitCallback(onquit), LossCallback(onloss), PauseCallback(onpause), KeyCallback(onkey),
-	MouseCallback(onmouse)
+	KeyCallbackType onkey, MouseCallbackType onmouse)
 {
+	QuitCallback = onquit;
+	LossCallback = onloss;
+	PauseCallback = onpause;
+	KeyCallback = onkey;
+	MouseCallback = onmouse;
 }
 
 void EventHandler::HandleEventQueue() const

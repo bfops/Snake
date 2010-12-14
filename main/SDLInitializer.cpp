@@ -16,10 +16,10 @@
 SDLInitializer::SDLInitializer()
 {
 	if(SDL_Init(SDL_INIT_VIDEO))
-		Logger::Fatal("SDL failed to initialize");
+		Logger::Fatal(boost::format("Error initializing SDL: %1%") % SDL_GetError());
 
 	if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 1, 4096))
-		Logger::Fatal("SDL_Mixer failed to initialize");
+		Logger::Fatal(boost::format("Error initializing SDL_Mixer: %1%") % Mix_GetError());
 }
 
 SDLInitializer::~SDLInitializer()

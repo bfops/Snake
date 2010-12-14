@@ -59,7 +59,6 @@ bool quit, lost, paused;
 int main(int, char*[])
 {
 	Music* music = NULL;
-	std::ifstream configFile("game.cfg");
 
 	quit = lost = paused = false;
 	// keep SDL active as long as this is in scope
@@ -175,11 +174,15 @@ static void default_key_handler(const SDLKey key)
 	gameWorld->KeyNotify(key);
 }
 
-static void paused_key_handler(const SDLKey) {}
+static void paused_key_handler(const SDLKey)
+{
+}
 
 static void default_mouse_handler(const Uint8 button)
 {
 	gameWorld->MouseNotify(button);
 }
 
-static void paused_mouse_handler(const Uint8) {}
+static void paused_mouse_handler(const Uint8)
+{
+}

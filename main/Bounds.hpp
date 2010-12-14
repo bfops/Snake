@@ -17,7 +17,7 @@ struct Bounds
 	operator Line() const;
 	
 	// get the _whichSide_ side of this rectangle
-	Line GetSide(Direction whichSide) const;
+	Line GetSide(const Direction whichSide) const;
 	// set the _whichSide_ side of this rectangle
-	void SetSide(Line sideBounds, Direction whichSide);
+	void SetSide(const Line sideBounds, const Direction whichSide);
 };

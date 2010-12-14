@@ -15,11 +15,11 @@
 
 using namespace std;
 
-Screen::Screen(unsigned long _width, unsigned long _height)
+Screen::Screen(const unsigned long _width, const unsigned long _height)
 {
-	surface = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE);
 	width = _width;
 	height = _height;
+	surface = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE);
 	bgColor = Color24(0, 0, 0);
 
 	if(surface == NULL)

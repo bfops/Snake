@@ -16,7 +16,7 @@
 static std::ifstream configFile("game.cfg");
 const Config Config::gameConfig(configFile);
 
-static inline std::string get_wall_data_name(const unsigned short i, const char* specifier)
+static inline std::string get_wall_data_name(const unsigned short i, const char* const specifier)
 {
 	std::stringstream s;
 	s << "wall"
@@ -28,7 +28,7 @@ static inline std::string get_wall_data_name(const unsigned short i, const char*
 
 Config::Config(std::istream& stream)
 {
-	ConfigLoader in(stream);
+	const ConfigLoader in(stream);
 
 	in.Get("survival", survival);
 	in.Get("music", music);
@@ -55,7 +55,7 @@ Config::Config(std::istream& stream)
 			w -= x;
 			h -= y;
 
-			const Config::Rectangle newWall = {x, y, w, h};;
+			const Config::Rectangle newWall = {x, y, w, h};
 			wallData.push_back(newWall);
 		}
 	}

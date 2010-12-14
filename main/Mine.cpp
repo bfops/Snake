@@ -4,7 +4,7 @@
 
 static Color24 mineColor(255, 0, 255);
 
-Mine::Mine(Sentinel sentinel, const unsigned int size) :
+Mine::Mine(const Sentinel sentinel, const unsigned int size) :
 	WorldObject(mine, mineColor)
 {
 	const unsigned int prototypeSize = sentinel.GetBounds().max.x - sentinel.GetBounds().min.x;

@@ -1,6 +1,6 @@
 #include "Line.hpp"
 
-void Line::ApplyVector(Vector2D vector, unsigned int scale)
+void Line::ApplyVector(const Vector2D vector, const unsigned int scale)
 {
 	min.x += vector.x * scale;
 	min.y += vector.y * scale;

@@ -12,8 +12,9 @@ SnakeSegment::SnakeSegment() :
 
 SnakeSegment::SnakeSegment(Snake* const _parent, const Point location,
 	const Direction _direction, const unsigned int _width) :
-	WorldObject(snake, segmentColor), direction(_direction)
+	WorldObject(snake, segmentColor)
 {
+	direction = _direction;
 	parent = _parent;
 	width = _width;
 	bounds.min = location;

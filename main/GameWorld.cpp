@@ -34,13 +34,14 @@ using boost::minstd_rand0;
 
 static inline Point get_world_center()
 {
-	return Point(Config::Get().worldBounds.max.x / 2, Config::Get().worldBounds.max.y / 2);
+	return Point(Config::Get().worldBounds.max.x / 2,
+	             Config::Get().worldBounds.max.y / 2);
 }
 
 static void make_new_wall(GameWorld::WallList& walls, const Config::Rectangle& wallData)
 {
-	const Point upperLeftBound(wallData.x, wallData.y);
-	const Wall newWall(upperLeftBound, wallData.w, wallData.h);
+	const Point lowerBound(wallData.x, wallData.y);
+	const Wall newWall(lowerBound, wallData.w, wallData.h);
 	walls.push_back(newWall);
 }
 
@@ -66,7 +67,6 @@ static void sound_playing_thread(const std::string& filename)
 	while(Mix_Playing(channel))
 		SDL_Delay(1);
 
-	Mix_HaltChannel(channel);
 	Mix_FreeChunk(sound);
 }
 
@@ -80,21 +80,15 @@ static inline void play_spawn_sound()
 	play_sound(Config::Get().resources.spawn);
 }
 
-// checks if _probability_ occurred in _randnum_
-// probability-checking can be done by seeing if
-// _randnum_ < _probability_ * _max_number_.
-// However, this means if we check for 1/6,
-// and then check for 1/3, since (_max_)(1/6)
-// is encompassed in (_max_)(1/3), this can lead
-// to unexpected results. Therefore, the region
-// used in calculation is subtracted from _randnum_,
-// so that it may be called again without having to
-// account for these side-effects. (if the probability
-// was hit, we can assume they won't be checking for
-// more probabilities)
-static bool probability_hit(unsigned int& randnum, double probability, unsigned int randMax)
+// checks if _probability_ occurred in _randnum_ probability-checking can be done by seeing if
+// _randnum_ < _probability_ * _max_number_. However, this means if we check for 1/6,
+// and then check for 1/3, since (_max_)(1/6) is encompassed in (_max_)(1/3), this can lead
+// to unexpected results. Therefore, the region used in calculation is subtracted from _randnum_,
+// so that it may be called again without having to account for these side-effects. (if the probability
+// was hit, we can assume they won't be checking for more probabilities)
+static bool probability_hit(unsigned int& randnum, const double probability, const unsigned int randMax)
 {
-	unsigned int border = round(randMax * probability);
+	const unsigned int border = round(randMax * probability);
 	if(randnum < border)
 		return true;
 
@@ -121,10 +115,11 @@ static Food::FoodInfo get_food_type()
 	return Food::normal;
 }
 
-static Sentinel get_new_sentinel(unsigned long sentinelSize, const Bounds& worldBounds)
+static Sentinel get_new_sentinel(const unsigned long sentinelSize, const Bounds& worldBounds)
 {
 	minstd_rand0 rand(time(NULL));
 
+	// get  random number between the worldBounds
 #define GETSIZEDRANDOM(m) (rand() % ((worldBounds.max.m - worldBounds.min.m) - sentinelSize + 1) + worldBounds.min.m)
 	Point location(GETSIZEDRANDOM(x), GETSIZEDRANDOM(y));
 #undef GETSIZEDRANDOM
@@ -132,7 +127,6 @@ static Sentinel get_new_sentinel(unsigned long sentinelSize, const Bounds& world
 	return Sentinel(location, sentinelSize);
 }
 
-// TODO: factor [food & mine] loops together (possibly make each a class?)
 void GameWorld::FoodLoop()
 {
 	Timer foodTimer;

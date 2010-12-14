@@ -20,9 +20,11 @@ Music::Music()
 Music::Music(const std::string& filename)
 {
 	music = Mix_LoadMUS(filename.c_str());
+
 	if(music == NULL)
 		Logger::Fatal(boost::format("Error playing music \"%1%\": %2%") %
 			filename.c_str() % Mix_GetError());
+
 	Mix_PlayMusic(music, -1);
 }
 

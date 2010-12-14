@@ -15,14 +15,15 @@
 
 using namespace std;
 
-WorldObject::WorldObject(ObjectType _type) :
-	type(_type)
+WorldObject::WorldObject(ObjectType _type)
 {
+	type = _type;
 }
 
-WorldObject::WorldObject(ObjectType _type, const Color24 _color) :
-	type(_type), color(_color)
+WorldObject::WorldObject(ObjectType _type, const Color24 _color)
 {
+	type = _type;
+	color = _color;
 }
 
 WorldObject::ObjectType WorldObject::GetObjectType() const
@@ -32,7 +33,7 @@ WorldObject::ObjectType WorldObject::GetObjectType() const
 
 void WorldObject::CollisionHandler(WorldObject&) const
 {
-	Logger::Fatal(boost::format("Subclass %1% did not override CollisionHandler()") % GetObjectType());
+	Logger::Fatal(boost::format("Subclass type %1% did not override CollisionHandler()") % GetObjectType());
 }
 
 void WorldObject::CollisionHandler(const Food&)
@@ -57,7 +58,7 @@ void WorldObject::CollisionHandler(const Wall&)
 
 void WorldObject::Draw(Screen& target) const
 {
-	SDL_Surface* surface = target.GetSurface();
+	SDL_Surface* const surface = target.GetSurface();
 
 	SDL_Rect rect;
 	rect.w = bounds.max.x - bounds.min.x;

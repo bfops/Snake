@@ -10,14 +10,16 @@
 #pragma warning(pop)
 #endif
 
-Color24::Color24() :
-	r(0), g(0), b(0)
+Color24::Color24()
 {
+	r = g = b = 0;
 }
 
-Color24::Color24(ColorType _r, ColorType _g, ColorType _b) :
-	r(_r), g(_g), b(_b)
+Color24::Color24(const ColorType _r, const ColorType _g, const ColorType _b)
 {
+	r = _r;
+	g = _g;
+	b = _b;
 }
 
 Uint32 Color24::GetRGBMap(const SDL_Surface* const surface) const

@@ -3,7 +3,6 @@
 #include "Common.hpp"
 #include "Sentinel.hpp"
 
-// GAMECONSTANT: food data
 const Food::FoodInfo Food::ice(-2.5, Color24(0, 0, 255), -300);
 const Food::FoodInfo Food::celery(0.3, Color24(127, 255, 127), 25);
 const Food::FoodInfo Food::normal(1.0, Color24(0, 255, 255), 100);

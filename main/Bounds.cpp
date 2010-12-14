@@ -17,14 +17,16 @@ Bounds::Bounds()
 {
 }
 
-Bounds::Bounds(Point _min, Point _max) :
-	min(_min), max(_max)
+Bounds::Bounds(Point _min, Point _max)
 {
+	min = _min;
+	max = _max;
 }
 
-Bounds::Bounds(Line side) :
-	min(side.min), max(side.min)
+Bounds::Bounds(Line side)
 {
+	min = max = side.min;
+
 	if(side.horizontal)
 		max.x += side.length;
 	else
@@ -33,37 +35,31 @@ Bounds::Bounds(Line side) :
 
 Bounds::operator Line() const
 {
-	// it's gotta be a line (i.e. one dimension is 0)
-	// in order to be a side
+	// to be a line, one dimension must be 0
 	assert(min.x == max.x || min.y == max.y);
 
 	Line retval;
 	retval.min = min;
 
-#define LOADDIFF(m) retval.length = max.m - min.m;
+#define DELTA(m) (max.m - min.m)
 	if(min.x == max.x)
 	{
+		retval.length = DELTA(y);
 		retval.horizontal = false;
-		LOADDIFF(y)
 	}
 	else
 	{
+		retval.length = DELTA(x);
 		retval.horizontal = true;
-		LOADDIFF(x)
 	}
+#undef DELTA
 
 	return retval;
 }
 
-static inline bool validDirection(const Direction direction)
-{
-	return (direction == Direction::left || direction == Direction::right
-		|| direction == Direction::up || direction == Direction::down);
-}
-
+// set _output_'s _whichSide_ side to equal _input_'s _whichSide_ side
 static void transfer_side(const Bounds& input, Bounds& output, const Direction whichSide)
 {
-	assert(validDirection(whichSide));
 	if(whichSide == Direction::left)
 	{
 		output.min = input.min;
@@ -86,16 +82,11 @@ static void transfer_side(const Bounds& input, Bounds& output, const Direction w
 	}
 }
 
-Line Bounds::GetSide(Direction whichSide) const
+Line Bounds::GetSide(const Direction whichSide) const
 {
-	assert(validDirection(whichSide));
-
 	Bounds retval;
 	transfer_side(*this, retval, whichSide);
 
-	// getting a side from a bounded rectangle
-	// is "lossy", so we need to set mins = maxs
-	// or maxs = mins to "lose" the data
 	if(whichSide == Direction::left)
 		retval.max.x = retval.min.x;
 	else if(whichSide == Direction::right)
@@ -108,8 +99,7 @@ Line Bounds::GetSide(Direction whichSide) const
 	return retval;
 }
 
-void Bounds::SetSide(Line side, Direction whichSide)
+void Bounds::SetSide(const Line side, const Direction whichSide)
 {
-	assert(validDirection(whichSide));
 	transfer_side(side, *this, whichSide);
 }

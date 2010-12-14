@@ -10,7 +10,9 @@ static inline boost::posix_time::ptime get_raw_time()
 void Clock::UpdateTime()
 {
 	const boost::posix_time::ptime rawTime = get_raw_time();
-	time += (rawTime - lastTime).total_milliseconds();
+	const boost::posix_time::time_duration deltaT = rawTime - lastTime;
+
+	time += deltaT.total_milliseconds();
 	lastTime = rawTime;
 }
 
@@ -19,9 +21,11 @@ Clock& Clock::Get()
 	return gameClock;
 }
 
-Clock::Clock() :
-	paused(false), time(0), lastTime(get_raw_time())
+Clock::Clock()
 {
+	paused = false;
+	time = 0;
+	lastTime = get_raw_time();
 }
 
 unsigned long Clock::GetTime()
@@ -34,12 +38,12 @@ unsigned long Clock::GetTime()
 
 void Clock::Pause()
 {
-	UpdateTime();
 	paused = true;
+	UpdateTime();
 }
 
 void Clock::Unpause()
 {
-	lastTime = get_raw_time();
 	paused = false;
+	lastTime = get_raw_time();
 }
