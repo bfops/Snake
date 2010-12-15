@@ -54,12 +54,8 @@ namespace Physics
 		for_each(collider + 1, end, bind(&handle_potential_collision, world, *collider, _1));
 	}
 
-	void Update(GameWorld& world, UniqueObjectList& realPhysicsObjects)
+	void Update(GameWorld& world, const UniqueObjectList& physicsObjects)
 	{
-		DOLOCKED(realPhysicsObjects.mutex,
-			const UniqueObjectList physicsObjects(realPhysicsObjects);
-		)
-
 		if(physicsObjects.begin() == physicsObjects.end())
 			return;
 

@@ -74,7 +74,7 @@ int main(int, char*[])
 		EventHandler::Get() = &defaultEventHandler;
 	)
 
-	Mix_AllocateChannels(1);
+	Mix_AllocateChannels(100);
 
 	if(Config::Get().music)
 		music = new Music(Config::Get().resources.theme);
