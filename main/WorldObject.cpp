@@ -26,6 +26,10 @@ WorldObject::WorldObject(ObjectType _type, const Color24 _color)
 	color = _color;
 }
 
+WorldObject::~WorldObject()
+{
+}
+
 WorldObject::ObjectType WorldObject::GetObjectType() const
 {
 	return type;

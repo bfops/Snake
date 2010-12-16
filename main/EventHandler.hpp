@@ -24,7 +24,7 @@ struct EventHandler
 	typedef void (KeyCallbackType)(SDLKey keyPressed);
 	typedef void (MouseCallbackType)(Uint8 mouseButton);
 
-	static boost::recursive_mutex mutex;
+	boost::recursive_mutex mutex;
 
 #define DECLARE_CALLBACK_FUNCTOR(type) \
 	type##CallbackType* ##type##Callback;
@@ -42,5 +42,5 @@ struct EventHandler
 	// get and handle the queue of events from SDL
 	void HandleEventQueue() const;
 
-	static const EventHandler*& Get();
+	static EventHandler*& Get();
 };

@@ -46,11 +46,11 @@ static bool load_game_config(istream& inputStream);
 static void physics_loop();
 static void game_loop();
 
-static const EventHandler defaultEventHandler(
+static EventHandler defaultEventHandler(
 	quit_handler, loss_handler, default_pause_handler,
 	default_key_handler, default_mouse_handler);
 
-static const EventHandler pausedEventHandler(
+static EventHandler pausedEventHandler(
 	quit_handler, loss_handler, paused_pause_handler,
 	paused_key_handler, paused_mouse_handler);
 
@@ -70,11 +70,11 @@ int main(int, char*[])
 	gameObjects = boost::shared_ptr<ZippedUniqueObjectList>(new ZippedUniqueObjectList());
 	gameWorld = boost::shared_ptr<GameWorld>(new GameWorld(*gameObjects));
 
-	DOLOCKED(EventHandler::mutex,
+	DOLOCKED(EventHandler::Get()->mutex,
 		EventHandler::Get() = &defaultEventHandler;
 	)
 
-	Mix_AllocateChannels(100);
+	Mix_AllocateChannels(5);
 
 	if(Config::Get().music)
 		music = new Music(Config::Get().resources.theme);
@@ -153,7 +153,7 @@ static void loss_handler()
 
 static void default_pause_handler()
 {
-	DOLOCKED(EventHandler::mutex,
+	DOLOCKED(EventHandler::Get()->mutex,
 		EventHandler::Get() = &pausedEventHandler;
 	)
 	paused = true;
@@ -162,7 +162,7 @@ static void default_pause_handler()
 
 static void paused_pause_handler()
 {
-	DOLOCKED(EventHandler::mutex,
+	DOLOCKED(EventHandler::Get()->mutex,
 		EventHandler::Get() = &defaultEventHandler;
 	)
 	paused = false;

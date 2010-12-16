@@ -293,7 +293,7 @@ void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
 	{
 		if(selfCollide || collisionType & WorldObject::wall	|| collisionType & WorldObject::mine)
 		{
-			DOLOCKED(EventHandler::mutex,
+			DOLOCKED(EventHandler::Get()->mutex,
 				EventHandler::Get()->LossCallback();
 			)
 			play_death_sound();

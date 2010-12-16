@@ -10,9 +10,7 @@
 #pragma warning(pop)
 #endif
 
-boost::recursive_mutex EventHandler::mutex;
-
-static const EventHandler* eventHandler;
+static EventHandler* eventHandler;
 
 EventHandler::EventHandler(QuitCallbackType onquit, LossCallbackType onloss, PauseCallbackType onpause,
 	KeyCallbackType onkey, MouseCallbackType onmouse)
@@ -55,7 +53,7 @@ void EventHandler::HandleEventQueue() const
 	}
 }
 
-const EventHandler*& EventHandler::Get()
+EventHandler*& EventHandler::Get()
 {
 	return eventHandler;
 }
