@@ -136,7 +136,7 @@ static inline unsigned int get_bounded_index(const int unboundedIndex, const uns
 	if(unboundedIndex < 0)
 		return get_bounded_index(unboundedIndex + arraySize, arraySize);
 
-	return unsigned int(unboundedIndex) % arraySize;
+	return static_cast<unsigned int>(unboundedIndex) % arraySize;
 }
 
 static Direction get_turned_direction(const Direction direction, const Direction turn)
@@ -202,7 +202,7 @@ void Snake::EatFood(const Food& foodObj)
 	const double foodGrowthConstant = foodObj.GetCalories();
 	const double baseUncappedGrowth = targetLength * Config::Get().snake.growthRate;
 	const double baseRealGrowth = min((double)Config::Get().snake.growthCap, baseUncappedGrowth);
-	const int growthAmount = round(baseRealGrowth * foodGrowthConstant);
+	const int growthAmount = round(baseRealGrowth * foodGrowthConstant) + 0.5;
 	const int pointsGained = foodObj.GetPoints();
 
 	// if adding points would make you go below 0

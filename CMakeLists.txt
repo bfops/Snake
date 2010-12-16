@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.6)
 
 project(gingerbread)
 
@@ -32,7 +32,7 @@ if(MSVC)
 else(MSVC)
 	add_definitions(
 		-pipe -fsigned-char -Werror -march=native
-		-pedantic -pedantic-errors -Wall
+		-pedantic -pedantic-errors -Wall -Wno-long-long
 	)
 
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
