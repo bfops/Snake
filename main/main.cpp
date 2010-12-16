@@ -42,7 +42,7 @@ static boost::shared_ptr<ZippedUniqueObjectList> gameObjects;
 static boost::shared_ptr<GameWorld> gameWorld;
 
 // returns false iff loading failed
-static bool load_game_config(istream& inputStream);
+/// XXX: Does not exist yet: static bool load_game_config(istream& inputStream);
 static void physics_loop();
 static void game_loop();
 
