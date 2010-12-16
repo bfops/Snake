@@ -27,7 +27,7 @@ struct EventHandler
 	static boost::recursive_mutex mutex;
 
 #define DECLARE_CALLBACK_FUNCTOR(type) \
-	type##CallbackType* ##type##Callback;
+	type##CallbackType* type##Callback;
 
 	DECLARE_CALLBACK_FUNCTOR(Quit)
 	DECLARE_CALLBACK_FUNCTOR(Loss)
