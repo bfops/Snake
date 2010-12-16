@@ -69,11 +69,11 @@ int main(int, char*[])
 	gameObjects = boost::shared_ptr<ZippedUniqueObjectList>(new ZippedUniqueObjectList());
 	gameWorld = boost::shared_ptr<GameWorld>(new GameWorld(*gameObjects));
 
-	DOLOCKED(EventHandler::Get()->mutex,
+	DOLOCKED(EventHandler::mutex,
 		EventHandler::Get() = &defaultEventHandler;
 	)
 
-	Mix_AllocateChannels(5);
+	Mix_AllocateChannels(100);
 
 	if(Config::Get().music)
 		music = new Music(Config::Get().resources.theme);
@@ -93,7 +93,7 @@ int main(int, char*[])
 			)
 		}
 
-		DOLOCKED(EventHandler::Get()->mutex,
+		DOLOCKED(EventHandler::mutex,
 			EventHandler::Get()->HandleEventQueue();
 		)
 	}
@@ -152,7 +152,7 @@ static void loss_handler()
 
 static void default_pause_handler()
 {
-	DOLOCKED(EventHandler::Get()->mutex,
+	DOLOCKED(EventHandler::mutex,
 		EventHandler::Get() = &pausedEventHandler;
 	)
 	paused = true;
@@ -161,7 +161,7 @@ static void default_pause_handler()
 
 static void paused_pause_handler()
 {
-	DOLOCKED(EventHandler::Get()->mutex,
+	DOLOCKED(EventHandler::mutex,
 		EventHandler::Get() = &defaultEventHandler;
 	)
 	paused = false;

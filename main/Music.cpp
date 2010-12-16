@@ -22,13 +22,14 @@ Music::Music(const std::string& filename)
 	music = Mix_LoadMUS(filename.c_str());
 
 	if(music == NULL)
-		Logger::Fatal(boost::format("Error playing music \"%1%\": %2%") %
+		Logger::Debug(boost::format("Error playing music \"%1%\": %2%") %
 			filename.c_str() % Mix_GetError());
-
-	Mix_PlayMusic(music, -1);
+	else
+		Mix_PlayMusic(music, -1);
 }
 
 Music::~Music()
 {
-	Mix_FreeMusic(music);
+	if(music)
+		Mix_FreeMusic(music);
 }

@@ -60,7 +60,7 @@ static void sound_playing_thread(const std::string& filename)
 	int channel;
 	if(sound == NULL || (channel = Mix_PlayChannel(-1, sound, 0)) == -1)
 	{
-		Logger::Fatal(format("Error playing sound \"%1%\": %2%") % filename.c_str() % Mix_GetError());
+		Logger::Debug(format("Error playing sound \"%1%\": %2%") % filename.c_str() % Mix_GetError());
 		return;
 	}
 
@@ -293,7 +293,7 @@ void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
 	{
 		if(selfCollide || collisionType & WorldObject::wall	|| collisionType & WorldObject::mine)
 		{
-			DOLOCKED(EventHandler::Get()->mutex,
+			DOLOCKED(EventHandler::mutex,
 				EventHandler::Get()->LossCallback();
 			)
 			play_death_sound();

@@ -10,6 +10,8 @@
 #pragma warning(pop)
 #endif
 
+boost::recursive_mutex EventHandler::mutex;
+
 static EventHandler* eventHandler;
 
 EventHandler::EventHandler(QuitCallbackType onquit, LossCallbackType onloss, PauseCallbackType onpause,
