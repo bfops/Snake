@@ -19,4 +19,4 @@ namespace Logger
 	// log fatal errors
 	void Fatal(const char* const message);
 	void Fatal(const boost::format& message);
-};
+}
