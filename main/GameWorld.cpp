@@ -88,7 +88,7 @@ static inline void play_spawn_sound()
 // was hit, we can assume they won't be checking for more probabilities)
 static bool probability_hit(unsigned int& randnum, const double probability, const unsigned int randMax)
 {
-	const unsigned int border = round(randMax * probability);
+	const unsigned int border = round(randMax * probability) + 0.5;
 	if(randnum < border)
 		return true;
 

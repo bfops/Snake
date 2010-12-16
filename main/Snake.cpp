@@ -202,7 +202,7 @@ void Snake::EatFood(const Food& foodObj)
 	const double foodGrowthConstant = foodObj.GetCalories();
 	const double baseUncappedGrowth = targetLength * Config::Get().snake.growthRate;
 	const double baseRealGrowth = min((double)Config::Get().snake.growthCap, baseUncappedGrowth);
-	const int growthAmount = round(baseRealGrowth * foodGrowthConstant);
+	const int growthAmount = round(baseRealGrowth * foodGrowthConstant) + 0.5;
 	const int pointsGained = foodObj.GetPoints();
 
 	// if adding points would make you go below 0
