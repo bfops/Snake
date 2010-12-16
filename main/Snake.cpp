@@ -136,7 +136,7 @@ static inline unsigned int get_bounded_index(const int unboundedIndex, const uns
 	if(unboundedIndex < 0)
 		return get_bounded_index(unboundedIndex + arraySize, arraySize);
 
-	return unsigned int(unboundedIndex) % arraySize;
+	return static_cast<unsigned int>(unboundedIndex) % arraySize;
 }
 
 static Direction get_turned_direction(const Direction direction, const Direction turn)
