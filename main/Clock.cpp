@@ -2,17 +2,17 @@
 
 Clock Clock::gameClock;
 
-static inline boost::posix_time::ptime get_raw_time()
+static inline clock_t get_raw_time()
 {
-	return boost::posix_time::microsec_clock::universal_time();
+	return clock();
 }
 
 void Clock::UpdateTime()
 {
-	const boost::posix_time::ptime rawTime = get_raw_time();
-	const boost::posix_time::time_duration deltaT = rawTime - lastTime;
+	const clock_t rawTime = get_raw_time();
+	const clock_t deltaT = rawTime - lastTime;
 
-	time += deltaT.total_milliseconds();
+	time += deltaT;
 	lastTime = rawTime;
 }
 

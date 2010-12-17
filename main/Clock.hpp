@@ -4,7 +4,7 @@
 #pragma warning(push, 0)
 #endif
 
-#include <boost/date_time.hpp>
+#include <ctime>
 
 #ifdef MSVC
 #pragma warning(pop)
@@ -17,7 +17,7 @@ private:
 	bool paused;
 	unsigned long time;
 	// the time state, at the last time the time was requested
-	boost::posix_time::ptime lastTime;
+	clock_t lastTime;
 	
 	static Clock gameClock;
 	
