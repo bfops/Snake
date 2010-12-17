@@ -127,13 +127,26 @@ static Sentinel get_new_sentinel(const unsigned long sentinelSize, const Bounds&
 	return Sentinel(location, sentinelSize);
 }
 
-void GameWorld::FoodLoop()
+void remove_ptr_from_game_objects(const GameWorld::SpawnPtr& ptr, ZippedUniqueObjectList& gameObjects)
 {
-	Timer foodTimer;
+	gameObjects.Remove(*ptr);
+}
+
+static inline Spawn* make_spawn(const Sentinel& sentinel, const unsigned int spawnSize)
+{
+	if(Config::Get().survival)
+		return new Mine(sentinel, spawnSize);
+	else
+		return new Food(sentinel, spawnSize, get_food_type());
+}
+
+void GameWorld::SpawnLoop()
+{
+	Timer spawnTimer;
 
 	while(!reset)
 	{
-		if(foodTimer.ResetIfHasElapsed(Config::Get().spawnPeriod))
+		if(spawnTimer.ResetIfHasElapsed(Config::Get().spawnPeriod))
 		{
 			Sentinel sentinel(get_new_sentinel(Config::Get().sentinelSize, Config::Get().worldBounds));
 			while(Physics::AnyCollide(sentinel, gameObjects.physics))
@@ -143,67 +156,30 @@ void GameWorld::FoodLoop()
 			}
 
 			DOLOCKEDZ(gameObjects,
-				DOLOCKED(foodMutex,
-					foods.push_back(Food(sentinel, Config::Get().spawnSize, get_food_type()));
-					gameObjects.Add(*foods.rbegin());
+				DOLOCKED(spawnMutex,
+					spawns.push_back(GameWorld::SpawnPtr(make_spawn(sentinel, Config::Get().spawnSize)));
+					gameObjects.Add(**spawns.rbegin());
 				)
 			)
 
 			play_spawn_sound();
-			Logger::Debug("Food spawn");
+			Logger::Debug("Spawn");
 		}
 
 		SDL_Delay(100);
 	}
 	
 	DOLOCKEDZ(gameObjects,
-		DOLOCKED(foodMutex,
-			gameObjects.RemoveRange(foods.begin(), foods.end());
+		DOLOCKED(spawnMutex,
+			for_each(spawns.begin(), spawns.end(), boost::bind(&remove_ptr_from_game_objects, _1, boost::ref(gameObjects)));
 		)
-	)
-}
-
-void GameWorld::MineLoop()
-{
-	Timer mineTimer;
-	MineList mines;
-
-	while(!reset)
-	{
-		if(mineTimer.ResetIfHasElapsed(Config::Get().spawnPeriod))
-		{
-			Sentinel sentinel(get_new_sentinel(Config::Get().sentinelSize, Config::Get().worldBounds));
-			while(Physics::AnyCollide(sentinel, gameObjects.physics))
-			{
-				sentinel = get_new_sentinel(Config::Get().sentinelSize, Config::Get().worldBounds);
-				SDL_Delay(10);
-			}
-
-			DOLOCKEDZ(gameObjects,
-				mines.push_back(Mine(sentinel, Config::Get().spawnSize));
-				gameObjects.Add(*mines.rbegin());
-			)
-
-			play_spawn_sound();
-			Logger::Debug("Mine spawn");
-		}
-
-		SDL_Delay(100);
-	}
-
-	DOLOCKEDZ(gameObjects,
-		gameObjects.RemoveRange(mines.begin(), mines.end());
 	)
 }
 
 void GameWorld::Init()
 {
 	reset = false;
-
-	if(Config::Get().survival)
-		spawnThread = thread(boost::bind(&GameWorld::MineLoop, this));
-	else
-		spawnThread = thread(boost::bind(&GameWorld::FoodLoop, this));
+	spawnThread = thread(boost::bind(&GameWorld::SpawnLoop, this));
 }
 
 GameWorld::GameWorld(ZippedUniqueObjectList& _gameObjects) :
@@ -230,7 +206,7 @@ void GameWorld::Reset()
 	// wait for everything to finish
 	spawnThread.join();
 
-	foods.clear();
+	spawns.clear();
 
 	Init();
 }
@@ -300,16 +276,16 @@ void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
 		}
 		else if(collisionType & WorldObject::food)
 		{
-			DOLOCKED(foodMutex,
+			DOLOCKED(spawnMutex,
 				Food* const toRemove = reinterpret_cast<Food*>((o1.GetObjectType() == WorldObject::food) ? &o1 : &o2);
-				for(Menu::iterator i = foods.begin(), end = foods.end(); i != end; ++i)
+				for(SpawnList::iterator i = spawns.begin(), end = spawns.end(); i != end; ++i)
 				{
-					if(&*i == toRemove)
+					if(&**i == toRemove)
 					{
 						DOLOCKEDZ(gameObjects,
-							gameObjects.Remove(*i);
+							gameObjects.Remove(**i);
 						)
-						foods.erase(i);
+						spawns.erase(i);
 						break;
 					}
 				}

@@ -11,6 +11,7 @@
 #endif
 
 #include <boost/thread.hpp>
+#include <boost/shared_ptr.hpp>
 #include <list>
 #include <SDL_events.h>
 
@@ -23,18 +24,17 @@ struct ZippedUniqueObjectList;
 class GameWorld
 {
 public:
-	typedef std::list<Mine> MineList;
-	typedef std::list<Food> Menu;
+	typedef boost::shared_ptr<Spawn> SpawnPtr;
+	typedef std::list<SpawnPtr> SpawnList;
 	typedef std::vector<Wall> WallList;
 
 private:
-	void FoodLoop();
-	void MineLoop();
+	void SpawnLoop();
 
 	ZippedUniqueObjectList& gameObjects;
 
-	Menu foods;
-	boost::mutex foodMutex;
+	SpawnList spawns;
+	boost::mutex spawnMutex;
 
 	boost::thread spawnThread;
 
