@@ -1,10 +1,10 @@
 #pragma once
 
-#include "WorldObject.hpp"
+#include "Spawn.hpp"
 
 class Sentinel;
 
-class Food : public WorldObject
+class Food : public Spawn
 {
 public:
 	struct FoodInfo
