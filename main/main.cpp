@@ -88,9 +88,7 @@ int main(int, char*[])
 	{
 		if(screenUpdate.ResetIfHasElapsed(1000 / Config::Get().FPS))
 		{
-			DOLOCKED(gameObjects->graphics.mutex,
-				Graphics::Update(gameObjects->graphics, screen);
-			)
+			Graphics::Update(gameObjects->graphics, screen);
 		}
 
 		DOLOCKED(EventHandler::mutex,
@@ -112,9 +110,7 @@ static void physics_loop()
 {
 	while(!quit)
 	{
-		DOLOCKED(gameObjects->physics.mutex,
-			Physics::Update(*gameWorld, gameObjects->physics);
-		)
+		Physics::Update(*gameWorld, gameObjects->physics);
 		SDL_Delay(5);
 	}
 }

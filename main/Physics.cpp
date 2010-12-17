@@ -54,15 +54,19 @@ namespace Physics
 		for_each(collider + 1, end, bind(&handle_potential_collision, world, *collider, _1));
 	}
 
-	void Update(GameWorld& world, const UniqueObjectList& physicsObjects)
+	void Update(GameWorld& world, UniqueObjectList& realPhysicsObjects)
 	{
-		if(physicsObjects.begin() == physicsObjects.end())
+		if(realPhysicsObjects.begin() == realPhysicsObjects.end())
 			return;
 
+		DOLOCKED(realPhysicsObjects.mutex,
+			const UniqueObjectList physicsObjects(realPhysicsObjects);
+		)
+
 		// don't try the last gameObject, since all have been checked against it
-		for(UniqueObjectList::const_iterator collider = physicsObjects.begin(), end = physicsObjects.end();
-			collider != end - 1; ++collider)
-			collide_with_subsequent_objects(&world, collider, end);
+		for(UniqueObjectList::const_iterator collider = physicsObjects.begin(), end = physicsObjects.end() - 1;
+			collider != end; ++collider)
+			collide_with_subsequent_objects(&world, collider, physicsObjects.end());
 	}
 
 	bool AnyCollide(const WorldObject& obj, const UniqueObjectList& physicsObjects)
