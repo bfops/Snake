@@ -19,5 +19,6 @@ private:
 public:
 	Music();
 	Music(const std::string& filename);
+	Music(Music&);
 	~Music();
 };

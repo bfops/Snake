@@ -28,6 +28,12 @@ Music::Music(const std::string& filename)
 		Mix_PlayMusic(music, -1);
 }
 
+Music::Music(Music& obj)
+{
+	music = obj.music;
+	obj.music = NULL;
+}
+
 Music::~Music()
 {
 	if(music)

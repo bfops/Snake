@@ -49,6 +49,8 @@ add_executable(GingerbreadPrototype
 	Snake.hpp
 	SnakeSegment.cpp
 	SnakeSegment.hpp
+	Sound.cpp
+	Sound.hpp
 	Spawn.cpp
 	Spawn.hpp
 	Timer.cpp
