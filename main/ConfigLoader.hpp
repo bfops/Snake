@@ -15,15 +15,23 @@
 
 class ConfigLoader
 {
-private:
+public:
 	// essentially a vector of (fieldName, fieldData) pairs
 	typedef std::map<const std::string, std::string> FieldMap;
+
+	typedef void (ConfigLoader::*CommandFunc)(std::istream& in);
+	typedef std::map<const std::string, CommandFunc> CommandMap;
+
+private:
 	FieldMap fields;
+	const CommandMap commandMap;
 
 	void Load(std::istream& configInput);
 
 public:
 	ConfigLoader(std::istream& configInput);
+
+	void StructCommand(std::istream&);
 
 	// returns true iff _fieldName_ was found
 	template <typename _T>
