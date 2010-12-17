@@ -3,6 +3,7 @@
 #include "Mine.hpp"
 #include "Food.hpp"
 #include "Snake.hpp"
+#include "Sound.hpp"
 #include "Timer.hpp"
 #include "Wall.hpp"
 
@@ -27,6 +28,7 @@ public:
 	typedef boost::shared_ptr<Spawn> SpawnPtr;
 	typedef std::list<SpawnPtr> SpawnList;
 	typedef std::vector<Wall> WallList;
+	typedef std::vector<Sound> SoundList;
 
 private:
 	void SpawnLoop();
@@ -37,6 +39,8 @@ private:
 	boost::mutex spawnMutex;
 
 	boost::thread spawnThread;
+
+	SoundList sounds;
 
 	// whether or not to reset the game
 	bool reset;

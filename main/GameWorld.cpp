@@ -53,31 +53,14 @@ static inline void make_walls(GameWorld::WallList& walls)
 		boost::bind(&make_new_wall, boost::ref(walls), _1));
 }
 
-static void sound_playing_thread(const std::string& filename)
+static inline void add_sound(GameWorld::SoundList& sounds, const std::string& filename)
 {
-	Mix_Chunk* const sound = Mix_LoadWAV(filename.c_str());
-
-	int channel;
-	if(sound == NULL || (channel = Mix_PlayChannel(-1, sound, 0)) == -1)
-	{
-		Logger::Debug(format("Error playing sound \"%1%\": %2%") % filename.c_str() % Mix_GetError());
-		return;
-	}
-
-	while(Mix_Playing(channel))
-		SDL_Delay(1);
-
-	Mix_FreeChunk(sound);
+	sounds.push_back(Sound(filename));
 }
 
-static inline void play_sound(const std::string& filename)
+static inline void play_spawn_sound(GameWorld::SoundList& sounds)
 {
-	thread(sound_playing_thread, filename);
-}
-
-static inline void play_spawn_sound()
-{
-	play_sound(Config::Get().resources.spawn);
+	add_sound(sounds, Config::Get().resources.spawn);
 }
 
 // checks if _probability_ occurred in _randnum_ probability-checking can be done by seeing if
@@ -162,7 +145,7 @@ void GameWorld::SpawnLoop()
 				)
 			)
 
-			play_spawn_sound();
+			play_spawn_sound(sounds);
 			Logger::Debug("Spawn");
 		}
 
@@ -207,6 +190,7 @@ void GameWorld::Reset()
 	spawnThread.join();
 
 	spawns.clear();
+	sounds.clear();
 
 	Init();
 }
@@ -247,14 +231,14 @@ Direction get_direction_from_button(const Uint8 button)
 	}
 }
 
-static inline void play_death_sound()
+static inline void play_death_sound(GameWorld::SoundList& sounds)
 {
-	play_sound(Config::Get().resources.die);
+	add_sound(sounds, Config::Get().resources.die);
 }
 
-static inline void play_eat_sound()
+static inline void play_eat_sound(GameWorld::SoundList& sounds)
 {
-	play_sound(Config::Get().resources.eat);
+	add_sound(sounds, Config::Get().resources.eat);
 }
 
 void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
@@ -272,7 +256,7 @@ void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
 			DOLOCKED(EventHandler::mutex,
 				EventHandler::Get()->LossCallback();
 			)
-			play_death_sound();
+			play_death_sound(sounds);
 		}
 		else if(collisionType & WorldObject::food)
 		{
@@ -290,7 +274,7 @@ void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
 					}
 				}
 			)
-			play_eat_sound();
+			play_eat_sound(sounds);
 		}
 	}
 }
