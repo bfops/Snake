@@ -10,7 +10,7 @@ static inline clock_t get_raw_time()
 void Clock::UpdateTime()
 {
 	const clock_t rawTime = get_raw_time();
-	const clock_t deltaT = rawTime - lastTime;
+	const clock_t deltaT = (rawTime - lastTime) * 1000 / CLOCKS_PER_SEC;
 
 	time += deltaT;
 	lastTime = rawTime;
