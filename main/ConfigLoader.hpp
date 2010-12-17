@@ -25,12 +25,16 @@ public:
 private:
 	FieldMap fields;
 	const CommandMap commandMap;
+	const CommandMap structMap;
+
+	unsigned long nWalls;
 
 	void Load(std::istream& configInput);
 
 public:
 	ConfigLoader(std::istream& configInput);
 
+	void WallStructCommand(std::istream&);
 	void StructCommand(std::istream&);
 
 	// returns true iff _fieldName_ was found

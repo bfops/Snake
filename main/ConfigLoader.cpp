@@ -13,6 +13,14 @@ static inline ConfigLoader::CommandMap default_command_map()
 	return commandMap;
 }
 
+static inline ConfigLoader::CommandMap default_struct_map()
+{
+	ConfigLoader::CommandMap structMap;
+	structMap["wall"] = &ConfigLoader::WallStructCommand;
+
+	return structMap;
+}
+
 static void register_value(ConfigLoader::FieldMap& fields, const std::string& key, const std::string& value)
 {
 	if(fields.find(key) != fields.end())
@@ -30,8 +38,10 @@ static std::string get(std::istream& in)
 }
 
 ConfigLoader::ConfigLoader(std::istream& in) :
-	commandMap(default_command_map())
+	commandMap(default_command_map()), structMap(default_struct_map())
 {
+	nWalls = 0;
+
 	Load(in);
 }
 
@@ -45,18 +55,22 @@ static inline std::string get_wall_data_name(const unsigned short i, const char*
 	return s.str();
 }
 
+void ConfigLoader::WallStructCommand(std::istream& in)
+{
+	register_value(fields, get_wall_data_name(nWalls, "MinX"), get(in));
+	register_value(fields, get_wall_data_name(nWalls, "MinY"), get(in));
+	register_value(fields, get_wall_data_name(nWalls, "MaxX"), get(in));
+	register_value(fields, get_wall_data_name(nWalls, "MaxY"), get(in));
+
+	++nWalls;
+}
+
 void ConfigLoader::StructCommand(std::istream& in)
 {
 	const std::string structType = get(in);
-	if(structType == "wall")
-	{
-		static unsigned int nWalls = 0;
-		register_value(fields, get_wall_data_name(nWalls, "MinX"), get(in));
-		register_value(fields, get_wall_data_name(nWalls, "MinY"), get(in));
-		register_value(fields, get_wall_data_name(nWalls, "MaxX"), get(in));
-		register_value(fields, get_wall_data_name(nWalls, "MaxY"), get(in));
-		++nWalls;
-	}
+	const CommandMap::const_iterator index = structMap.find(structType);
+	if(index != structMap.end())
+		(this->*(index->second))(in);
 	else
 		Logger::Debug(boost::format("Warning: Struct type %1% not found") % structType);
 }
