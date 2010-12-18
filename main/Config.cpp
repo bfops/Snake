@@ -61,70 +61,68 @@ Config::Config(std::istream& stream)
 	}
 	else
 	{
-		const ConfigLoader in(stream);
+		ConfigLoader in(stream);
 
-		in.Get("survival", survival);
-		in.Get("music", music);
-		in.Get("FPS", FPS);
+		in.CurrentScope().Get("survival", survival);
+		in.CurrentScope().Get("music", music);
+		in.CurrentScope().Get("FPS", FPS);
 
-		in.Get("resourceEat", resources.eat);
-		in.Get("resourceSpawn", resources.spawn);
-		in.Get("resourceDie", resources.die);
-		in.Get("resourceIntro", resources.gameIntro);
-		in.Get("resourceTheme", resources.theme);
-		in.Get("resourceStartup", resources.startup);
-
-		bool wallLoaded = true;
-		for(unsigned short i = 0; wallLoaded; ++i)
+		in.CurrentScope().Get("resourceEat", resources.eat);
+		in.CurrentScope().Get("resourceSpawn", resources.spawn);
+		in.CurrentScope().Get("resourceDie", resources.die);
+		in.CurrentScope().Get("resourceIntro", resources.gameIntro);
+		in.CurrentScope().Get("resourceTheme", resources.theme);
+		in.CurrentScope().Get("resourceStartup", resources.startup);
+		
+		while(in.EnterScope("wall"))
 		{
 			unsigned int x, y, w, h;
-			wallLoaded &= in.Get(get_wall_data_name(i, "MinX"), x);
-			wallLoaded &= in.Get(get_wall_data_name(i, "MinY"), y);
-			wallLoaded &= in.Get(get_wall_data_name(i, "MaxX"), w);
-			wallLoaded &= in.Get(get_wall_data_name(i, "MaxY"), h);
+			in.CurrentScope().Get("MinX", x);
+			in.CurrentScope().Get("MinY", y);
+			in.CurrentScope().Get("MaxX", w);
+			in.CurrentScope().Get("MaxY", h);
 
-			if(wallLoaded)
-			{
-				w -= x;
-				h -= y;
+			w -= x;
+			h -= y;
 
-				const Config::Rectangle newWall = {x, y, w, h};
-				wallData.push_back(newWall);
-			}
+			const Config::Rectangle newWall = {x, y, w, h};
+			wallData.push_back(newWall);
+
+			in.LeaveScope();
 		}
-
-		in.Get("worldBoundsMinX", worldBounds.min.x);
-		in.Get("worldBoundsMinY", worldBounds.min.y);
-		in.Get("worldBoundsMaxX", worldBounds.max.x);
-		in.Get("worldBoundsMaxY", worldBounds.max.y);
+		
+		in.CurrentScope().Get("worldBoundsMinX", worldBounds.min.x);
+		in.CurrentScope().Get("worldBoundsMinY", worldBounds.min.y);
+		in.CurrentScope().Get("worldBoundsMaxX", worldBounds.max.x);
+		in.CurrentScope().Get("worldBoundsMaxY", worldBounds.max.y);
 
 		if(survival)
 		{
-			in.Get("mineAdditionPeriod", spawnPeriod);
-			in.Get("mineSize", spawnSize);
-			in.Get("mineSentinelSize", sentinelSize);
+			in.CurrentScope().Get("mineAdditionPeriod", spawnPeriod);
+			in.CurrentScope().Get("mineSize", spawnSize);
+			in.CurrentScope().Get("mineSentinelSize", sentinelSize);
 
-			in.Get("survivalPointGainPeriod", pointGainPeriod);
-			in.Get("survivalPointGainAmount", pointGainAmount);
-			in.Get("survivalSnakeSpeedupPeriod", snake.speedupPeriod);
+			in.CurrentScope().Get("survivalPointGainPeriod", pointGainPeriod);
+			in.CurrentScope().Get("survivalPointGainAmount", pointGainAmount);
+			in.CurrentScope().Get("survivalSnakeSpeedupPeriod", snake.speedupPeriod);
 		}
 		else
 		{
-			in.Get("foodAdditionPeriod", spawnPeriod);
-			in.Get("foodSize", spawnSize);
-			in.Get("foodSentinelSize", sentinelSize);
+			in.CurrentScope().Get("foodAdditionPeriod", spawnPeriod);
+			in.CurrentScope().Get("foodSize", spawnSize);
+			in.CurrentScope().Get("foodSentinelSize", sentinelSize);
 
-			in.Get("normalPointGainPeriod", pointGainPeriod);
-			in.Get("normalPointGainAmount", pointGainAmount);
-			in.Get("normalSnakeSpeedupPeriod", snake.speedupPeriod);
+			in.CurrentScope().Get("normalPointGainPeriod", pointGainPeriod);
+			in.CurrentScope().Get("normalPointGainAmount", pointGainAmount);
+			in.CurrentScope().Get("normalSnakeSpeedupPeriod", snake.speedupPeriod);
 		}
 
-		in.Get("snakeDefaultLength", snake.startingLength);
-		in.Get("snakeWidth", snake.width);
-		in.Get("snakeDefaultSpeed", snake.startingSpeed);
-		in.Get("snakeSpeedupAmount", snake.speedupAmount);
-		in.Get("snakeGrowthCap", snake.growthCap);
-		in.Get("snakeGrowthRate", snake.growthRate);
+		in.CurrentScope().Get("snakeDefaultLength", snake.startingLength);
+		in.CurrentScope().Get("snakeWidth", snake.width);
+		in.CurrentScope().Get("snakeDefaultSpeed", snake.startingSpeed);
+		in.CurrentScope().Get("snakeSpeedupAmount", snake.speedupAmount);
+		in.CurrentScope().Get("snakeGrowthCap", snake.growthCap);
+		in.CurrentScope().Get("snakeGrowthRate", snake.growthRate);
 	}
 }
 

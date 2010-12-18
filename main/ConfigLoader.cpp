@@ -4,24 +4,7 @@
 
 // TODO: more error-checking: incorrect number of params, incorrect close braces, etc.
 
-static inline ConfigLoader::CommandMap default_command_map()
-{
-	ConfigLoader::CommandMap commandMap;
-	commandMap["{"] = &ConfigLoader::StructCommand;
-	commandMap["}"] = NULL;
-
-	return commandMap;
-}
-
-static inline ConfigLoader::CommandMap default_struct_map()
-{
-	ConfigLoader::CommandMap structMap;
-	structMap["wall"] = &ConfigLoader::WallStructCommand;
-
-	return structMap;
-}
-
-static void register_value(ConfigLoader::FieldMap& fields, const std::string& key, const std::string& value)
+static void register_value(ConfigLoader::Scope::FieldMap& fields, const std::string& key, const std::string& value)
 {
 	if(fields.find(key) != fields.end())
 		Logger::Debug(boost::format("Warning: field \"%1%\" already exists") % key);
@@ -37,42 +20,36 @@ static std::string get(std::istream& in)
 	return gotten;
 }
 
-ConfigLoader::ConfigLoader(std::istream& in) :
-	commandMap(default_command_map()), structMap(default_struct_map())
+ConfigLoader::CommandMap ConfigLoader::DefaultCommandMap()
 {
-	nWalls = 0;
+	ConfigLoader::CommandMap commandMap;
+	commandMap["{"] = &ConfigLoader::EnterScope;
+	commandMap["}"] = &ConfigLoader::LeaveScope;
 
-	Load(in);
+	return commandMap;
 }
 
-static inline std::string get_wall_data_name(const unsigned short i, const char* const specifier)
+void ConfigLoader::EnterScope(std::istream& in)
 {
-	std::stringstream s;
-	s << "wall"
-	  << i
-	  << specifier;
-
-	return s.str();
+	const std::string scopeName = get(in);
+	Scope::MemoryScopeList& memoryScopeList = CurrentScope().subscopes[scopeName];
+	Scope::ScopeList& scopes = memoryScopeList.first;
+	// allocate a new subscope with this name
+	scopes.push_back(Scope());
+	memoryScopeList.second = 0;
+	// the new scope is now our focused scope
+	scopeStack.push_back(&scopes.back());
 }
 
-void ConfigLoader::WallStructCommand(std::istream& in)
+void ConfigLoader::LeaveScope(std::istream&)
 {
-	register_value(fields, get_wall_data_name(nWalls, "MinX"), get(in));
-	register_value(fields, get_wall_data_name(nWalls, "MinY"), get(in));
-	register_value(fields, get_wall_data_name(nWalls, "MaxX"), get(in));
-	register_value(fields, get_wall_data_name(nWalls, "MaxY"), get(in));
+	if(scopeStack.size() <= 0)
+	{
+		Logger::Debug("Overterminated scope!");
+		return;
+	}
 
-	++nWalls;
-}
-
-void ConfigLoader::StructCommand(std::istream& in)
-{
-	const std::string structType = get(in);
-	const CommandMap::const_iterator index = structMap.find(structType);
-	if(index != structMap.end())
-		(this->*(index->second))(in);
-	else
-		Logger::Debug(boost::format("Warning: Struct type %1% not found") % structType);
+	scopeStack.pop_back();
 }
 
 void ConfigLoader::Load(std::istream& in)
@@ -88,7 +65,7 @@ void ConfigLoader::Load(std::istream& in)
 			const std::string key = command;
 			const std::string value = get(in);
 			
-			register_value(fields, key, value);
+			register_value(CurrentScope().fields, key, value);
 		}
 		else
 		{
@@ -97,4 +74,61 @@ void ConfigLoader::Load(std::istream& in)
 				(this->*(index->second))(in);
 		}
 	}
+
+	if(scopeStack.size() > 1)
+	{
+		Logger::Debug("Improperly terminated scope!");
+		InitScopeStack();
+	}
+}
+
+void ConfigLoader::InitScopeStack()
+{
+	scopeStack.clear();
+	scopeStack.push_back(&global);
+}
+
+ConfigLoader::ConfigLoader(std::istream& in) :
+	commandMap(DefaultCommandMap())
+{
+	InitScopeStack();
+	Load(in);
+}
+
+bool ConfigLoader::EnterScope(const std::string& name)
+{
+	const Scope::ScopeMap::iterator index = CurrentScope().subscopes.find(name);
+
+	if(index == CurrentScope().subscopes.end())
+		return false;
+
+	Scope::ScopeList& scopes = index->second.first;
+	const unsigned int currentScopeIndex = index->second.second++;
+
+	if(currentScopeIndex >= scopes.size())
+		return false;
+
+	scopeStack.push_back(&scopes[currentScopeIndex]);
+	return true;
+}
+
+void ConfigLoader::LeaveScope()
+{
+	if(scopeStack.size() <= 0)
+	{
+		Logger::Debug("Scope overexited");
+		return;
+	}
+
+	scopeStack.pop_back();
+}
+
+ConfigLoader::Scope& ConfigLoader::CurrentScope()
+{
+	return *scopeStack.back();
+}
+
+const ConfigLoader::Scope& ConfigLoader::CurrentScope() const
+{
+	return *scopeStack.back();
 }
