@@ -79,23 +79,23 @@ static bool probability_hit(unsigned int& randnum, const double probability, con
 	return false;
 }
 
-static Food::FoodInfo get_food_type()
+static const Config::SpawnData::FoodData& get_food_type()
 {
 	minstd_rand0 rand(time(NULL));
 
-	const unsigned int randMax = 100;
+	// food appearance rates can't have a higher resolution than 1 / randMax
+	const unsigned int randMax = 1000;
 	unsigned int randnum = rand() % (randMax + 1);
 
-	if(probability_hit(randnum, 1.0 / 20.0, randMax))
-		return Food::ice;
+	const Config::SpawnData::Menu& foods = Config::Get().spawn.foodsData;
 
-	if(probability_hit(randnum, 1.0 / 10.0, randMax))
-		return Food::celery;
+	// TODO: fix the case where size == 0
+	for(Config::SpawnData::Menu::const_iterator i = foods.begin(), end = foods.end() - 1; i != end; ++i)
+		if(probability_hit(randnum, i->rate, randMax))
+			return *i;
 
-	if(probability_hit(randnum, 1.0 / 5.0, randMax))
-		return Food::donut;
-
-	return Food::normal;
+	// TODO: only spawn if a rate is hit
+	return foods.back();
 }
 
 static Sentinel get_new_sentinel(const unsigned long sentinelSize, const Bounds& worldBounds)

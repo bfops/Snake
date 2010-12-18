@@ -1,23 +1,12 @@
 #pragma once
 
+#include "Config.hpp"
 #include "Spawn.hpp"
 
 class Sentinel;
 
 class Food : public Spawn
 {
-public:
-	struct FoodInfo
-	{
-	public:
-		// proportional to how much the snake grows when eating
-		double calories;
-		Color24 color;
-		int pointsGiven;
-
-		FoodInfo(double calories, Color24 color, int pointsGiven);
-	};
-
 private:
 	// snake growth amount is proportional to this
 	double calories;
@@ -26,9 +15,7 @@ private:
 	void SnakeCollisionHandler();
 
 public:
-	static const FoodInfo ice, celery, normal, donut;
-
-	Food(const Sentinel& prototype, unsigned int foodSize, const FoodInfo& foodInfo);
+	Food(const Sentinel& prototype, unsigned int foodSize, const Config::SpawnData::FoodData& foodInfo);
 
 	void CollisionHandler(WorldObject&) const;
 	

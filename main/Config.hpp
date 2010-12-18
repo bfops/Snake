@@ -64,12 +64,23 @@ public:
 
 	struct SpawnData
 	{
+		struct FoodData
+		{
+			Color24 color;
+			short points;
+			double lengthFactor;
+			// spawn rate
+			double rate;
+		};
+		typedef std::vector<FoodData> Menu;
+
 		unsigned int period;
 		// square size of spawns
 		unsigned int size;
 		// square size of sentinels
 		unsigned int sentinelSize;
-		Color24 color;
+		Color24 mineColor;
+		Menu foodsData;
 	};
 
 	Color24 bgColor;

@@ -92,21 +92,20 @@ Config::Config(std::istream& stream)
 
 			while(in.EnterScope("wall"))
 			{
-				unsigned int x, y, w, h;
+				WallsData::WallData newWall;
 
 				in.EnterScope("min");
-					in.CurrentScope().Get("x", x);
-					in.CurrentScope().Get("y", y);
+					in.CurrentScope().Get("x", newWall.x);
+					in.CurrentScope().Get("y", newWall.y);
 				in.LeaveScope();
 				in.EnterScope("max");
-					in.CurrentScope().Get("x", w);
-					in.CurrentScope().Get("y", h);
+					in.CurrentScope().Get("x", newWall.w);
+					in.CurrentScope().Get("y", newWall.h);
 				in.LeaveScope();
 
-				w -= x;
-				h -= y;
+				newWall.w -= newWall.x;
+				newWall.h -= newWall.y;
 
-				const Config::WallsData::WallData newWall = {x, y, w, h};
 				wallsData.wallsData.push_back(newWall);
 
 				in.LeaveScope();
@@ -124,6 +123,33 @@ Config::Config(std::istream& stream)
 			in.LeaveScope();
 		in.LeaveScope();
 
+		in.EnterScope("spawn");
+			in.EnterScope("mineColor");
+				in.CurrentScope().Get("r", spawn.mineColor.r);
+				in.CurrentScope().Get("g", spawn.mineColor.g);
+				in.CurrentScope().Get("b", spawn.mineColor.b);
+			in.LeaveScope();
+			in.EnterScope("foods");
+				while(in.EnterScope("food"))
+				{
+					SpawnData::FoodData food;
+
+					in.CurrentScope().Get("lengthFactor", food.lengthFactor);
+					in.CurrentScope().Get("points", food.points);
+					in.CurrentScope().Get("rate", food.rate);
+					in.EnterScope("color");
+						in.CurrentScope().Get("r", food.color.r);
+						in.CurrentScope().Get("g", food.color.g);
+						in.CurrentScope().Get("b", food.color.b);
+					in.LeaveScope();
+
+					spawn.foodsData.push_back(food);
+
+					in.LeaveScope();
+				}
+			in.LeaveScope();
+		in.LeaveScope();
+
 		in.EnterScope(survival ? "survival" : "normal");
 			in.CurrentScope().Get("pointGainPeriod", pointGainPeriod);
 			in.CurrentScope().Get("pointGainAmount", pointGainAmount);
@@ -136,14 +162,6 @@ Config::Config(std::istream& stream)
 				in.CurrentScope().Get("additionPeriod", spawn.period);
 				in.CurrentScope().Get("size", spawn.size);
 				in.CurrentScope().Get("sentinelSize", spawn.sentinelSize);
-				if(survival)
-				{
-					in.EnterScope("color");
-						in.CurrentScope().Get("r", spawn.color.r);
-						in.CurrentScope().Get("g", spawn.color.g);
-						in.CurrentScope().Get("b", spawn.color.b);
-					in.LeaveScope();
-				}
 			in.LeaveScope();
 		in.LeaveScope();
 

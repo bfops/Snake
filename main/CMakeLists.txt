@@ -21,7 +21,6 @@ add_executable(GingerbreadPrototype
 	EventHandler.hpp
 	Food.cpp
 	Food.hpp
-	Food__FoodInfo.cpp
 	GameWorld.cpp
 	GameWorld.hpp
 	Graphics.cpp
