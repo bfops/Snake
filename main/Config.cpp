@@ -141,6 +141,11 @@ Config::Config(std::istream& stream)
 			in.CurrentScope().Get("speedupAmount", snake.speedupAmount);
 			in.CurrentScope().Get("growthCap", snake.growthCap);
 			in.CurrentScope().Get("growthRate", snake.growthRate);
+			in.EnterScope("color");
+				in.CurrentScope().Get("r", snake.color.r);
+				in.CurrentScope().Get("g", snake.color.g);
+				in.CurrentScope().Get("b", snake.color.b);
+			in.LeaveScope();
 		in.LeaveScope();
 	}
 }

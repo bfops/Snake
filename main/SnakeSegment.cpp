@@ -1,18 +1,17 @@
 #include "SnakeSegment.hpp"
 
+#include "Config.hpp"
 #include "Line.hpp"
 #include "Snake.hpp"
 
-static const Color24 segmentColor(0, 255, 0);
-
 SnakeSegment::SnakeSegment() :
-	WorldObject(snake, segmentColor)
+	WorldObject(snake, Config::Get().snake.color)
 {
 }
 
 SnakeSegment::SnakeSegment(Snake* const _parent, const Point location,
 	const Direction _direction, const unsigned int _width) :
-	WorldObject(snake, segmentColor)
+	WorldObject(snake, Config::Get().snake.color)
 {
 	direction = _direction;
 	parent = _parent;

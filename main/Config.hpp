@@ -33,6 +33,8 @@ public:
 
 		double growthRate;
 		unsigned int growthCap;
+
+		Color24 color;
 	};
 
 	// resource paths
