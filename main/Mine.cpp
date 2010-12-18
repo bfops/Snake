@@ -1,11 +1,10 @@
 #include "Mine.hpp"
 
+#include "Config.hpp"
 #include "Sentinel.hpp"
 
-static Color24 mineColor(255, 0, 255);
-
 Mine::Mine(const Sentinel& sentinel, const unsigned int size) :
-	Spawn(mine, sentinel, size, mineColor)
+	Spawn(mine, sentinel, size, Config::Get().spawn.color)
 {
 }
 

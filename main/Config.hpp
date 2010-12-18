@@ -62,6 +62,16 @@ public:
 		std::vector<WallData> wallsData;
 	};
 
+	struct SpawnData
+	{
+		unsigned int period;
+		// square size of spawns
+		unsigned int size;
+		// square size of sentinels
+		unsigned int sentinelSize;
+		Color24 color;
+	};
+
 	Color24 bgColor;
 	// whether or not survival mode is on
 	bool survival;
@@ -70,14 +80,9 @@ public:
 
 	unsigned short FPS;
 
-	unsigned int spawnPeriod;
-	// square size of spawns
-	unsigned int spawnSize;
-	// square size of sentinels
-	unsigned int sentinelSize;
-
 	Bounds worldBounds;
 	WallsData wallsData;
+	SpawnData spawn;
 
 	unsigned int pointGainPeriod, pointGainAmount;
 

@@ -40,9 +40,9 @@ Config::Config(std::istream& stream)
 		worldBounds.max.x = 800;
 		worldBounds.max.y = 600;
 		
-		spawnPeriod = 8000;
-		spawnSize = 15;
-		sentinelSize = 17;
+		spawn.period = 8000;
+		spawn.size = 15;
+		spawn.sentinelSize = 17;
 
 		pointGainPeriod = 5000;
 		pointGainAmount = 15;
@@ -133,9 +133,17 @@ Config::Config(std::istream& stream)
 			in.LeaveScope();
 
 			in.EnterScope("spawn");
-				in.CurrentScope().Get("additionPeriod", spawnPeriod);
-				in.CurrentScope().Get("size", spawnSize);
-				in.CurrentScope().Get("sentinelSize", sentinelSize);
+				in.CurrentScope().Get("additionPeriod", spawn.period);
+				in.CurrentScope().Get("size", spawn.size);
+				in.CurrentScope().Get("sentinelSize", spawn.sentinelSize);
+				if(survival)
+				{
+					in.EnterScope("color");
+						in.CurrentScope().Get("r", spawn.color.r);
+						in.CurrentScope().Get("g", spawn.color.g);
+						in.CurrentScope().Get("b", spawn.color.b);
+					in.LeaveScope();
+				}
 			in.LeaveScope();
 		in.LeaveScope();
 

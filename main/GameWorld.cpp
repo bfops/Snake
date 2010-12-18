@@ -129,18 +129,18 @@ void GameWorld::SpawnLoop()
 
 	while(!reset)
 	{
-		if(spawnTimer.ResetIfHasElapsed(Config::Get().spawnPeriod))
+		if(spawnTimer.ResetIfHasElapsed(Config::Get().spawn.period))
 		{
-			Sentinel sentinel(get_new_sentinel(Config::Get().sentinelSize, Config::Get().worldBounds));
+			Sentinel sentinel(get_new_sentinel(Config::Get().spawn.sentinelSize, Config::Get().worldBounds));
 			while(Physics::AnyCollide(sentinel, gameObjects.physics))
 			{
-				sentinel = get_new_sentinel(Config::Get().sentinelSize, Config::Get().worldBounds);
+				sentinel = get_new_sentinel(Config::Get().spawn.sentinelSize, Config::Get().worldBounds);
 				SDL_Delay(10);
 			}
 
 			DOLOCKEDZ(gameObjects,
 				DOLOCKED(spawnMutex,
-					spawns.push_back(GameWorld::SpawnPtr(make_spawn(sentinel, Config::Get().spawnSize)));
+					spawns.push_back(GameWorld::SpawnPtr(make_spawn(sentinel, Config::Get().spawn.size)));
 					gameObjects.Add(**spawns.rbegin());
 				)
 			)
