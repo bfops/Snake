@@ -35,7 +35,10 @@ Sound::Sound(Sound& obj)
 Sound::~Sound()
 {
 	if(sound)
+	{
+		Mix_HaltChannel(channel);
 		Mix_FreeChunk(sound);
+	}
 }
 
 void Sound::WaitForCompletion() const
