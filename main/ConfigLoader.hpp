@@ -20,8 +20,10 @@ public:
 	// a { } scoped set of fields
 	struct Scope
 	{
-		// essentially a vector of (fieldName, fieldValue) pairs
-		typedef std::map<const std::string, std::string> FieldMap;
+		typedef std::vector<const std::string> Tuple;
+		typedef std::pair<Tuple, unsigned long> MemoryTuple;
+		// essentially a vector of (fieldName, fieldValues) pairs
+		typedef std::map<const std::string, MemoryTuple> FieldMap;
 		// a collection of same-typed scopes
 		typedef std::vector<Scope> ScopeList;
 		typedef std::pair<ScopeList, unsigned long> MemoryScopeList;
@@ -32,15 +34,21 @@ public:
 
 		// returns true iff _fieldName_ was found
 		template <typename _T>
-		bool Get(const std::string& fieldName, _T& dest) const
+		bool Get(const std::string& fieldName, _T& dest)
 		{
-			const FieldMap::const_iterator result = fields.find(fieldName);
+			const FieldMap::iterator result = fields.find(fieldName);
 
 			if(result == fields.end())
 				return false;
 
-			std::stringstream in(result->second);
-			in >> dest;
+			MemoryTuple& memoryTuple = result->second;
+			const Tuple& tuple = memoryTuple.first;
+			const unsigned long index = memoryTuple.second++;
+
+			if(index >= tuple.size())
+				return false;
+
+			std::stringstream(tuple.front()) >> dest;
 
 			return true;
 		}

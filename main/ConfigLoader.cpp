@@ -9,7 +9,8 @@ static void register_value(ConfigLoader::Scope::FieldMap& fields, const std::str
 	if(fields.find(key) != fields.end())
 		Logger::Debug(boost::format("Warning: field \"%1%\" already exists") % key);
 
-	fields[key] = value;
+	fields[key].first.push_back(value);
+	fields[key].second = 0;
 }
 
 static std::string get(std::istream& in)
