@@ -94,7 +94,6 @@ static const Config::SpawnData::FoodData& get_food_type()
 		if(probability_hit(randnum, i->rate, randMax))
 			return *i;
 
-	// TODO: only spawn if a rate is hit
 	return foods.back();
 }
 

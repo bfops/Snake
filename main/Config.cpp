@@ -27,7 +27,6 @@ static inline std::string get_wall_data_name(const unsigned short i, const char*
 	return s.str();
 }
 
-// TODO: associate subscopes with member variables
 Config::Config(std::istream& stream)
 {
 	if(!stream.good())

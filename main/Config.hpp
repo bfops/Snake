@@ -14,7 +14,6 @@
 #pragma warning(pop)
 #endif
 
-// TODO: classes which load their own data, rather than this "god" function
 // game configuration
 struct Config
 {

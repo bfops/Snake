@@ -58,7 +58,6 @@ void ConfigLoader::Load(std::istream& in)
 	{
 		const std::string command = get(in);
 		
-		// TODO: upper or lowercase search
 		const CommandMap::const_iterator index = commandMap.find(command);
 		if(index == commandMap.end())
 		{
