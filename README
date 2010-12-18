@@ -1,28 +1,18 @@
-This is a combined effort (mainly mine) at making a cross-platform version
-of Snake! This is my first attempt at a game, so I'm still riding the learning
-curve quite a bit.
+This is a combined effort (mainly mine) at making a cross-platform version of Snake! This is my first attempt at a game, so I'm still riding the learning curve quite a bit.
 
 --------------------------------------------
 THE GAME
 --------------------------------------------
-So far, it's really not much. There are flags and constants scattered
-throughout which dictate some of the gameplay (mainly in GameWorld.cpp and
-Snake.cpp), as well as the music flag in Music.hpp. Additionally, there are
-a few game-changing flags in GameWorld.hpp, including game style and number
-of walls.
+So far, it's really not much. There is game configuration in game.cfg (see CONFIG). There are two game types:
 
-Survival: Try to avoid hitting all the small, purple mines which spawn. Get
-points for the amount of time you manage this.
+NORMAL: The game is played with a constantly-moving Snake. The Snake is turned using the arrow keys or mouse, but cannot be stopped. Turning the Snake so that it collides with a wall or itself causes the player to lose. The object of the game is to get as many points as possible before dying. Points can be gained or lost by eating different types of food. The Snake also grows longer after eating food, and gains points or speed intermittently.
 
-Regular: Try to survive for as long as possible, eating food as you go. Different
-food has different effects on your snake, as well as on your points.
+SURVIVAL: This game mode is similar to NORMAL. However, mines spawn instead of food, and they kill upon contact.
 
 --------------------------------------------
 LANGUAGE
 --------------------------------------------
-This is written in C++ with Boost & SDL, with the nonstandard addition
-of #pragma once, due to common usage. As far as I'm aware, everything else
-is standards-conformant and should compile & run on any platform.
+This is written in C++ with Boost & SDL, with the nonstandard addition of #pragma once, due to common usage. As far as I'm aware, everything else is standards-conformant and should compile & run on any platform.
 
 --------------------------------------------
 DEPENDENCIES
@@ -33,3 +23,10 @@ To compile, you will need:
 -SDL Runtime (http://www.libsdl.org/)
 
 To work with the audio files, you'll need a MIDI editor (I'm using Finale 2011)
+
+--------------------------------------------
+CONFIG
+--------------------------------------------
+The game config file (game.cfg) is organized as sets of key-value pairs. Related keys can be organized in Scopes.
+
+Scopes are collections of key-value pairs surrounded by curly braces. The first string inside the curly braces is the Scope's name. Scopes can be nested within one another.
