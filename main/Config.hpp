@@ -62,7 +62,7 @@ public:
 		std::vector<WallData> wallsData;
 	};
 
-
+	Color24 bgColor;
 	// whether or not survival mode is on
 	bool survival;
 	// whether or not music is on

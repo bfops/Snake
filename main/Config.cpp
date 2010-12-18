@@ -68,6 +68,11 @@ Config::Config(std::istream& stream)
 		in.CurrentScope().Get("survival", survival);
 		in.CurrentScope().Get("music", music);
 		in.CurrentScope().Get("FPS", FPS);
+		in.EnterScope("bgColor");
+			in.CurrentScope().Get("r", bgColor.r);
+			in.CurrentScope().Get("g", bgColor.g);
+			in.CurrentScope().Get("b", bgColor.b);
+		in.LeaveScope();
 
 		in.EnterScope("resources");
 			in.CurrentScope().Get("eat", resources.eat);

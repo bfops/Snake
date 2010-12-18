@@ -1,5 +1,6 @@
 #include "Screen.hpp"
 
+#include "Config.hpp"
 #include "Logger.hpp"
 #include "Point.hpp"
 
@@ -20,7 +21,7 @@ Screen::Screen(const unsigned long _width, const unsigned long _height)
 	width = _width;
 	height = _height;
 	surface = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE);
-	bgColor = Color24(0, 0, 0);
+	bgColor = Config::Get().bgColor;
 
 	if(surface == NULL)
 		Logger::Fatal(boost::format("Error creating screen: %1%") % SDL_GetError());

@@ -15,6 +15,7 @@
 #endif
 
 // TODO: square brackets for tuples
+// TODO: named scopes (e.g. color scope named bgColor)
 class ConfigLoader
 {
 public:
