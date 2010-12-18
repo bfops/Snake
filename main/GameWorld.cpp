@@ -38,7 +38,7 @@ static inline Point get_world_center()
 	             Config::Get().worldBounds.max.y / 2);
 }
 
-static void make_new_wall(GameWorld::WallList& walls, const Config::Rectangle& wallData)
+static void make_new_wall(GameWorld::WallList& walls, const Config::WallsData::WallData& wallData)
 {
 	const Point lowerBound(wallData.x, wallData.y);
 	const Wall newWall(lowerBound, wallData.w, wallData.h);
@@ -49,7 +49,7 @@ static inline void make_walls(GameWorld::WallList& walls)
 {
 	walls.clear();
 
-	for_each(Config::Get().wallData.begin(), Config::Get().wallData.end(),
+	for_each(Config::Get().wallsData.wallsData.begin(), Config::Get().wallsData.wallsData.end(),
 		boost::bind(&make_new_wall, boost::ref(walls), _1));
 }
 

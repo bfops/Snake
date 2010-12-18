@@ -78,26 +78,35 @@ Config::Config(std::istream& stream)
 			in.CurrentScope().Get("startup", resources.startup);
 		in.LeaveScope();
 		
-		while(in.EnterScope("wall"))
-		{
-			unsigned int x, y, w, h;
-			in.EnterScope("min");
-			in.CurrentScope().Get("x", x);
-			in.CurrentScope().Get("y", y);
-			in.LeaveScope();
-			in.EnterScope("max");
-			in.CurrentScope().Get("x", w);
-			in.CurrentScope().Get("y", h);
+		in.EnterScope("walls");
+			in.EnterScope("color");
+				in.CurrentScope().Get("r", wallsData.color.r);
+				in.CurrentScope().Get("g", wallsData.color.g);
+				in.CurrentScope().Get("b", wallsData.color.b);
 			in.LeaveScope();
 
-			w -= x;
-			h -= y;
+			while(in.EnterScope("wall"))
+			{
+				unsigned int x, y, w, h;
 
-			const Config::Rectangle newWall = {x, y, w, h};
-			wallData.push_back(newWall);
+				in.EnterScope("min");
+					in.CurrentScope().Get("x", x);
+					in.CurrentScope().Get("y", y);
+				in.LeaveScope();
+				in.EnterScope("max");
+					in.CurrentScope().Get("x", w);
+					in.CurrentScope().Get("y", h);
+				in.LeaveScope();
 
-			in.LeaveScope();
-		}
+				w -= x;
+				h -= y;
+
+				const Config::WallsData::WallData newWall = {x, y, w, h};
+				wallsData.wallsData.push_back(newWall);
+
+				in.LeaveScope();
+			}
+		in.LeaveScope();
 		
 		in.EnterScope("worldBounds");
 			in.EnterScope("min");

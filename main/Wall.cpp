@@ -1,16 +1,14 @@
 #include "Wall.hpp"
 
-#include "Color24.hpp"
-
-static const Color24 wallColor(255, 0, 0);
+#include "Config.hpp"
 
 Wall::Wall() :
-	WorldObject(wall, wallColor)
+	WorldObject(wall, Config::Get().wallsData.color)
 {
 }
 
 Wall::Wall(const Point loc, const unsigned long w, const unsigned long h) :
-	WorldObject(wall, wallColor)
+	WorldObject(wall, Config::Get().wallsData.color)
 {
 	bounds.min = loc;
 	bounds.max = Point(loc.x + w - 1, loc.y + h - 1);

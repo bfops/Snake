@@ -14,6 +14,7 @@
 #pragma warning(pop)
 #endif
 
+// TODO: square brackets for tuples
 class ConfigLoader
 {
 public:

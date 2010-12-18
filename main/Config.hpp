@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Bounds.hpp"
+#include "Color24.hpp"
 
 #ifdef MSVC
 #pragma warning(push, 0)
@@ -13,6 +14,7 @@
 #pragma warning(pop)
 #endif
 
+// TODO: classes which load their own data, rather than this "god" function
 // game configuration
 struct Config
 {
@@ -47,10 +49,17 @@ public:
 		std::string startup;
 	};
 	
-	struct Rectangle
+	struct WallsData
 	{
-		unsigned int x, y, w, h;
+		struct WallData
+		{
+			unsigned int x, y, w, h;
+		};
+
+		Color24 color;
+		std::vector<WallData> wallsData;
 	};
+
 
 	// whether or not survival mode is on
 	bool survival;
@@ -66,7 +75,7 @@ public:
 	unsigned int sentinelSize;
 
 	Bounds worldBounds;
-	std::vector<Rectangle> wallData;
+	WallsData wallsData;
 
 	unsigned int pointGainPeriod, pointGainAmount;
 
