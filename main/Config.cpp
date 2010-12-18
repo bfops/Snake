@@ -64,29 +64,29 @@ Config::Config(std::istream& stream)
 		// TODO: error-checking in loading
 		ConfigLoader in(stream);
 
-		in.CurrentScope().Get("survival", survival);
-		in.CurrentScope().Get("music", music);
-		in.CurrentScope().Get("FPS", FPS);
+		in.Get("survival", survival);
+		in.Get("music", music);
+		in.Get("FPS", FPS);
 		in.EnterScope("bgColor");
-			in.CurrentScope().Get("r", bgColor.r);
-			in.CurrentScope().Get("g", bgColor.g);
-			in.CurrentScope().Get("b", bgColor.b);
+			in.Get("r", bgColor.r);
+			in.Get("g", bgColor.g);
+			in.Get("b", bgColor.b);
 		in.LeaveScope();
 
 		in.EnterScope("resources");
-			in.CurrentScope().Get("eat", resources.eat);
-			in.CurrentScope().Get("spawn", resources.spawn);
-			in.CurrentScope().Get("die", resources.die);
-			in.CurrentScope().Get("intro", resources.gameIntro);
-			in.CurrentScope().Get("theme", resources.theme);
-			in.CurrentScope().Get("startup", resources.startup);
+			in.Get("eat", resources.eat);
+			in.Get("spawn", resources.spawn);
+			in.Get("die", resources.die);
+			in.Get("intro", resources.gameIntro);
+			in.Get("theme", resources.theme);
+			in.Get("startup", resources.startup);
 		in.LeaveScope();
 		
 		in.EnterScope("walls");
 			in.EnterScope("color");
-				in.CurrentScope().Get("r", wallsData.color.r);
-				in.CurrentScope().Get("g", wallsData.color.g);
-				in.CurrentScope().Get("b", wallsData.color.b);
+				in.Get("r", wallsData.color.r);
+				in.Get("g", wallsData.color.g);
+				in.Get("b", wallsData.color.b);
 			in.LeaveScope();
 
 			while(in.EnterScope("wall"))
@@ -94,12 +94,12 @@ Config::Config(std::istream& stream)
 				WallsData::WallData newWall;
 
 				in.EnterScope("min");
-					in.CurrentScope().Get("x", newWall.x);
-					in.CurrentScope().Get("y", newWall.y);
+					in.Get("x", newWall.x);
+					in.Get("y", newWall.y);
 				in.LeaveScope();
 				in.EnterScope("max");
-					in.CurrentScope().Get("x", newWall.w);
-					in.CurrentScope().Get("y", newWall.h);
+					in.Get("x", newWall.w);
+					in.Get("y", newWall.h);
 				in.LeaveScope();
 
 				newWall.w -= newWall.x;
@@ -113,33 +113,33 @@ Config::Config(std::istream& stream)
 		
 		in.EnterScope("worldBounds");
 			in.EnterScope("min");
-				in.CurrentScope().Get("x", worldBounds.min.x);
-				in.CurrentScope().Get("y", worldBounds.min.y);
+				in.Get("x", worldBounds.min.x);
+				in.Get("y", worldBounds.min.y);
 			in.LeaveScope();
 			in.EnterScope("max");
-				in.CurrentScope().Get("x", worldBounds.max.x);
-				in.CurrentScope().Get("y", worldBounds.max.y);
+				in.Get("x", worldBounds.max.x);
+				in.Get("y", worldBounds.max.y);
 			in.LeaveScope();
 		in.LeaveScope();
 
 		in.EnterScope("spawn");
 			in.EnterScope("mineColor");
-				in.CurrentScope().Get("r", spawn.mineColor.r);
-				in.CurrentScope().Get("g", spawn.mineColor.g);
-				in.CurrentScope().Get("b", spawn.mineColor.b);
+				in.Get("r", spawn.mineColor.r);
+				in.Get("g", spawn.mineColor.g);
+				in.Get("b", spawn.mineColor.b);
 			in.LeaveScope();
 			in.EnterScope("foods");
 				while(in.EnterScope("food"))
 				{
 					SpawnData::FoodData food;
 
-					in.CurrentScope().Get("lengthFactor", food.lengthFactor);
-					in.CurrentScope().Get("points", food.points);
-					in.CurrentScope().Get("rate", food.rate);
+					in.Get("lengthFactor", food.lengthFactor);
+					in.Get("points", food.points);
+					in.Get("rate", food.rate);
 					in.EnterScope("color");
-						in.CurrentScope().Get("r", food.color.r);
-						in.CurrentScope().Get("g", food.color.g);
-						in.CurrentScope().Get("b", food.color.b);
+						in.Get("r", food.color.r);
+						in.Get("g", food.color.g);
+						in.Get("b", food.color.b);
 					in.LeaveScope();
 
 					spawn.foodsData.push_back(food);
@@ -150,31 +150,31 @@ Config::Config(std::istream& stream)
 		in.LeaveScope();
 
 		in.EnterScope(survival ? "survival" : "normal");
-			in.CurrentScope().Get("pointGainPeriod", pointGainPeriod);
-			in.CurrentScope().Get("pointGainAmount", pointGainAmount);
+			in.Get("pointGainPeriod", pointGainPeriod);
+			in.Get("pointGainAmount", pointGainAmount);
 
 			in.EnterScope("snake");
-				in.CurrentScope().Get("speedupPeriod", snake.speedupPeriod);
+				in.Get("speedupPeriod", snake.speedupPeriod);
 			in.LeaveScope();
 
 			in.EnterScope("spawn");
-				in.CurrentScope().Get("additionPeriod", spawn.period);
-				in.CurrentScope().Get("size", spawn.size);
-				in.CurrentScope().Get("sentinelSize", spawn.sentinelSize);
+				in.Get("additionPeriod", spawn.period);
+				in.Get("size", spawn.size);
+				in.Get("sentinelSize", spawn.sentinelSize);
 			in.LeaveScope();
 		in.LeaveScope();
 
 		in.EnterScope("snake");
-			in.CurrentScope().Get("defaultLength", snake.startingLength);
-			in.CurrentScope().Get("width", snake.width);
-			in.CurrentScope().Get("defaultSpeed", snake.startingSpeed);
-			in.CurrentScope().Get("speedupAmount", snake.speedupAmount);
-			in.CurrentScope().Get("growthCap", snake.growthCap);
-			in.CurrentScope().Get("growthRate", snake.growthRate);
+			in.Get("defaultLength", snake.startingLength);
+			in.Get("width", snake.width);
+			in.Get("defaultSpeed", snake.startingSpeed);
+			in.Get("speedupAmount", snake.speedupAmount);
+			in.Get("growthCap", snake.growthCap);
+			in.Get("growthRate", snake.growthRate);
 			in.EnterScope("color");
-				in.CurrentScope().Get("r", snake.color.r);
-				in.CurrentScope().Get("g", snake.color.g);
-				in.CurrentScope().Get("b", snake.color.b);
+				in.Get("r", snake.color.r);
+				in.Get("g", snake.color.g);
+				in.Get("b", snake.color.b);
 			in.LeaveScope();
 		in.LeaveScope();
 	}

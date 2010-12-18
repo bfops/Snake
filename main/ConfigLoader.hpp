@@ -20,10 +20,8 @@ public:
 	// a { } scoped set of fields
 	struct Scope
 	{
-		typedef std::vector<const std::string> Tuple;
-		typedef std::pair<Tuple, unsigned long> MemoryTuple;
-		// essentially a vector of (fieldName, fieldValues) pairs
-		typedef std::map<const std::string, MemoryTuple> FieldMap;
+		// essentially a vector of (fieldName, fieldValue) pairs
+		typedef std::map<const std::string, std::string> FieldMap;
 		// a collection of same-typed scopes
 		typedef std::vector<Scope> ScopeList;
 		typedef std::pair<ScopeList, unsigned long> MemoryScopeList;
@@ -31,27 +29,6 @@ public:
 
 		FieldMap fields;
 		ScopeMap subscopes;
-
-		// returns true iff _fieldName_ was found
-		template <typename _T>
-		bool Get(const std::string& fieldName, _T& dest)
-		{
-			const FieldMap::iterator result = fields.find(fieldName);
-
-			if(result == fields.end())
-				return false;
-
-			MemoryTuple& memoryTuple = result->second;
-			const Tuple& tuple = memoryTuple.first;
-			const unsigned long index = memoryTuple.second++;
-
-			if(index >= tuple.size())
-				return false;
-
-			std::stringstream(tuple.front()) >> dest;
-
-			return true;
-		}
 	};
 
 	typedef void (ConfigLoader::*CommandFunc)(std::istream& in);
@@ -73,6 +50,8 @@ private:
 	void Load(std::istream& configInput);
 	void InitScopeStack();
 
+	Scope& CurrentScope();
+
 public:
 	ConfigLoader(std::istream& configInput);
 
@@ -80,6 +59,17 @@ public:
 	bool EnterScope(const std::string& scopeName);
 	void LeaveScope();
 	
-	Scope& CurrentScope();
-	const Scope& CurrentScope() const;
+	// returns true iff _fieldName_ was found
+	template <typename _T>
+	bool Get(const std::string& fieldName, _T& dest)
+	{
+		const Scope::FieldMap::iterator result = CurrentScope().fields.find(fieldName);
+
+		if(result == CurrentScope().fields.end())
+			return false;
+
+		std::stringstream(result->second) >> dest;
+
+		return true;
+	}
 };
