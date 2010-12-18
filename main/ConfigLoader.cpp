@@ -43,13 +43,7 @@ void ConfigLoader::EnterScope(std::istream& in)
 
 void ConfigLoader::LeaveScope(std::istream&)
 {
-	if(scopeStack.size() <= 0)
-	{
-		Logger::Debug("Overterminated scope!");
-		return;
-	}
-
-	scopeStack.pop_back();
+	LeaveScope();
 }
 
 void ConfigLoader::Load(std::istream& in)
@@ -76,7 +70,7 @@ void ConfigLoader::Load(std::istream& in)
 
 	if(scopeStack.size() > 1)
 	{
-		Logger::Debug("Improperly terminated scope!");
+		Logger::Debug("Underexited scope!");
 		InitScopeStack();
 	}
 }
@@ -115,7 +109,7 @@ void ConfigLoader::LeaveScope()
 {
 	if(scopeStack.size() <= 0)
 	{
-		Logger::Debug("Scope overexited");
+		Logger::Debug("Overexited scope!");
 		return;
 	}
 
