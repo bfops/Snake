@@ -2,8 +2,8 @@
 
 std::stringstream Config::defaultConfig(std::string("\
 survival 0\
-music 0\
-sound 0\
+music 1\
+sound 1\
 FPS 60\
 \
 { screen\
