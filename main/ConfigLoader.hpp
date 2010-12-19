@@ -29,25 +29,19 @@ public:
 
 		FieldMap fields;
 		ScopeMap subscopes;
+
+		Scope(std::istream&);
+
+	private:
+		void EnterScope(std::istream&);
 	};
 
-	typedef void (ConfigLoader::*CommandFunc)(std::istream& in);
-	typedef std::map<const std::string, CommandFunc> CommandMap;
 	typedef std::vector<Scope* const> ScopeStack;
 
 private:
 	Scope global;
 	ScopeStack scopeStack;
 
-	const CommandMap commandMap;
-
-	static CommandMap DefaultCommandMap();
-
-	// for data-writing purposes
-	void EnterScope(std::istream&);
-	void LeaveScope(std::istream&);
-
-	void Load(std::istream& configInput);
 	void InitScopeStack();
 
 	Scope& CurrentScope();
