@@ -20,8 +20,8 @@ static std::string get(std::istream& in)
 
 void ConfigLoader::Scope::EnterScope(std::istream& in)
 {
-	const std::string scopeName = get(in);
-	Scope::MemoryScopeList& memoryScopeList = subscopes[scopeName];
+	const std::string scopeType = get(in);
+	Scope::MemoryScopeList& memoryScopeList = subscopes[scopeType];
 	Scope::ScopeList& scopes = memoryScopeList.first;
 	// allocate a new subscope with this name
 	scopes.push_back(Scope(in));
@@ -32,22 +32,23 @@ ConfigLoader::Scope::Scope(std::istream& in)
 {
 	while(!in.eof())
 	{
-		const std::string command = get(in);
+		const std::string name = get(in);
 		
-		if(command == "{")
+		// start of scope
+		if(name == "{")
 		{
 			EnterScope(in);
 		}
-		else if(command == "}")
+		// end of scope
+		else if(name == "}")
 		{
 			return;
 		}
 		else
 		{
-			const std::string key = command;
 			const std::string value = get(in);
-			
-			register_value(fields, key, value);
+
+			register_value(fields, name, value);
 		}
 	}
 }

@@ -7,6 +7,7 @@
 #pragma warning(push, 0)
 #endif
 
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -21,6 +22,7 @@ private:
 	Config(std::istream& configInputStream);
 
 	static const Config gameConfig;
+	static std::stringstream defaultConfig;
 
 public:
 	struct SnakeConfig
@@ -45,20 +47,24 @@ public:
 		std::string die;
 
 		// musical
-		std::string gameIntro;
 		std::string theme;
-		std::string startup;
 	};
 	
 	struct WallsData
 	{
 		struct WallData
 		{
-			unsigned int x, y, w, h;
+			unsigned long x, y, w, h;
 		};
 
 		Color24 color;
 		std::vector<WallData> wallsData;
+	};
+
+	struct ScreenData
+	{
+		unsigned long w, h;
+		Color24 bgColor;
 	};
 
 	struct SpawnData
@@ -92,6 +98,7 @@ public:
 
 	Bounds worldBounds;
 	WallsData wallsData;
+	ScreenData screen;
 	SpawnData spawn;
 
 	unsigned int pointGainPeriod, pointGainAmount;

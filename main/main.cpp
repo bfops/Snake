@@ -79,7 +79,7 @@ int main(int, char*[])
 		music = new Music(Config::Get().resources.theme);
 	
 	Timer screenUpdate;
-	const Screen screen(800, 600);
+	const Screen screen(Config::Get().screen.w, Config::Get().screen.h);
 
 	thread physicsThread(physics_loop);
 	thread gameThread(game_loop);

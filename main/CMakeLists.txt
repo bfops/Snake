@@ -12,6 +12,7 @@ add_executable(GingerbreadPrototype
 	Common.hpp
 	Config.hpp
 	Config.cpp
+	Config__defaultConfig.cpp
 	ConfigLoader.hpp
 	ConfigLoader.cpp
 	ConfigLoader__Scope.cpp
