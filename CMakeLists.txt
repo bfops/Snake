@@ -18,9 +18,6 @@ link_directories(${Boost_LIBRARY_DIRS})
 
 include_directories("include")
 
-#TODO: release vs debug options
-#e.g. SSE specs, optimization
-
 if(MSVC)
     add_definitions(
 		/Wall /WX /Y- /D "MSVC" /wd4820 /wd4121 /wd4365

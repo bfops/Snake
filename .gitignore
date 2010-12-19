@@ -3,13 +3,18 @@ build/
 ipch/
 Debug/
 x64/
+Win32
 Release/
+RelWithDebInfo/
 CMakeFiles/
 *~
 
 *.[oa]
+*.obj
+*.tlog
+*.manifest.res
+*.manifest
 *.kdev4
-
 *.cmake
 *.sln
 *.sdf
