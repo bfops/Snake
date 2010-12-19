@@ -56,12 +56,12 @@ namespace Physics
 
 	void Update(GameWorld& world, UniqueObjectList& realPhysicsObjects)
 	{
-		if(realPhysicsObjects.begin() == realPhysicsObjects.end())
-			return;
-
 		DOLOCKED(realPhysicsObjects.mutex,
 			const UniqueObjectList physicsObjects(realPhysicsObjects);
 		)
+
+		if(physicsObjects.begin() == physicsObjects.end())
+			return;
 
 		// don't try the last gameObject, since all have been checked against it
 		for(UniqueObjectList::const_iterator collider = physicsObjects.begin(), end = physicsObjects.end() - 1;
