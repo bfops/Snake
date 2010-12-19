@@ -57,8 +57,6 @@ bool quit, lost, paused;
 
 int main(int, char*[])
 {
-	Music* music = NULL;
-
 	quit = lost = paused = false;
 
 	SDLInitializer keepSDLInitialized;
@@ -75,8 +73,7 @@ int main(int, char*[])
 
 	Mix_AllocateChannels(100);
 
-	if(Config::Get().music)
-		music = new Music(Config::Get().resources.theme);
+	Music music(Config::Get().resources.theme);
 	
 	Timer screenUpdate;
 	const Screen screen(Config::Get().screen.w, Config::Get().screen.h);
@@ -99,9 +96,6 @@ int main(int, char*[])
 	// wait for everything to complete
 	physicsThread.join();
 	gameThread.join();
-
-	if(music)
-		delete music;
 
 	return 0;
 }

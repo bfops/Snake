@@ -35,6 +35,7 @@ Config::Config(std::istream& stream)
 
 	in.Get("survival", survival);
 	in.Get("music", music);
+	in.Get("sound", sound);
 	in.Get("FPS", FPS);
 
 	in.EnterScope("screen");

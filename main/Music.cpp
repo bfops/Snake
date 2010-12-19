@@ -1,5 +1,6 @@
 #include "Music.hpp"
 
+#include "Config.hpp"
 #include "Logger.hpp"
 
 #ifdef MSVC
@@ -19,13 +20,18 @@ Music::Music()
 
 Music::Music(const std::string& filename)
 {
-	music = Mix_LoadMUS(filename.c_str());
+	if(Config::Get().music)
+	{
+		music = Mix_LoadMUS(filename.c_str());
 
-	if(music == NULL)
-		Logger::Debug(boost::format("Error playing music \"%1%\": %2%") %
-			filename.c_str() % Mix_GetError());
+		if(music == NULL)
+			Logger::Debug(boost::format("Error playing music \"%1%\": %2%") %
+				filename.c_str() % Mix_GetError());
+		else
+			Mix_PlayMusic(music, -1);
+	}
 	else
-		Mix_PlayMusic(music, -1);
+		music = NULL;
 }
 
 Music::Music(Music& obj)
