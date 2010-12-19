@@ -71,9 +71,9 @@ int main(int, char*[])
 		EventHandler::Get() = &defaultEventHandler;
 	)
 
-	Mix_AllocateChannels(100);
+	Mix_AllocateChannels(10);
 
-	Music music(Config::Get().resources.theme);
+	const Music music(Config::Get().resources.theme);
 	
 	Timer screenUpdate;
 	const Screen screen(Config::Get().screen.w, Config::Get().screen.h);

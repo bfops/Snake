@@ -62,20 +62,17 @@ void WorldObject::CollisionHandler(const Wall&)
 
 void WorldObject::Draw(const Screen& target) const
 {
+	// TODO: lock when doing this!
 	SDL_Surface* const surface = target.GetSurface();
 
 	SDL_Rect rect;
-	rect.w = bounds.max.x - bounds.min.x;
-	rect.h = bounds.max.y - bounds.min.y;
 	rect.x = bounds.min.x;
 	rect.y = bounds.min.y;
+	rect.w = bounds.max.x - bounds.min.x;
+	rect.h = bounds.max.y - bounds.min.y;
 
 	if(SDL_FillRect(surface, &rect, color.GetRGBMap(surface)) == -1)
-	{
-		string error = "Error drawing to screen: ";
-		error += SDL_GetError();
-		Logger::Fatal(error.c_str());
-	}
+		Logger::Fatal(boost::format("Error drawing to screen: %1%") % SDL_GetError());
 
 	SDL_FreeSurface(surface);
 }
