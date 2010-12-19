@@ -15,7 +15,7 @@
 struct Color24
 {
 private:
-	typedef Uint8 ColorType;
+	typedef unsigned short ColorType;
 
 public:
 	union
