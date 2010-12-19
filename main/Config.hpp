@@ -22,7 +22,7 @@ private:
 	Config(std::istream& configInputStream);
 
 	static const Config gameConfig;
-	static std::stringstream defaultConfig;
+	static std::stringstream GetDefaultConfig();
 
 public:
 	struct SnakeConfig
