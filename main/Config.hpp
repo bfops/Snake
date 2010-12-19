@@ -91,8 +91,8 @@ public:
 	Color24 bgColor;
 	// whether or not survival mode is on
 	bool survival;
-	// whether or not music is on
-	bool music;
+	// whether or not music/sound is on
+	bool music, sound;
 
 	unsigned short FPS;
 

@@ -1,5 +1,6 @@
 #include "Sound.hpp"
 
+#include "Config.hpp"
 #include "Logger.hpp"
 
 #ifdef MSVC
@@ -15,12 +16,20 @@
 
 Sound::Sound(const std::string& filename)
 {
-	sound = Mix_LoadWAV(filename.c_str());
-
-	if(sound == NULL || (channel = Mix_PlayChannel(-1, sound, 0)) == -1)
+	if(Config::Get().sound)
 	{
-		Logger::Debug(boost::format("Error playing sound \"%1%\": %2%") % filename.c_str() % Mix_GetError());
-		return;
+		sound = Mix_LoadWAV(filename.c_str());
+
+		if(sound == NULL || (channel = Mix_PlayChannel(-1, sound, 0)) == -1)
+		{
+			Logger::Debug(boost::format("Error playing sound \"%1%\": %2%") % filename.c_str() % Mix_GetError());
+			return;
+		}
+	}
+	else
+	{
+		sound = NULL;
+		channel = -1;
 	}
 }
 
