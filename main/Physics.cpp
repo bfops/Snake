@@ -71,10 +71,17 @@ namespace Physics
 
 	bool AnyCollide(const WorldObject& obj, const UniqueObjectList& physicsObjects)
 	{
-		for(UniqueObjectList::const_iterator collider = physicsObjects.begin(), end = physicsObjects.end();
-			collider != end; ++collider)
-			if(does_collide(obj, **collider))
-				return true;
+		DOLOCKED(physicsObjects.mutex,
+			for(UniqueObjectList::const_iterator collider = physicsObjects.begin(), end = physicsObjects.end();
+				collider != end; ++collider)
+			{
+				if(does_collide(obj, **collider))
+				{
+					physicsObjects.mutex.Unlock();
+					return true;
+				}
+			}
+		)
 
 		return false;
 	}

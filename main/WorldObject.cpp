@@ -13,8 +13,6 @@
 #pragma warning(pop)
 #endif
 
-using namespace std;
-
 WorldObject::WorldObject(ObjectType _type)
 {
 	type = _type;

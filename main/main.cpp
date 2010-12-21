@@ -124,8 +124,8 @@ static void game_loop()
 		{
 			Logger::Debug("DEATH");
 			gameWorld->Reset();
+			lost = false;
 		}
-		lost = false;
 	}
 	Logger::Debug("Quit called");
 }

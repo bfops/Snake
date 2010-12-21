@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Mine.hpp"
 #include "Food.hpp"
+#include "Mine.hpp"
 #include "Snake.hpp"
 #include "Sound.hpp"
 #include "Timer.hpp"

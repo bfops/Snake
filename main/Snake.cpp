@@ -42,7 +42,7 @@ void Snake::AddSegment(const Point location, const Direction direction, ZippedUn
 
 void Snake::Grow(const int amount)
 {
-	if(targetLength + amount < Config::Get().snake.startingLength)
+	if(amount < 0 && targetLength + amount < Config::Get().snake.startingLength)
 		targetLength = Config::Get().snake.startingLength;
 	else
 		targetLength += amount;
