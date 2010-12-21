@@ -22,7 +22,8 @@ Sound::Sound(const std::string& filename)
 
 		if(sound == NULL || (channel = Mix_PlayChannel(-1, sound, 0)) == -1)
 		{
-			Logger::Debug(boost::format("Error playing sound \"%1%\": %2%") % filename.c_str() % Mix_GetError());
+			Logger::Debug(boost::format("Error playing sound \"%1%\": %2%")
+				% filename.c_str() % Mix_GetError());
 			return;
 		}
 	}

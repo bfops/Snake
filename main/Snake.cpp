@@ -129,7 +129,8 @@ void Snake::ChangeDirection(const Direction newDirection, ZippedUniqueObjectList
 		const Direction direction(Head().GetDirection());
 
 		// the new segment must be long enough to not collide with another segment if it turns
-		if(newDirection != direction && newDirection != -direction && Head().GetLength() >= 2 * Config::Get().snake.width)
+		if(newDirection != direction && newDirection != -direction &&
+			Head().GetLength() >= 2 * Config::Get().snake.width)
 		{
 			// Get the square "head" block of the foremost segment, and make it the start of the new segment
 			const Bounds headBlock = Head().GetHeadSquare();
@@ -180,7 +181,8 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects)
 	if(pointTimer.ResetIfHasElapsed(Config::Get().pointGainPeriod))
 	{
 		points += Config::Get().pointGainAmount;
-		Logger::Debug(boost::format("%1% points gained! (total %2%)") % Config::Get().pointGainAmount % points);
+		Logger::Debug(boost::format("%1% points gained! (total %2%)")
+			% Config::Get().pointGainAmount % points);
 	}
 
 	if(speedupTimer.ResetIfHasElapsed(Config::Get().snake.speedupPeriod))

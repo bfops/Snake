@@ -51,11 +51,11 @@ static SoundQueue soundQueue;
 static void physics_loop();
 static void game_loop();
 
-static const EventHandler defaultEventHandler(quit_handler, loss_handler, default_pause_handler, sound_handler,
-	default_key_handler, default_mouse_handler);
+static const EventHandler defaultEventHandler(quit_handler, loss_handler, default_pause_handler,
+	sound_handler, default_key_handler, default_mouse_handler);
 
-static const EventHandler pausedEventHandler(quit_handler, loss_handler, paused_pause_handler, sound_handler,
-	paused_key_handler, paused_mouse_handler);
+static const EventHandler pausedEventHandler(quit_handler, loss_handler, paused_pause_handler,
+	sound_handler, paused_key_handler, paused_mouse_handler);
 
 bool quit, lost, paused;
 

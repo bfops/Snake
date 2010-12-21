@@ -10,8 +10,8 @@ SnakeSegment::SnakeSegment() :
 {
 }
 
-SnakeSegment::SnakeSegment(Snake* const _parent, const Point location,
-	const Direction _direction, const unsigned int _width) :
+SnakeSegment::SnakeSegment(Snake* const _parent, const Point location, const Direction _direction,
+	const unsigned int _width) :
 	WorldObject(snake, Config::Get().snake.color)
 {
 	direction = _direction;

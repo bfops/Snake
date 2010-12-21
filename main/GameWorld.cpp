@@ -68,11 +68,11 @@ static inline void play_eat_sound()
 }
 
 // checks if _probability_ occurred in _randnum_ probability-checking can be done by seeing if
-// _randnum_ <= _probability_ * _max_number_. However, this means if we check for 1/6,
-// and then check for 1/3, since (_max_)(1/6) is encompassed in (_max_)(1/3), this can lead
-// to unexpected results. Therefore, the region used in calculation is subtracted from _randnum_,
-// so that it may be called again without having to account for these side-effects. (if the probability
-// was hit, we can assume they won't be checking for more probabilities)
+// _randnum_ <= _probability_ * _max_number_. However, this means if we check for 1/6, and then check for
+// 1/3, since (_max_)(1/6) is encompassed in (_max_)(1/3), this can lead to unexpected results. Therefore,
+// the region used in calculation is subtracted from _randnum_, so that it may be called again without
+// having to account for these side-effects. (if the probability was hit, we can assume they won't be
+// checking for more probabilities)
 static bool probability_hit(unsigned int& randnum, const double probability, const unsigned int randMax)
 {
 	const unsigned int border = intRound(randMax * probability);
@@ -100,12 +100,12 @@ static const Config::SpawnData::FoodData* get_food_type()
 	return NULL;
 }
 
-static Sentinel get_new_sentinel(const unsigned long sentinelSize, const Bounds& worldBounds)
+static Sentinel get_new_sentinel(const unsigned long sentinelSize, const Bounds& bounds)
 {
 	minstd_rand0 rand(time(NULL));
 
 	// get random number between the worldBounds
-#define GETSIZEDRANDOM(m) (rand() % ((worldBounds.max.m - worldBounds.min.m) - sentinelSize + 1) + worldBounds.min.m)
+#define GETSIZEDRANDOM(m) (rand() % ((bounds.max.m - bounds.min.m) - sentinelSize + 1) + bounds.min.m)
 	Point location(GETSIZEDRANDOM(x), GETSIZEDRANDOM(y));
 #undef GETSIZEDRANDOM
 
@@ -140,7 +140,8 @@ void GameWorld::SpawnLoop()
 	{
 		if(spawnTimer.ResetIfHasElapsed(Config::Get().spawn.period))
 		{
-			Sentinel sentinel(get_new_sentinel(Config::Get().spawn.sentinelSize, Config::Get().worldBounds));
+			Sentinel sentinel(get_new_sentinel(Config::Get().spawn.sentinelSize,
+				Config::Get().worldBounds));
 			while(Physics::AnyCollide(sentinel, gameObjects.physics))
 			{
 				sentinel = get_new_sentinel(Config::Get().spawn.sentinelSize, Config::Get().worldBounds);
@@ -167,7 +168,8 @@ void GameWorld::SpawnLoop()
 	
 	DOLOCKEDZ(gameObjects,
 		DOLOCKED(spawnMutex,
-			for_each(spawns.begin(), spawns.end(), boost::bind(&remove_ptr_from_game_objects, _1, boost::ref(gameObjects)));
+			for_each(spawns.begin(), spawns.end(),
+				boost::bind(&remove_ptr_from_game_objects, _1, boost::ref(gameObjects)));
 		)
 	)
 }
@@ -264,7 +266,9 @@ void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
 		{
 			play_eat_sound();
 			DOLOCKED(spawnMutex,
-				Food* const toRemove = static_cast<Food*>((o1.GetObjectType() == WorldObject::food) ? &o1 : &o2);
+				Food* const toRemove = static_cast<Food*>(
+					(o1.GetObjectType() == WorldObject::food) ? &o1 : &o2);
+
 				DOLOCKEDZ(gameObjects,
 					gameObjects.Remove(*toRemove);
 				)

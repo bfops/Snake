@@ -4,7 +4,8 @@
 #include "Logger.hpp"
 #include "Sentinel.hpp"
 
-Spawn::Spawn(const ObjectType spawnType, const Sentinel& prototype, const unsigned int size, const Color24 color) :
+Spawn::Spawn(const ObjectType spawnType, const Sentinel& prototype, const unsigned int size,
+	const Color24 color) :
 	WorldObject(spawnType, color)
 {
 	// prototypes are guaranteed to be squares, so \Delta x = \Delta y
@@ -12,7 +13,8 @@ Spawn::Spawn(const ObjectType spawnType, const Sentinel& prototype, const unsign
 	const int sizeDiff = prototypeSize - size;
 	if(sizeDiff < 0)
 	{
-		Logger::Debug(boost::format("Spawn of type %1% was passed a sentinel smaller than the spawn size!") % spawnType);
+		Logger::Debug(boost::format("Spawn of type %1% was passed a sentinel smaller than the spawn size!")
+			% spawnType);
 		return;
 	}
 

@@ -2,7 +2,8 @@
 
 #include "Logger.hpp"
 
-static void register_value(ConfigLoader::Scope::FieldMap& fields, const std::string& key, const std::string& value)
+static void register_value(ConfigLoader::Scope::FieldMap& fields, const std::string& key,
+	const std::string& value)
 {
 	if(fields.find(key) != fields.end())
 		Logger::Debug(boost::format("Warning: field \"%1%\" already exists") % key);

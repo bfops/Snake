@@ -25,8 +25,8 @@ Music::Music(const std::string& filename)
 		music = Mix_LoadMUS(filename.c_str());
 
 		if(music == NULL)
-			Logger::Debug(boost::format("Error playing music \"%1%\": %2%") %
-				filename.c_str() % Mix_GetError());
+			Logger::Debug(boost::format("Error playing music \"%1%\": %2%")
+				% filename.c_str() % Mix_GetError());
 		else
 			Mix_PlayMusic(music, -1);
 	}

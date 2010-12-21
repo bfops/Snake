@@ -3,7 +3,8 @@
 #include "Common.hpp"
 #include "Sentinel.hpp"
 
-Food::Food(const Sentinel& prototype, const unsigned int size, const Config::SpawnData::FoodData& foodInfo) :
+Food::Food(const Sentinel& prototype, const unsigned int size,
+	const Config::SpawnData::FoodData& foodInfo) :
 	Spawn(food, prototype, size, foodInfo.color)
 {
 	calories = foodInfo.lengthFactor;
