@@ -10,6 +10,6 @@ static inline int intRound(const double d)
 
 // execute _thingsToDo_ while _mutex_ is locked
 #define DOLOCKED(mutex, thingsToDo) \
-	mutex.lock(); \
+	mutex.Lock(); \
 	thingsToDo \
-	mutex.unlock();
+	mutex.Unlock();

@@ -1,11 +1,12 @@
 #pragma once
 
+#include "Mutex.hpp"
+
 #ifdef MSVC
 #pragma warning(push, 0)
 #endif
 
 #include <boost/bind.hpp>
-#include <boost/thread/recursive_mutex.hpp>
 #include <vector>
 
 #ifdef MSVC
@@ -27,7 +28,7 @@ private:
 	CollectionType objects;
 
 public:
-	boost::recursive_mutex mutex;
+	mutable RecursiveMutex mutex;
 
 	UniqueObjectList();
 	UniqueObjectList(const UniqueObjectList& obj);

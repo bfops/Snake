@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Mutex.hpp"
 #include "SnakeSegment.hpp"
 #include "Timer.hpp"
 
@@ -7,7 +8,6 @@
 #pragma warning(push, 0)
 #endif
 
-#include <boost/thread/recursive_mutex.hpp>
 #include <list>
 
 #ifdef MSVC
@@ -25,7 +25,7 @@ public:
 	typedef std::list<SnakeSegment> Path;
 
 private:
-	boost::recursive_mutex pathMutex;
+	RecursiveMutex pathMutex;
 
 	unsigned int length;
 	unsigned int targetLength;

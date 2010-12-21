@@ -2,6 +2,7 @@
 
 #include "Food.hpp"
 #include "Mine.hpp"
+#include "Mutex.hpp"
 #include "Snake.hpp"
 #include "Sound.hpp"
 #include "Timer.hpp"
@@ -36,7 +37,7 @@ private:
 	ZippedUniqueObjectList& gameObjects;
 
 	SpawnList spawns;
-	boost::mutex spawnMutex;
+	Mutex spawnMutex;
 
 	boost::thread spawnThread;
 

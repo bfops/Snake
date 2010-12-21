@@ -36,6 +36,8 @@ add_executable(GingerbreadPrototype
 	Mine.hpp
 	Music.cpp
 	Music.hpp
+	Mutex.cpp
+	Mutex.hpp
 	Physics.cpp
 	Physics.hpp
 	Point.hpp

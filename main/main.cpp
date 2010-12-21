@@ -45,11 +45,11 @@ static boost::shared_ptr<GameWorld> gameWorld;
 static void physics_loop();
 static void game_loop();
 
-static EventHandler defaultEventHandler(
+static const EventHandler defaultEventHandler(
 	quit_handler, loss_handler, default_pause_handler,
 	default_key_handler, default_mouse_handler);
 
-static EventHandler pausedEventHandler(
+static const EventHandler pausedEventHandler(
 	quit_handler, loss_handler, paused_pause_handler,
 	paused_key_handler, paused_mouse_handler);
 

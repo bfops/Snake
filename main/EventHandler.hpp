@@ -1,10 +1,11 @@
 #pragma once
 
+#include "Mutex.hpp"
+
 #ifdef MSVC
 #pragma warning(push, 0)
 #endif
 
-#include <boost/thread/recursive_mutex.hpp>
 #include <SDL_events.h>
 
 #ifdef MSVC
@@ -24,7 +25,7 @@ struct EventHandler
 	typedef void (KeyCallbackType)(SDLKey keyPressed);
 	typedef void (MouseCallbackType)(Uint8 mouseButton);
 
-	static boost::recursive_mutex mutex;
+	static RecursiveMutex mutex;
 
 #define DECLARE_CALLBACK_FUNCTOR(type) \
 	type##CallbackType* type##Callback;
@@ -42,5 +43,5 @@ struct EventHandler
 	// get and handle the queue of events from SDL
 	void HandleEventQueue() const;
 
-	static EventHandler*& Get();
+	static const EventHandler*& Get();
 };
