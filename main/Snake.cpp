@@ -94,9 +94,9 @@ void Snake::Reset(const Point center, ZippedUniqueObjectList& gameObjects)
 			gameObjects.RemoveRange(path.begin(), path.end());
 		)
 		path.clear();
-	)
 
-	Init(center, gameObjects);
+		Init(center, gameObjects);
+	)
 }
 
 void Snake::RemoveTail(ZippedUniqueObjectList& gameObjects)
