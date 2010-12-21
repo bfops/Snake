@@ -50,12 +50,12 @@ private:
 	// return the last segment
 	SnakeSegment& Tail();
 
-	void Init(Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
+	void Init(ZippedUniqueObjectList& gameObjects);
 
 public:
-	Snake(Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
+	Snake(ZippedUniqueObjectList& gameObjects);
 
-	void Reset(Point centerOfScreen, ZippedUniqueObjectList& gameObjects);
+	void Reset(ZippedUniqueObjectList& gameObjects);
 
 	void RemoveTail(ZippedUniqueObjectList& gameObjects);
 

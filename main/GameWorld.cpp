@@ -32,12 +32,6 @@ using boost::format;
 using boost::thread;
 using boost::minstd_rand0;
 
-static inline Point get_world_center()
-{
-	return Point(Config::Get().worldBounds.max.x / 2,
-	             Config::Get().worldBounds.max.y / 2);
-}
-
 static void make_new_wall(GameWorld::WallList& walls, const Config::WallsData::WallData& wallData)
 {
 	const Point lowerBound(wallData.x, wallData.y);
@@ -185,7 +179,7 @@ void GameWorld::Init()
 }
 
 GameWorld::GameWorld(ZippedUniqueObjectList& _gameObjects) :
-	gameObjects(_gameObjects), player(get_world_center(), gameObjects)
+	gameObjects(_gameObjects), player(gameObjects)
 {
 	make_walls(walls);
 	DOLOCKEDZ(gameObjects,
@@ -203,7 +197,7 @@ void GameWorld::Update()
 void GameWorld::Reset()
 {
 	reset = true;
-	player.Reset(get_world_center(), gameObjects);
+	player.Reset(gameObjects);
 
 	// wait for everything to finish
 	spawnThread.join();

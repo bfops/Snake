@@ -23,9 +23,9 @@ using boost::minstd_rand;
 
 const static Direction directions[] = {Direction::left, Direction::right, Direction::up, Direction::down};
 
-Snake::Snake(const Point center, ZippedUniqueObjectList& gameObjects)
+Snake::Snake(ZippedUniqueObjectList& gameObjects)
 {
-	Init(center, gameObjects);
+	Init(gameObjects);
 }
 
 void Snake::AddSegment(const Point location, const Direction direction, ZippedUniqueObjectList& gameObjects)
@@ -64,10 +64,21 @@ static inline Direction get_random_direction()
 	return directions[randomNumber % countof(directions)];
 }
 
-void Snake::Init(const Point center, ZippedUniqueObjectList& gameObjects)
+static inline Point get_starting_point(const Direction direction)
+{
+	const unsigned long width = Config::Get().snake.width;
+	Point startingPoint(Config::Get().worldBounds.max.x / 2, Config::Get().worldBounds.max.y / 2);
+	if(direction == Direction::up || direction == Direction::down)
+		startingPoint.x -= width / 2;
+	else
+		startingPoint.y -= width / 2;
+
+	return startingPoint;
+}
+
+void Snake::Init(ZippedUniqueObjectList& gameObjects)
 {
 	points = 0;
-	Point headLocation = center;
 
 	moveTimer.Reset();
 	speedupTimer.Reset();
@@ -78,12 +89,15 @@ void Snake::Init(const Point center, ZippedUniqueObjectList& gameObjects)
 	length = 0;
 	targetLength = Config::Get().snake.startingLength;
 	
+	const Direction direction = get_random_direction();
+	const Point headLocation = get_starting_point(direction);
+
 	DOLOCKED(pathMutex,
-		AddSegment(headLocation, get_random_direction(), gameObjects);
+		AddSegment(headLocation, direction, gameObjects);
 	)
 }
 
-void Snake::Reset(const Point center, ZippedUniqueObjectList& gameObjects)
+void Snake::Reset(ZippedUniqueObjectList& gameObjects)
 {
 	moveTimer.Reset();
 	speedupTimer.Reset();
@@ -95,7 +109,7 @@ void Snake::Reset(const Point center, ZippedUniqueObjectList& gameObjects)
 		)
 		path.clear();
 
-		Init(center, gameObjects);
+		Init(gameObjects);
 	)
 }
 
