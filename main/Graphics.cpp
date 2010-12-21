@@ -20,12 +20,8 @@ using namespace boost;
 
 namespace Graphics
 {
-	void Update(UniqueObjectList& realGraphicsObjects, const Screen& target)
+	void Update(UniqueObjectList& graphicsObjects, const Screen& target)
 	{
-		DOLOCKED(realGraphicsObjects.mutex,
-			const UniqueObjectList graphicsObjects(realGraphicsObjects);
-		)
-
 		target.Clear();
 
 		for_each(graphicsObjects.begin(), graphicsObjects.end(), bind(&WorldObject::Draw, _1, ref(target)));

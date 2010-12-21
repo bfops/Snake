@@ -90,7 +90,11 @@ int main(int, char*[])
 	while(!quit)
 	{
 		if(screenUpdate.ResetIfHasElapsed(1000 / Config::Get().FPS))
-			Graphics::Update(gameObjects->graphics, screen);
+		{
+			DOLOCKED(gameObjects->graphics.mutex,
+				Graphics::Update(gameObjects->graphics, screen);
+			)
+		}
 
 		DOLOCKED(soundMutex,
 			if(soundQueue.size() > 0)
