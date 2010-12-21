@@ -222,7 +222,7 @@ void Snake::EatFood(const Food& foodObj)
 	const int pointsGained = foodObj.GetPoints();
 
 	// if adding points would make you go below 0
-	if(pointsGained < 0 && points + pointsGained < 0)
+	if(pointsGained < 0 && -pointsGained > points)
 		points = 0;
 	else
 		points += pointsGained;
