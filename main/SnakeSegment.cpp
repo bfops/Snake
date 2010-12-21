@@ -1,5 +1,6 @@
 #include "SnakeSegment.hpp"
 
+#include "Common.hpp"
 #include "Config.hpp"
 #include "Line.hpp"
 #include "Snake.hpp"
@@ -38,20 +39,22 @@ void SnakeSegment::CollisionHandler(const Food& food)
 
 void SnakeSegment::ModifyLength(const int amount)
 {
-	if(amount > 0)
-	{
-		// move the front side forward by _amount_ (i.e. grow)
-		Line headSide = GetHeadSide();
-		headSide.ApplyVector(direction, amount);
-		SetHeadSide(headSide);
-	}
-	else
-	{
-		// move the back side forward by _amount_ (i.e. shrink)
-		Line tailSide = GetTailSide();
-		tailSide.ApplyVector(direction, -amount);
-		SetTailSide(tailSide);
-	}
+	DOLOCKED(mutex,
+		if(amount > 0)
+		{
+			// move the front side forward by _amount_ (i.e. grow)
+			Line headSide = GetHeadSide();
+			headSide.ApplyVector(direction, amount);
+			SetHeadSide(headSide);
+		}
+		else
+		{
+			// move the back side forward by _amount_ (i.e. shrink)
+			Line tailSide = GetTailSide();
+			tailSide.ApplyVector(direction, -amount);
+			SetTailSide(tailSide);
+		}
+	)
 }
 
 void SnakeSegment::Grow()

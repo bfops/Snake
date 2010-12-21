@@ -90,9 +90,7 @@ int main(int, char*[])
 	while(!quit)
 	{
 		if(screenUpdate.ResetIfHasElapsed(1000 / Config::Get().FPS))
-		{
 			Graphics::Update(gameObjects->graphics, screen);
-		}
 
 		DOLOCKED(soundMutex,
 			if(soundQueue.size() > 0)
@@ -121,7 +119,9 @@ static void physics_loop()
 {
 	while(!quit)
 	{
-		Physics::Update(*gameWorld, gameObjects->physics);
+		DOLOCKED(gameObjects->physics.mutex,
+			Physics::Update(*gameWorld, gameObjects->physics);
+		)
 		SDL_Delay(5);
 	}
 }

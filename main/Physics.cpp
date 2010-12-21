@@ -36,16 +36,24 @@ namespace Physics
 
 	static inline bool does_collide(const WorldObject& o1, const WorldObject& o2)
 	{
-		const ObjectBounds c1 = get_world_object_bounds(&o1);
-		const ObjectBounds c2 = get_world_object_bounds(&o2);
+		DOLOCKED(o1.mutex,
+			const ObjectBounds c1 = get_world_object_bounds(&o1);
+		)
+		DOLOCKED(o2.mutex,
+			const ObjectBounds c2 = get_world_object_bounds(&o2);
+		)
 
 		return does_collide(&c1, &c2) != 0;
 	}
 	
 	static void handle_potential_collision(GameWorld* const world, WorldObject* const o1, WorldObject* const o2)
 	{
-		if(does_collide(*o1, *o2))
-			world->CollisionHandler(*o1, *o2);
+		DOLOCKED(o1->mutex,
+			DOLOCKED(o2->mutex,
+				if(does_collide(*o1, *o2))
+					world->CollisionHandler(*o1, *o2);
+			)
+		)
 	}
 
 	static inline void collide_with_subsequent_objects(GameWorld* const world,
@@ -54,14 +62,12 @@ namespace Physics
 		for_each(collider + 1, end, bind(&handle_potential_collision, world, *collider, _1));
 	}
 
-	void Update(GameWorld& world, UniqueObjectList& realPhysicsObjects)
+	void Update(GameWorld& world, const UniqueObjectList& realPhysicsObjects)
 	{
-		DOLOCKED(realPhysicsObjects.mutex,
-			const UniqueObjectList physicsObjects(realPhysicsObjects);
-		)
-
-		if(physicsObjects.begin() == physicsObjects.end())
+		if(realPhysicsObjects.begin() == realPhysicsObjects.end())
 			return;
+
+		const UniqueObjectList physicsObjects(realPhysicsObjects);
 
 		// don't try the last gameObject, since all have been checked against it
 		for(UniqueObjectList::const_iterator collider = physicsObjects.begin(), end = physicsObjects.end() - 1;

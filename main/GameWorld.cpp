@@ -150,7 +150,7 @@ void GameWorld::SpawnLoop()
 			DOLOCKEDZ(gameObjects,
 				DOLOCKED(spawnMutex,
 					spawns.push_back(GameWorld::SpawnPtr(make_spawn(sentinel, Config::Get().spawn.size)));
-					gameObjects.Add(**spawns.rbegin());
+					gameObjects.Add(*spawns.back());
 				)
 			)
 
@@ -261,16 +261,9 @@ void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
 			play_eat_sound();
 			DOLOCKED(spawnMutex,
 				Food* const toRemove = static_cast<Food*>((o1.GetObjectType() == WorldObject::food) ? &o1 : &o2);
-				for(SpawnList::iterator i = spawns.begin(), end = spawns.end(); i != end; ++i)
-				{
-					if(&**i == toRemove)
-					{
-						DOLOCKEDZ(gameObjects,
-							gameObjects.Remove(**i);
-						)
-						break;
-					}
-				}
+				DOLOCKEDZ(gameObjects,
+					gameObjects.Remove(*toRemove);
+				)
 			)
 		}
 	}

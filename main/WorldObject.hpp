@@ -2,6 +2,7 @@
 
 #include "Bounds.hpp"
 #include "Color24.hpp"
+#include "Mutex.hpp"
 
 class Screen;
 class Food;
@@ -30,6 +31,8 @@ protected:
 	Bounds bounds;
 
 public:
+	mutable RecursiveMutex mutex;
+
 	WorldObject(ObjectType);
 	WorldObject(ObjectType, const Color24 color);
 	virtual ~WorldObject();
