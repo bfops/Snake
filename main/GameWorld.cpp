@@ -74,7 +74,7 @@ static inline void play_eat_sound()
 }
 
 // checks if _probability_ occurred in _randnum_ probability-checking can be done by seeing if
-// _randnum_ < _probability_ * _max_number_. However, this means if we check for 1/6,
+// _randnum_ <= _probability_ * _max_number_. However, this means if we check for 1/6,
 // and then check for 1/3, since (_max_)(1/6) is encompassed in (_max_)(1/3), this can lead
 // to unexpected results. Therefore, the region used in calculation is subtracted from _randnum_,
 // so that it may be called again without having to account for these side-effects. (if the probability
@@ -82,14 +82,14 @@ static inline void play_eat_sound()
 static bool probability_hit(unsigned int& randnum, const double probability, const unsigned int randMax)
 {
 	const unsigned int border = intRound(randMax * probability);
-	if(randnum < border)
+	if(randnum <= border)
 		return true;
 
 	randnum -= border;
 	return false;
 }
 
-static const Config::SpawnData::FoodData& get_food_type()
+static const Config::SpawnData::FoodData* get_food_type()
 {
 	minstd_rand0 rand(time(NULL));
 
@@ -99,19 +99,18 @@ static const Config::SpawnData::FoodData& get_food_type()
 
 	const Config::SpawnData::Menu& foods = Config::Get().spawn.foodsData;
 
-	// TODO: fix the case where size == 0
-	for(Config::SpawnData::Menu::const_iterator i = foods.begin(), end = foods.end() - 1; i != end; ++i)
+	for(Config::SpawnData::Menu::const_iterator i = foods.begin(), end = foods.end(); i != end; ++i)
 		if(probability_hit(randnum, i->rate, randMax))
-			return *i;
+			return &*i;
 
-	return foods.back();
+	return NULL;
 }
 
 static Sentinel get_new_sentinel(const unsigned long sentinelSize, const Bounds& worldBounds)
 {
 	minstd_rand0 rand(time(NULL));
 
-	// get  random number between the worldBounds
+	// get random number between the worldBounds
 #define GETSIZEDRANDOM(m) (rand() % ((worldBounds.max.m - worldBounds.min.m) - sentinelSize + 1) + worldBounds.min.m)
 	Point location(GETSIZEDRANDOM(x), GETSIZEDRANDOM(y));
 #undef GETSIZEDRANDOM
@@ -129,7 +128,14 @@ static inline Spawn* make_spawn(const Sentinel& sentinel, const unsigned int spa
 	if(Config::Get().survival)
 		return new Mine(sentinel, spawnSize);
 	else
-		return new Food(sentinel, spawnSize, get_food_type());
+	{
+		const Config::SpawnData::FoodData* const foodData = get_food_type();
+
+		if(!foodData)
+			return NULL;
+
+		return new Food(sentinel, spawnSize, *foodData);
+	}
 }
 
 void GameWorld::SpawnLoop()
@@ -149,13 +155,17 @@ void GameWorld::SpawnLoop()
 
 			DOLOCKEDZ(gameObjects,
 				DOLOCKED(spawnMutex,
-					spawns.push_back(GameWorld::SpawnPtr(make_spawn(sentinel, Config::Get().spawn.size)));
-					gameObjects.Add(*spawns.back());
+					Spawn* const spawn = make_spawn(sentinel, Config::Get().spawn.size);
+					if(spawn)
+					{
+						spawns.push_back(SpawnPtr(spawn));
+						gameObjects.Add(*spawns.back());
+
+						play_spawn_sound();
+						Logger::Debug("Spawn");
+					}
 				)
 			)
-
-			play_spawn_sound();
-			Logger::Debug("Spawn");
 		}
 
 		SDL_Delay(100);
