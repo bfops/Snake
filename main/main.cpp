@@ -19,6 +19,7 @@
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
+#include <list>
 #include <SDL.h>
 
 #ifdef MSVC
@@ -32,6 +33,7 @@ static EventHandler::QuitCallbackType quit_handler;
 static EventHandler::LossCallbackType loss_handler;
 static EventHandler::PauseCallbackType default_pause_handler;
 static EventHandler::PauseCallbackType paused_pause_handler;
+static EventHandler::SoundCallbackType sound_handler;
 static EventHandler::KeyCallbackType default_key_handler;
 static EventHandler::KeyCallbackType paused_key_handler;
 static EventHandler::MouseCallbackType default_mouse_handler;
@@ -41,22 +43,26 @@ static const char* windowTitle("ReWritable's Snake");
 static boost::shared_ptr<ZippedUniqueObjectList> gameObjects;
 static boost::shared_ptr<GameWorld> gameWorld;
 
+typedef std::list<const std::string> SoundQueue;
+static Mutex soundMutex;
+static SoundQueue soundQueue;
+
 // returns false iff loading failed
 static void physics_loop();
 static void game_loop();
 
-static const EventHandler defaultEventHandler(
-	quit_handler, loss_handler, default_pause_handler,
+static const EventHandler defaultEventHandler(quit_handler, loss_handler, default_pause_handler, sound_handler,
 	default_key_handler, default_mouse_handler);
 
-static const EventHandler pausedEventHandler(
-	quit_handler, loss_handler, paused_pause_handler,
+static const EventHandler pausedEventHandler(quit_handler, loss_handler, paused_pause_handler, sound_handler,
 	paused_key_handler, paused_mouse_handler);
 
 bool quit, lost, paused;
 
 int main(int, char*[])
 {
+	typedef std::list<Sound> SoundList;
+	SoundList sounds;
 	quit = lost = paused = false;
 
 	SDLInitializer keepSDLInitialized;
@@ -88,6 +94,15 @@ int main(int, char*[])
 			Graphics::Update(gameObjects->graphics, screen);
 		}
 
+		DOLOCKED(soundMutex,
+			if(soundQueue.size() > 0)
+			{
+				// TODO: clear finished sounds
+				sounds.push_back(Sound(soundQueue.front()));
+				soundQueue.pop_front();
+			}
+		)
+
 		DOLOCKED(EventHandler::mutex,
 			EventHandler::Get()->HandleEventQueue();
 		)
@@ -96,6 +111,8 @@ int main(int, char*[])
 	// wait for everything to complete
 	physicsThread.join();
 	gameThread.join();
+
+	sounds.clear();
 
 	return 0;
 }
@@ -156,6 +173,13 @@ static void paused_pause_handler()
 	)
 	paused = false;
 	Clock::Get().Unpause();
+}
+
+static void sound_handler(const std::string& filename)
+{
+	DOLOCKED(soundMutex,
+		soundQueue.push_back(filename);
+	)
 }
 
 static void default_key_handler(const SDLKey key)

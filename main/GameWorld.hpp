@@ -29,7 +29,6 @@ public:
 	typedef boost::shared_ptr<Spawn> SpawnPtr;
 	typedef std::list<SpawnPtr> SpawnList;
 	typedef std::vector<Wall> WallList;
-	typedef std::vector<Sound> SoundList;
 
 private:
 	void SpawnLoop();
@@ -40,8 +39,6 @@ private:
 	Mutex spawnMutex;
 
 	boost::thread spawnThread;
-
-	SoundList sounds;
 
 	// whether or not to reset the game
 	bool reset;

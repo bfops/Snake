@@ -22,6 +22,7 @@ struct EventHandler
 	typedef void (QuitCallbackType)();
 	typedef void (LossCallbackType)();
 	typedef void (PauseCallbackType)();
+	typedef void (SoundCallbackType)(const std::string& filename);
 	typedef void (KeyCallbackType)(SDLKey keyPressed);
 	typedef void (MouseCallbackType)(Uint8 mouseButton);
 
@@ -33,12 +34,14 @@ struct EventHandler
 	DECLARE_CALLBACK_FUNCTOR(Quit)
 	DECLARE_CALLBACK_FUNCTOR(Loss)
 	DECLARE_CALLBACK_FUNCTOR(Pause)
+	DECLARE_CALLBACK_FUNCTOR(Sound)
 	DECLARE_CALLBACK_FUNCTOR(Key)
 	DECLARE_CALLBACK_FUNCTOR(Mouse)
 
 #undef DECLARE_CALLBACK_FUNCTOR
 
-	EventHandler(QuitCallbackType, LossCallbackType, PauseCallbackType, KeyCallbackType, MouseCallbackType);
+	EventHandler(QuitCallbackType, LossCallbackType, PauseCallbackType, SoundCallbackType, KeyCallbackType,
+		MouseCallbackType);
 
 	// get and handle the queue of events from SDL
 	void HandleEventQueue() const;

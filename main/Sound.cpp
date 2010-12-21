@@ -50,11 +50,10 @@ Sound::~Sound()
 	}
 }
 
-void Sound::WaitForCompletion() const
+bool Sound::IsDone() const
 {
 	if(channel < 0)
-		return;
+		return true;
 
-	while(Mix_Playing(channel))
-		SDL_Delay(1);
+	return (Mix_Playing(channel) != 0);
 }

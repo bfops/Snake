@@ -22,5 +22,5 @@ public:
 	Sound(Sound&);
 	~Sound();
 
-	void WaitForCompletion() const;
+	bool IsDone() const;
 };
