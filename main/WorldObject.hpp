@@ -13,7 +13,7 @@ class Wall;
 class WorldObject
 {
 public:
-	// must be exponents of 2 because they are ORd together later
+	// must be exponents of 2 because they are masked
 	enum ObjectType
 	{
 		snake = 1,

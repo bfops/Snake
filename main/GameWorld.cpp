@@ -260,7 +260,7 @@ void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
 		{
 			play_eat_sound();
 			DOLOCKED(spawnMutex,
-				Food* const toRemove = reinterpret_cast<Food*>((o1.GetObjectType() == WorldObject::food) ? &o1 : &o2);
+				Food* const toRemove = static_cast<Food*>((o1.GetObjectType() == WorldObject::food) ? &o1 : &o2);
 				for(SpawnList::iterator i = spawns.begin(), end = spawns.end(); i != end; ++i)
 				{
 					if(&**i == toRemove)
