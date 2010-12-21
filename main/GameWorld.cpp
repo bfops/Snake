@@ -268,7 +268,6 @@ void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
 						DOLOCKEDZ(gameObjects,
 							gameObjects.Remove(**i);
 						)
-						spawns.erase(i);
 						break;
 					}
 				}
