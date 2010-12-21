@@ -36,6 +36,10 @@ void EventHandler::HandleEventQueue() const
 				QuitCallback();
 				break;
 
+			case SDL_ACTIVEEVENT:
+				PauseCallback();
+				break;
+
 			case SDL_KEYDOWN:
 			{
 				const SDLKey key = event.key.keysym.sym;
