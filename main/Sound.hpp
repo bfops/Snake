@@ -11,8 +11,6 @@
 #pragma warning(pop)
 #endif
 
-// TODO: put sound-playing in main thread
-// TODO: have a map of sounds to their currently playing channel; if a sound is being played, don't play it
 class Sound
 {
 private:

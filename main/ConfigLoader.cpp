@@ -2,7 +2,7 @@
 
 #include "Logger.hpp"
 
-// TODO: more error-checking: incorrect number of params, incorrect close braces, etc.
+// TODO: more error-checking
 
 void ConfigLoader::InitScopeStack()
 {
