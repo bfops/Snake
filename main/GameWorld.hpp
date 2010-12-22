@@ -13,8 +13,8 @@
 #endif
 
 #include <boost/thread.hpp>
-#include <boost/shared_ptr.hpp>
 #include <list>
+#include <memory>
 #include <SDL_events.h>
 
 #ifdef MSVC
@@ -26,7 +26,7 @@ struct ZippedUniqueObjectList;
 class GameWorld
 {
 public:
-	typedef boost::shared_ptr<Spawn> SpawnPtr;
+	typedef std::auto_ptr<Spawn> SpawnPtr;
 	typedef std::list<SpawnPtr> SpawnList;
 	typedef std::vector<Wall> WallList;
 

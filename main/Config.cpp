@@ -29,14 +29,15 @@ static inline std::string get_wall_data_name(const unsigned short i, const char*
 
 Config::Config(std::istream& stream)
 {
+	typedef std::auto_ptr<ConfigLoader> ConfigPtr;
 	// if the stream passed isn't good, use _defaultConfig_ as our stream
-	boost::shared_ptr<ConfigLoader> in;
+	ConfigPtr in;
 	if(stream.good())
-		in = boost::shared_ptr<ConfigLoader>(new ConfigLoader(stream));
+		in = ConfigPtr(new ConfigLoader(stream));
 	else
 	{
 		std::stringstream defaultConfig = GetDefaultConfig();
-		in = boost::shared_ptr<ConfigLoader>(new ConfigLoader(defaultConfig));
+		in = ConfigPtr(new ConfigLoader(defaultConfig));
 	}
 	
 	// TODO: error-checking in loading

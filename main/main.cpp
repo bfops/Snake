@@ -17,9 +17,9 @@
 #endif
 
 #include <boost/bind.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
 #include <list>
+#include <memory>
 #include <SDL.h>
 
 #ifdef MSVC
@@ -40,8 +40,8 @@ static EventHandler::MouseCallbackType default_mouse_handler;
 static EventHandler::MouseCallbackType paused_mouse_handler;
 
 static const char* windowTitle("ReWritable's Snake");
-static boost::shared_ptr<ZippedUniqueObjectList> gameObjects;
-static boost::shared_ptr<GameWorld> gameWorld;
+static std::auto_ptr<ZippedUniqueObjectList> gameObjects;
+static std::auto_ptr<GameWorld> gameWorld;
 
 typedef std::list<const std::string> SoundQueue;
 static Mutex soundMutex;
@@ -70,8 +70,8 @@ int main(int, char*[])
 	SDL_WM_SetCaption(windowTitle, windowTitle);
 	SDL_ShowCursor(SDL_DISABLE);
 
-	gameObjects = boost::shared_ptr<ZippedUniqueObjectList>(new ZippedUniqueObjectList());
-	gameWorld = boost::shared_ptr<GameWorld>(new GameWorld(*gameObjects));
+	gameObjects = std::auto_ptr<ZippedUniqueObjectList>(new ZippedUniqueObjectList());
+	gameWorld = std::auto_ptr<GameWorld>(new GameWorld(*gameObjects));
 
 	DOLOCKED(EventHandler::mutex,
 		EventHandler::Get() = &defaultEventHandler;
