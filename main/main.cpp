@@ -171,6 +171,7 @@ static void default_pause_handler()
 	Music::Pause();
 	paused = true;
 	Clock::Get().Pause();
+	Logger::Debug("Pausing");
 }
 
 static void paused_pause_handler()
@@ -181,6 +182,7 @@ static void paused_pause_handler()
 	Music::Unpause();
 	paused = false;
 	Clock::Get().Unpause();
+	Logger::Debug("Resuming");
 }
 
 static void sound_handler(const std::string& filename)
