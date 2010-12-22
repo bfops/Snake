@@ -3,12 +3,9 @@
 #include "Common.hpp"
 #include "Sentinel.hpp"
 
-Food::Food(const Sentinel& prototype,
-	const Config::SpawnData::FoodData& foodInfo) :
-	Spawn(food, prototype, Config::Get().spawn.size, foodInfo.color)
+Food::Food(const Sentinel& prototype, const Config::SpawnData::FoodData& foodData) :
+	Spawn(food, prototype, Config::Get().spawn.size, foodData.color), info(foodData)
 {
-	calories = foodInfo.lengthFactor;
-	pointsGiven = foodInfo.points;
 }
 
 void Food::CollisionHandler(WorldObject& obj) const
@@ -16,12 +13,7 @@ void Food::CollisionHandler(WorldObject& obj) const
 	obj.CollisionHandler(*this);
 }
 
-double Food::GetCalories() const
+const Config::SpawnData::FoodData& Food::GetData() const
 {
-	return calories;
-}
-
-long long Food::GetPoints() const
-{
-	return pointsGiven;
+	return info;
 }

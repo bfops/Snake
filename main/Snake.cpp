@@ -39,16 +39,6 @@ void Snake::AddSegment(const Point location, const Direction direction, ZippedUn
 	)
 }
 
-void Snake::Grow(const long amount)
-{
-	DOLOCKED(pathMutex,
-		if(amount < 0 && targetLength + amount < Config::Get().snake.startingLength)
-			targetLength = Config::Get().snake.startingLength;
-		else
-			targetLength += amount;
-	)
-}
-
 inline SnakeSegment& Snake::Head()
 {
 	return path.front();
@@ -182,15 +172,19 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects)
 {
 	if(pointTimer.ResetIfHasElapsed(Config::Get().pointGainPeriod))
 	{
-		points += Config::Get().pointGainAmount;
-		Logger::Debug(boost::format("%1% points gained! (total %2%)")
-			% Config::Get().pointGainAmount % points);
+		DOLOCKED(attribMutex,
+			points += Config::Get().pointGainAmount;
+			Logger::Debug(boost::format("%1% points gained! (total %2%)")
+				% Config::Get().pointGainAmount % points);
+		)
 	}
 
 	if(speedupTimer.ResetIfHasElapsed(Config::Get().snake.speedupPeriod))
 	{
-		speed += Config::Get().snake.speedupAmount;
-		Logger::Debug(boost::format("Speeding up by %1%") % Config::Get().snake.speedupAmount);
+		DOLOCKED(attribMutex,
+			speed += Config::Get().snake.speedupAmount;
+			Logger::Debug(boost::format("Speeding up by %1%") % Config::Get().snake.speedupAmount);
+		)
 	}
 
 	if(moveTimer.ResetIfHasElapsed(1000 / speed))
@@ -198,39 +192,54 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects)
 		DOLOCKED(pathMutex,
 			Head().Grow();
 
-			if(length > targetLength)
-			{
-				if(Tail().Shrink())
-					RemoveTail(gameObjects);
-				--length;
-			}
+			DOLOCKED(attribMutex,
+				if(length > targetLength)
+				{
+					if(Tail().Shrink())
+						RemoveTail(gameObjects);
+					--length;
+				}
 
-			// if we need more length, just don't shrink the tail
-			if(length < targetLength)
-				++length;
-			else
-				if(Tail().Shrink())
-					RemoveTail(gameObjects);
+				// if we need more length, just don't shrink the tail
+				if(length < targetLength)
+					++length;
+				else
+					if(Tail().Shrink())
+						RemoveTail(gameObjects);
+			)
 		)
 	}
 }
 
 void Snake::EatFood(const Food& foodObj)
 {
-	const double foodGrowthConstant = foodObj.GetCalories();
-	const double baseUncappedGrowth = targetLength * Config::Get().snake.growthRate;
-	const double baseRealGrowth = std::min((double)Config::Get().snake.growthCap, baseUncappedGrowth);
-	const long growthAmount = intRound(baseRealGrowth * foodGrowthConstant);
-	const long pointsGained = foodObj.GetPoints();
+	const Config::SnakeData& snakeData = Config::Get().snake;
+	const Config::SpawnData::FoodData& foodData = foodObj.GetData();
+	const double baseUncappedGrowth = targetLength * snakeData.growthRate;
+	const double baseRealGrowth = std::min((double)snakeData.growthCap, baseUncappedGrowth);
+	const long growthAmount = intRound(baseRealGrowth * foodData.lengthFactor);
+	const long long pointsGained = foodData.points;
+	const short speedChange = foodData.speedChange;
 
-	// if adding points would make you go below 0
-	if(pointsGained < 0 && -pointsGained > points)
-		points = 0;
-	else
-		points += pointsGained;
+	DOLOCKED(attribMutex,
+		// if adding points would make you go below 0
+		if(pointsGained < 0 && -pointsGained > points)
+			points = 0;
+		else
+			points += pointsGained;
 
-	Grow(growthAmount);
+		if(growthAmount < 0 && targetLength + growthAmount < snakeData.startingLength)
+			targetLength = snakeData.startingLength;
+		else
+			targetLength += growthAmount;
+
+		if(speedChange < 0 && speed + speedChange < snakeData.startingSpeed)
+			speed = snakeData.startingSpeed;
+		else
+			speed += speedChange;
+	)
 
 	Logger::Debug(boost::format("Growing by %1%") % growthAmount);
 	Logger::Debug(boost::format("Got %1% points! (total %2%)") % pointsGained % points);
+	Logger::Debug(boost::format("Speeding up by %1%") % speedChange);
 }

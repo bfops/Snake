@@ -25,7 +25,7 @@ private:
 	static std::stringstream GetDefaultConfig();
 
 public:
-	struct SnakeConfig
+	struct SnakeData
 	{
 		unsigned long startingLength;
 		unsigned short width;
@@ -78,6 +78,7 @@ public:
 			double lengthFactor;
 			// spawn rate
 			double rate;
+			short speedChange;
 		};
 		typedef std::vector<FoodData> Menu;
 
@@ -106,7 +107,7 @@ public:
 	unsigned int pointGainPeriod;
 	long long pointGainAmount;
 
-	SnakeConfig snake;
+	SnakeData snake;
 	Resources resources;
 
 	// get the (only) configuration data

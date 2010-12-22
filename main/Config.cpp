@@ -117,6 +117,7 @@ Config::Config(std::istream& stream)
 				in->Get("lengthFactor", food.lengthFactor);
 				in->Get("points", food.points);
 				in->Get("rate", food.rate);
+				in->Get("speedChange", food.speedChange);
 				in->EnterScope("color");
 					in->Get("r", food.color.r);
 					in->Get("g", food.color.g);

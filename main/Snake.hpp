@@ -26,6 +26,7 @@ public:
 
 private:
 	RecursiveMutex pathMutex;
+	Mutex attribMutex;
 
 	unsigned long length;
 	unsigned long targetLength;
@@ -43,7 +44,6 @@ private:
 
 	// add segment to the front
 	void AddSegment(Point location, Direction directionOfTravel, ZippedUniqueObjectList& gameObjects);
-	void Grow(long amount);
 
 	// return the first segment
 	SnakeSegment& Head();
