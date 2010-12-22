@@ -56,5 +56,5 @@ bool Sound::IsDone() const
 	if(channel < 0)
 		return true;
 
-	return (Mix_Playing(channel) != 0);
+	return (Mix_Playing(channel) == 0);
 }
