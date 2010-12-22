@@ -97,9 +97,12 @@ int main(int, char*[])
 		}
 
 		DOLOCKED(soundMutex,
+			if(sounds.size() > 0)
+				if(sounds.front().IsDone())
+					sounds.pop_front();
+
 			if(soundQueue.size() > 0)
 			{
-				// TODO: clear finished sounds
 				sounds.push_back(Sound(soundQueue.front()));
 				soundQueue.pop_front();
 			}
