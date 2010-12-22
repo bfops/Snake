@@ -247,8 +247,12 @@ Direction get_direction_from_button(const Uint8 button)
 
 void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
 {
-	o1.CollisionHandler(o2);
-	o2.CollisionHandler(o1);
+	DOLOCKED(o2.mutex,
+		o1.CollisionHandler(o2);
+	)
+	DOLOCKED(o1.mutex,
+		o2.CollisionHandler(o1);
+	)
 
 	const unsigned long collisionType = o1.GetObjectType() | o2.GetObjectType();
 	const bool selfCollide = !(collisionType & ~o1.GetObjectType());

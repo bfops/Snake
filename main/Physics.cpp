@@ -47,12 +47,8 @@ namespace Physics
 	static void handle_potential_collision(GameWorld* const world, WorldObject* const o1,
 		WorldObject* const o2)
 	{
-		DOLOCKED(o1->mutex,
-			DOLOCKED(o2->mutex,
-				if(does_collide(*o1, *o2))
-					world->CollisionHandler(*o1, *o2);
-			)
-		)
+		if(does_collide(*o1, *o2))
+			world->CollisionHandler(*o1, *o2);
 	}
 
 	static inline void collide_with_subsequent_objects(GameWorld* const world,
