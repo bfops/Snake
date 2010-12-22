@@ -21,4 +21,7 @@ public:
 	Music(const std::string& filename);
 	Music(Music&);
 	~Music();
+
+	static void Pause();
+	static void Unpause();
 };

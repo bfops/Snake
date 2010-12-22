@@ -166,6 +166,7 @@ static void default_pause_handler()
 	DOLOCKED(EventHandler::mutex,
 		EventHandler::Get() = &pausedEventHandler;
 	)
+	Music::Pause();
 	paused = true;
 	Clock::Get().Pause();
 }
@@ -175,6 +176,7 @@ static void paused_pause_handler()
 	DOLOCKED(EventHandler::mutex,
 		EventHandler::Get() = &defaultEventHandler;
 	)
+	Music::Unpause();
 	paused = false;
 	Clock::Get().Unpause();
 }

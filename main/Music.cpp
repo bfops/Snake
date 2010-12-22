@@ -48,3 +48,13 @@ Music::~Music()
 		Mix_FreeMusic(music);
 	}
 }
+
+void Music::Pause()
+{
+	Mix_PauseMusic();
+}
+
+void Music::Unpause()
+{
+	Mix_ResumeMusic();
+}
