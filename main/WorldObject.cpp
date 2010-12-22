@@ -1,5 +1,6 @@
 #include "WorldObject.hpp"
 
+#include "Common.hpp"
 #include "Logger.hpp"
 #include "Screen.hpp"
 
@@ -58,16 +59,24 @@ void WorldObject::CollisionHandler(const Wall&)
 {
 }
 
-void WorldObject::Draw(const Screen& target) const
+static inline SDL_Rect bounds_to_rect(const Bounds& bounds)
 {
-	// TODO: lock when doing this!
-	SDL_Surface* const surface = target.GetSurface();
-
 	SDL_Rect rect;
 	rect.x = bounds.min.x;
-	rect.y = bounds.min.y;
 	rect.w = bounds.max.x - bounds.min.x;
+	rect.y = bounds.min.y;
 	rect.h = bounds.max.y - bounds.min.y;
+
+	return rect;
+}
+
+void WorldObject::Draw(const Screen& target) const
+{
+	SDL_Surface* const surface = target.GetSurface();
+
+	DOLOCKED(mutex,
+		SDL_Rect rect = bounds_to_rect(bounds);
+	)
 
 	if(SDL_FillRect(surface, &rect, color.GetRGBMap(surface)) == -1)
 		Logger::Fatal(boost::format("Error drawing to screen: %1%") % SDL_GetError());
