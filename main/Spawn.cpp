@@ -11,12 +11,10 @@ Spawn::Spawn(const ObjectType spawnType, const Sentinel& prototype, const unsign
 	// prototypes are guaranteed to be squares, so \Delta x = \Delta y
 	const unsigned short prototypeSize = prototype.GetBounds().max.x - prototype.GetBounds().min.x;
 	const short sizeDiff = prototypeSize - size;
+
 	if(sizeDiff < 0)
-	{
 		Logger::Debug(boost::format("Spawn of type %1% was passed a sentinel smaller than the spawn size!")
 			% spawnType);
-		return;
-	}
 
 	bounds.min = prototype.GetBounds().min;
 	bounds.min.x += sizeDiff / 2;
