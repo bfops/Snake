@@ -18,7 +18,6 @@
 #pragma warning(pop)
 #endif
 
-using namespace std;
 using boost::minstd_rand;
 
 const static Direction directions[] = {Direction::left, Direction::right, Direction::up, Direction::down};
@@ -217,7 +216,7 @@ void Snake::EatFood(const Food& foodObj)
 {
 	const double foodGrowthConstant = foodObj.GetCalories();
 	const double baseUncappedGrowth = targetLength * Config::Get().snake.growthRate;
-	const double baseRealGrowth = min((double)Config::Get().snake.growthCap, baseUncappedGrowth);
+	const double baseRealGrowth = std::min((double)Config::Get().snake.growthCap, baseUncappedGrowth);
 	const int growthAmount = intRound(baseRealGrowth * foodGrowthConstant);
 	const int pointsGained = foodObj.GetPoints();
 

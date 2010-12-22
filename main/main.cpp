@@ -26,8 +26,7 @@
 #pragma warning(pop)
 #endif
 
-using namespace boost;
-using namespace std;
+using boost::thread;
 
 static EventHandler::QuitCallbackType quit_handler;
 static EventHandler::LossCallbackType loss_handler;

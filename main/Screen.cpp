@@ -14,8 +14,6 @@
 #pragma warning(pop)
 #endif
 
-using namespace std;
-
 Screen::Screen(const unsigned long _width, const unsigned long _height)
 {
 	width = _width;

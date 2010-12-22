@@ -16,7 +16,8 @@
 #pragma warning(pop)
 #endif
 
-using namespace boost;
+using boost::bind;
+using boost::ref;
 
 namespace Graphics
 {

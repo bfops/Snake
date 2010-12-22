@@ -17,8 +17,6 @@
 #pragma warning(pop)
 #endif
 
-using namespace boost;
-
 namespace Physics
 {
 	static inline ObjectBounds get_world_object_bounds(const WorldObject* const w)
