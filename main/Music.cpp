@@ -43,5 +43,8 @@ Music::Music(Music& obj)
 Music::~Music()
 {
 	if(music)
+	{
+		Mix_HaltMusic();
 		Mix_FreeMusic(music);
+	}
 }

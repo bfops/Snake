@@ -3,5 +3,5 @@ class UniqueObjectList;
 
 namespace Graphics
 {
-	void Update(UniqueObjectList& graphicsObjects, const Screen& target);
+	void Update(const UniqueObjectList& graphicsObjects, const Screen& target);
 }
