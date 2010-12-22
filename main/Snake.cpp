@@ -41,10 +41,12 @@ void Snake::AddSegment(const Point location, const Direction direction, ZippedUn
 
 void Snake::Grow(const long amount)
 {
-	if(amount < 0 && targetLength + amount < Config::Get().snake.startingLength)
-		targetLength = Config::Get().snake.startingLength;
-	else
-		targetLength += amount;
+	DOLOCKED(pathMutex,
+		if(amount < 0 && targetLength + amount < Config::Get().snake.startingLength)
+			targetLength = Config::Get().snake.startingLength;
+		else
+			targetLength += amount;
+	)
 }
 
 inline SnakeSegment& Snake::Head()
