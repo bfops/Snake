@@ -211,6 +211,17 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects)
 	}
 }
 
+// add _change_ to _original_. If doing so goes below _min_, set it to _min_ instead
+template <typename _T, typename _X>
+void SumUp(const _T change, _X& original, const _X min)
+{
+	// if the change is so negative that it exceeds our gain
+	if(change < 0 && -change > original - min)
+		original = min;
+	else
+		original += change;
+}
+
 void Snake::EatFood(const Food& foodObj)
 {
 	const Config::SnakeData& snakeData = Config::Get().snake;
@@ -220,23 +231,12 @@ void Snake::EatFood(const Food& foodObj)
 	const long growthAmount = intRound(baseRealGrowth * foodData.lengthFactor);
 	const long long pointsGained = foodData.points;
 	const short speedChange = foodData.speedChange;
+	const unsigned long long defaultPoints = 0;
 
 	DOLOCKED(attribMutex,
-		// if adding points would make you go below 0
-		if(pointsGained < 0 && -pointsGained > points)
-			points = 0;
-		else
-			points += pointsGained;
-
-		if(growthAmount < 0 && targetLength + growthAmount < snakeData.startingLength)
-			targetLength = snakeData.startingLength;
-		else
-			targetLength += growthAmount;
-
-		if(speedChange < 0 && speed + speedChange < snakeData.startingSpeed)
-			speed = snakeData.startingSpeed;
-		else
-			speed += speedChange;
+		SumUp(pointsGained, points, defaultPoints);
+		SumUp(growthAmount, targetLength, snakeData.startingLength);
+		SumUp(speedChange, speed, snakeData.startingSpeed);
 	)
 
 	Logger::Debug(boost::format("Growing by %1%") % growthAmount);
