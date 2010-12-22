@@ -8,7 +8,7 @@ class Sentinel;
 class Mine : public Spawn
 {
 public:
-	Mine(const Sentinel& minePrototype, unsigned int mineSize);
+	Mine(const Sentinel& minePrototype);
 
 	void CollisionHandler(WorldObject&) const;
 };

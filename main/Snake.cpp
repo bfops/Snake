@@ -39,7 +39,7 @@ void Snake::AddSegment(const Point location, const Direction direction, ZippedUn
 	)
 }
 
-void Snake::Grow(const int amount)
+void Snake::Grow(const long amount)
 {
 	if(amount < 0 && targetLength + amount < Config::Get().snake.startingLength)
 		targetLength = Config::Get().snake.startingLength;
@@ -145,12 +145,12 @@ void Snake::ChangeDirection(const Direction newDirection, ZippedUniqueObjectList
 }
 
 // essentially "modulo" with negative numbers
-static inline unsigned int get_bounded_index(const int unboundedIndex, const unsigned int arraySize)
+static inline unsigned long get_bounded_index(const long unboundedIndex, const unsigned long arraySize)
 {
 	if(unboundedIndex < 0)
 		return get_bounded_index(unboundedIndex + arraySize, arraySize);
 
-	return static_cast<unsigned int>(unboundedIndex) % arraySize;
+	return static_cast<unsigned long>(unboundedIndex) % arraySize;
 }
 
 static Direction get_turned_direction(const Direction direction, const Direction turn)
@@ -158,9 +158,9 @@ static Direction get_turned_direction(const Direction direction, const Direction
 	assert(turn == Direction::left || turn == Direction::right);
 
 	const Direction directions[] = {Direction::left, Direction::up, Direction::right, Direction::down};
-	const int nextDirection = (turn == Direction::left ? -1 : 1);
+	const short nextDirection = (turn == Direction::left ? -1 : 1);
 
-	for(unsigned int i = 0; i < countof(directions); ++i)
+	for(unsigned short i = 0; i < countof(directions); ++i)
 		if(direction == directions[i])
 			return directions[get_bounded_index(i + nextDirection, countof(directions))];
 
@@ -172,6 +172,7 @@ void Snake::Turn(const Direction turn, ZippedUniqueObjectList& gameObjects)
 	DOLOCKED(pathMutex,
 		const Direction direction = Direction(Head().GetDirection());
 	)
+
 	ChangeDirection(get_turned_direction(direction, turn), gameObjects);
 }
 
@@ -217,8 +218,8 @@ void Snake::EatFood(const Food& foodObj)
 	const double foodGrowthConstant = foodObj.GetCalories();
 	const double baseUncappedGrowth = targetLength * Config::Get().snake.growthRate;
 	const double baseRealGrowth = std::min((double)Config::Get().snake.growthCap, baseUncappedGrowth);
-	const int growthAmount = intRound(baseRealGrowth * foodGrowthConstant);
-	const int pointsGained = foodObj.GetPoints();
+	const long growthAmount = intRound(baseRealGrowth * foodGrowthConstant);
+	const long pointsGained = foodObj.GetPoints();
 
 	// if adding points would make you go below 0
 	if(pointsGained < 0 && -pointsGained > points)

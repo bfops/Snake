@@ -5,7 +5,7 @@ Point::Point() :
 {
 }
 
-Point::Point(const int x, const int y) :
+Point::Point(const long x, const long y) :
 	Vector2D(x, y)
 {
 }

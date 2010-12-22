@@ -12,18 +12,18 @@ struct ZippedUniqueObjectList;
 class SnakeSegment : public WorldObject
 {
 private:
-	unsigned int width;
+	unsigned short width;
 	// direction of movement
 	Direction direction;
 
 	Snake* parent;
 
 	// change length by _amount_
-	void ModifyLength(int amount);
+	void ModifyLength(long amount);
 
 public:
 	SnakeSegment();
-	SnakeSegment(Snake* parent, Point location, Direction direction, unsigned int segmentWidth);
+	SnakeSegment(Snake* parent, Point location, Direction direction, unsigned short segmentWidth);
 	
 	void CollisionHandler(WorldObject&) const;
 	void CollisionHandler(const Food&);
@@ -32,7 +32,7 @@ public:
 	// return true if the segment became empty
 	bool Shrink();
 
-	unsigned int GetLength() const;
+	unsigned long GetLength() const;
 	// get direction of travel
 	Direction GetDirection() const;
 	// get the frontmost [width x width] square of this segment

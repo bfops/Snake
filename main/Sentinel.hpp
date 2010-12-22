@@ -7,7 +7,7 @@
 class Sentinel : public WorldObject
 {
 public:
-	Sentinel(Point location, unsigned int size);
+	Sentinel(Point location, unsigned short size);
 	
 	void CollisionHandler(WorldObject&) const;
 };

@@ -15,5 +15,5 @@ public:
 	// if at least _count_ has elapsed, reset the counter
 	// (accounting for overflow if more than _count_ has elapsed).
 	// Returns true if the counter was reset, false otherwise.
-	bool ResetIfHasElapsed(unsigned int ms);
+	bool ResetIfHasElapsed(unsigned long ms);
 };

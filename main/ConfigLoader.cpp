@@ -24,7 +24,7 @@ bool ConfigLoader::EnterScope(const std::string& name)
 		return false;
 
 	Scope::ScopeList& scopes = index->second.first;
-	const unsigned int currentScopeIndex = index->second.second++;
+	const unsigned long currentScopeIndex = index->second.second++;
 
 	if(currentScopeIndex >= scopes.size())
 		return false;

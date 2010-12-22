@@ -27,13 +27,15 @@ private:
 public:
 	struct SnakeConfig
 	{
-		unsigned int startingLength, width;
-		unsigned int startingSpeed;
+		unsigned long startingLength;
+		unsigned short width;
+		unsigned short startingSpeed;
 
-		unsigned int speedupPeriod, speedupAmount;
+		unsigned int speedupPeriod;
+		unsigned short speedupAmount;
 
 		double growthRate;
-		unsigned int growthCap;
+		unsigned long growthCap;
 
 		Color24 color;
 	};
@@ -72,7 +74,7 @@ public:
 		struct FoodData
 		{
 			Color24 color;
-			short points;
+			long long points;
 			double lengthFactor;
 			// spawn rate
 			double rate;
@@ -81,9 +83,9 @@ public:
 
 		unsigned int period;
 		// square size of spawns
-		unsigned int size;
+		unsigned short size;
 		// square size of sentinels
-		unsigned int sentinelSize;
+		unsigned short sentinelSize;
 		Color24 mineColor;
 		Menu foodsData;
 	};
@@ -101,7 +103,8 @@ public:
 	ScreenData screen;
 	SpawnData spawn;
 
-	unsigned int pointGainPeriod, pointGainAmount;
+	unsigned int pointGainPeriod;
+	long long pointGainAmount;
 
 	SnakeConfig snake;
 	Resources resources;

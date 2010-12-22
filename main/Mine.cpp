@@ -3,8 +3,8 @@
 #include "Config.hpp"
 #include "Sentinel.hpp"
 
-Mine::Mine(const Sentinel& sentinel, const unsigned int size) :
-	Spawn(mine, sentinel, size, Config::Get().spawn.mineColor)
+Mine::Mine(const Sentinel& sentinel) :
+	Spawn(mine, sentinel, Config::Get().spawn.size, Config::Get().spawn.mineColor)
 {
 }
 

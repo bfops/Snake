@@ -8,7 +8,7 @@
 class Direction
 {
 private:
-	Direction(int x, int y);
+	Direction(short x, short y);
 	Vector2D direction;
 
 public:

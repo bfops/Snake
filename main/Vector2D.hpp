@@ -3,10 +3,10 @@
 // 2D vector class
 struct Vector2D
 {
-	int x, y;
+	long x, y;
 
 	Vector2D();
-	Vector2D(int x, int y);
+	Vector2D(long x, long y);
 
 	// negation operator
 	Vector2D operator-() const;

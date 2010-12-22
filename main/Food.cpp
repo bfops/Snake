@@ -3,9 +3,9 @@
 #include "Common.hpp"
 #include "Sentinel.hpp"
 
-Food::Food(const Sentinel& prototype, const unsigned int size,
+Food::Food(const Sentinel& prototype,
 	const Config::SpawnData::FoodData& foodInfo) :
-	Spawn(food, prototype, size, foodInfo.color)
+	Spawn(food, prototype, Config::Get().spawn.size, foodInfo.color)
 {
 	calories = foodInfo.lengthFactor;
 	pointsGiven = foodInfo.points;
@@ -21,7 +21,7 @@ double Food::GetCalories() const
 	return calories;
 }
 
-int Food::GetPoints() const
+long long Food::GetPoints() const
 {
 	return pointsGiven;
 }

@@ -73,9 +73,9 @@ static inline void play_eat_sound()
 // the region used in calculation is subtracted from _randnum_, so that it may be called again without
 // having to account for these side-effects. (if the probability was hit, we can assume they won't be
 // checking for more probabilities)
-static bool probability_hit(unsigned int& randnum, const double probability, const unsigned int randMax)
+static bool probability_hit(unsigned int& randnum, const double probability, const unsigned long randMax)
 {
-	const unsigned int border = intRound(randMax * probability);
+	const unsigned long border = intRound(randMax * probability);
 	if(randnum <= border)
 		return true;
 
@@ -88,7 +88,7 @@ static const Config::SpawnData::FoodData* get_food_type()
 	minstd_rand0 rand(time(NULL));
 
 	// food appearance rates can't have a higher resolution than 1 / randMax
-	const unsigned int randMax = 1000;
+	const unsigned long randMax = 1000;
 	unsigned int randnum = rand() % (randMax + 1);
 
 	const Config::SpawnData::Menu& foods = Config::Get().spawn.foodsData;
@@ -117,10 +117,10 @@ void remove_ptr_from_game_objects(const GameWorld::SpawnPtr& ptr, ZippedUniqueOb
 	gameObjects.Remove(*ptr);
 }
 
-static inline Spawn* make_spawn(const Sentinel& sentinel, const unsigned int spawnSize)
+static inline Spawn* make_spawn(const Sentinel& sentinel)
 {
 	if(Config::Get().survival)
-		return new Mine(sentinel, spawnSize);
+		return new Mine(sentinel);
 	else
 	{
 		const Config::SpawnData::FoodData* const foodData = get_food_type();
@@ -128,7 +128,7 @@ static inline Spawn* make_spawn(const Sentinel& sentinel, const unsigned int spa
 		if(!foodData)
 			return NULL;
 
-		return new Food(sentinel, spawnSize, *foodData);
+		return new Food(sentinel, *foodData);
 	}
 }
 
@@ -150,7 +150,7 @@ void GameWorld::SpawnLoop()
 
 			DOLOCKEDZ(gameObjects,
 				DOLOCKED(spawnMutex,
-					Spawn* const spawn = make_spawn(sentinel, Config::Get().spawn.size);
+					Spawn* const spawn = make_spawn(sentinel);
 					if(spawn)
 					{
 						spawns.push_back(SpawnPtr(spawn));
@@ -250,7 +250,7 @@ void GameWorld::CollisionHandler(WorldObject& o1, WorldObject& o2)
 	o1.CollisionHandler(o2);
 	o2.CollisionHandler(o1);
 
-	const unsigned int collisionType = o1.GetObjectType() | o2.GetObjectType();
+	const unsigned long collisionType = o1.GetObjectType() | o2.GetObjectType();
 	const bool selfCollide = !(collisionType & ~o1.GetObjectType());
 
 	if(collisionType & WorldObject::snake)

@@ -11,7 +11,7 @@ SnakeSegment::SnakeSegment() :
 }
 
 SnakeSegment::SnakeSegment(Snake* const _parent, const Point location, const Direction _direction,
-	const unsigned int _width) :
+	const unsigned short _width) :
 	WorldObject(snake, Config::Get().snake.color)
 {
 	direction = _direction;
@@ -37,7 +37,7 @@ void SnakeSegment::CollisionHandler(const Food& food)
 	parent->EatFood(food);
 }
 
-void SnakeSegment::ModifyLength(const int amount)
+void SnakeSegment::ModifyLength(const long amount)
 {
 	DOLOCKED(mutex,
 		if(amount > 0)
@@ -70,7 +70,7 @@ bool SnakeSegment::Shrink()
 	return (bounds.min.x >= bounds.max.x || bounds.min.y >= bounds.max.y);
 }
 
-unsigned int SnakeSegment::GetLength() const
+unsigned long SnakeSegment::GetLength() const
 {
 	// if moving horizontally, the length is delta X, otherwise delta y
 	if(direction == Direction::left || direction == Direction::right)

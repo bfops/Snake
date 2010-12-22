@@ -9,6 +9,6 @@ class Sentinel;
 class Spawn : public WorldObject
 {
 public:
-	Spawn(ObjectType spawnType, const Sentinel& prototype, unsigned int spawnSize, Color24 spawnColor);
+	Spawn(ObjectType spawnType, const Sentinel& prototype, unsigned short spawnSize, Color24 spawnColor);
 	virtual ~Spawn();
 };

@@ -3,7 +3,7 @@
 #define countof(array) (sizeof(array) / sizeof(array[0]))
 
 // round to nearest integer
-static inline int intRound(const double d)
+static inline long intRound(const double d)
 {
 	return ((d < 0) ? (d - 0.5) : (d + 0.5));
 }

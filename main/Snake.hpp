@@ -27,12 +27,12 @@ public:
 private:
 	RecursiveMutex pathMutex;
 
-	unsigned int length;
-	unsigned int targetLength;
+	unsigned long length;
+	unsigned long targetLength;
 	// all the segments in the snake
 	Path path;
 
-	unsigned int speed;
+	unsigned short speed;
 
 	Timer moveTimer;
 	Timer speedupTimer;
@@ -43,7 +43,7 @@ private:
 
 	// add segment to the front
 	void AddSegment(Point location, Direction directionOfTravel, ZippedUniqueObjectList& gameObjects);
-	void Grow(int amount);
+	void Grow(long amount);
 
 	// return the first segment
 	SnakeSegment& Head();

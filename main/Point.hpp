@@ -5,5 +5,5 @@
 struct Point : public Vector2D
 {
 	Point();
-	Point(int, int);
+	Point(long, long);
 };

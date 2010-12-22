@@ -13,7 +13,7 @@ void Timer::Reset()
 	elapsed = 0;
 }
 
-bool Timer::ResetIfHasElapsed(const unsigned int c)
+bool Timer::ResetIfHasElapsed(const unsigned long c)
 {
 	const unsigned long currentTime = Clock::Get().GetTime();
 	const unsigned long deltaT = currentTime - lastTime;

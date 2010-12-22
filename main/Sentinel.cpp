@@ -1,6 +1,6 @@
 #include "Sentinel.hpp"
 
-Sentinel::Sentinel(const Point location, const unsigned int size) :
+Sentinel::Sentinel(const Point location, const unsigned short size) :
 	WorldObject(sentinel)
 {
 	bounds.min = bounds.max = location;

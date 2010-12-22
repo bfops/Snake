@@ -10,15 +10,15 @@ class Food : public Spawn
 private:
 	// snake growth amount is proportional to this
 	double calories;
-	int pointsGiven;
+	long pointsGiven;
 
 	void SnakeCollisionHandler();
 
 public:
-	Food(const Sentinel& prototype, unsigned int foodSize, const Config::SpawnData::FoodData& foodInfo);
+	Food(const Sentinel& prototype, const Config::SpawnData::FoodData& foodInfo);
 
 	void CollisionHandler(WorldObject&) const;
 	
 	double GetCalories() const;
-	int GetPoints() const;
+	long long GetPoints() const;
 };

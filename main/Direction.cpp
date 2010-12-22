@@ -6,7 +6,7 @@ const Direction Direction::right(1, 0);
 const Direction Direction::up(0, -1);
 const Direction Direction::down(0, 1);
 
-Direction::Direction(const int x, const int y)
+Direction::Direction(const short x, const short y)
 {
 	direction = Vector2D(x, y);
 }
