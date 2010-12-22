@@ -89,19 +89,15 @@ void Snake::Init(ZippedUniqueObjectList& gameObjects)
 }
 
 void Snake::Reset(ZippedUniqueObjectList& gameObjects)
-{
-	moveTimer.Reset();
-	speedupTimer.Reset();
-	pointTimer.Reset();
-	
+{	
 	DOLOCKED(pathMutex,
 		DOLOCKEDZ(gameObjects,
 			gameObjects.RemoveRange(path.begin(), path.end());
 		)
 		path.clear();
-
-		Init(gameObjects);
 	)
+
+	Init(gameObjects);
 }
 
 void Snake::RemoveTail(ZippedUniqueObjectList& gameObjects)
