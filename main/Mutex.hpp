@@ -6,6 +6,7 @@
 
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/recursive_mutex.hpp>
+#include <boost/scoped_ptr.hpp>
 
 #ifdef MSVC
 #pragma warning(pop)
@@ -15,7 +16,7 @@
 class Mutex
 {
 private:
-	boost::mutex mutex;
+	boost::scoped_ptr<boost::mutex> mutex;
 
 public:
 	Mutex();
@@ -23,15 +24,15 @@ public:
 
 	Mutex& operator=(const Mutex& other);
 
-	void Lock();
-	void Unlock();
+	void Lock() const;
+	void Unlock() const;
 };
 
 // a recursive mutex class which does NOT preserve mutex state when copying
 class RecursiveMutex
 {
 private:
-	boost::recursive_mutex mutex;
+	boost::scoped_ptr<boost::recursive_mutex> mutex;
 
 public:
 	RecursiveMutex();
@@ -39,6 +40,6 @@ public:
 
 	RecursiveMutex& operator=(const RecursiveMutex& other);
 
-	void Lock();
-	void Unlock();
+	void Lock() const;
+	void Unlock() const;
 };

@@ -28,7 +28,7 @@ private:
 	CollectionType objects;
 
 public:
-	mutable RecursiveMutex mutex;
+	RecursiveMutex mutex;
 
 	UniqueObjectList();
 	UniqueObjectList(const UniqueObjectList& obj);

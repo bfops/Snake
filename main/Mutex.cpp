@@ -1,10 +1,12 @@
 #include "Mutex.hpp"
 
-Mutex::Mutex()
+Mutex::Mutex() :
+	mutex(new boost::mutex())
 {
 }
 
-Mutex::Mutex(const Mutex&)
+Mutex::Mutex(const Mutex&) :
+	mutex(new boost::mutex())
 {
 }
 
@@ -13,21 +15,23 @@ Mutex& Mutex::operator=(const Mutex&)
 	return *this;
 }
 
-void Mutex::Lock()
+void Mutex::Lock() const
 {
-	mutex.lock();
+	mutex->lock();
 }
 
-void Mutex::Unlock()
+void Mutex::Unlock() const
 {
-	mutex.unlock();
+	mutex->unlock();
 }
 
-RecursiveMutex::RecursiveMutex()
+RecursiveMutex::RecursiveMutex() :
+	mutex(new boost::recursive_mutex())
 {
 }
 
-RecursiveMutex::RecursiveMutex(const RecursiveMutex&)
+RecursiveMutex::RecursiveMutex(const RecursiveMutex&) :
+	mutex(new boost::recursive_mutex())
 {
 }
 
@@ -36,12 +40,12 @@ RecursiveMutex& RecursiveMutex::operator=(const RecursiveMutex&)
 	return *this;
 }
 
-void RecursiveMutex::Lock()
+void RecursiveMutex::Lock() const
 {
-	mutex.lock();
+	mutex->lock();
 }
 
-void RecursiveMutex::Unlock()
+void RecursiveMutex::Unlock() const
 {
-	mutex.unlock();
+	mutex->unlock();
 }

@@ -31,7 +31,7 @@ protected:
 	Bounds bounds;
 
 public:
-	mutable RecursiveMutex mutex;
+	RecursiveMutex mutex;
 
 	WorldObject(ObjectType);
 	WorldObject(ObjectType, const Color24 color);
