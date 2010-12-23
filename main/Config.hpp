@@ -25,6 +25,10 @@ private:
 	static std::stringstream GetDefaultConfig();
 
 public:
+	struct ColorData : public Color24
+	{
+	};
+
 	struct SnakeData
 	{
 		unsigned long startingLength;
@@ -37,7 +41,7 @@ public:
 		double growthRate;
 		unsigned long growthCap;
 
-		Color24 color;
+		ColorData color;
 	};
 
 	// resource paths
@@ -59,21 +63,21 @@ public:
 			unsigned long x, y, w, h;
 		};
 
-		Color24 color;
+		ColorData color;
 		std::vector<WallData> wallsData;
 	};
 
 	struct ScreenData
 	{
 		unsigned long w, h;
-		Color24 bgColor;
+		ColorData bgColor;
 	};
 
 	struct SpawnsData
 	{
 		struct SpawnData
 		{
-			Color24 color;
+			ColorData color;
 			// square size of spawn
 			unsigned short size;
 			// amount of empty space around spawns
@@ -100,7 +104,7 @@ public:
 		MineData mine;
 	};
 
-	Color24 bgColor;
+	ColorData bgColor;
 	// whether or not survival mode is on
 	bool survival;
 	// whether or not music/sound is on
