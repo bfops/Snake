@@ -106,7 +106,6 @@ public:
 		MineData mine;
 	};
 
-	ColorData bgColor;
 	// whether or not survival mode is on
 	bool survival;
 	// whether or not music/sound is on

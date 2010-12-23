@@ -19,7 +19,7 @@ Screen::Screen(const unsigned long _width, const unsigned long _height)
 	width = _width;
 	height = _height;
 	surface = SDL_SetVideoMode(width, height, 0, SDL_ANYFORMAT | SDL_SWSURFACE);
-	bgColor = Config::Get().bgColor;
+	bgColor = Config::Get().screen.bgColor;
 
 	if(surface == NULL)
 		Logger::Fatal(boost::format("Error creating screen: %1%") % SDL_GetError());

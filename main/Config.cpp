@@ -38,9 +38,9 @@ Config::Config(ConfigLoader in)
 		in.Get("w", screen.w);
 		in.Get("h", screen.h);
 		in.EnterScope("color");
-			in.Get("r", bgColor.r);
-			in.Get("g", bgColor.g);
-			in.Get("b", bgColor.b);
+			in.Get("r", screen.bgColor.r);
+			in.Get("g", screen.bgColor.g);
+			in.Get("b", screen.bgColor.b);
 		in.LeaveScope();
 	in.LeaveScope();
 
