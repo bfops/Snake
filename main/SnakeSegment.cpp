@@ -72,11 +72,13 @@ bool SnakeSegment::Shrink()
 
 unsigned long SnakeSegment::GetLength() const
 {
+#define DELTA(m) (bounds.max.m - bounds.min.m)
 	// if moving horizontally, the length is delta X, otherwise delta y
 	if(direction == Direction::left || direction == Direction::right)
-		return bounds.max.x - bounds.min.x - 1;
+		return DELTA(x);
 
-	return bounds.max.y - bounds.min.y - 1;
+	return DELTA(y);
+#undef DELTA
 }
 
 Direction SnakeSegment::GetDirection() const
