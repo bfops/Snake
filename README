@@ -79,7 +79,7 @@ spawns: all the spawn data (foods, mines)
 		points: points given for eating this food (long long)
 		speedChange: amount by which the food changes the snake speed (short)
 		
-survival/normal:
+survival/normal: which scope is entered depends on the game mode
 	pointGainPeriod: the interval of time between snake point gains/losses
 	pointGainAmount: how many points the player gains each pointGainPeriod (long long)
 	snake:
