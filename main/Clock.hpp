@@ -13,9 +13,12 @@
 // keeps track of how much game time has passed
 class Clock
 {
+public:
+	typedef unsigned long long TimeType;
+
 private:
 	bool paused;
-	unsigned long long time;
+	TimeType time;
 	// the time state, at the last time the time was requested
 	clock_t lastTime;
 	
@@ -28,7 +31,7 @@ public:
 	// get the (only) clock 
 	static Clock& Get();
 
-	unsigned long long GetTime();
+	TimeType GetTime();
 
 	void Pause();
 	void Unpause();

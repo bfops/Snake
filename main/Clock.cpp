@@ -28,7 +28,7 @@ Clock::Clock()
 	lastTime = get_raw_time();
 }
 
-unsigned long long Clock::GetTime()
+Clock::TimeType Clock::GetTime()
 {
 	if(!paused)
 		UpdateTime();

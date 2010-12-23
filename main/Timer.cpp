@@ -1,7 +1,5 @@
 #include "Timer.hpp"
 
-#include "Clock.hpp"
-
 Timer::Timer()
 {
 	Reset();
@@ -13,10 +11,10 @@ void Timer::Reset()
 	elapsed = 0;
 }
 
-bool Timer::ResetIfHasElapsed(const unsigned long c)
+bool Timer::ResetIfHasElapsed(const Clock::TimeType c)
 {
-	const unsigned long currentTime = Clock::Get().GetTime();
-	const unsigned long deltaT = currentTime - lastTime;
+	const Clock::TimeType currentTime = Clock::Get().GetTime();
+	const Clock::TimeType deltaT = currentTime - lastTime;
 	elapsed += deltaT;
 	lastTime = currentTime;
 
