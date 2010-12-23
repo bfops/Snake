@@ -25,8 +25,73 @@ To compile, you will need:
 To work with the audio files, you'll need a MIDI editor (I'm using Finale 2011)
 
 --------------------------------------------
+SNAKE GROWTH
+--------------------------------------------
+Snake growth is based on multiple factors:
+	-Linear coefficient of food
+	-Global linear coefficient
+	-Current snake length
+	-Growth cap
+	
+The amount by which the snake grows is:
+	min(length * global coefficient, growthCap) * food coefficient
+	
+It should be noted that the growth cap caps growth BEFORE being multiplied by the food coefficient.
+
+--------------------------------------------
 CONFIG
 --------------------------------------------
 The game config file (game.cfg) is organized as sets of key-value pairs. Related keys can be organized in Scopes.
 
 Scopes are collections of key-value pairs surrounded by curly braces. The first string inside the curly braces is the Scope's name. Scopes can be nested within one another.
+
+survival: Whether or not survival mode is on (1 or 0)
+music/sound: Toggle audio effects (1 or 0)
+FPS: The approximate FPS at which the game should run (unsigned short)
+
+screen:
+	w/h: Width/height (unsigned long)
+	color: background color (3 unsigned bytes)
+	
+resources:
+	eat: path of the eating sound
+	spawn: path of the spawning sound
+	die: path of the dying sound
+	theme: path of the theme music
+	
+worldBounds: boundaries of the world (dictates the regions in which spawns can spawn)
+	min/max: pairs of (long, long)
+	
+walls: the set of all wall data
+	color: color of all the walls
+	wall:
+		min/max: rectangular bounds of the wall, as (long, long) pairs
+		
+spawns: all the spawn data (foods, mines)
+	mine: snake-killing mines
+		size: square size of the mine (unsigned short)
+		cushion: amount of space required around the mine for it to spawn (unsigned short)
+		expiry: time it takes in milliseconds for the mine to disappear (unsigned int)
+		
+	food:
+		rate: the odds that every spawn period, this food appears (double)
+		lengthFactor: a linear coefficient of the snake's growth amount (double)
+		points: points given for eating this food (long long)
+		speedChange: amount by which the food changes the snake speed (short)
+		
+survival/normal:
+	pointGainPeriod: the interval of time between snake point gains/losses
+	pointGainAmount: how many points the player gains each pointGainPeriod (long long)
+	snake:
+		speedupPeriod: the interval of time between snake speedups (unsigned int)
+		
+	spawn:
+		period: the interval of time between spawn appearances (unsigned int)
+		
+snake:
+	startingLength: the starting length of the snake (unsigned long)
+	width: the width of the snake (unsigned short)
+	startingSpeed: the initial frequency at which the snake moves (unsigned short)
+	speedupAmount: the amount by which snake speed  changes, every speedupPeriod (unsigned short)
+	growthCap: the highest amount by which the snake can grow at once, before being multiplied by the food's growth coefficient (unsigned long)
+	growthRate: a linear coefficient of the snake's growth amount (double)
