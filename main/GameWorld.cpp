@@ -147,7 +147,8 @@ void GameWorld::SpawnLoop()
 				sentinel = get_new_sentinel(Config::Get().spawn.sentinelSize, Config::Get().worldBounds);
 				SDL_Delay(10);
 			}
-
+			
+			// TODO: remove collided spawns
 			DOLOCKEDZ(gameObjects,
 				DOLOCKED(spawnMutex,
 					Spawn* const spawn = make_spawn(sentinel);

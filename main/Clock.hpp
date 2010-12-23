@@ -15,7 +15,7 @@ class Clock
 {
 private:
 	bool paused;
-	unsigned long time;
+	unsigned long long time;
 	// the time state, at the last time the time was requested
 	clock_t lastTime;
 	
@@ -28,7 +28,7 @@ public:
 	// get the (only) clock 
 	static Clock& Get();
 
-	unsigned long GetTime();
+	unsigned long long GetTime();
 
 	void Pause();
 	void Unpause();
