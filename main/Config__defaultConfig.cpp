@@ -39,30 +39,30 @@ FPS 60\n\
 }\n\
 \n\
 { spawns\n\
-	{ mine size 10 cushion 10 { color r 255 g 0 b 255 } }\n\
+	{ mine size 10 cushion 10 expiry 60000 { color r 255 g 0 b 255 } }\n\
 	{ foods\n\
 		{ food\n\
-			size 15 cushion 0\n\
+			size 15 cushion 0 expiry 20000\n\
 			rate 0.05 lengthFactor -2.5 points -200 speedChange 10\n\
 			{ color r 0 g 0 b 255 }\n\
 		}\n\
 		{ food\n\
-			size 15 cushion 3\n\
+			size 15 cushion 3 expiry 30000\n\
 			rate 0.1 lengthFactor 0.3 points 25 speedChange 0\n\
 			{ color r 127 g 255 b 127 }\n\
 		}\n\
 		{ food\n\
-			size 15 cushion 2\n\
+			size 15 cushion 2 expiry 40000\n\
 			rate 0.35 lengthFactor 1 points 100 speedChange 0\n\
 			{ color r 0 g 255 b 255 }\n\
 		}\n\
 		{ food\n\
-			size 14 cushion 0\n\
+			size 14 cushion 0 expiry 150000\n\
 			rate 0.45 lengthFactor 3 points 400 speedChange 5\n\
 			{ color r 200 g 0 b 0 }\n\
 		}\n\
 		{ food\n\
-			size 10 cushion 10\n\
+			size 10 cushion 10 expiry 15000\n\
 			rate 0.05 lengthFactor 0 points 0 speedChange -30\n\
 			{ color r 255 g 255 b 0 }\n\
 		}\n\
@@ -73,14 +73,14 @@ FPS 60\n\
 	pointGainPeriod 10000\n\
 	pointGainAmount 150\n\
 	{ snake speedupPeriod 20000 }\n\
-	{ spawn additionPeriod 3000 }\n\
+	{ spawn period 3000 }\n\
 }\n\
 \n\
 { normal\n\
 	pointGainPeriod 5000\n\
 	pointGainAmount 15\n\
 	{ snake speedupPeriod 14000 }\n\
-	{ spawn additionPeriod 8000 }\n\
+	{ spawn period 8000 }\n\
 }\n\
 \n\
 { snake\n\
@@ -91,6 +91,6 @@ FPS 60\n\
 	growthCap 100\n\
 	growthRate 0.345\n\
 	{ color r 0 g 255 b 0 }\n\
-}\
+}\n\
 "));
 }

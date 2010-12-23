@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Clock.hpp"
 #include "Food.hpp"
 #include "Mine.hpp"
 #include "Mutex.hpp"
@@ -28,6 +29,8 @@ class GameWorld
 public:
 	typedef std::auto_ptr<Spawn> SpawnPtr;
 	typedef std::list<SpawnPtr> SpawnList;
+	// a spawn list whose key is expiry time
+	typedef std::map<Clock::TimeType, SpawnList> FunctionalSpawnList;
 	typedef std::vector<Wall> WallList;
 
 private:
@@ -35,7 +38,7 @@ private:
 
 	ZippedUniqueObjectList& gameObjects;
 
-	SpawnList spawns;
+	FunctionalSpawnList spawns;
 	Mutex spawnMutex;
 
 	boost::thread spawnThread;

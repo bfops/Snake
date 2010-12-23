@@ -95,6 +95,8 @@ Config::Config(ConfigLoader in)
 		in.EnterScope("mine");
 			in.Get("size", spawns.mine.size);
 			in.Get("cushion", spawns.mine.cushion);
+			in.Get("expiry", spawns.mine.expiry);
+
 			in.EnterScope("color");
 				in.Get("r", spawns.mine.color.r);
 				in.Get("g", spawns.mine.color.g);
@@ -108,6 +110,8 @@ Config::Config(ConfigLoader in)
 				
 				in.Get("size", food.size);
 				in.Get("cushion", food.cushion);
+				in.Get("expiry", food.expiry);
+
 				in.Get("lengthFactor", food.lengthFactor);
 				in.Get("points", food.points);
 				in.Get("rate", food.rate);
@@ -134,7 +138,7 @@ Config::Config(ConfigLoader in)
 		in.LeaveScope();
 
 		in.EnterScope("spawn");
-			in.Get("additionPeriod", spawns.period);
+			in.Get("period", spawns.period);
 		in.LeaveScope();
 	in.LeaveScope();
 

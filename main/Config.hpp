@@ -84,6 +84,8 @@ public:
 			unsigned short size;
 			// amount of empty space around spawns
 			unsigned short cushion;
+			// time before spawn disappears
+			unsigned int expiry;
 		};
 
 		struct FoodData : public SpawnData

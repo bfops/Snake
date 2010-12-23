@@ -83,6 +83,18 @@ static bool probability_hit(unsigned int& randnum, const double probability, con
 	return false;
 }
 
+void remove_ptr_from_game_objects(const GameWorld::SpawnPtr& ptr, ZippedUniqueObjectList& gameObjects)
+{
+	gameObjects.Remove(*ptr);
+}
+
+void remove_pair_from_game_objects(const GameWorld::FunctionalSpawnList::value_type& pair,
+	ZippedUniqueObjectList& gameObjects)
+{
+	for_each(pair.second.begin(), pair.second.end(),
+		boost::bind(&remove_ptr_from_game_objects, _1, boost::ref(gameObjects)));
+}
+
 static Sentinel get_new_sentinel(const Config::SpawnsData::SpawnData& spawnData)
 {
 	const Bounds& spawnBounds = Config::Get().worldBounds;
@@ -96,11 +108,6 @@ static Sentinel get_new_sentinel(const Config::SpawnsData::SpawnData& spawnData)
 #undef GETSIZEDRANDOM
 
 	return Sentinel(location, spawnData);
-}
-
-void remove_ptr_from_game_objects(const GameWorld::SpawnPtr& ptr, ZippedUniqueObjectList& gameObjects)
-{
-	gameObjects.Remove(*ptr);
 }
 
 static inline Spawn* make_spawn(const Sentinel& sentinel)
@@ -147,21 +154,24 @@ void GameWorld::SpawnLoop()
 			const Config::SpawnsData::SpawnData* const spawnData = get_spawn_data();
 			if(spawnData)
 			{
-				Sentinel sentinel(get_new_sentinel(*spawnData));
+				Sentinel sentinel = get_new_sentinel(*spawnData);
 				while(Physics::AnyCollide(sentinel, gameObjects.physics))
 				{
 					sentinel = get_new_sentinel(*spawnData);
 					SDL_Delay(10);
 				}
 
-				// TODO: remove collided spawns
+				// TODO: remove collided & expired spawns
 				DOLOCKEDZ(gameObjects,
 					DOLOCKED(spawnMutex,
 						Spawn* const spawn = make_spawn(sentinel);
 						if(spawn)
 						{
-							spawns.push_back(SpawnPtr(spawn));
-							gameObjects.Add(*spawns.back());
+							const Config::SpawnsData::SpawnData& spawnData = spawn->GetSpawnData();
+							const Clock::TimeType expiryTime = Clock::Get().GetTime() + spawnData.expiry;
+							SpawnList& equalSpawns = spawns[expiryTime];
+							equalSpawns.push_back(SpawnPtr(spawn));
+							gameObjects.Add(*equalSpawns.back());
 
 							play_spawn_sound();
 							Logger::Debug("Spawn");
@@ -171,13 +181,28 @@ void GameWorld::SpawnLoop()
 			}
 		}
 
+		DOLOCKED(spawnMutex,
+			if(spawns.size() > 0)
+			{
+				const FunctionalSpawnList::value_type& firstSet = *spawns.begin();
+
+				if(firstSet.first < Clock::Get().GetTime())
+				{
+					DOLOCKEDZ(gameObjects,
+						remove_pair_from_game_objects(firstSet, gameObjects);
+					)
+					spawns.erase(firstSet.first);
+				}
+			}
+		)
+
 		SDL_Delay(100);
 	}
 	
 	DOLOCKEDZ(gameObjects,
 		DOLOCKED(spawnMutex,
 			for_each(spawns.begin(), spawns.end(),
-				boost::bind(&remove_ptr_from_game_objects, _1, boost::ref(gameObjects)));
+				boost::bind(&remove_pair_from_game_objects, _1, boost::ref(gameObjects)));
 		)
 	)
 }
