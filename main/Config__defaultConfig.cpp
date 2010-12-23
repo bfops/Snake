@@ -84,9 +84,9 @@ FPS 60\n\
 }\n\
 \n\
 { snake\n\
-	defaultLength 90\n\
+	startingLength 90\n\
 	width 20\n\
-	defaultSpeed 100\n\
+	startingSpeed 100\n\
 	speedupAmount 15\n\
 	growthCap 100\n\
 	growthRate 0.345\n\

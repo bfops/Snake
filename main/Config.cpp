@@ -143,9 +143,9 @@ Config::Config(ConfigLoader in)
 	in.LeaveScope();
 
 	in.EnterScope("snake");
-		in.Get("defaultLength", snake.startingLength);
+		in.Get("startingLength", snake.startingLength);
 		in.Get("width", snake.width);
-		in.Get("defaultSpeed", snake.startingSpeed);
+		in.Get("startingSpeed", snake.startingSpeed);
 		in.Get("speedupAmount", snake.speedupAmount);
 		in.Get("growthCap", snake.growthCap);
 		in.Get("growthRate", snake.growthRate);
