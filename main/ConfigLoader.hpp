@@ -21,11 +21,11 @@ public:
 	struct Scope
 	{
 		// essentially a vector of (fieldName, fieldValue) pairs
-		typedef std::map<const std::string, std::string> FieldMap;
+		typedef std::map<std::string, std::string> FieldMap;
 		// a collection of same-typed scopes
 		typedef std::vector<Scope> ScopeList;
 		typedef std::pair<ScopeList, unsigned long> MemoryScopeList;
-		typedef std::map<const std::string, MemoryScopeList> ScopeMap;
+		typedef std::map<std::string, MemoryScopeList> ScopeMap;
 
 		FieldMap fields;
 		ScopeMap subscopes;

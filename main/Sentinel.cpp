@@ -3,9 +3,10 @@
 Sentinel::Sentinel(const Point location, const Config::SpawnsData::SpawnData& _spawnData) :
 	WorldObject(sentinel), spawnData(&_spawnData)
 {
+	const unsigned short sentinelSize = spawnData->size + spawnData->cushion;
 	bounds.min = bounds.max = location;
-	bounds.max.x += spawnData->size + spawnData->cushion;
-	bounds.max.y += spawnData->size + spawnData->cushion;
+	bounds.max.x += sentinelSize;
+	bounds.max.y += sentinelSize;
 }
 
 void Sentinel::CollisionHandler(WorldObject& obj) const
