@@ -38,13 +38,34 @@ FPS 60\n\
 	{ wall { min x 395 y 400 } { max x 405 y 590 } }\n\
 }\n\
 \n\
-{ spawn\n\
-	{ mineColor r 255 g 0 b 255 }\n\
+{ spawns\n\
+	{ mine size 10 cushion 10 { color r 255 g 0 b 255 } }\n\
 	{ foods\n\
-		{ food rate 0.05 lengthFactor -2.5 points -300 { color r 0   g 0   b 255 } }\n\
-		{ food rate 0.1  lengthFactor 0.3  points 25   { color r 127 g 255 b 127 } }\n\
-		{ food rate 0.2  lengthFactor 1    points 100  { color r 0   g 255 b 255 } }\n\
-		{ food rate 0.65 lengthFactor 3    points 400  { color r 200 g 0   b 0   } }\n\
+		{ food\n\
+			size 15 cushion 0\n\
+			rate 0.05 lengthFactor -2.5 points -200 speedChange 10\n\
+			{ color r 0 g 0 b 255 }\n\
+		}\n\
+		{ food\n\
+			size 15 cushion 3\n\
+			rate 0.1 lengthFactor 0.3 points 25 speedChange 0\n\
+			{ color r 127 g 255 b 127 }\n\
+		}\n\
+		{ food\n\
+			size 15 cushion 2\n\
+			rate 0.35 lengthFactor 1 points 100 speedChange 0\n\
+			{ color r 0 g 255 b 255 }\n\
+		}\n\
+		{ food\n\
+			size 14 cushion 0\n\
+			rate 0.45 lengthFactor 3 points 400 speedChange 5\n\
+			{ color r 200 g 0 b 0 }\n\
+		}\n\
+		{ food\n\
+			size 10 cushion 10\n\
+			rate 0.05 lengthFactor 0 points 0 speedChange -30\n\
+			{ color r 255 g 255 b 0 }\n\
+		}\n\
 	}\n\
 }\n\
 \n\
@@ -52,32 +73,24 @@ FPS 60\n\
 	pointGainPeriod 10000\n\
 	pointGainAmount 150\n\
 	{ snake speedupPeriod 20000 }\n\
-	{ spawn \n\
-		additionPeriod 3000\n\
-		size 10\n\
-		sentinelSize 20\n\
-	}\n\
+	{ spawn additionPeriod 3000 }\n\
 }\n\
 \n\
 { normal\n\
 	pointGainPeriod 5000\n\
 	pointGainAmount 15\n\
 	{ snake speedupPeriod 14000 }\n\
-	{ spawn\n\
-		additionPeriod 8000\n\
-		size 15\n\
-		sentinelSize 17\n\
-	}\n\
+	{ spawn additionPeriod 8000 }\n\
 }\n\
 \n\
 { snake\n\
 	defaultLength 90\n\
 	width 20\n\
 	defaultSpeed 100\n\
-	speedupAmount 18\n\
+	speedupAmount 15\n\
 	growthCap 100\n\
 	growthRate 0.345\n\
 	{ color r 0 g 255 b 0 }\n\
-}\n\
+}\
 "));
 }
