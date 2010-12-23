@@ -1,29 +1,25 @@
 #include "Spawn.hpp"
 
-#include "Color24.hpp"
+#include "Config.hpp"
 #include "Logger.hpp"
 #include "Sentinel.hpp"
 
-Spawn::Spawn(const ObjectType spawnType, const Sentinel& prototype, const unsigned short size,
-	const Color24 color) :
-	WorldObject(spawnType, color)
+Spawn::Spawn(const ObjectType spawnType, const Sentinel& prototype) :
+	WorldObject(spawnType, prototype.GetSpawnData().color), spawnData(&prototype.GetSpawnData())
 {
-	// prototypes are guaranteed to be squares, so \Delta x = \Delta y
-	const unsigned short prototypeSize = prototype.GetBounds().max.x - prototype.GetBounds().min.x;
-	const short sizeDiff = prototypeSize - size;
-
-	if(sizeDiff < 0)
-		Logger::Debug(boost::format("Spawn of type %1% was passed a sentinel smaller than the spawn size!")
-			% spawnType);
-
 	bounds.min = prototype.GetBounds().min;
-	bounds.min.x += sizeDiff / 2;
-	bounds.min.y += sizeDiff / 2;
+	bounds.min.x += spawnData->cushion;
+	bounds.min.y += spawnData->cushion;
 	bounds.max = bounds.min;
-	bounds.max.x += size;
-	bounds.max.y += size;
+	bounds.max.x += spawnData->size;
+	bounds.max.y += spawnData->size;
 }
 
 Spawn::~Spawn()
 {
+}
+
+const Config::SpawnsData::SpawnData& Spawn::GetSpawnData() const
+{
+	return *spawnData;
 }

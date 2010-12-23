@@ -4,7 +4,7 @@
 #include "Sentinel.hpp"
 
 Mine::Mine(const Sentinel& sentinel) :
-	Spawn(mine, sentinel, Config::Get().spawns.size, Config::Get().spawns.mine.color)
+	Spawn(mine, sentinel)
 {
 }
 

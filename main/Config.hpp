@@ -74,6 +74,10 @@ public:
 		struct SpawnData
 		{
 			Color24 color;
+			// square size of spawn
+			unsigned short size;
+			// amount of empty space around spawns
+			unsigned short cushion;
 		};
 
 		struct FoodData : public SpawnData
@@ -92,10 +96,6 @@ public:
 		typedef std::vector<FoodData> Menu;
 
 		unsigned int period;
-		// square size of spawns
-		unsigned short size;
-		// square size of sentinels
-		unsigned short sentinelSize;
 		Menu foodsData;
 		MineData mine;
 	};

@@ -105,6 +105,8 @@ Config::Config(std::istream& stream)
 
 	in->EnterScope("spawns");
 		in->EnterScope("mine");
+			in->Get("size", spawns.mine.size);
+			in->Get("cushion", spawns.mine.cushion);
 			in->EnterScope("color");
 				in->Get("r", spawns.mine.color.r);
 				in->Get("g", spawns.mine.color.g);
@@ -115,7 +117,9 @@ Config::Config(std::istream& stream)
 			while(in->EnterScope("food"))
 			{
 				SpawnsData::FoodData food;
-
+				
+				in->Get("size", food.size);
+				in->Get("cushion", food.cushion);
 				in->Get("lengthFactor", food.lengthFactor);
 				in->Get("points", food.points);
 				in->Get("rate", food.rate);
@@ -143,8 +147,6 @@ Config::Config(std::istream& stream)
 
 		in->EnterScope("spawn");
 			in->Get("additionPeriod", spawns.period);
-			in->Get("size", spawns.size);
-			in->Get("sentinelSize", spawns.sentinelSize);
 		in->LeaveScope();
 	in->LeaveScope();
 

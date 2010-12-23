@@ -83,7 +83,35 @@ static bool probability_hit(unsigned int& randnum, const double probability, con
 	return false;
 }
 
-static const Config::SpawnsData::FoodData* get_food_type()
+static Sentinel get_new_sentinel(const Config::SpawnsData::SpawnData& spawnData)
+{
+	const Bounds& spawnBounds = Config::Get().worldBounds;
+	minstd_rand0 rand(time(NULL));
+
+	// get random number between the worldBounds
+#define GETSIZEDRANDOM(m) (rand() % ( \
+	(spawnBounds.max.m - spawnBounds.min.m) - (spawnData.size + spawnData.cushion) + 1) + spawnBounds.min.m)
+
+	Point location(GETSIZEDRANDOM(x), GETSIZEDRANDOM(y));
+#undef GETSIZEDRANDOM
+
+	return Sentinel(location, spawnData);
+}
+
+void remove_ptr_from_game_objects(const GameWorld::SpawnPtr& ptr, ZippedUniqueObjectList& gameObjects)
+{
+	gameObjects.Remove(*ptr);
+}
+
+static inline Spawn* make_spawn(const Sentinel& sentinel)
+{
+	if(Config::Get().survival)
+		return new Mine(sentinel);
+	else
+		return new Food(sentinel);
+}
+
+static const Config::SpawnsData::FoodData* get_food_data()
 {
 	minstd_rand0 rand(time(NULL));
 
@@ -100,36 +128,12 @@ static const Config::SpawnsData::FoodData* get_food_type()
 	return NULL;
 }
 
-static Sentinel get_new_sentinel(const unsigned long sentinelSize, const Bounds& bounds)
-{
-	minstd_rand0 rand(time(NULL));
-
-	// get random number between the worldBounds
-#define GETSIZEDRANDOM(m) (rand() % ((bounds.max.m - bounds.min.m) - sentinelSize + 1) + bounds.min.m)
-	Point location(GETSIZEDRANDOM(x), GETSIZEDRANDOM(y));
-#undef GETSIZEDRANDOM
-
-	return Sentinel(location, sentinelSize);
-}
-
-void remove_ptr_from_game_objects(const GameWorld::SpawnPtr& ptr, ZippedUniqueObjectList& gameObjects)
-{
-	gameObjects.Remove(*ptr);
-}
-
-static inline Spawn* make_spawn(const Sentinel& sentinel)
+static inline const Config::SpawnsData::SpawnData* get_spawn_data()
 {
 	if(Config::Get().survival)
-		return new Mine(sentinel);
+		return &Config::Get().spawns.mine;
 	else
-	{
-		const Config::SpawnsData::FoodData* const foodData = get_food_type();
-
-		if(!foodData)
-			return NULL;
-
-		return new Food(sentinel, *foodData);
-	}
+		return get_food_data();
 }
 
 void GameWorld::SpawnLoop()
@@ -140,28 +144,31 @@ void GameWorld::SpawnLoop()
 	{
 		if(spawnTimer.ResetIfHasElapsed(Config::Get().spawns.period))
 		{
-			Sentinel sentinel(get_new_sentinel(Config::Get().spawns.sentinelSize,
-				Config::Get().worldBounds));
-			while(Physics::AnyCollide(sentinel, gameObjects.physics))
+			const Config::SpawnsData::SpawnData* const spawnData = get_spawn_data();
+			if(spawnData)
 			{
-				sentinel = get_new_sentinel(Config::Get().spawns.sentinelSize, Config::Get().worldBounds);
-				SDL_Delay(10);
-			}
-			
-			// TODO: remove collided spawns
-			DOLOCKEDZ(gameObjects,
-				DOLOCKED(spawnMutex,
-					Spawn* const spawn = make_spawn(sentinel);
-					if(spawn)
-					{
-						spawns.push_back(SpawnPtr(spawn));
-						gameObjects.Add(*spawns.back());
+				Sentinel sentinel(get_new_sentinel(*spawnData));
+				while(Physics::AnyCollide(sentinel, gameObjects.physics))
+				{
+					sentinel = get_new_sentinel(*spawnData);
+					SDL_Delay(10);
+				}
 
-						play_spawn_sound();
-						Logger::Debug("Spawn");
-					}
+				// TODO: remove collided spawns
+				DOLOCKEDZ(gameObjects,
+					DOLOCKED(spawnMutex,
+						Spawn* const spawn = make_spawn(sentinel);
+						if(spawn)
+						{
+							spawns.push_back(SpawnPtr(spawn));
+							gameObjects.Add(*spawns.back());
+
+							play_spawn_sound();
+							Logger::Debug("Spawn");
+						}
+					)
 				)
-			)
+			}
 		}
 
 		SDL_Delay(100);
