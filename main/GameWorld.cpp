@@ -83,7 +83,7 @@ static bool probability_hit(unsigned int& randnum, const double probability, con
 	return false;
 }
 
-static const Config::SpawnData::FoodData* get_food_type()
+static const Config::SpawnsData::FoodData* get_food_type()
 {
 	minstd_rand0 rand(time(NULL));
 
@@ -91,9 +91,9 @@ static const Config::SpawnData::FoodData* get_food_type()
 	const unsigned long randMax = 1000;
 	unsigned int randnum = rand() % (randMax + 1);
 
-	const Config::SpawnData::Menu& foods = Config::Get().spawn.foodsData;
+	const Config::SpawnsData::Menu& foods = Config::Get().spawns.foodsData;
 
-	for(Config::SpawnData::Menu::const_iterator i = foods.begin(), end = foods.end(); i != end; ++i)
+	for(Config::SpawnsData::Menu::const_iterator i = foods.begin(), end = foods.end(); i != end; ++i)
 		if(probability_hit(randnum, i->rate, randMax))
 			return &*i;
 
@@ -123,7 +123,7 @@ static inline Spawn* make_spawn(const Sentinel& sentinel)
 		return new Mine(sentinel);
 	else
 	{
-		const Config::SpawnData::FoodData* const foodData = get_food_type();
+		const Config::SpawnsData::FoodData* const foodData = get_food_type();
 
 		if(!foodData)
 			return NULL;
@@ -138,13 +138,13 @@ void GameWorld::SpawnLoop()
 
 	while(!reset)
 	{
-		if(spawnTimer.ResetIfHasElapsed(Config::Get().spawn.period))
+		if(spawnTimer.ResetIfHasElapsed(Config::Get().spawns.period))
 		{
-			Sentinel sentinel(get_new_sentinel(Config::Get().spawn.sentinelSize,
+			Sentinel sentinel(get_new_sentinel(Config::Get().spawns.sentinelSize,
 				Config::Get().worldBounds));
 			while(Physics::AnyCollide(sentinel, gameObjects.physics))
 			{
-				sentinel = get_new_sentinel(Config::Get().spawn.sentinelSize, Config::Get().worldBounds);
+				sentinel = get_new_sentinel(Config::Get().spawns.sentinelSize, Config::Get().worldBounds);
 				SDL_Delay(10);
 			}
 			

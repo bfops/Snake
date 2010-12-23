@@ -69,17 +69,26 @@ public:
 		Color24 bgColor;
 	};
 
-	struct SpawnData
+	struct SpawnsData
 	{
-		struct FoodData
+		struct SpawnData
 		{
 			Color24 color;
+		};
+
+		struct FoodData : public SpawnData
+		{
 			long long points;
 			double lengthFactor;
 			// spawn rate
 			double rate;
 			short speedChange;
 		};
+
+		struct MineData : public SpawnData
+		{
+		};
+
 		typedef std::vector<FoodData> Menu;
 
 		unsigned int period;
@@ -87,8 +96,8 @@ public:
 		unsigned short size;
 		// square size of sentinels
 		unsigned short sentinelSize;
-		Color24 mineColor;
 		Menu foodsData;
+		MineData mine;
 	};
 
 	Color24 bgColor;
@@ -102,7 +111,7 @@ public:
 	Bounds worldBounds;
 	WallsData wallsData;
 	ScreenData screen;
-	SpawnData spawn;
+	SpawnsData spawns;
 
 	unsigned int pointGainPeriod;
 	long long pointGainAmount;

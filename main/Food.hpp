@@ -8,14 +8,14 @@ class Sentinel;
 class Food : public Spawn
 {
 private:
-	const Config::SpawnData::FoodData& info;
+	const Config::SpawnsData::FoodData& info;
 
 	void SnakeCollisionHandler();
 
 public:
-	Food(const Sentinel& prototype, const Config::SpawnData::FoodData& foodInfo);
+	Food(const Sentinel& prototype, const Config::SpawnsData::FoodData& foodInfo);
 
 	void CollisionHandler(WorldObject&) const;
 	
-	const Config::SpawnData::FoodData& GetData() const;
+	const Config::SpawnsData::FoodData& GetData() const;
 };

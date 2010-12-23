@@ -221,7 +221,7 @@ void SumUp(const _T change, _X& original, const _X min)
 void Snake::EatFood(const Food& foodObj)
 {
 	const Config::SnakeData& snakeData = Config::Get().snake;
-	const Config::SpawnData::FoodData& foodData = foodObj.GetData();
+	const Config::SpawnsData::FoodData& foodData = foodObj.GetData();
 	const double baseUncappedGrowth = targetLength * snakeData.growthRate;
 	const double baseRealGrowth = std::min((double)snakeData.growthCap, baseUncappedGrowth);
 	const long growthAmount = intRound(baseRealGrowth * foodData.lengthFactor);
