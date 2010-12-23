@@ -8,8 +8,8 @@ Spawn::Spawn(const ObjectType spawnType, const Sentinel& prototype) :
 	WorldObject(spawnType, prototype.GetSpawnData().color), spawnData(&prototype.GetSpawnData())
 {
 	bounds.min = prototype.GetBounds().min;
-	bounds.min.x += spawnData->cushion;
-	bounds.min.y += spawnData->cushion;
+	bounds.min.x += spawnData->cushion / 2;
+	bounds.min.y += spawnData->cushion / 2;
 	bounds.max = bounds.min;
 	bounds.max.x += spawnData->size;
 	bounds.max.y += spawnData->size;
