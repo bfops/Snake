@@ -57,7 +57,7 @@ public:
 	template <typename _T>
 	bool Get(const std::string& fieldName, _T& dest)
 	{
-		const Scope::FieldMap::iterator result = CurrentScope().fields.find(fieldName);
+		const Scope::FieldMap::const_iterator result = CurrentScope().fields.find(fieldName);
 
 		if(result == CurrentScope().fields.end())
 			return false;

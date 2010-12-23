@@ -3,6 +3,8 @@
 #include "Bounds.hpp"
 #include "Color24.hpp"
 
+class ConfigLoader;
+
 #ifdef MSVC
 #pragma warning(push, 0)
 #endif
@@ -19,7 +21,7 @@
 struct Config
 {
 private:
-	Config(std::istream& configInputStream);
+	Config(ConfigLoader);
 
 	static const Config gameConfig;
 	static std::stringstream GetDefaultConfig();
@@ -125,4 +127,6 @@ public:
 
 	// get the (only) configuration data
 	static const Config& Get();
+
+	static ConfigLoader GetConfigLoader(const std::string& configFileName);
 };
