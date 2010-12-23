@@ -21,6 +21,7 @@ To compile, you will need:
 -Boost C++ libraries (http://www.boost.org/users/download/)
 -SDL SDK (http://www.libsdl.org/)
 -SDL Runtime (http://www.libsdl.org/)
+-CMake (http://www.cmake.org/cmake/resources/software.html)
 
 To work with the audio files, you'll need a MIDI editor (I'm using Finale 2011)
 
