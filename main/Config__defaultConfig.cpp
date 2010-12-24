@@ -21,24 +21,20 @@ FPS 60\n\
 	theme resources/theme.wav\n\
 }\n\
 \n\
-{ worldBounds\n\
-	{ min x 0   y 0   }\n\
-	{ max x 800 y 600 }\n\
-}\n\
-\n\
 { walls\n\
-	{ color r 255 g 0 b 0 }\n\
-	{ wall { min x 0   y 0   } { max x 10  y 600 } }\n\
-	{ wall { min x 790 y 0   } { max x 800 y 600 } }\n\
-	{ wall { min x 10  y 0   } { max x 790 y 10  } }\n\
-	{ wall { min x 10  y 590 } { max x 790 y 600 } }\n\
-	{ wall { min x 10  y 295 } { max x 200 y 305 } }\n\
-	{ wall { min x 600 y 295 } { max x 790 y 305 } }\n\
-	{ wall { min x 395 y 10  } { max x 405 y 150 } }\n\
-	{ wall { min x 395 y 400 } { max x 405 y 590 } }\n\
+	{ wall { bounds { min x 0   y 0   } { max x 10  y 600 } } { color r 255 g 0 b 0 } }\n\
+	{ wall { bounds { min x 790 y 0   } { max x 800 y 600 } } { color r 255 g 0 b 0 } }\n\
+	{ wall { bounds { min x 10  y 0   } { max x 790 y 10  } } { color r 255 g 0 b 0 } }\n\
+	{ wall { bounds { min x 10  y 590 } { max x 790 y 600 } } { color r 255 g 0 b 0 } }\n\
+	{ wall { bounds { min x 10  y 295 } { max x 200 y 305 } } { color r 255 g 0 b 0 } }\n\
+	{ wall { bounds { min x 600 y 295 } { max x 790 y 305 } } { color r 255 g 0 b 0 } }\n\
+	{ wall { bounds { min x 395 y 10  } { max x 405 y 150 } } { color r 255 g 0 b 0 } }\n\
+	{ wall { bounds { min x 395 y 400 } { max x 405 y 590 } } { color r 255 g 0 b 0 } }\n\
 }\n\
 \n\
 { spawns\n\
+	period 8000\n\
+	{ bounds { min x 0 y 0 } { max x 800 y 600 } }\n\
 	{ mine size 10 cushion 10 expiry 60000 { color r 255 g 0 b 255 } }\n\
 	{ foods\n\
 		{ food\n\
@@ -69,25 +65,15 @@ FPS 60\n\
 	}\n\
 }\n\
 \n\
-{ survival\n\
-	pointGainPeriod 10000\n\
-	pointGainAmount 150\n\
-	{ snake speedupPeriod 20000 }\n\
-	{ spawn period 3000 }\n\
-}\n\
-\n\
-{ normal\n\
-	pointGainPeriod 5000\n\
-	pointGainAmount 15\n\
-	{ snake speedupPeriod 14000 }\n\
-	{ spawn period 8000 }\n\
-}\n\
+pointGainPeriod 5000\n\
+pointGainAmount 15\n\
 \n\
 { snake\n\
 	startingLength 90\n\
 	width 20\n\
 	startingSpeed 100\n\
 	speedupAmount 15\n\
+	speedupPeriod 14000\n\
 	growthCap 100\n\
 	growthRate 0.345\n\
 	{ color r 0 g 255 b 0 }\n\
