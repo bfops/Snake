@@ -21,7 +21,7 @@ include_directories("include")
 if(MSVC)
     add_definitions(
 		/Wall /WX /Y- /D "MSVC" /wd4820 /wd4121 /wd4710 /wd4625 /wd4626 /wd4571 /wd4512 /wd4266 /wd4711
-		/wd4514 /wd4548 /wd4244 /wd4242 /wd4365 /wd4350
+		/wd4514 /wd4548 /wd4244 /wd4242 /wd4365 /wd4350 /wd4510 /wd4610
 	)
 else(MSVC)
 	add_definitions(
