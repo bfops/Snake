@@ -58,7 +58,7 @@ static inline Direction get_random_direction()
 static inline Point get_starting_point(const Direction direction)
 {
 	const unsigned long width = Config::Get().snake.width;
-	Point startingPoint(Config::Get().worldBounds.max.x / 2, Config::Get().worldBounds.max.y / 2);
+	Point startingPoint(Config::Get().screen.w / 2, Config::Get().screen.h / 2);
 	if(direction == Direction::up || direction == Direction::down)
 		startingPoint.x -= width / 2;
 	else

@@ -32,18 +32,14 @@ using boost::format;
 using boost::thread;
 using boost::minstd_rand0;
 
-static void make_new_wall(GameWorld::WallList& walls, const Config::WallsData::WallData& wallData)
+static void make_new_wall(GameWorld::WallList& walls, const Config::WallData& wallData)
 {
-	const Point lowerBound(wallData.x, wallData.y);
-	const Wall newWall(lowerBound, wallData.w, wallData.h);
-	walls.push_back(newWall);
+	walls.push_back(Wall(wallData));
 }
 
 static inline void make_walls(GameWorld::WallList& walls)
 {
-	walls.clear();
-
-	for_each(Config::Get().wallsData.wallsData.begin(), Config::Get().wallsData.wallsData.end(),
+	for_each(Config::Get().wallsData.begin(), Config::Get().wallsData.end(),
 		boost::bind(&make_new_wall, boost::ref(walls), _1));
 }
 
@@ -97,7 +93,7 @@ void remove_pair_from_game_objects(const GameWorld::FunctionalSpawnList::value_t
 
 static Sentinel get_new_sentinel(const Config::SpawnsData::SpawnData& spawnData)
 {
-	const Bounds& spawnBounds = Config::Get().worldBounds;
+	const Bounds& spawnBounds = Config::Get().spawns.bounds;
 	minstd_rand0 rand(time(NULL));
 
 	// get random number between the worldBounds
@@ -128,7 +124,7 @@ static const Config::SpawnsData::FoodData* get_food_data()
 
 	const Config::SpawnsData::Menu& foods = Config::Get().spawns.foodsData;
 
-	for(Config::SpawnsData::Menu::const_iterator i = foods.begin(), end = foods.end(); i != end; ++i)
+	for(Config::SpawnsData::Menu::List::const_iterator i = foods.begin(), end = foods.end(); i != end; ++i)
 		if(probability_hit(randnum, i->rate, randMax))
 			return &*i;
 

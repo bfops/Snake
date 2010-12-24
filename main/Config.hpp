@@ -27,11 +27,54 @@ private:
 	static std::stringstream GetDefaultConfig();
 
 public:
-	struct ColorData : public Color24
+	struct ConfigLoadable
 	{
+		ConfigLoadable(const std::string& scopeName, ConfigLoader& in);
 	};
 
-	struct SnakeData
+	template <typename _T>
+	struct LoadableList : public ConfigLoadable
+	{
+		typedef std::vector<_T> List;
+		typedef typename List::iterator iterator;
+		typedef typename List::const_iterator const_iterator;
+
+		List list;
+
+		LoadableList(const std::string& listName, const std::string& elementsName, ConfigLoader& in) :
+			ConfigLoadable(listName, in)
+		{
+			while(in.PeekScope(elementsName))
+				list.push_back(_T(in));
+
+			in.LeaveScope();
+		}
+			
+		iterator begin() { return list.begin(); }
+		const_iterator begin() const { return list.begin(); }
+		iterator end() { return list.end(); }
+		const_iterator end() const { return list.end(); }
+	};
+
+	struct ColorData : public ConfigLoadable
+	{
+		Color24::ColorType r, g, b;
+
+		ColorData(ConfigLoader& in);
+
+		operator Color24() const;
+	};
+
+	struct BoundsData : public ConfigLoadable
+	{
+		Point min, max;
+
+		BoundsData(ConfigLoader& in);
+
+		operator Bounds() const;
+	};
+
+	struct SnakeData : public ConfigLoadable
 	{
 		unsigned long startingLength;
 		unsigned short width;
@@ -44,10 +87,12 @@ public:
 		unsigned long growthCap;
 
 		ColorData color;
+
+		SnakeData(ConfigLoader& in);
 	};
 
 	// resource paths
-	struct Resources
+	struct Resources : public ConfigLoadable
 	{
 		// SFX
 		std::string eat;
@@ -56,28 +101,29 @@ public:
 
 		// musical
 		std::string theme;
+
+		Resources(ConfigLoader& in);
 	};
 	
-	struct WallsData
+	struct WallData : public ConfigLoadable
 	{
-		struct WallData
-		{
-			unsigned long x, y, w, h;
-		};
-
+		BoundsData bounds;
 		ColorData color;
-		std::vector<WallData> wallsData;
+
+		WallData(ConfigLoader& in);
 	};
 
-	struct ScreenData
+	struct ScreenData : public ConfigLoadable
 	{
 		unsigned long w, h;
 		ColorData bgColor;
+
+		ScreenData(ConfigLoader& in);
 	};
 
-	struct SpawnsData
+	struct SpawnsData : public ConfigLoadable
 	{
-		struct SpawnData
+		struct SpawnData : public ConfigLoadable
 		{
 			ColorData color;
 			// square size of spawn
@@ -86,6 +132,8 @@ public:
 			unsigned short cushion;
 			// time before spawn disappears
 			unsigned int expiry;
+
+			SpawnData(const std::string& spawnScope, ConfigLoader& in);
 		};
 
 		struct FoodData : public SpawnData
@@ -95,17 +143,24 @@ public:
 			// spawn rate
 			double rate;
 			short speedChange;
+
+			FoodData(ConfigLoader& in);
 		};
 
 		struct MineData : public SpawnData
 		{
+			MineData(ConfigLoader& in);
 		};
 
-		typedef std::vector<FoodData> Menu;
-
+		typedef LoadableList<FoodData> Menu;
+		
+		// spawns only occur within these bounds
+		BoundsData bounds;
 		unsigned int period;
 		Menu foodsData;
 		MineData mine;
+
+		SpawnsData(ConfigLoader& in);
 	};
 
 	// whether or not survival mode is on
@@ -115,8 +170,7 @@ public:
 
 	unsigned short FPS;
 
-	Bounds worldBounds;
-	WallsData wallsData;
+	LoadableList<WallData> wallsData;
 	ScreenData screen;
 	SpawnsData spawns;
 

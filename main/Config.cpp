@@ -26,137 +26,6 @@ static inline std::string get_wall_data_name(const unsigned short i, const char*
 	return s.str();
 }
 
-Config::Config(ConfigLoader in)
-{	
-	// TODO: error-checking in loading
-	in.Get("survival", survival);
-	in.Get("music", music);
-	in.Get("sound", sound);
-	in.Get("FPS", FPS);
-
-	in.EnterScope("screen");
-		in.Get("w", screen.w);
-		in.Get("h", screen.h);
-		in.EnterScope("color");
-			in.Get("r", screen.bgColor.r);
-			in.Get("g", screen.bgColor.g);
-			in.Get("b", screen.bgColor.b);
-		in.LeaveScope();
-	in.LeaveScope();
-
-	in.EnterScope("resources");
-		in.Get("eat", resources.eat);
-		in.Get("spawn", resources.spawn);
-		in.Get("die", resources.die);
-		in.Get("theme", resources.theme);
-	in.LeaveScope();
-		
-	in.EnterScope("walls");
-		in.EnterScope("color");
-			in.Get("r", wallsData.color.r);
-			in.Get("g", wallsData.color.g);
-			in.Get("b", wallsData.color.b);
-		in.LeaveScope();
-
-		while(in.EnterScope("wall"))
-		{
-			WallsData::WallData newWall;
-
-			in.EnterScope("min");
-				in.Get("x", newWall.x);
-				in.Get("y", newWall.y);
-			in.LeaveScope();
-			in.EnterScope("max");
-				in.Get("x", newWall.w);
-				in.Get("y", newWall.h);
-			in.LeaveScope();
-
-			newWall.w -= newWall.x;
-			newWall.h -= newWall.y;
-
-			wallsData.wallsData.push_back(newWall);
-
-			in.LeaveScope();
-		}
-	in.LeaveScope();
-		
-	in.EnterScope("worldBounds");
-		in.EnterScope("min");
-			in.Get("x", worldBounds.min.x);
-			in.Get("y", worldBounds.min.y);
-		in.LeaveScope();
-		in.EnterScope("max");
-			in.Get("x", worldBounds.max.x);
-			in.Get("y", worldBounds.max.y);
-		in.LeaveScope();
-	in.LeaveScope();
-
-	in.EnterScope("spawns");
-		in.EnterScope("mine");
-			in.Get("size", spawns.mine.size);
-			in.Get("cushion", spawns.mine.cushion);
-			in.Get("expiry", spawns.mine.expiry);
-
-			in.EnterScope("color");
-				in.Get("r", spawns.mine.color.r);
-				in.Get("g", spawns.mine.color.g);
-				in.Get("b", spawns.mine.color.b);
-			in.LeaveScope();
-		in.LeaveScope();
-		in.EnterScope("foods");
-			while(in.EnterScope("food"))
-			{
-				SpawnsData::FoodData food;
-				
-				in.Get("size", food.size);
-				in.Get("cushion", food.cushion);
-				in.Get("expiry", food.expiry);
-
-				in.Get("lengthFactor", food.lengthFactor);
-				in.Get("points", food.points);
-				in.Get("rate", food.rate);
-				in.Get("speedChange", food.speedChange);
-				in.EnterScope("color");
-					in.Get("r", food.color.r);
-					in.Get("g", food.color.g);
-					in.Get("b", food.color.b);
-				in.LeaveScope();
-
-				spawns.foodsData.push_back(food);
-
-				in.LeaveScope();
-			}
-		in.LeaveScope();
-	in.LeaveScope();
-
-	in.EnterScope(survival ? "survival" : "normal");
-		in.Get("pointGainPeriod", pointGainPeriod);
-		in.Get("pointGainAmount", pointGainAmount);
-
-		in.EnterScope("snake");
-			in.Get("speedupPeriod", snake.speedupPeriod);
-		in.LeaveScope();
-
-		in.EnterScope("spawn");
-			in.Get("period", spawns.period);
-		in.LeaveScope();
-	in.LeaveScope();
-
-	in.EnterScope("snake");
-		in.Get("startingLength", snake.startingLength);
-		in.Get("width", snake.width);
-		in.Get("startingSpeed", snake.startingSpeed);
-		in.Get("speedupAmount", snake.speedupAmount);
-		in.Get("growthCap", snake.growthCap);
-		in.Get("growthRate", snake.growthRate);
-		in.EnterScope("color");
-			in.Get("r", snake.color.r);
-			in.Get("g", snake.color.g);
-			in.Get("b", snake.color.b);
-		in.LeaveScope();
-	in.LeaveScope();
-}
-
 const Config& Config::Get()
 {
 	return gameConfig;
@@ -170,4 +39,122 @@ ConfigLoader Config::GetConfigLoader(const std::string& filename)
 
 	std::stringstream defaultConfig = GetDefaultConfig();
 	return ConfigLoader(defaultConfig);
+}
+
+Config::ColorData::operator Color24() const
+{
+	return Color24(r, g, b);
+}
+
+Config::BoundsData::operator Bounds() const
+{
+	return Bounds(min, max);
+}
+
+Config::Config(ConfigLoader in) :
+	wallsData("walls", "wall", in), screen(in), spawns(in), snake(in), resources(in)
+{
+	in.Get("survival", survival);
+	in.Get("music", music);
+	in.Get("sound", sound);
+	in.Get("FPS", FPS);
+
+	in.Get("pointGainPeriod", pointGainPeriod);
+	in.Get("pointGainAmount", pointGainAmount);
+}
+
+Config::ConfigLoadable::ConfigLoadable(const std::string& scopeName, ConfigLoader& in)
+{
+	in.EnterScope(scopeName);
+}
+
+Config::ColorData::ColorData(ConfigLoader& in) :
+	ConfigLoadable("color", in)
+{
+		in.Get("r", r);
+		in.Get("g", g);
+		in.Get("b", b);
+	in.LeaveScope();
+}
+
+Config::BoundsData::BoundsData(ConfigLoader& in) :
+	ConfigLoadable("bounds", in)
+{
+		in.EnterScope("min");
+			in.Get("x", min.x);
+			in.Get("y", min.y);
+		in.LeaveScope();
+		in.EnterScope("max");
+			in.Get("x", max.x);
+			in.Get("y", max.y);
+		in.LeaveScope();
+	in.LeaveScope();
+}
+
+Config::SnakeData::SnakeData(ConfigLoader& in) :
+	ConfigLoadable("snake", in), color(in)
+{
+		in.Get("startingLength", startingLength);
+		in.Get("width", width);
+		in.Get("startingSpeed", startingSpeed);
+		in.Get("speedupAmount", speedupAmount);
+		in.Get("speedupPeriod", speedupPeriod);
+		in.Get("growthCap", growthCap);
+		in.Get("growthRate", growthRate);
+	in.LeaveScope();
+}
+
+Config::Resources::Resources(ConfigLoader& in) :
+	ConfigLoadable("resources", in)
+{
+		in.Get("eat", eat);
+		in.Get("spawn", spawn);
+		in.Get("die", die);
+		in.Get("theme", theme);
+	in.LeaveScope();
+}
+
+Config::WallData::WallData(ConfigLoader& in) :
+	ConfigLoadable("wall", in), bounds(in), color(in)
+{
+	in.LeaveScope();
+}
+
+Config::ScreenData::ScreenData(ConfigLoader& in) :
+	ConfigLoadable("screen", in), bgColor(in)
+{
+		in.Get("w", w);
+		in.Get("h", h);
+	in.LeaveScope();
+}
+
+Config::SpawnsData::SpawnsData(ConfigLoader& in) :
+	ConfigLoadable("spawns", in), mine(in), bounds(in), foodsData("foods", "food", in)
+{
+		in.Get("period", period);
+	in.LeaveScope();
+}
+
+Config::SpawnsData::SpawnData::SpawnData(const std::string& scopeName, ConfigLoader& in) :
+	ConfigLoadable(scopeName, in), color(in)
+{
+	in.Get("size", size);
+	in.Get("cushion", cushion);
+	in.Get("expiry", expiry);
+}
+
+Config::SpawnsData::FoodData::FoodData(ConfigLoader& in) :
+	SpawnData("food", in)
+{
+		in.Get("points", points);
+		in.Get("lengthFactor", lengthFactor);
+		in.Get("rate", rate);
+		in.Get("speedChange", speedChange);
+	in.LeaveScope();
+}
+
+Config::SpawnsData::MineData::MineData(ConfigLoader& in) :
+	SpawnData("mine", in)
+{
+	in.LeaveScope();
 }

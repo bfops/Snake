@@ -45,25 +45,28 @@ private:
 	void InitScopeStack();
 
 	Scope& CurrentScope();
+	const Scope& CurrentScope() const;
 
 public:
 	ConfigLoader(std::istream& configInput);
 
 	// for data-reading purposes
-	bool EnterScope(const std::string& scopeName);
+	bool PeekScope(const std::string& scopeName) const;
+	void EnterScope(const std::string& scopeName);
 	void LeaveScope();
 	
-	// returns true iff _fieldName_ was found
+	// get _fieldName_'s value in the current scope and store in _dest_
 	template <typename _T>
-	bool Get(const std::string& fieldName, _T& dest)
+	void Get(const std::string& fieldName, _T& dest)
 	{
 		const Scope::FieldMap::const_iterator result = CurrentScope().fields.find(fieldName);
 
 		if(result == CurrentScope().fields.end())
-			return false;
+		{
+			Logger::Debug(boost::format("Field %1% not found") % fieldName);
+			return;
+		}
 
 		std::stringstream(result->second) >> dest;
-
-		return true;
 	}
 };
