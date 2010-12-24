@@ -3,12 +3,10 @@
 #include "Config.hpp"
 #include "Spawn.hpp"
 
-class Sentinel;
-
 class Food : public Spawn
 {
 public:
-	Food(const Sentinel& prototype);
+	Food(Point location, const Config::SpawnsData::FoodData& foodData);
 
 	void CollisionHandler(WorldObject&) const;
 };

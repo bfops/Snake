@@ -46,8 +46,6 @@ add_executable(GingerbreadPrototype
 	Screen.hpp
 	SDLInitializer.cpp
 	SDLInitializer.hpp
-	Sentinel.cpp
-	Sentinel.hpp
 	Snake.cpp
 	Snake.hpp
 	SnakeSegment.cpp

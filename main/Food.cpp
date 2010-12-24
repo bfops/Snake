@@ -1,10 +1,9 @@
 #include "Food.hpp"
 
 #include "Common.hpp"
-#include "Sentinel.hpp"
 
-Food::Food(const Sentinel& prototype) :
-	Spawn(food, prototype)
+Food::Food(const Point location, const Config::SpawnsData::FoodData& foodData) :
+	Spawn(food, location, foodData)
 {
 }
 

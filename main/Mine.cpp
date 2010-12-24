@@ -1,10 +1,9 @@
 #include "Mine.hpp"
 
 #include "Config.hpp"
-#include "Sentinel.hpp"
 
-Mine::Mine(const Sentinel& sentinel) :
-	Spawn(mine, sentinel)
+Mine::Mine(const Point location, const Config::SpawnsData::MineData& mineData) :
+	Spawn(mine, location, mineData)
 {
 }
 

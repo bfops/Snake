@@ -8,7 +8,6 @@
 #include "Logger.hpp"
 #include "Mine.hpp"
 #include "Physics.hpp"
-#include "Sentinel.hpp"
 #include "Wall.hpp"
 #include "ZippedUniqueObjectList.hpp"
 
@@ -91,7 +90,7 @@ void remove_pair_from_game_objects(const GameWorld::FunctionalSpawnList::value_t
 		boost::bind(&remove_ptr_from_game_objects, _1, boost::ref(gameObjects)));
 }
 
-static Sentinel get_new_sentinel(const Config::SpawnsData::SpawnData& spawnData)
+static GameWorld::SpawnPtr get_new_spawn(const Config::SpawnsData::SpawnData& spawnData)
 {
 	const Bounds& spawnBounds = Config::Get().spawns.bounds;
 	minstd_rand0 rand(time(NULL));
@@ -103,17 +102,15 @@ static Sentinel get_new_sentinel(const Config::SpawnsData::SpawnData& spawnData)
 	Point location(GETSIZEDRANDOM(x), GETSIZEDRANDOM(y));
 #undef GETSIZEDRANDOM
 
-	return Sentinel(location, spawnData);
-}
-
-static inline Spawn* make_spawn(const Sentinel& sentinel)
-{
 	if(Config::Get().survival)
-		return new Mine(sentinel);
+		return GameWorld::SpawnPtr(new
+			Mine(location, *reinterpret_cast<const Config::SpawnsData::MineData*>(&spawnData)));
 	else
-		return new Food(sentinel);
+		return GameWorld::SpawnPtr(new
+			Food(location, *reinterpret_cast<const Config::SpawnsData::FoodData*>(&spawnData)));
 }
 
+// TODO: inline this at its call
 static const Config::SpawnsData::FoodData* get_food_data()
 {
 	minstd_rand0 rand(time(NULL));
@@ -150,28 +147,26 @@ void GameWorld::SpawnLoop()
 			const Config::SpawnsData::SpawnData* const spawnData = get_spawn_data();
 			if(spawnData)
 			{
-				Sentinel sentinel = get_new_sentinel(*spawnData);
-				while(Physics::AnyCollide(sentinel, gameObjects.physics))
+				SpawnPtr spawn = get_new_spawn(*spawnData);
+				// TODO: do-while
+				while(Physics::AnyCollide(*spawn, gameObjects.physics))
 				{
-					sentinel = get_new_sentinel(*spawnData);
+					spawn = get_new_spawn(*spawnData);
 					SDL_Delay(10);
 				}
+				spawn->ShrinkDown();
 
 				// TODO: remove collided & expired spawns
 				DOLOCKEDZ(gameObjects,
 					DOLOCKED(spawnMutex,
-						Spawn* const spawn = make_spawn(sentinel);
-						if(spawn)
-						{
-							const Config::SpawnsData::SpawnData& spawnData = spawn->GetSpawnData();
-							const Clock::TimeType expiryTime = Clock::Get().GetTime() + spawnData.expiry;
-							SpawnList& equalSpawns = spawns[expiryTime];
-							equalSpawns.push_back(SpawnPtr(spawn));
-							gameObjects.Add(*equalSpawns.back());
+						const Config::SpawnsData::SpawnData& spawnData = spawn->GetSpawnData();
+						const Clock::TimeType expiryTime = Clock::Get().GetTime() + spawnData.expiry;
+						SpawnList& equalSpawns = spawns[expiryTime];
+						equalSpawns.push_back(SpawnPtr(spawn));
+						gameObjects.Add(*equalSpawns.back());
 
-							play_spawn_sound();
-							Logger::Debug("Spawn");
-						}
+						play_spawn_sound();
+						Logger::Debug("Spawn");
 					)
 				)
 			}
