@@ -97,7 +97,7 @@ void remove_pair_from_game_objects(const GameWorld::FunctionalSpawnList::value_t
 
 static Sentinel get_new_sentinel(const Config::SpawnsData::SpawnData& spawnData)
 {
-	const Bounds& spawnBounds = Config::Get().worldBounds;
+	const Bounds& spawnBounds = Config::Get().spawns.bounds;
 	minstd_rand0 rand(time(NULL));
 
 	// get random number between the worldBounds

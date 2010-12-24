@@ -31,6 +31,10 @@ public:
 	{
 	};
 
+	struct BoundsData : public Bounds
+	{
+	};
+
 	struct SnakeData
 	{
 		unsigned long startingLength;
@@ -103,6 +107,8 @@ public:
 
 		typedef std::vector<FoodData> Menu;
 
+		// spawn bounds
+		BoundsData bounds;
 		unsigned int period;
 		Menu foodsData;
 		MineData mine;
@@ -115,7 +121,6 @@ public:
 
 	unsigned short FPS;
 
-	Bounds worldBounds;
 	WallsData wallsData;
 	ScreenData screen;
 	SpawnsData spawns;

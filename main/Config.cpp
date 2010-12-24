@@ -79,19 +79,19 @@ Config::Config(ConfigLoader in)
 			in.LeaveScope();
 		}
 	in.LeaveScope();
-		
-	in.EnterScope("worldBounds");
-		in.EnterScope("min");
-			in.Get("x", worldBounds.min.x);
-			in.Get("y", worldBounds.min.y);
-		in.LeaveScope();
-		in.EnterScope("max");
-			in.Get("x", worldBounds.max.x);
-			in.Get("y", worldBounds.max.y);
-		in.LeaveScope();
-	in.LeaveScope();
 
 	in.EnterScope("spawns");
+		in.EnterScope("bounds");
+			in.EnterScope("min");
+				in.Get("x", spawns.bounds.min.x);
+				in.Get("y", spawns.bounds.min.y);
+			in.LeaveScope();
+			in.EnterScope("max");
+				in.Get("x", spawns.bounds.max.x);
+				in.Get("y", spawns.bounds.max.y);
+			in.LeaveScope();
+		in.LeaveScope();
+
 		in.EnterScope("mine");
 			in.Get("size", spawns.mine.size);
 			in.Get("cushion", spawns.mine.cushion);
