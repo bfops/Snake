@@ -14,25 +14,9 @@
 // 24-bit color
 struct Color24
 {
-private:
 	typedef unsigned short ColorType;
 
-public:
-	union
-	{
-		ColorType r;
-		ColorType red;
-	};
-	union
-	{
-		ColorType g;
-		ColorType green;
-	};
-	union
-	{
-		ColorType b;
-		ColorType blue;
-	};
+	ColorType r, g, b;
 
 	Color24();
 	Color24(ColorType red, ColorType green, ColorType blue);
