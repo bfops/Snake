@@ -110,9 +110,11 @@ static GameWorld::SpawnPtr get_new_spawn(const Config::SpawnsData::SpawnData& sp
 			Food(location, *reinterpret_cast<const Config::SpawnsData::FoodData*>(&spawnData)));
 }
 
-// TODO: inline this at its call
-static const Config::SpawnsData::FoodData* get_food_data()
+static inline const Config::SpawnsData::SpawnData* get_spawn_data()
 {
+	if(Config::Get().survival)
+		return &Config::Get().spawns.mine;
+	
 	minstd_rand0 rand(time(NULL));
 
 	// food appearance rates can't have a higher resolution than 1 / randMax
@@ -128,14 +130,6 @@ static const Config::SpawnsData::FoodData* get_food_data()
 	return NULL;
 }
 
-static inline const Config::SpawnsData::SpawnData* get_spawn_data()
-{
-	if(Config::Get().survival)
-		return &Config::Get().spawns.mine;
-	else
-		return get_food_data();
-}
-
 void GameWorld::SpawnLoop()
 {
 	Timer spawnTimer;
@@ -147,13 +141,14 @@ void GameWorld::SpawnLoop()
 			const Config::SpawnsData::SpawnData* const spawnData = get_spawn_data();
 			if(spawnData)
 			{
-				SpawnPtr spawn = get_new_spawn(*spawnData);
-				// TODO: do-while
-				while(Physics::AnyCollide(*spawn, gameObjects.physics))
+				SpawnPtr spawn;
+				do
 				{
 					spawn = get_new_spawn(*spawnData);
 					SDL_Delay(10);
 				}
+				while(Physics::AnyCollide(*spawn, gameObjects.physics));
+
 				spawn->ShrinkDown();
 
 				// TODO: remove collided & expired spawns

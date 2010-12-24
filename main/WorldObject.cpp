@@ -47,10 +47,6 @@ void WorldObject::CollisionHandler(const Mine&)
 {
 }
 
-void WorldObject::CollisionHandler(const Sentinel&)
-{
-}
-
 void WorldObject::CollisionHandler(const SnakeSegment&)
 {
 }

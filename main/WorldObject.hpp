@@ -4,10 +4,9 @@
 #include "Color24.hpp"
 #include "Mutex.hpp"
 
-class Screen;
 class Food;
 class Mine;
-class Sentinel;
+class Screen;
 class SnakeSegment;
 class Wall;
 
@@ -20,8 +19,7 @@ public:
 		snake = 1,
 		wall = 1<<1,
 		food = 1<<2,
-		sentinel = 1<<3,
-		mine = 1<<4
+		mine = 1<<3
 	};
 
 protected:
@@ -40,7 +38,6 @@ public:
 	virtual void CollisionHandler(WorldObject&) const;
 	virtual void CollisionHandler(const Food&);
 	virtual void CollisionHandler(const Mine&);
-	virtual void CollisionHandler(const Sentinel&);
 	virtual void CollisionHandler(const SnakeSegment&);
 	virtual void CollisionHandler(const Wall&);
 	
