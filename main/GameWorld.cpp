@@ -32,14 +32,14 @@ using boost::format;
 using boost::thread;
 using boost::minstd_rand0;
 
-static void make_new_wall(GameWorld::WallList& walls, const Config::WallsData::WallData& wallData)
+static void make_new_wall(GameWorld::WallList& walls, const Config::WallData& wallData)
 {
 	walls.push_back(Wall(wallData));
 }
 
 static inline void make_walls(GameWorld::WallList& walls)
 {
-	for_each(Config::Get().wallsData.wallsData.begin(), Config::Get().wallsData.wallsData.end(),
+	for_each(Config::Get().wallsData.begin(), Config::Get().wallsData.end(),
 		boost::bind(&make_new_wall, boost::ref(walls), _1));
 }
 
@@ -124,7 +124,7 @@ static const Config::SpawnsData::FoodData* get_food_data()
 
 	const Config::SpawnsData::Menu& foods = Config::Get().spawns.foodsData;
 
-	for(Config::SpawnsData::Menu::const_iterator i = foods.begin(), end = foods.end(); i != end; ++i)
+	for(Config::SpawnsData::Menu::List::const_iterator i = foods.begin(), end = foods.end(); i != end; ++i)
 		if(probability_hit(randnum, i->rate, randMax))
 			return &*i;
 

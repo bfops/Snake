@@ -2,7 +2,7 @@
 
 #include "Config.hpp"
 
-Wall::Wall(const Config::WallsData::WallData& wallData) :
+Wall::Wall(const Config::WallData& wallData) :
 	WorldObject(wall, wallData.color)
 {
 	bounds.min = wallData.bounds.min;

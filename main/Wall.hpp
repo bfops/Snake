@@ -6,7 +6,7 @@
 class Wall : public WorldObject
 {
 public:
-	Wall(const Config::WallsData::WallData& wallData);
+	Wall(const Config::WallData& wallData);
 
 	void CollisionHandler(WorldObject&) const;
 };

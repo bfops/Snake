@@ -10,27 +10,49 @@ void ConfigLoader::InitScopeStack()
 	scopeStack.push_back(&global);
 }
 
+ConfigLoader::Scope& ConfigLoader::CurrentScope()
+{
+	return *scopeStack.back();
+}
+
+const ConfigLoader::Scope& ConfigLoader::CurrentScope() const
+{
+	return *scopeStack.back();
+}
+
 ConfigLoader::ConfigLoader(std::istream& in) :
 	global(in)
 {
 	InitScopeStack();
 }
 
-bool ConfigLoader::EnterScope(const std::string& name)
+bool ConfigLoader::PeekScope(const std::string& name) const
 {
-	const Scope::ScopeMap::iterator index = CurrentScope().subscopes.find(name);
+	const Scope::ScopeMap::const_iterator index = CurrentScope().subscopes.find(name);
 
 	if(index == CurrentScope().subscopes.end())
 		return false;
 
+	const Scope::ScopeList& scopes = index->second.first;
+	const unsigned long currentScopeIndex = index->second.second;
+
+	return (currentScopeIndex < scopes.size());
+}
+
+void ConfigLoader::EnterScope(const std::string& name)
+{
+	if(!PeekScope(name))
+	{
+		Logger::Debug(boost::format("Scope %1% not found to enter") % name);
+		return;
+	}
+
+	const Scope::ScopeMap::iterator index = CurrentScope().subscopes.find(name);
+
 	Scope::ScopeList& scopes = index->second.first;
 	const unsigned long currentScopeIndex = index->second.second++;
 
-	if(currentScopeIndex >= scopes.size())
-		return false;
-
 	scopeStack.push_back(&scopes[currentScopeIndex]);
-	return true;
 }
 
 void ConfigLoader::LeaveScope()
@@ -42,9 +64,4 @@ void ConfigLoader::LeaveScope()
 	}
 
 	scopeStack.pop_back();
-}
-
-ConfigLoader::Scope& ConfigLoader::CurrentScope()
-{
-	return *scopeStack.back();
 }
