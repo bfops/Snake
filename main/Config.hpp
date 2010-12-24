@@ -66,10 +66,10 @@ public:
 	{
 		struct WallData
 		{
-			unsigned long x, y, w, h;
+			Bounds bounds;
+			ColorData color;
 		};
 
-		ColorData color;
 		std::vector<WallData> wallsData;
 	};
 

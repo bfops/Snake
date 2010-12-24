@@ -52,27 +52,24 @@ Config::Config(ConfigLoader in)
 	in.LeaveScope();
 		
 	in.EnterScope("walls");
-		in.EnterScope("color");
-			in.Get("r", wallsData.color.r);
-			in.Get("g", wallsData.color.g);
-			in.Get("b", wallsData.color.b);
-		in.LeaveScope();
-
 		while(in.EnterScope("wall"))
 		{
 			WallsData::WallData newWall;
 
 			in.EnterScope("min");
-				in.Get("x", newWall.x);
-				in.Get("y", newWall.y);
+				in.Get("x", newWall.bounds.min.x);
+				in.Get("y", newWall.bounds.min.y);
 			in.LeaveScope();
 			in.EnterScope("max");
-				in.Get("x", newWall.w);
-				in.Get("y", newWall.h);
+				in.Get("x", newWall.bounds.max.x);
+				in.Get("y", newWall.bounds.max.y);
 			in.LeaveScope();
 
-			newWall.w -= newWall.x;
-			newWall.h -= newWall.y;
+			in.EnterScope("color");
+				in.Get("r", newWall.color.r);
+				in.Get("g", newWall.color.g);
+				in.Get("b", newWall.color.b);
+			in.LeaveScope();
 
 			wallsData.wallsData.push_back(newWall);
 

@@ -34,15 +34,11 @@ using boost::minstd_rand0;
 
 static void make_new_wall(GameWorld::WallList& walls, const Config::WallsData::WallData& wallData)
 {
-	const Point lowerBound(wallData.x, wallData.y);
-	const Wall newWall(lowerBound, wallData.w, wallData.h);
-	walls.push_back(newWall);
+	walls.push_back(Wall(wallData));
 }
 
 static inline void make_walls(GameWorld::WallList& walls)
 {
-	walls.clear();
-
 	for_each(Config::Get().wallsData.wallsData.begin(), Config::Get().wallsData.wallsData.end(),
 		boost::bind(&make_new_wall, boost::ref(walls), _1));
 }
