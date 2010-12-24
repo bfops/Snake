@@ -81,6 +81,7 @@ Config::Config(ConfigLoader in)
 	in.LeaveScope();
 
 	in.EnterScope("spawns");
+		in.Get("period", spawns.period);
 		in.EnterScope("bounds");
 			in.EnterScope("min");
 				in.Get("x", spawns.bounds.min.x);
@@ -129,24 +130,15 @@ Config::Config(ConfigLoader in)
 		in.LeaveScope();
 	in.LeaveScope();
 
-	in.EnterScope(survival ? "survival" : "normal");
-		in.Get("pointGainPeriod", pointGainPeriod);
-		in.Get("pointGainAmount", pointGainAmount);
-
-		in.EnterScope("snake");
-			in.Get("speedupPeriod", snake.speedupPeriod);
-		in.LeaveScope();
-
-		in.EnterScope("spawn");
-			in.Get("period", spawns.period);
-		in.LeaveScope();
-	in.LeaveScope();
+	in.Get("pointGainPeriod", pointGainPeriod);
+	in.Get("pointGainAmount", pointGainAmount);
 
 	in.EnterScope("snake");
 		in.Get("startingLength", snake.startingLength);
 		in.Get("width", snake.width);
 		in.Get("startingSpeed", snake.startingSpeed);
 		in.Get("speedupAmount", snake.speedupAmount);
+		in.Get("speedupPeriod", snake.speedupPeriod);
 		in.Get("growthCap", snake.growthCap);
 		in.Get("growthRate", snake.growthRate);
 		in.EnterScope("color");
