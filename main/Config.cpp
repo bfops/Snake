@@ -1,6 +1,6 @@
 #include "Config.hpp"
 
-#include "ConfigLoader.hpp"
+#include "ConfigScope.hpp"
 #include "Logger.hpp"
 
 #ifdef MSVC
@@ -31,14 +31,14 @@ const Config& Config::Get()
 	return gameConfig;
 }
 
-ConfigLoader Config::GetConfigLoader(const std::string& filename)
+ConfigScope Config::GetConfigLoader(const std::string& filename)
 {
 	std::ifstream configFile(filename);
 	if(configFile.is_open())
-		return ConfigLoader(configFile);
+		return ConfigScope(configFile);
 
 	std::stringstream defaultConfig = GetDefaultConfig();
-	return ConfigLoader(defaultConfig);
+	return ConfigScope(defaultConfig);
 }
 
 Config::ColorData::operator Color24() const
@@ -51,8 +51,8 @@ Config::BoundsData::operator Bounds() const
 	return Bounds(min, max);
 }
 
-Config::Config(ConfigLoader in) :
-	wallsData("walls", "wall", in), screen(in), spawns(in), snake(in), resources(in)
+Config::Config(ConfigScope in) :
+	wallsData("walls", "wall", &in), screen(&in), spawns(&in), snake(&in), resources(&in)
 {
 	in.Get("survival", survival);
 	in.Get("music", music);
@@ -63,98 +63,87 @@ Config::Config(ConfigLoader in) :
 	in.Get("pointGainAmount", pointGainAmount);
 }
 
-Config::ConfigLoadable::ConfigLoadable(const std::string& scopeName, ConfigLoader& in)
+Config::ConfigLoadable::ConfigLoadable(const std::string& scopeName, ConfigScope*& in)
 {
-	in.EnterScope(scopeName);
+	in = in->GetScope(scopeName);
 }
 
-Config::ColorData::ColorData(ConfigLoader& in) :
+Config::ColorData::ColorData(ConfigScope* in) :
 	ConfigLoadable("color", in)
 {
-		in.Get("r", r);
-		in.Get("g", g);
-		in.Get("b", b);
-	in.LeaveScope();
+	in->Get("r", r);
+	in->Get("g", g);
+	in->Get("b", b);
 }
 
-Config::BoundsData::BoundsData(ConfigLoader& in) :
+Config::BoundsData::BoundsData(ConfigScope* in) :
 	ConfigLoadable("bounds", in)
 {
-		in.EnterScope("min");
-			in.Get("x", min.x);
-			in.Get("y", min.y);
-		in.LeaveScope();
-		in.EnterScope("max");
-			in.Get("x", max.x);
-			in.Get("y", max.y);
-		in.LeaveScope();
-	in.LeaveScope();
+	ConfigScope* const minScope = in->GetScope("min");
+		minScope->Get("x", min.x);
+		minScope->Get("y", min.y);
+	ConfigScope* const maxScope = in->GetScope("max");
+		maxScope->Get("x", max.x);
+		maxScope->Get("y", max.y);
 }
 
-Config::SnakeData::SnakeData(ConfigLoader& in) :
+Config::SnakeData::SnakeData(ConfigScope* in) :
 	ConfigLoadable("snake", in), color(in)
 {
-		in.Get("startingLength", startingLength);
-		in.Get("width", width);
-		in.Get("startingSpeed", startingSpeed);
-		in.Get("speedupAmount", speedupAmount);
-		in.Get("speedupPeriod", speedupPeriod);
-		in.Get("growthCap", growthCap);
-		in.Get("growthRate", growthRate);
-	in.LeaveScope();
+	in->Get("startingLength", startingLength);
+	in->Get("width", width);
+	in->Get("startingSpeed", startingSpeed);
+	in->Get("speedupAmount", speedupAmount);
+	in->Get("speedupPeriod", speedupPeriod);
+	in->Get("growthCap", growthCap);
+	in->Get("growthRate", growthRate);
 }
 
-Config::Resources::Resources(ConfigLoader& in) :
+Config::Resources::Resources(ConfigScope* in) :
 	ConfigLoadable("resources", in)
 {
-		in.Get("eat", eat);
-		in.Get("spawn", spawn);
-		in.Get("die", die);
-		in.Get("theme", theme);
-	in.LeaveScope();
+	in->Get("eat", eat);
+	in->Get("spawn", spawn);
+	in->Get("die", die);
+	in->Get("theme", theme);
 }
 
-Config::WallData::WallData(ConfigLoader& in) :
+Config::WallData::WallData(ConfigScope* in) :
 	ConfigLoadable("wall", in), bounds(in), color(in)
 {
-	in.LeaveScope();
 }
 
-Config::ScreenData::ScreenData(ConfigLoader& in) :
+Config::ScreenData::ScreenData(ConfigScope* in) :
 	ConfigLoadable("screen", in), bgColor(in)
 {
-		in.Get("w", w);
-		in.Get("h", h);
-	in.LeaveScope();
+	in->Get("w", w);
+	in->Get("h", h);
 }
 
-Config::SpawnsData::SpawnsData(ConfigLoader& in) :
+Config::SpawnsData::SpawnsData(ConfigScope* in) :
 	ConfigLoadable("spawns", in), bounds(in), foodsData("foods", "food", in), minesData("mines", "mine", in)
 {
-		in.Get("period", period);
-	in.LeaveScope();
+	in->Get("period", period);
 }
 
-Config::SpawnsData::SpawnData::SpawnData(const std::string& scopeName, ConfigLoader& in) :
+Config::SpawnsData::SpawnData::SpawnData(const std::string& scopeName, ConfigScope*& in) :
 	ConfigLoadable(scopeName, in), color(in)
 {
-	in.Get("size", size);
-	in.Get("cushion", cushion);
-	in.Get("expiry", expiry);
-	in.Get("rate", rate);
+	in->Get("size", size);
+	in->Get("cushion", cushion);
+	in->Get("expiry", expiry);
+	in->Get("rate", rate);
 }
 
-Config::SpawnsData::FoodData::FoodData(ConfigLoader& in) :
+Config::SpawnsData::FoodData::FoodData(ConfigScope* in) :
 	SpawnData("food", in)
 {
-		in.Get("points", points);
-		in.Get("lengthFactor", lengthFactor);
-		in.Get("speedChange", speedChange);
-	in.LeaveScope();
+	in->Get("points", points);
+	in->Get("lengthFactor", lengthFactor);
+	in->Get("speedChange", speedChange);
 }
 
-Config::SpawnsData::MineData::MineData(ConfigLoader& in) :
+Config::SpawnsData::MineData::MineData(ConfigScope* in) :
 	SpawnData("mine", in)
 {
-	in.LeaveScope();
 }

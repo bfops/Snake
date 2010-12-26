@@ -13,9 +13,8 @@ add_executable(GingerbreadPrototype
 	Config.hpp
 	Config.cpp
 	Config__defaultConfig.cpp
-	ConfigLoader.hpp
-	ConfigLoader.cpp
-	ConfigLoader__Scope.cpp
+	ConfigScope.hpp
+	ConfigScope.cpp
 	custom_algorithm.hpp
 	Direction.cpp
 	Direction.hpp

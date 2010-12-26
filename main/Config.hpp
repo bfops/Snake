@@ -3,7 +3,7 @@
 #include "Bounds.hpp"
 #include "Color24.hpp"
 
-class ConfigLoader;
+class ConfigScope;
 
 #ifdef MSVC
 #pragma warning(push, 0)
@@ -21,7 +21,7 @@ class ConfigLoader;
 struct Config
 {
 private:
-	Config(ConfigLoader);
+	Config(ConfigScope);
 
 	static const Config gameConfig;
 	static std::stringstream GetDefaultConfig();
@@ -29,7 +29,7 @@ private:
 public:
 	struct ConfigLoadable
 	{
-		ConfigLoadable(const std::string& scopeName, ConfigLoader& in);
+		ConfigLoadable(const std::string& scopeName, ConfigScope*& in);
 	};
 
 	template <typename _T>
@@ -41,13 +41,11 @@ public:
 
 		List list;
 
-		LoadableList(const std::string& listName, const std::string& elementsName, ConfigLoader& in) :
+		LoadableList(const std::string& listName, const std::string& elementsName, ConfigScope* in) :
 			ConfigLoadable(listName, in)
 		{
-			while(in.PeekScope(elementsName))
+			while(in->PeekScope(elementsName))
 				list.push_back(_T(in));
-
-			in.LeaveScope();
 		}
 			
 		iterator begin() { return list.begin(); }
@@ -60,7 +58,7 @@ public:
 	{
 		Color24::ColorType r, g, b;
 
-		ColorData(ConfigLoader& in);
+		ColorData(ConfigScope* in);
 
 		operator Color24() const;
 	};
@@ -69,7 +67,7 @@ public:
 	{
 		Point min, max;
 
-		BoundsData(ConfigLoader& in);
+		BoundsData(ConfigScope* in);
 
 		operator Bounds() const;
 	};
@@ -88,7 +86,7 @@ public:
 
 		ColorData color;
 
-		SnakeData(ConfigLoader& in);
+		SnakeData(ConfigScope* in);
 	};
 
 	// resource paths
@@ -102,7 +100,7 @@ public:
 		// musical
 		std::string theme;
 
-		Resources(ConfigLoader& in);
+		Resources(ConfigScope* in);
 	};
 	
 	struct WallData : public ConfigLoadable
@@ -110,7 +108,7 @@ public:
 		BoundsData bounds;
 		ColorData color;
 
-		WallData(ConfigLoader& in);
+		WallData(ConfigScope* in);
 	};
 
 	struct ScreenData : public ConfigLoadable
@@ -118,7 +116,7 @@ public:
 		unsigned long w, h;
 		ColorData bgColor;
 
-		ScreenData(ConfigLoader& in);
+		ScreenData(ConfigScope* in);
 	};
 
 	struct SpawnsData : public ConfigLoadable
@@ -135,7 +133,7 @@ public:
 			// spawn rate
 			double rate;
 
-			SpawnData(const std::string& spawnScope, ConfigLoader& in);
+			SpawnData(const std::string& spawnScope, ConfigScope*& in);
 		};
 
 		struct FoodData : public SpawnData
@@ -144,12 +142,12 @@ public:
 			double lengthFactor;
 			short speedChange;
 
-			FoodData(ConfigLoader& in);
+			FoodData(ConfigScope* in);
 		};
 
 		struct MineData : public SpawnData
 		{
-			MineData(ConfigLoader& in);
+			MineData(ConfigScope* in);
 		};
 
 		typedef LoadableList<FoodData> Menu;
@@ -161,7 +159,7 @@ public:
 		Menu foodsData;
 		MineList minesData;
 
-		SpawnsData(ConfigLoader& in);
+		SpawnsData(ConfigScope* in);
 	};
 
 	// whether or not survival mode is on
@@ -184,5 +182,5 @@ public:
 	// get the (only) configuration data
 	static const Config& Get();
 
-	static ConfigLoader GetConfigLoader(const std::string& configFileName);
+	static ConfigScope GetConfigLoader(const std::string& configFileName);
 };
