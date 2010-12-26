@@ -54,7 +54,6 @@ Config::BoundsData::operator Bounds() const
 Config::Config(ConfigScope in) :
 	wallsData("walls", "wall", &in), screen(&in), spawns(&in), snake(&in), resources(&in)
 {
-	in.Get("survival", survival);
 	in.Get("music", music);
 	in.Get("sound", sound);
 	in.Get("FPS", FPS);
@@ -120,10 +119,22 @@ Config::ScreenData::ScreenData(ConfigScope* in) :
 	in->Get("h", h);
 }
 
+template <typename _T>
+static void add_to_spawns(Config::SpawnsData::SpawnList& spawns, const _T& spawn)
+{
+	spawns.push_back(Config::SpawnsData::SpawnPtr(new _T(spawn)));
+}
+
 Config::SpawnsData::SpawnsData(ConfigScope* in) :
-	ConfigLoadable("spawns", in), bounds(in), foodsData("foods", "food", in), minesData("mines", "mine", in)
+	ConfigLoadable("spawns", in), bounds(in)
 {
 	in->Get("period", period);
+	
+	// add both types of spawns to the communal spawn info list
+	const LoadableList<FoodData> foods("foods", "food", in);
+	const LoadableList<MineData> mines("mines", "mine", in);
+	for_each(foods.begin(), foods.end(), boost::bind(&add_to_spawns<FoodData>, boost::ref(spawnsData), _1));
+	for_each(mines.begin(), mines.end(), boost::bind(&add_to_spawns<MineData>, boost::ref(spawnsData), _1));
 }
 
 Config::SpawnsData::SpawnData::SpawnData(const std::string& scopeName, ConfigScope*& in) :

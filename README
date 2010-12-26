@@ -3,11 +3,11 @@ This is a combined effort (mainly mine) at making a cross-platform version of Sn
 --------------------------------------------
 THE GAME
 --------------------------------------------
-So far, it's really not much. There is game configuration in game.cfg (see CONFIG). There are two game types:
+So far, it's really not much. There is game configuration in game.cfg (see CONFIG).
 
-NORMAL: The game is played with a constantly-moving Snake. The Snake is turned using the arrow keys or mouse, but cannot be stopped. Turning the Snake so that it collides with a wall or itself causes the player to lose. The object of the game is to get as many points as possible before dying. Points can be gained or lost by eating different types of food. The Snake also grows longer after eating food, and gains points or speed intermittently.
+The game is played with a constantly-moving Snake. The Snake is turned using the arrow keys or mouse, but cannot be stopped. Turning the Snake so that it collides with a wall or itself causes the player to lose. The object of the game is to get as many points as possible before dying. Points can be gained or lost by eating different types of food. The Snake also grows longer after eating food, and gains points or speed intermittently.
 
-SURVIVAL: This game mode is similar to NORMAL. However, mines spawn instead of food, and they kill upon contact.
+Additionally, there are magenta mines which appear, which cause the player to die upon contact
 
 --------------------------------------------
 LANGUAGE
@@ -46,7 +46,6 @@ The game config file (game.cfg) is organized as sets of key-value pairs. Related
 
 Scopes are collections of key-value pairs surrounded by curly braces. The first string inside the curly braces is the Scope's name. Scopes can be nested within one another.
 
-survival: Whether or not survival mode is on (1 or 0)
 music/sound: Toggle audio effects (1 or 0)
 FPS: The approximate FPS at which the game should run (unsigned short)
 
@@ -69,30 +68,28 @@ walls: the set of all wall data
 		min/max: rectangular bounds of the wall, as (long, long) pairs
 		
 spawns: all the spawn data (foods, mines)
-	mine: snake-killing mines
-		size: square size of the mine (unsigned short)
-		cushion: amount of space required around the mine for it to spawn (unsigned short)
-		expiry: time it takes in milliseconds for the mine to disappear (unsigned int)
+	period: the interval of time between spawn appearances (unsigned int)
+	mines: collection of mine data
+		mine: snake-killing mines
+			size: square size of the mine (unsigned short)
+			cushion: amount of space required around the mine for it to spawn (unsigned short)
+			expiry: time it takes in milliseconds for the mine to disappear (unsigned int)
+	
+	foods: collection of food data
+		food:
+			rate: the odds that every spawn period, this food appears (double)
+			lengthFactor: a linear coefficient of the snake's growth amount (double)
+			points: points given for eating this food (long long)
+			speedChange: amount by which the food changes the snake speed (short)
 		
-	food:
-		rate: the odds that every spawn period, this food appears (double)
-		lengthFactor: a linear coefficient of the snake's growth amount (double)
-		points: points given for eating this food (long long)
-		speedChange: amount by which the food changes the snake speed (short)
-		
-survival/normal: which scope is entered depends on the game mode
-	pointGainPeriod: the interval of time between snake point gains/losses
-	pointGainAmount: how many points the player gains each pointGainPeriod (long long)
-	snake:
-		speedupPeriod: the interval of time between snake speedups (unsigned int)
-		
-	spawn:
-		period: the interval of time between spawn appearances (unsigned int)
+pointGainPeriod: the interval of time between snake point gains/losses
+pointGainAmount: how many points the player gains each pointGainPeriod (long long)
 		
 snake:
 	startingLength: the starting length of the snake (unsigned long)
 	width: the width of the snake (unsigned short)
 	startingSpeed: the initial frequency at which the snake moves (unsigned short)
 	speedupAmount: the amount by which snake speed  changes, every speedupPeriod (unsigned short)
+	speedupPeriod: the interval of time between snake speedups (unsigned int)
 	growthCap: the highest amount by which the snake can grow at once, before being multiplied by the food's growth coefficient (unsigned long)
 	growthRate: a linear coefficient of the snake's growth amount (double)

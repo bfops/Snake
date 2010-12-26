@@ -3,7 +3,6 @@
 std::stringstream Config::GetDefaultConfig()
 {
 	return std::stringstream(std::string("\n\
-survival 0\n\
 music 1\n\
 sound 1\n\
 FPS 60\n\
@@ -37,8 +36,12 @@ FPS 60\n\
 	{ bounds { min x 0 y 0 } { max x 800 y 600 } }\n\
 	{ mines\n\
 		{ mine\n\
-			size 10 cushion 10 expiry 60000 rate 1\n\
+			size 10 cushion 10 expiry 60000 rate 0.1\n\
 			{ color r 255 g 0 b 255 }\n\
+		}\n\
+		{ mine\n\
+			size 13 cushion 0 expiry 1000000 rate 0\n\
+			{ color r 255 g 255 b 255 }\n\
 		}\n\
 	}\n\
 	{ foods\n\
@@ -53,12 +56,12 @@ FPS 60\n\
 			{ color r 127 g 255 b 127 }\n\
 		}\n\
 		{ food\n\
-			size 15 cushion 2 expiry 40000 0.35\n\
+			size 15 cushion 2 expiry 40000 0.3\n\
 			lengthFactor 1 points 100 speedChange 0\n\
 			{ color r 0 g 255 b 255 }\n\
 		}\n\
 		{ food\n\
-			size 14 cushion 0 expiry 150000 0.45\n\
+			size 14 cushion 0 expiry 150000 0.4\n\
 			lengthFactor 3 points 400 speedChange 5\n\
 			{ color r 200 g 0 b 0 }\n\
 		}\n\

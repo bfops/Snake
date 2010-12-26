@@ -102,25 +102,10 @@ static GameWorld::SpawnPtr get_new_spawn(const Config::SpawnsData::SpawnData& sp
 	Point location(GETSIZEDRANDOM(x), GETSIZEDRANDOM(y));
 #undef GETSIZEDRANDOM
 
-	if(Config::Get().survival)
-	{
-		const Config::SpawnsData::MineData& mine =
-			*static_cast<const Config::SpawnsData::MineData*>(&spawnData);
-
-		return GameWorld::SpawnPtr(new Mine(location, mine.size + mine.cushion, mine.color));
-	}
-	else
-	{
-		const Config::SpawnsData::FoodData& food =
-			*static_cast<const Config::SpawnsData::FoodData*>(&spawnData);
-
-		return GameWorld::SpawnPtr(new Food(location, food.size + food.cushion, food.color,
-			food.lengthFactor, food.points, food.speedChange));
-	}
+	return spawnData.ConstructSpawn(location);
 }
 
-template <typename _T>
-static inline const Config::SpawnsData::SpawnData* get_specific_spawn_data(const _T& spawnsData)
+static inline const Config::SpawnsData::SpawnData* get_spawn_data()
 {
 	minstd_rand0 rand(time(NULL));
 
@@ -128,19 +113,13 @@ static inline const Config::SpawnsData::SpawnData* get_specific_spawn_data(const
 	const unsigned long randMax = 1000;
 	unsigned int randnum = rand() % (randMax + 1);
 
-	for(typename _T::const_iterator i = spawnsData.begin(), end = spawnsData.end(); i != end; ++i)
-		if(probability_hit(randnum, i->rate, randMax))
-			return &*i;
+	const Config::SpawnsData::SpawnList& spawnsData = Config::Get().spawns.spawnsData;
+	for(Config::SpawnsData::SpawnList::const_iterator i = spawnsData.begin(), end = spawnsData.end();
+		i != end; ++i)
+		if(probability_hit(randnum, (*i)->rate, randMax))
+			return &**i;
 
 	return NULL;
-}
-
-static inline const Config::SpawnsData::SpawnData* get_spawn_data()
-{
-	if(Config::Get().survival)
-		return get_specific_spawn_data(Config::Get().spawns.minesData);
-	else
-		return get_specific_spawn_data(Config::Get().spawns.foodsData);
 }
 
 void GameWorld::SpawnLoop()

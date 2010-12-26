@@ -2,6 +2,7 @@
 
 #include "Bounds.hpp"
 #include "Color24.hpp"
+#include "GameWorld.hpp"
 
 class ConfigScope;
 
@@ -134,6 +135,8 @@ public:
 			double rate;
 
 			SpawnData(const std::string& spawnScope, ConfigScope*& in);
+
+			virtual GameWorld::SpawnPtr ConstructSpawn(const Point& location) const = 0;
 		};
 
 		struct FoodData : public SpawnData
@@ -143,27 +146,28 @@ public:
 			short speedChange;
 
 			FoodData(ConfigScope* in);
+
+			GameWorld::SpawnPtr ConstructSpawn(const Point& location) const;
 		};
 
 		struct MineData : public SpawnData
 		{
 			MineData(ConfigScope* in);
+
+			GameWorld::SpawnPtr ConstructSpawn(const Point& location) const;
 		};
 
-		typedef LoadableList<FoodData> Menu;
-		typedef LoadableList<MineData> MineList;
+		typedef std::auto_ptr<SpawnData> SpawnPtr;
+		typedef std::vector<SpawnPtr> SpawnList;
 		
 		// spawn bounds
 		BoundsData bounds;
 		unsigned int period;
-		Menu foodsData;
-		MineList minesData;
+		SpawnList spawnsData;
 
 		SpawnsData(ConfigScope* in);
 	};
 
-	// whether or not survival mode is on
-	bool survival;
 	// whether or not music/sound is on
 	bool music, sound;
 
