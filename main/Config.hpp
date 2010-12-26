@@ -132,6 +132,8 @@ public:
 			unsigned short cushion;
 			// time before spawn disappears
 			unsigned int expiry;
+			// spawn rate
+			double rate;
 
 			SpawnData(const std::string& spawnScope, ConfigLoader& in);
 		};
@@ -140,8 +142,6 @@ public:
 		{
 			long long points;
 			double lengthFactor;
-			// spawn rate
-			double rate;
 			short speedChange;
 
 			FoodData(ConfigLoader& in);
@@ -153,12 +153,13 @@ public:
 		};
 
 		typedef LoadableList<FoodData> Menu;
+		typedef LoadableList<MineData> MineList;
 		
 		// spawn bounds
 		BoundsData bounds;
 		unsigned int period;
 		Menu foodsData;
-		MineData mine;
+		MineList minesData;
 
 		SpawnsData(ConfigLoader& in);
 	};

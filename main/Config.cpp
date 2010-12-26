@@ -129,7 +129,7 @@ Config::ScreenData::ScreenData(ConfigLoader& in) :
 }
 
 Config::SpawnsData::SpawnsData(ConfigLoader& in) :
-	ConfigLoadable("spawns", in), mine(in), bounds(in), foodsData("foods", "food", in)
+	ConfigLoadable("spawns", in), bounds(in), foodsData("foods", "food", in), minesData("mines", "mine", in)
 {
 		in.Get("period", period);
 	in.LeaveScope();
@@ -141,6 +141,7 @@ Config::SpawnsData::SpawnData::SpawnData(const std::string& scopeName, ConfigLoa
 	in.Get("size", size);
 	in.Get("cushion", cushion);
 	in.Get("expiry", expiry);
+	in.Get("rate", rate);
 }
 
 Config::SpawnsData::FoodData::FoodData(ConfigLoader& in) :
@@ -148,7 +149,6 @@ Config::SpawnsData::FoodData::FoodData(ConfigLoader& in) :
 {
 		in.Get("points", points);
 		in.Get("lengthFactor", lengthFactor);
-		in.Get("rate", rate);
 		in.Get("speedChange", speedChange);
 	in.LeaveScope();
 }

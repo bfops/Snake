@@ -119,24 +119,28 @@ static GameWorld::SpawnPtr get_new_spawn(const Config::SpawnsData::SpawnData& sp
 	}
 }
 
-static inline const Config::SpawnsData::SpawnData* get_spawn_data()
+template <typename _T>
+static inline const Config::SpawnsData::SpawnData* get_specific_spawn_data(const _T& spawnsData)
 {
-	if(Config::Get().survival)
-		return &Config::Get().spawns.mine;
-	
 	minstd_rand0 rand(time(NULL));
 
 	// food appearance rates can't have a higher resolution than 1 / randMax
 	const unsigned long randMax = 1000;
 	unsigned int randnum = rand() % (randMax + 1);
 
-	const Config::SpawnsData::Menu& foods = Config::Get().spawns.foodsData;
-
-	for(Config::SpawnsData::Menu::List::const_iterator i = foods.begin(), end = foods.end(); i != end; ++i)
+	for(typename _T::const_iterator i = spawnsData.begin(), end = spawnsData.end(); i != end; ++i)
 		if(probability_hit(randnum, i->rate, randMax))
 			return &*i;
 
 	return NULL;
+}
+
+static inline const Config::SpawnsData::SpawnData* get_spawn_data()
+{
+	if(Config::Get().survival)
+		return get_specific_spawn_data(Config::Get().spawns.minesData);
+	else
+		return get_specific_spawn_data(Config::Get().spawns.foodsData);
 }
 
 void GameWorld::SpawnLoop()

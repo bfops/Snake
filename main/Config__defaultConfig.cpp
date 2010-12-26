@@ -35,31 +35,36 @@ FPS 60\n\
 { spawns\n\
 	period 8000\n\
 	{ bounds { min x 0 y 0 } { max x 800 y 600 } }\n\
-	{ mine size 10 cushion 10 expiry 60000 { color r 255 g 0 b 255 } }\n\
+	{ mines\n\
+		{ mine\n\
+			size 10 cushion 10 expiry 60000 rate 1\n\
+			{ color r 255 g 0 b 255 }\n\
+		}\n\
+	}\n\
 	{ foods\n\
 		{ food\n\
-			size 15 cushion 0 expiry 20000\n\
-			rate 0.05 lengthFactor -2.5 points -200 speedChange 10\n\
+			size 15 cushion 0 expiry 20000 rate 0.05\n\
+			lengthFactor -2.5 points -200 speedChange 10\n\
 			{ color r 0 g 0 b 255 }\n\
 		}\n\
 		{ food\n\
-			size 15 cushion 3 expiry 30000\n\
-			rate 0.1 lengthFactor 0.3 points 25 speedChange 0\n\
+			size 15 cushion 3 expiry 30000 rate 0.1\n\
+			lengthFactor 0.3 points 25 speedChange 0\n\
 			{ color r 127 g 255 b 127 }\n\
 		}\n\
 		{ food\n\
-			size 15 cushion 2 expiry 40000\n\
-			rate 0.35 lengthFactor 1 points 100 speedChange 0\n\
+			size 15 cushion 2 expiry 40000 0.35\n\
+			lengthFactor 1 points 100 speedChange 0\n\
 			{ color r 0 g 255 b 255 }\n\
 		}\n\
 		{ food\n\
-			size 14 cushion 0 expiry 150000\n\
-			rate 0.45 lengthFactor 3 points 400 speedChange 5\n\
+			size 14 cushion 0 expiry 150000 0.45\n\
+			lengthFactor 3 points 400 speedChange 5\n\
 			{ color r 200 g 0 b 0 }\n\
 		}\n\
 		{ food\n\
-			size 10 cushion 10 expiry 15000\n\
-			rate 0.05 lengthFactor 0 points 0 speedChange -30\n\
+			size 10 cushion 10 expiry 15000 0.05\n\
+			lengthFactor 0 points 0 speedChange -30\n\
 			{ color r 255 g 255 b 0 }\n\
 		}\n\
 	}\n\
