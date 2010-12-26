@@ -1,12 +1,9 @@
 #include "Wall.hpp"
 
-#include "Config.hpp"
-
-Wall::Wall(const Config::WallData& wallData) :
-	WorldObject(wall, wallData.color)
+Wall::Wall(const Bounds& _bounds, const Color24 color) :
+	WorldObject(wall, color)
 {
-	bounds.min = wallData.bounds.min;
-	bounds.max = wallData.bounds.max;
+	bounds = _bounds;
 }
 
 void Wall::CollisionHandler(WorldObject& obj) const

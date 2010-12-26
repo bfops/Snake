@@ -33,7 +33,7 @@ using boost::minstd_rand0;
 
 static void make_new_wall(GameWorld::WallList& walls, const Config::WallData& wallData)
 {
-	walls.push_back(Wall(wallData));
+	walls.push_back(Wall(wallData.bounds, wallData.color));
 }
 
 static inline void make_walls(GameWorld::WallList& walls)

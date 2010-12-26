@@ -1,12 +1,11 @@
 #pragma once
 
-#include "Config.hpp"
 #include "WorldObject.hpp"
 
 class Wall : public WorldObject
 {
 public:
-	Wall(const Config::WallData& wallData);
+	Wall(const Bounds& wallBounds, Color24);
 
 	void CollisionHandler(WorldObject&) const;
 };
