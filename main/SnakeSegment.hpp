@@ -22,7 +22,6 @@ private:
 	void ModifyLength(long amount);
 
 public:
-	SnakeSegment();
 	SnakeSegment(Snake* parent, Point location, Direction direction, unsigned short segmentWidth);
 	
 	void CollisionHandler(WorldObject&) const;

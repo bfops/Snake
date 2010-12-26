@@ -5,11 +5,6 @@
 #include "Line.hpp"
 #include "Snake.hpp"
 
-SnakeSegment::SnakeSegment() :
-	WorldObject(snake, Config::Get().snake.color)
-{
-}
-
 SnakeSegment::SnakeSegment(Snake* const _parent, const Point location, const Direction _direction,
 	const unsigned short _width) :
 	WorldObject(snake, Config::Get().snake.color)

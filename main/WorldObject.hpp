@@ -22,8 +22,10 @@ public:
 		mine = 1<<3
 	};
 
-protected:
+private:
 	ObjectType type;
+
+protected:
 	Color24 color;
 	// the rectangular bounds of this object
 	Bounds bounds;

@@ -36,7 +36,7 @@ WorldObject::ObjectType WorldObject::GetObjectType() const
 
 void WorldObject::CollisionHandler(WorldObject&) const
 {
-	Logger::Fatal(boost::format("Subclass type %1% did not override CollisionHandler()") % GetObjectType());
+	Logger::Debug(boost::format("Subclass type %1% did not override CollisionHandler()") % GetObjectType());
 }
 
 void WorldObject::CollisionHandler(const Food&)
