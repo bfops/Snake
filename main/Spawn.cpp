@@ -1,31 +1,31 @@
 #include "Spawn.hpp"
 
-#include "Config.hpp"
+#include "Common.hpp"
 #include "Logger.hpp"
 
-Spawn::Spawn(const ObjectType spawnType, const Point loc, const Config::SpawnsData::SpawnData& _spawnData) :
-	WorldObject(spawnType, _spawnData.color), spawnData(&_spawnData)
+Spawn::Spawn(const ObjectType spawnType, const Point loc, const unsigned short size, const Color24 color) :
+	WorldObject(spawnType, color)
 {
-	const unsigned short cushionedSize = spawnData->size + spawnData->cushion;
 	bounds.min = bounds.max = loc;
-	bounds.max.x += cushionedSize;
-	bounds.max.y += cushionedSize;
+	bounds.max.x += size;
+	bounds.max.y += size;
 }
 
 Spawn::~Spawn()
 {
 }
 
-void Spawn::ShrinkDown()
+void Spawn::ShrinkDown(const unsigned short newSize)
 {
-	bounds.min.x += spawnData->cushion / 2;
-	bounds.min.y += spawnData->cushion / 2;
-	bounds.max = bounds.min;
-	bounds.max.x = bounds.min.x + spawnData->size;
-	bounds.max.y = bounds.min.y + spawnData->size;
-}
+	DOLOCKED(mutex,
+		const unsigned short size = bounds.max.x - bounds.min.x;
+		if(newSize > size)
+			Logger::Debug("New size passed to Spawn::ShrinkDown is greater than current size");
 
-const Config::SpawnsData::SpawnData& Spawn::GetSpawnData() const
-{
-	return *spawnData;
+		const unsigned short sizeDiff = size - newSize;
+		bounds.min.x += sizeDiff / 2;
+		bounds.min.y += sizeDiff / 2;
+		bounds.max.x = bounds.min.x + newSize;
+		bounds.max.y = bounds.min.y + newSize;
+	)
 }

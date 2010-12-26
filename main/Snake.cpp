@@ -221,23 +221,21 @@ void SumUp(const _T change, _X& original, const _X min)
 void Snake::EatFood(const Food& foodObj)
 {
 	const Config::SnakeData& snakeData = Config::Get().snake;
-	const Config::SpawnsData::FoodData& foodData =
-		*static_cast<const Config::SpawnsData::FoodData*>(&foodObj.GetSpawnData());
 
 	const double baseUncappedGrowth = targetLength * snakeData.growthRate;
 	const double baseRealGrowth = std::min((double)snakeData.growthCap, baseUncappedGrowth);
-	const long growthAmount = intRound(baseRealGrowth * foodData.lengthFactor);
-	const long long pointsGained = foodData.points;
-	const short speedChange = foodData.speedChange;
+	const long growthAmount = intRound(baseRealGrowth * foodObj.GetLengthFactor());
+	const long long pointChange = foodObj.GetPointChange();
+	const short speedChange = foodObj.GetSpeedChange();
 	const unsigned long long defaultPoints = 0;
 
 	DOLOCKED(attribMutex,
-		SumUp(pointsGained, points, defaultPoints);
+		SumUp(pointChange, points, defaultPoints);
 		SumUp(growthAmount, targetLength, snakeData.startingLength);
 		SumUp(speedChange, speed, snakeData.startingSpeed);
 	)
 
 	Logger::Debug(boost::format("Growing by %1%") % growthAmount);
-	Logger::Debug(boost::format("Got %1% points! (total %2%)") % pointsGained % points);
+	Logger::Debug(boost::format("Got %1% points! (total %2%)") % pointChange % points);
 	Logger::Debug(boost::format("Speeding up by %1%") % speedChange);
 }

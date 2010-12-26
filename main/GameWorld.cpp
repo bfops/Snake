@@ -103,11 +103,20 @@ static GameWorld::SpawnPtr get_new_spawn(const Config::SpawnsData::SpawnData& sp
 #undef GETSIZEDRANDOM
 
 	if(Config::Get().survival)
-		return GameWorld::SpawnPtr(new
-			Mine(location, *reinterpret_cast<const Config::SpawnsData::MineData*>(&spawnData)));
+	{
+		const Config::SpawnsData::MineData& mine =
+			*static_cast<const Config::SpawnsData::MineData*>(&spawnData);
+
+		return GameWorld::SpawnPtr(new Mine(location, mine.size + mine.cushion, mine.color));
+	}
 	else
-		return GameWorld::SpawnPtr(new
-			Food(location, *reinterpret_cast<const Config::SpawnsData::FoodData*>(&spawnData)));
+	{
+		const Config::SpawnsData::FoodData& food =
+			*static_cast<const Config::SpawnsData::FoodData*>(&spawnData);
+
+		return GameWorld::SpawnPtr(new Food(location, food.size + food.cushion, food.color,
+			food.lengthFactor, food.points, food.speedChange));
+	}
 }
 
 static inline const Config::SpawnsData::SpawnData* get_spawn_data()
@@ -149,13 +158,12 @@ void GameWorld::SpawnLoop()
 				}
 				while(Physics::AnyCollide(*spawn, gameObjects.physics));
 
-				spawn->ShrinkDown();
+				spawn->ShrinkDown(spawnData->size);
 
-				// TODO: remove collided & expired spawns
+				// TODO: remove collided spawns
 				DOLOCKEDZ(gameObjects,
 					DOLOCKED(spawnMutex,
-						const Config::SpawnsData::SpawnData& spawnData = spawn->GetSpawnData();
-						const Clock::TimeType expiryTime = Clock::Get().GetTime() + spawnData.expiry;
+						const Clock::TimeType expiryTime = Clock::Get().GetTime() + spawnData->expiry;
 						SpawnList& equalSpawns = spawns[expiryTime];
 						equalSpawns.push_back(SpawnPtr(spawn));
 						gameObjects.Add(*equalSpawns.back());
@@ -167,6 +175,7 @@ void GameWorld::SpawnLoop()
 			}
 		}
 
+		// if the first set of spawns in the map is expired, remove the set
 		DOLOCKED(spawnMutex,
 			if(spawns.size() > 0)
 			{

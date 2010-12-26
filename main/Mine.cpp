@@ -1,9 +1,7 @@
 #include "Mine.hpp"
 
-#include "Config.hpp"
-
-Mine::Mine(const Point location, const Config::SpawnsData::MineData& mineData) :
-	Spawn(mine, location, mineData)
+Mine::Mine(const Point location, const unsigned short size, const Color24 color) :
+	Spawn(mine, location, size, color)
 {
 }
 
