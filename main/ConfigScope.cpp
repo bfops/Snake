@@ -8,15 +8,6 @@
 
 #include "Logger.hpp"
 
-static void register_value(ConfigScope::FieldMap& fields, const std::string& key,
-	const std::string& value)
-{
-	if(fields.find(key) != fields.end())
-		Logger::Debug(boost::format("Warning: field \"%1%\" already exists") % key);
-
-	fields[key] = value;
-}
-
 static std::string get(std::istream& in)
 {
 	std::string gotten;
@@ -51,8 +42,11 @@ void ConfigScope::Init(std::istream& in, long& bracketCount)
 		else
 		{
 			const std::string value = get(in);
+			
+			if(fields.find(name) != fields.end())
+				Logger::Debug(boost::format("Warning: field \"%1%\" already exists") % name);
 
-			register_value(fields, name, value);
+			fields[name] = value;
 		}
 	}
 }

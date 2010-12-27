@@ -14,7 +14,7 @@
 // 24-bit color
 struct Color24
 {
-	typedef unsigned short ColorType;
+	typedef Uint8 ColorType;
 
 	ColorType r, g, b;
 
