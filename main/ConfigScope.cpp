@@ -25,17 +25,12 @@ static std::string get(std::istream& in)
 	return gotten;
 }
 
-void ConfigScope::EnterScope(std::istream& in)
+ConfigScope::ConfigScope(std::istream& in, long& bracketCount)
 {
-	const std::string scopeType = get(in);
-	MemoryScopeList& memoryScopeList = subscopes[scopeType];
-	ScopeList& scopes = memoryScopeList.first;
-	// allocate a new subscope with this name
-	scopes.push_back(ConfigScope(in));
-	memoryScopeList.second = 0;
+	Init(in, bracketCount);
 }
 
-ConfigScope::ConfigScope(std::istream& in)
+void ConfigScope::Init(std::istream& in, long& bracketCount)
 {
 	while(!in.eof())
 	{
@@ -44,11 +39,13 @@ ConfigScope::ConfigScope(std::istream& in)
 		// start of scope
 		if(name == "{")
 		{
-			EnterScope(in);
+			++bracketCount;
+			EnterScope(in, bracketCount);
 		}
 		// end of scope
 		else if(name == "}")
 		{
+			--bracketCount;
 			return;
 		}
 		else
@@ -58,6 +55,27 @@ ConfigScope::ConfigScope(std::istream& in)
 			register_value(fields, name, value);
 		}
 	}
+}
+
+void ConfigScope::EnterScope(std::istream& in, long& bracketCount)
+{
+	const std::string scopeType = get(in);
+	MemoryScopeList& memoryScopeList = subscopes[scopeType];
+	ScopeList& scopes = memoryScopeList.first;
+	// allocate a new subscope with this name
+	scopes.push_back(ConfigScope(in, bracketCount));
+	memoryScopeList.second = 0;
+}
+
+ConfigScope::ConfigScope(std::istream& in)
+{
+	long bracketCount = 0;
+	Init(in, bracketCount);
+
+	if(bracketCount > 0)
+		Logger::Debug("Warning: Scope underterminated (not enough \"}\")");
+	else if(bracketCount < 0)
+		Logger::Debug("Warning: Scope overterminated (too many \"}\")");
 }
 
 bool ConfigScope::PeekScope(const std::string& name) const

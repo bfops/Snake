@@ -25,7 +25,11 @@ public:
 	typedef std::map<std::string, MemoryScopeList> ScopeMap;
 
 private:
-	void EnterScope(std::istream&);
+	ConfigScope(std::istream& configInput, long& bracketCount);
+
+	void Init(std::istream& configInput, long& bracketCount);
+
+	void EnterScope(std::istream&, long& bracketCount);
 
 	FieldMap fields;
 	ScopeMap subscopes;
