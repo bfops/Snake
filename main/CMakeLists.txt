@@ -12,10 +12,9 @@ add_executable(GingerbreadPrototype
 	Common.hpp
 	Config.hpp
 	Config.cpp
+	Config__ConfigScope.cpp
 	Config__defaultConfig.cpp
 	Config__SpawnsData.cpp
-	ConfigScope.hpp
-	ConfigScope.cpp
 	custom_algorithm.hpp
 	Direction.cpp
 	Direction.hpp

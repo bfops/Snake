@@ -1,12 +1,7 @@
-#include "ConfigScope.hpp"
-
+#include "Config.hpp"
 #include "Logger.hpp"
 
 // TODO: more error-checking
-
-#include "ConfigScope.hpp"
-
-#include "Logger.hpp"
 
 static std::string get(std::istream& in)
 {
@@ -16,12 +11,12 @@ static std::string get(std::istream& in)
 	return gotten;
 }
 
-ConfigScope::ConfigScope(std::istream& in, long& bracketCount)
+Config::ConfigScope::ConfigScope(std::istream& in, long& bracketCount)
 {
 	Init(in, bracketCount);
 }
 
-void ConfigScope::Init(std::istream& in, long& bracketCount)
+void Config::ConfigScope::Init(std::istream& in, long& bracketCount)
 {
 	while(!in.eof())
 	{
@@ -51,7 +46,7 @@ void ConfigScope::Init(std::istream& in, long& bracketCount)
 	}
 }
 
-void ConfigScope::EnterScope(std::istream& in, long& bracketCount)
+void Config::ConfigScope::EnterScope(std::istream& in, long& bracketCount)
 {
 	const std::string scopeType = get(in);
 	MemoryScopeList& memoryScopeList = subscopes[scopeType];
@@ -61,7 +56,7 @@ void ConfigScope::EnterScope(std::istream& in, long& bracketCount)
 	memoryScopeList.second = 0;
 }
 
-ConfigScope::ConfigScope(std::istream& in)
+Config::ConfigScope::ConfigScope(std::istream& in)
 {
 	long bracketCount = 0;
 	Init(in, bracketCount);
@@ -72,7 +67,7 @@ ConfigScope::ConfigScope(std::istream& in)
 		Logger::Debug("Warning: Scope overterminated (too many \"}\")");
 }
 
-bool ConfigScope::PeekScope(const std::string& name) const
+bool Config::ConfigScope::PeekScope(const std::string& name) const
 {
 	const ScopeMap::const_iterator index = subscopes.find(name);
 
@@ -85,7 +80,7 @@ bool ConfigScope::PeekScope(const std::string& name) const
 	return (currentScopeIndex < scopes.size());
 }
 
-ConfigScope* ConfigScope::GetScope(const std::string& name)
+Config::ConfigScope* Config::ConfigScope::GetScope(const std::string& name)
 {
 	if(!PeekScope(name))
 	{

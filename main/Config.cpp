@@ -1,6 +1,5 @@
 #include "Config.hpp"
 
-#include "ConfigScope.hpp"
 #include "Logger.hpp"
 
 #ifdef MSVC
@@ -31,14 +30,14 @@ const Config& Config::Get()
 	return gameConfig;
 }
 
-ConfigScope Config::GetConfigLoader(const std::string& filename)
+Config::ConfigScope Config::GetConfigLoader(const std::string& filename)
 {
 	std::ifstream configFile(filename);
 	if(configFile.is_open())
-		return ConfigScope(configFile);
+		return Config::ConfigScope(configFile);
 
 	std::stringstream defaultConfig = GetDefaultConfig();
-	return ConfigScope(defaultConfig);
+	return Config::ConfigScope(defaultConfig);
 }
 
 Config::ColorData::operator Color24() const
@@ -67,7 +66,7 @@ Config::ConfigLoadable::ConfigLoadable(const std::string& scopeName, ConfigScope
 	in = in->GetScope(scopeName);
 }
 
-static void get_uint8(const ConfigScope* const in, const std::string& name, Uint8& out)
+static void get_uint8(const Config::ConfigScope* const in, const std::string& name, Uint8& out)
 {
 	unsigned short num;
 	in->Get(name, num);
