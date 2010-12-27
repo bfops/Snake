@@ -27,8 +27,11 @@ public:
 	static const Direction empty, left, right, up, down;
 
 	operator Vector2D() const;
+
 	// return the opposite direction
 	Direction operator-() const;
+
 	bool operator==(Direction) const;
-	bool operator!=(Direction) const;
+
+	bool IsHorizontal() const;
 };

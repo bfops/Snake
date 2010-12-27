@@ -17,7 +17,7 @@ SnakeSegment::SnakeSegment(Snake* const _parent, const Point location, const Dir
 
 	Vector2D size;
 	// if it's moving horizontally, its width is vertical
-	if(direction == Direction::left || direction == Direction::right)
+	if(direction.IsHorizontal())
 		size = Vector2D(length, width);
 	else
 		size = Vector2D(width, length);
@@ -74,7 +74,7 @@ unsigned long SnakeSegment::GetLength() const
 {
 #define DELTA(m) (bounds.max.m - bounds.min.m)
 	// if moving horizontally, the length is delta X, otherwise delta y
-	if(direction == Direction::left || direction == Direction::right)
+	if(direction.IsHorizontal())
 		return DELTA(x);
 
 	return DELTA(y);

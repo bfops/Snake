@@ -32,7 +32,7 @@ bool Direction::operator==(const Direction obj) const
 	return (direction == obj.direction);
 }
 
-bool Direction::operator!=(const Direction obj) const
+bool Direction::IsHorizontal() const
 {
-	return !(*this == obj);
+	return direction.x != 0 && direction.y == 0;
 }

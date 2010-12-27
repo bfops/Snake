@@ -139,8 +139,9 @@ void Snake::ChangeDirection(const Direction newDirection, ZippedUniqueObjectList
 {
 	DOLOCKED(pathMutex,
 		Direction& oldDirection = Head().direction;
+		// the new direction and old direction can't be both horizontal nor both vertical
 		// the new segment must be long enough to not collide with another segment if it turns
-		if(newDirection != oldDirection && newDirection != -oldDirection &&
+		if(newDirection.IsHorizontal() ^ oldDirection.IsHorizontal() &&
 			Growable().GetLength() >= Config::Get().snake.width)
 		{
 			oldDirection = newDirection;
@@ -160,9 +161,11 @@ static inline unsigned long get_bounded_index(const long unboundedIndex, const u
 
 static Direction get_turned_direction(const Direction direction, const Direction turn)
 {
-	assert(turn == Direction::left || turn == Direction::right);
+	// must turn either left or right
+	assert(turn.IsHorizontal());
 
 	const Direction directions[] = {Direction::left, Direction::up, Direction::right, Direction::down};
+	// if we're turning left, we're going backwards through the array, else forwards
 	const short nextDirection = (turn == Direction::left ? -1 : 1);
 
 	for(unsigned short i = 0; i < countof(directions); ++i)
