@@ -127,6 +127,14 @@ public:
 
 	struct SnakeData : public ConfigLoadable
 	{
+		struct Head : public ConfigLoadable
+		{
+			ColorData color;
+
+			Head(ConfigScope* in);
+		};
+
+		Head head;
 		unsigned long startingLength;
 		unsigned short width;
 		unsigned short startingSpeed;

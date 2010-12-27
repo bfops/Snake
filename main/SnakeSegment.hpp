@@ -13,8 +13,6 @@ class SnakeSegment : public WorldObject
 {
 private:
 	unsigned short width;
-	// direction of movement
-	Direction direction;
 
 	Snake* parent;
 
@@ -22,20 +20,23 @@ private:
 	void ModifyLength(long amount);
 
 public:
-	SnakeSegment(Snake* parent, Point location, Direction direction, unsigned short segmentWidth);
+	// direction of movement
+	Direction direction;
+
+	SnakeSegment(Snake* parent, Point location, Direction direction, unsigned long length,
+		unsigned short width, Color24);
 	
 	void CollisionHandler(WorldObject&) const;
 	void CollisionHandler(const Food&);
+
+	// move one step in the current direction
+	void Move();
 
 	void Grow();
 	// return true if the segment became empty
 	bool Shrink();
 
 	unsigned long GetLength() const;
-	// get direction of travel
-	Direction GetDirection() const;
-	// get the frontmost [width x width] square of this segment
-	Bounds GetHeadSquare() const;
 
 	// get the frontmost side of this segment
 	Line GetHeadSide() const;

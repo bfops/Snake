@@ -84,6 +84,7 @@ pointGainAmount 15\n\
 	speedupPeriod 14000\n\
 	growthCap 100\n\
 	growthRate 0.345\n\
+	{ head { color r 127 g 127 b 127 } }\n\
 	{ color r 0 g 255 b 0 }\n\
 }\n\
 "));

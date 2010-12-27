@@ -41,10 +41,14 @@ private:
 
 	// player points
 	unsigned long long points;
-
-	// add segment to the front
-	void AddSegment(Point location, Direction directionOfTravel, ZippedUniqueObjectList& gameObjects);
-
+	
+	void AddSegment(ZippedUniqueObjectList& gameObjects);
+	void AddHead(Point location, Direction directionOfTravel, ZippedUniqueObjectList& gameObjects);
+	
+	// return the segment to elongate
+	SnakeSegment& Growable();
+	// return the segment to shorten
+	SnakeSegment& Shrinkable();
 	// return the first segment
 	SnakeSegment& Head();
 	// return the last segment

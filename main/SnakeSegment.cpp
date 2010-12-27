@@ -6,8 +6,8 @@
 #include "Snake.hpp"
 
 SnakeSegment::SnakeSegment(Snake* const _parent, const Point location, const Direction _direction,
-	const unsigned short _width) :
-	WorldObject(snake, Config::Get().snake.color)
+	const unsigned long length, const unsigned short _width, const Color24 color) :
+	WorldObject(snake, color)
 {
 	direction = _direction;
 	parent = _parent;
@@ -15,11 +15,14 @@ SnakeSegment::SnakeSegment(Snake* const _parent, const Point location, const Dir
 	bounds.min = location;
 	bounds.max = location;
 
+	Vector2D size;
 	// if it's moving horizontally, its width is vertical
 	if(direction == Direction::left || direction == Direction::right)
-		bounds.max.y += width;
+		size = Vector2D(length, width);
 	else
-		bounds.max.x += width;
+		size = Vector2D(width, length);
+
+	bounds.max += size;
 }
 
 void SnakeSegment::CollisionHandler(WorldObject& obj) const
@@ -49,6 +52,11 @@ void SnakeSegment::ModifyLength(const long amount)
 	)
 }
 
+void SnakeSegment::Move()
+{
+	bounds += direction;
+}
+
 void SnakeSegment::Grow()
 {
 	ModifyLength(1);
@@ -71,26 +79,6 @@ unsigned long SnakeSegment::GetLength() const
 
 	return DELTA(y);
 #undef DELTA
-}
-
-Direction SnakeSegment::GetDirection() const
-{
-	return direction;
-}
-
-Bounds SnakeSegment::GetHeadSquare() const
-{
-	const Line frontSide = GetHeadSide();
-	// back side of the head square; to be a square,
-	// this must be _width_ away from _frontSide_
-	Line backSide = frontSide;
-	backSide.ApplyVector(-direction, width);
-
-	Bounds headSquare;
-	headSquare.SetSide(frontSide, direction);
-	headSquare.SetSide(backSide, -direction);
-
-	return headSquare;
 }
 
 Line SnakeSegment::GetHeadSide() const

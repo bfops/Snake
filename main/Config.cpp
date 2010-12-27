@@ -87,7 +87,7 @@ Config::BoundsData::BoundsData(ConfigScope* in) :
 }
 
 Config::SnakeData::SnakeData(ConfigScope* in) :
-	ConfigLoadable("snake", in), color(in)
+	ConfigLoadable("snake", in), color(in), head(in)
 {
 	in->Get("startingLength", startingLength);
 	in->Get("width", width);
@@ -96,6 +96,11 @@ Config::SnakeData::SnakeData(ConfigScope* in) :
 	in->Get("speedupPeriod", speedupPeriod);
 	in->Get("growthCap", growthCap);
 	in->Get("growthRate", growthRate);
+}
+
+Config::SnakeData::Head::Head(ConfigScope* in) :
+	ConfigLoadable("head", in), color(in)
+{
 }
 
 Config::Resources::Resources(ConfigScope* in) :

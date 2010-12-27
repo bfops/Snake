@@ -27,9 +27,25 @@ Snake::Snake(ZippedUniqueObjectList& gameObjects)
 	Init(gameObjects);
 }
 
-void Snake::AddSegment(const Point location, const Direction direction, ZippedUniqueObjectList& gameObjects)
+void Snake::AddSegment(ZippedUniqueObjectList& gameObjects)
 {
-	const SnakeSegment newSegment(this, location, direction, Config::Get().snake.width);
+	DOLOCKED(pathMutex,
+		const Direction& direction = Head().direction;
+		// we want to start at the back end of the head
+		const SnakeSegment newSegment(this, Head().GetTailSide().min, direction, 0,
+			Config::Get().snake.width, Config::Get().snake.color);
+	
+		path.insert(++path.begin(), newSegment);
+		DOLOCKEDZ(gameObjects,
+			gameObjects.Add(Growable());
+		)
+	)
+}
+
+void Snake::AddHead(const Point location, const Direction direction, ZippedUniqueObjectList& gameObjects)
+{
+	unsigned short width = Config::Get().snake.width;
+	const SnakeSegment newSegment(this, location, direction, width, width, Config::Get().snake.head.color);
 	
 	DOLOCKED(pathMutex,
 		path.push_front(newSegment);
@@ -39,12 +55,22 @@ void Snake::AddSegment(const Point location, const Direction direction, ZippedUn
 	)
 }
 
-inline SnakeSegment& Snake::Head()
+SnakeSegment& Snake::Head()
 {
 	return path.front();
 }
 
-inline SnakeSegment& Snake::Tail()
+SnakeSegment& Snake::Tail()
+{
+	return path.back();
+}
+
+SnakeSegment& Snake::Growable()
+{
+	return *++path.begin();
+}
+
+SnakeSegment& Snake::Shrinkable()
 {
 	return path.back();
 }
@@ -55,14 +81,14 @@ static inline Direction get_random_direction()
 	return directions[randomNumber % countof(directions)];
 }
 
-static inline Point get_starting_point(const Direction direction)
+static inline Point get_head_location()
 {
 	const unsigned long width = Config::Get().snake.width;
+	// middle of the screen
 	Point startingPoint(Config::Get().screen.w / 2, Config::Get().screen.h / 2);
-	if(direction == Direction::up || direction == Direction::down)
-		startingPoint.x -= width / 2;
-	else
-		startingPoint.y -= width / 2;
+	// account for size
+	startingPoint.x -= width / 2;
+	startingPoint.y -= width / 2;
 
 	return startingPoint;
 }
@@ -81,10 +107,9 @@ void Snake::Init(ZippedUniqueObjectList& gameObjects)
 	targetLength = Config::Get().snake.startingLength;
 	
 	const Direction direction = get_random_direction();
-	const Point headLocation = get_starting_point(direction);
-
 	DOLOCKED(pathMutex,
-		AddSegment(headLocation, direction, gameObjects);
+		AddHead(get_head_location(), direction, gameObjects);
+		AddSegment(gameObjects);
 	)
 }
 
@@ -113,21 +138,13 @@ void Snake::RemoveTail(ZippedUniqueObjectList& gameObjects)
 void Snake::ChangeDirection(const Direction newDirection, ZippedUniqueObjectList& gameObjects)
 {
 	DOLOCKED(pathMutex,
-		const Direction direction(Head().GetDirection());
-
+		Direction& oldDirection = Head().direction;
 		// the new segment must be long enough to not collide with another segment if it turns
-		if(newDirection != direction && newDirection != -direction &&
-			Head().GetLength() >= 2 * Config::Get().snake.width)
+		if(newDirection != oldDirection && newDirection != -oldDirection &&
+			Growable().GetLength() >= Config::Get().snake.width)
 		{
-			// Get the square "head" block of the foremost segment, and make it the start of the new segment
-			const Bounds headBlock = Head().GetHeadSquare();
-			Head().SetHeadSide(headBlock.GetSide(-direction));
-			const Line startSide = headBlock.GetSide(-newDirection);
-
-			AddSegment(startSide.min, newDirection, gameObjects);
-			// stretch this segment so that its initial size
-			// is enough to cover the head block
-			Head().SetHeadSide(headBlock.GetSide(newDirection));
+			oldDirection = newDirection;
+			AddSegment(gameObjects);
 		}
 	)
 }
@@ -158,7 +175,7 @@ static Direction get_turned_direction(const Direction direction, const Direction
 void Snake::Turn(const Direction turn, ZippedUniqueObjectList& gameObjects)
 {
 	DOLOCKED(pathMutex,
-		const Direction direction = Direction(Head().GetDirection());
+		const Direction direction = Head().direction;
 	)
 
 	ChangeDirection(get_turned_direction(direction, turn), gameObjects);
@@ -186,12 +203,13 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects)
 	if(moveTimer.ResetIfHasElapsed(1000 / speed))
 	{
 		DOLOCKED(pathMutex,
-			Head().Grow();
+			Head().Move();
+			Growable().Grow();
 
 			DOLOCKED(attribMutex,
 				if(length > targetLength)
 				{
-					if(Tail().Shrink())
+					if(Shrinkable().Shrink())
 						RemoveTail(gameObjects);
 					--length;
 				}
@@ -200,7 +218,7 @@ void Snake::Update(ZippedUniqueObjectList& gameObjects)
 				if(length < targetLength)
 					++length;
 				else
-					if(Tail().Shrink())
+					if(Shrinkable().Shrink())
 						RemoveTail(gameObjects);
 			)
 		)
