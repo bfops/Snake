@@ -8,9 +8,11 @@ struct Vector2D
 	Vector2D();
 	Vector2D(long x, long y);
 
-	// negation operator
+	Vector2D& operator+=(Vector2D);
+	Vector2D operator-(Vector2D) const;
 	Vector2D operator-() const;
+	Vector2D operator*(long scale) const;
 
-	bool operator==(const Vector2D&) const;
-	bool operator!=(const Vector2D&) const;
+	bool operator==(Vector2D) const;
+	bool operator!=(Vector2D) const;
 };

@@ -1,9 +1,8 @@
 #pragma once
 
 #include "Color24.hpp"
+#include "Point.hpp"
 #include "WorldObject.hpp"
-
-struct Point;
 
 class Screen
 {

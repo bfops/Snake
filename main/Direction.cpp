@@ -6,7 +6,7 @@ const Direction Direction::right(1, 0);
 const Direction Direction::up(0, -1);
 const Direction Direction::down(0, 1);
 
-Direction::Direction(const short x, const short y)
+Direction::Direction(const Sint8 x, const Sint8 y)
 {
 	direction = Vector2D(x, y);
 }
@@ -27,12 +27,12 @@ Direction Direction::operator-() const
 	return Direction(nDirection.x, nDirection.y);
 }
 
-bool Direction::operator==(const Direction& obj) const
+bool Direction::operator==(const Direction obj) const
 {
 	return (direction == obj.direction);
 }
 
-bool Direction::operator!=(const Direction& obj) const
+bool Direction::operator!=(const Direction obj) const
 {
 	return !(*this == obj);
 }

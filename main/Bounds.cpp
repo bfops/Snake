@@ -17,13 +17,13 @@ Bounds::Bounds()
 {
 }
 
-Bounds::Bounds(Point _min, Point _max)
+Bounds::Bounds(const Point _min, const Point _max)
 {
 	min = _min;
 	max = _max;
 }
 
-Bounds::Bounds(Line side)
+Bounds::Bounds(const Line side)
 {
 	min = max = side.min;
 
@@ -55,6 +55,14 @@ Bounds::operator Line() const
 #undef DELTA
 
 	return retval;
+}
+
+Bounds& Bounds::operator+=(const Vector2D v)
+{
+	min += v;
+	max += v;
+
+	return *this;
 }
 
 // set _output_'s _whichSide_ side to equal _input_'s _whichSide_ side

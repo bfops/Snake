@@ -1,7 +1,15 @@
 #include "Line.hpp"
 
-void Line::ApplyVector(const Vector2D vector, const unsigned long scale)
+Line Line::operator+(const Vector2D v) const
 {
-	min.x += vector.x * scale;
-	min.y += vector.y * scale;
+	Line newLine(*this);
+	newLine.min += v;
+
+	return newLine;
+}
+
+Line& Line::operator+=(const Vector2D v)
+{
+	min += v;
+	return *this;
 }

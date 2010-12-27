@@ -15,9 +15,11 @@ struct Bounds
 	Bounds(Line);
 
 	operator Line() const;
+
+	Bounds& operator+=(Vector2D);
 	
 	// get the _whichSide_ side of this rectangle
-	Line GetSide(const Direction whichSide) const;
+	Line GetSide(Direction whichSide) const;
 	// set the _whichSide_ side of this rectangle
-	void SetSide(const Line sideBounds, const Direction whichSide);
+	void SetSide(Line sideBounds, Direction whichSide);
 };

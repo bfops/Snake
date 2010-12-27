@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Color24.hpp"
+#include "Point.hpp"
 #include "GameWorld.hpp"
 #include "Logger.hpp"
 
@@ -187,7 +188,7 @@ public:
 
 			SpawnData(const std::string& spawnScope, ConfigScope*& in);
 
-			virtual GameWorld::SpawnPtr ConstructSpawn(const Point& location) const = 0;
+			virtual GameWorld::SpawnPtr ConstructSpawn(Point location) const = 0;
 		};
 
 		struct FoodData : public SpawnData
@@ -198,14 +199,14 @@ public:
 
 			FoodData(ConfigScope* in);
 
-			GameWorld::SpawnPtr ConstructSpawn(const Point& location) const;
+			GameWorld::SpawnPtr ConstructSpawn(Point location) const;
 		};
 
 		struct MineData : public SpawnData
 		{
 			MineData(ConfigScope* in);
 
-			GameWorld::SpawnPtr ConstructSpawn(const Point& location) const;
+			GameWorld::SpawnPtr ConstructSpawn(Point location) const;
 		};
 
 		typedef std::auto_ptr<SpawnData> SpawnPtr;

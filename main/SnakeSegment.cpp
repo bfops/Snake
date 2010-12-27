@@ -35,19 +35,16 @@ void SnakeSegment::CollisionHandler(const Food& food)
 void SnakeSegment::ModifyLength(const long amount)
 {
 	DOLOCKED(mutex,
+		const Vector2D v = direction;
 		if(amount > 0)
 		{
 			// move the front side forward by _amount_ (i.e. grow)
-			Line headSide = GetHeadSide();
-			headSide.ApplyVector(direction, amount);
-			SetHeadSide(headSide);
+			SetHeadSide(GetHeadSide() + (v * amount));
 		}
 		else
 		{
 			// move the back side forward by _amount_ (i.e. shrink)
-			Line tailSide = GetTailSide();
-			tailSide.ApplyVector(direction, -amount);
-			SetTailSide(tailSide);
+			SetTailSide(GetTailSide() + (v * -amount));
 		}
 	)
 }
