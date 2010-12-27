@@ -2,6 +2,7 @@
 
 #include "Color24.hpp"
 #include "GameWorld.hpp"
+#include "Logger.hpp"
 
 struct Bounds;
 class ConfigScope;
@@ -61,6 +62,13 @@ struct Config
 			}
 
 			std::stringstream(result->second) >> dest;
+		}
+		template <>
+		void Get<Uint8>(const std::string& fieldName, Uint8& dest) const
+		{
+			unsigned short dummy;
+			Get(fieldName, dummy);
+			dest = dummy;
 		}
 	};
 
