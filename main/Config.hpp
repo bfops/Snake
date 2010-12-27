@@ -1,9 +1,9 @@
 #pragma once
 
+#include "Color24.hpp"
 #include "GameWorld.hpp"
 
 struct Bounds;
-struct Color24;
 class ConfigScope;
 
 #ifdef MSVC
@@ -57,7 +57,7 @@ public:
 
 	struct ColorData : public ConfigLoadable
 	{
-		unsigned short r, g, b;
+		Color24::ColorType r, g, b;
 
 		ColorData(ConfigScope* in);
 

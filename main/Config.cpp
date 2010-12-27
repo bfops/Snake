@@ -67,12 +67,19 @@ Config::ConfigLoadable::ConfigLoadable(const std::string& scopeName, ConfigScope
 	in = in->GetScope(scopeName);
 }
 
+static void get_uint8(const ConfigScope* const in, const std::string& name, Uint8& out)
+{
+	unsigned short num;
+	in->Get(name, num);
+	out = num;
+}
+
 Config::ColorData::ColorData(ConfigScope* in) :
 	ConfigLoadable("color", in)
 {
-	in->Get("r", r);
-	in->Get("g", g);
-	in->Get("b", b);
+	get_uint8(in, "r", r);
+	get_uint8(in, "g", g);
+	get_uint8(in, "b", b);
 }
 
 Config::BoundsData::BoundsData(ConfigScope* in) :
