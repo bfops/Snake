@@ -53,12 +53,12 @@ Config::BoundsData::operator Bounds() const
 Config::Config(ConfigScope in) :
 	wallsData("walls", "wall", &in), screen(&in), spawns(&in), snake(&in), resources(&in)
 {
-	in.Get("music", music);
-	in.Get("sound", sound);
-	in.Get("FPS", FPS);
+	in.GetField("music", music);
+	in.GetField("sound", sound);
+	in.GetField("FPS", FPS);
 
-	in.Get("pointGainPeriod", pointGainPeriod);
-	in.Get("pointGainAmount", pointGainAmount);
+	in.GetField("pointGainPeriod", pointGainPeriod);
+	in.GetField("pointGainAmount", pointGainAmount);
 }
 
 Config::ConfigLoadable::ConfigLoadable(const std::string& scopeName, ConfigScope*& in)
@@ -70,32 +70,32 @@ Config::ConfigLoadable::ConfigLoadable(const std::string& scopeName, ConfigScope
 Config::ColorData::ColorData(ConfigScope* in) :
 	ConfigLoadable("color", in)
 {
-	in->Get("r", r);
-	in->Get("g", g);
-	in->Get("b", b);
+	in->GetField("r", r);
+	in->GetField("g", g);
+	in->GetField("b", b);
 }
 
 Config::BoundsData::BoundsData(ConfigScope* in) :
 	ConfigLoadable("bounds", in)
 {
 	ConfigScope* const minScope = in->GetScope("min");
-		minScope->Get("x", min.x);
-		minScope->Get("y", min.y);
+		minScope->GetField("x", min.x);
+		minScope->GetField("y", min.y);
 	ConfigScope* const maxScope = in->GetScope("max");
-		maxScope->Get("x", max.x);
-		maxScope->Get("y", max.y);
+		maxScope->GetField("x", max.x);
+		maxScope->GetField("y", max.y);
 }
 
 Config::SnakeData::SnakeData(ConfigScope* in) :
 	ConfigLoadable("snake", in), color(in), head(in)
 {
-	in->Get("startingLength", startingLength);
-	in->Get("width", width);
-	in->Get("startingSpeed", startingSpeed);
-	in->Get("speedupAmount", speedupAmount);
-	in->Get("speedupPeriod", speedupPeriod);
-	in->Get("growthCap", growthCap);
-	in->Get("growthRate", growthRate);
+	in->GetField("startingLength", startingLength);
+	in->GetField("width", width);
+	in->GetField("startingSpeed", startingSpeed);
+	in->GetField("speedupAmount", speedupAmount);
+	in->GetField("speedupPeriod", speedupPeriod);
+	in->GetField("growthCap", growthCap);
+	in->GetField("growthRate", growthRate);
 }
 
 Config::SnakeData::Head::Head(ConfigScope* in) :
@@ -106,10 +106,10 @@ Config::SnakeData::Head::Head(ConfigScope* in) :
 Config::Resources::Resources(ConfigScope* in) :
 	ConfigLoadable("resources", in)
 {
-	in->Get("eat", eat);
-	in->Get("spawn", spawn);
-	in->Get("die", die);
-	in->Get("theme", theme);
+	in->GetField("eat", eat);
+	in->GetField("spawn", spawn);
+	in->GetField("die", die);
+	in->GetField("theme", theme);
 }
 
 Config::WallData::WallData(ConfigScope* in) :
@@ -120,8 +120,8 @@ Config::WallData::WallData(ConfigScope* in) :
 Config::ScreenData::ScreenData(ConfigScope* in) :
 	ConfigLoadable("screen", in), bgColor(in)
 {
-	in->Get("w", w);
-	in->Get("h", h);
+	in->GetField("w", w);
+	in->GetField("h", h);
 }
 
 template <typename _T>
@@ -133,7 +133,7 @@ static void add_to_spawns(Config::SpawnsData::SpawnList& spawns, const _T& spawn
 Config::SpawnsData::SpawnsData(ConfigScope* in) :
 	ConfigLoadable("spawns", in), bounds(in)
 {
-	in->Get("period", period);
+	in->GetField("period", period);
 	
 	// add both types of spawns to the communal spawn info list
 	const LoadableList<FoodData> foods("foods", "food", in);
@@ -145,18 +145,18 @@ Config::SpawnsData::SpawnsData(ConfigScope* in) :
 Config::SpawnsData::SpawnData::SpawnData(const std::string& scopeName, ConfigScope*& in) :
 	ConfigLoadable(scopeName, in), color(in)
 {
-	in->Get("size", size);
-	in->Get("cushion", cushion);
-	in->Get("expiry", expiry);
-	in->Get("rate", rate);
+	in->GetField("size", size);
+	in->GetField("cushion", cushion);
+	in->GetField("expiry", expiry);
+	in->GetField("rate", rate);
 }
 
 Config::SpawnsData::FoodData::FoodData(ConfigScope* in) :
 	SpawnData("food", in)
 {
-	in->Get("points", points);
-	in->Get("lengthFactor", lengthFactor);
-	in->Get("speedChange", speedChange);
+	in->GetField("points", points);
+	in->GetField("lengthFactor", lengthFactor);
+	in->GetField("speedChange", speedChange);
 }
 
 Config::SpawnsData::MineData::MineData(ConfigScope* in) :

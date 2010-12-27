@@ -10,7 +10,7 @@
 #pragma warning(pop)
 #endif
 
-// keeps track of how much game time has passed
+// keeps track of game time (starting at 0)
 class Clock
 {
 public:

@@ -16,6 +16,7 @@ struct Bounds
 
 	operator Line() const;
 
+	// shift by a vector
 	Bounds& operator+=(Vector2D);
 	
 	// get the _whichSide_ side of this rectangle

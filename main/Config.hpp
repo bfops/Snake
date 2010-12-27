@@ -23,21 +23,25 @@ class ConfigScope;
 // game configuration
 struct Config
 {
+	// corresponds to a "scope" from the configuration file (see README)
 	class ConfigScope
 	{
 	public:
-		// essentially a vector of (fieldName, fieldValue) pairs
+		// map field name to field value
 		typedef std::map<std::string, std::string> FieldMap;
 		// a collection of same-typed scopes
-		typedef std::vector<ConfigScope> ScopeList;
-		typedef std::pair<ScopeList, unsigned long> MemoryScopeList;
-		typedef std::map<std::string, MemoryScopeList> ScopeMap;
+		typedef std::vector<ConfigScope> ScopeCollection;
+		// a ScopeCollection which remembers position
+		typedef std::pair<ScopeCollection, unsigned long> MemoryScopeCollection;
+		typedef std::map<std::string, MemoryScopeCollection> ScopeMap;
 
 	private:
+		// _bracketCount_ is the count of curly braces
 		ConfigScope(std::istream& configInput, long& bracketCount);
 
 		void Init(std::istream& configInput, long& bracketCount);
 
+		// recurse into another configuration scope
 		void EnterScope(std::istream&, long& bracketCount);
 
 		FieldMap fields;
@@ -46,13 +50,12 @@ struct Config
 	public:
 		ConfigScope(std::istream& configInput);
 
-		// for data-reading purposes
 		bool PeekScope(const std::string& scopeName) const;
 		ConfigScope* GetScope(const std::string& scopeName);
 	
 		// get _fieldName_'s value in the current scope and store in _dest_
 		template <typename _T>
-		void Get(const std::string& fieldName, _T& dest) const
+		void GetField(const std::string& fieldName, _T& dest) const
 		{
 			const FieldMap::const_iterator result = fields.find(fieldName);
 
@@ -64,11 +67,12 @@ struct Config
 
 			std::stringstream(result->second) >> dest;
 		}
+		// special template for getting byte numbers
 		template <>
-		void Get<Uint8>(const std::string& fieldName, Uint8& dest) const
+		void GetField<Uint8>(const std::string& fieldName, Uint8& dest) const
 		{
 			unsigned short dummy;
-			Get(fieldName, dummy);
+			GetField(fieldName, dummy);
 			dest = dummy;
 		}
 	};
@@ -80,6 +84,7 @@ private:
 	static std::stringstream GetDefaultConfig();
 
 public:
+	// recurses into the right scope via construction
 	struct ConfigLoadable
 	{
 		ConfigLoadable(const std::string& scopeName, ConfigScope*& in);

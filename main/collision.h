@@ -9,7 +9,7 @@ extern "C" {
 
 typedef struct
 {
-	int x, y;
+	long x, y;
 } point;
 
 typedef struct
@@ -18,7 +18,7 @@ typedef struct
 	point max;
 } ObjectBounds;
 
-// return true iff o1 and o2 overlap
+// return nonzero iff o1 and o2 overlap
 int does_collide(const ObjectBounds* const __restrict o1, const ObjectBounds* const __restrict o2);
 
 #ifdef __cplusplus

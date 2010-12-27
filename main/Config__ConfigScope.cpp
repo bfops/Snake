@@ -49,11 +49,11 @@ void Config::ConfigScope::Init(std::istream& in, long& bracketCount)
 void Config::ConfigScope::EnterScope(std::istream& in, long& bracketCount)
 {
 	const std::string scopeType = get(in);
-	MemoryScopeList& memoryScopeList = subscopes[scopeType];
-	ScopeList& scopes = memoryScopeList.first;
+	MemoryScopeCollection& memoryScopeCollection = subscopes[scopeType];
+	ScopeCollection& scopes = memoryScopeCollection.first;
 	// allocate a new subscope with this name
 	scopes.push_back(ConfigScope(in, bracketCount));
-	memoryScopeList.second = 0;
+	memoryScopeCollection.second = 0;
 }
 
 Config::ConfigScope::ConfigScope(std::istream& in)
@@ -74,7 +74,7 @@ bool Config::ConfigScope::PeekScope(const std::string& name) const
 	if(index == subscopes.end())
 		return false;
 
-	const ScopeList& scopes = index->second.first;
+	const ScopeCollection& scopes = index->second.first;
 	const unsigned long currentScopeIndex = index->second.second;
 
 	return (currentScopeIndex < scopes.size());
@@ -90,7 +90,7 @@ Config::ConfigScope* Config::ConfigScope::GetScope(const std::string& name)
 
 	const ScopeMap::iterator index = subscopes.find(name);
 
-	ScopeList& scopes = index->second.first;
+	ScopeCollection& scopes = index->second.first;
 	const unsigned long currentScopeIndex = index->second.second++;
 
 	return &scopes[currentScopeIndex];

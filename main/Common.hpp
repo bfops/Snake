@@ -8,7 +8,7 @@ static inline long intRound(const double d)
 	return ((d < 0) ? (d - 0.5) : (d + 0.5));
 }
 
-// execute _thingsToDo_ while _mutex_ is locked
+// lock _mutex_, execute _thingsToDo_, and unlock _mutex_
 #define DOLOCKED(mutex, thingsToDo) \
 	mutex.Lock(); \
 	thingsToDo \
