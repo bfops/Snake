@@ -101,22 +101,22 @@ private:
 	static std::stringstream GetDefaultConfig();
 
 public:
-	// recurses into the right scope via construction
+	// recurses into the right config scope via construction
 	struct ConfigLoadable
 	{
 		ConfigLoadable(const std::string& scopeName, const ConfigScope*& in);
 	};
 
 	template <typename _T>
-	struct LoadableList : public ConfigLoadable
+	struct LoadableCollection : public ConfigLoadable
 	{
-		typedef std::vector<_T> List;
-		typedef typename List::iterator iterator;
-		typedef typename List::const_iterator const_iterator;
+		typedef std::vector<_T> Collection;
+		typedef typename Collection::iterator iterator;
+		typedef typename Collection::const_iterator const_iterator;
 
-		List list;
+		Collection list;
 
-		LoadableList(const std::string& listName, const std::string& elementsName, const ConfigScope* in) :
+		LoadableCollection(const std::string& listName, const std::string& elementsName, const ConfigScope* in) :
 			ConfigLoadable(listName, in)
 		{
 			while(in->PeekScope(elementsName))
@@ -129,29 +129,29 @@ public:
 		const_iterator end() const { return list.end(); }
 	};
 
-	struct ColorData : public ConfigLoadable
+	struct ColorConfig : public ConfigLoadable
 	{
 		Color24::ColorType r, g, b;
 
-		ColorData(const ConfigScope* in);
+		ColorConfig(const ConfigScope* in);
 
 		operator Color24() const;
 	};
 
-	struct BoundsData : public ConfigLoadable
+	struct BoundsConfig : public ConfigLoadable
 	{
 		Point min, max;
 
-		BoundsData(const ConfigScope* in);
+		BoundsConfig(const ConfigScope* in);
 
 		operator Bounds() const;
 	};
 
-	struct SnakeData : public ConfigLoadable
+	struct SnakeConfig : public ConfigLoadable
 	{
 		struct Head : public ConfigLoadable
 		{
-			ColorData color;
+			ColorConfig color;
 
 			Head(const ConfigScope* in);
 		};
@@ -167,9 +167,9 @@ public:
 		double growthRate;
 		unsigned long growthCap;
 
-		ColorData color;
+		ColorConfig color;
 
-		SnakeData(const ConfigScope* in);
+		SnakeConfig(const ConfigScope* in);
 	};
 
 	// resource paths
@@ -186,27 +186,27 @@ public:
 		Resources(const ConfigScope* in);
 	};
 	
-	struct WallData : public ConfigLoadable
+	struct WallConfig : public ConfigLoadable
 	{
-		BoundsData bounds;
-		ColorData color;
+		BoundsConfig bounds;
+		ColorConfig color;
 
-		WallData(const ConfigScope* in);
+		WallConfig(const ConfigScope* in);
 	};
 
-	struct ScreenData : public ConfigLoadable
+	struct ScreenConfig : public ConfigLoadable
 	{
 		unsigned long w, h;
-		ColorData bgColor;
+		ColorConfig bgColor;
 
-		ScreenData(const ConfigScope* in);
+		ScreenConfig(const ConfigScope* in);
 	};
 
-	struct SpawnsData : public ConfigLoadable
+	struct SpawnCollectionConfig : public ConfigLoadable
 	{
-		struct SpawnData : public ConfigLoadable
+		struct SpawnConfig : public ConfigLoadable
 		{
-			ColorData color;
+			ColorConfig color;
 			// square size of spawn
 			unsigned short size;
 			// amount of empty space around spawns
@@ -216,38 +216,39 @@ public:
 			// spawn rate
 			double rate;
 
-			SpawnData(const std::string& spawnScope, const ConfigScope*& in);
+			SpawnConfig(const std::string& spawnScope, const ConfigScope*& in);
 
+			// construct spawn from configuration data
 			virtual GameWorld::SpawnPtr ConstructSpawn(Point location) const = 0;
 		};
 
-		struct FoodData : public SpawnData
+		struct FoodConfig : public SpawnConfig
 		{
 			long long points;
 			double lengthFactor;
 			short speedChange;
 
-			FoodData(const ConfigScope* in);
+			FoodConfig(const ConfigScope* in);
 
 			GameWorld::SpawnPtr ConstructSpawn(Point location) const;
 		};
 
-		struct MineData : public SpawnData
+		struct MineConfig : public SpawnConfig
 		{
-			MineData(const ConfigScope* in);
+			MineConfig(const ConfigScope* in);
 
 			GameWorld::SpawnPtr ConstructSpawn(Point location) const;
 		};
 
-		typedef std::auto_ptr<SpawnData> SpawnPtr;
-		typedef std::vector<SpawnPtr> SpawnList;
+		typedef std::auto_ptr<SpawnConfig> SpawnPtr;
+		typedef std::vector<SpawnPtr> SpawnCollection;
 		
 		// spawn bounds
-		BoundsData bounds;
+		BoundsConfig bounds;
 		unsigned int period;
-		SpawnList spawnsData;
+		SpawnCollection spawnsConfig;
 
-		SpawnsData(const ConfigScope* in);
+		SpawnCollectionConfig(const ConfigScope* in);
 	};
 
 	// whether or not music/sound is on
@@ -255,14 +256,14 @@ public:
 
 	unsigned short FPS;
 
-	LoadableList<WallData> wallsData;
-	ScreenData screen;
-	SpawnsData spawns;
+	LoadableCollection<WallConfig> wallsConfig;
+	ScreenConfig screen;
+	SpawnCollectionConfig spawns;
 
 	unsigned int pointGainPeriod;
 	long long pointGainAmount;
 
-	SnakeData snake;
+	SnakeConfig snake;
 	Resources resources;
 
 	// get the (only) configuration data

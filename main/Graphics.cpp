@@ -2,7 +2,7 @@
 
 #include "Common.hpp"
 #include "Screen.hpp"
-#include "UniqueObjectList.hpp"
+#include "UniqueObjectCollection.hpp"
 #include "WorldObject.hpp"
 
 #ifdef MSVC
@@ -21,7 +21,7 @@ using boost::ref;
 
 namespace Graphics
 {
-	void Update(const UniqueObjectList& graphicsObjects, const Screen& target)
+	void Update(const UniqueObjectCollection& graphicsObjects, const Screen& target)
 	{
 		target.Clear();
 

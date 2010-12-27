@@ -1,7 +1,7 @@
 class Screen;
-class UniqueObjectList;
+class UniqueObjectCollection;
 
 namespace Graphics
 {
-	void Update(const UniqueObjectList& graphicsObjects, const Screen& target);
+	void Update(const UniqueObjectCollection& graphicsObjects, const Screen& target);
 }

@@ -5,7 +5,7 @@
 #include "Food.hpp"
 #include "Logger.hpp"
 #include "Line.hpp"
-#include "ZippedUniqueObjectList.hpp"
+#include "ZippedUniqueObjectCollection.hpp"
 
 #ifdef MSVC
 #pragma warning(push, 0)
@@ -22,12 +22,12 @@ using boost::minstd_rand;
 
 const static Direction directions[] = {Direction::left, Direction::right, Direction::up, Direction::down};
 
-Snake::Snake(ZippedUniqueObjectList& gameObjects)
+Snake::Snake(ZippedUniqueObjectCollection& gameObjects)
 {
 	Init(gameObjects);
 }
 
-void Snake::AddSegment(ZippedUniqueObjectList& gameObjects)
+void Snake::AddSegment(ZippedUniqueObjectCollection& gameObjects)
 {
 	DOLOCKED(pathMutex,
 		const Direction& direction = Head().direction;
@@ -42,7 +42,7 @@ void Snake::AddSegment(ZippedUniqueObjectList& gameObjects)
 	)
 }
 
-void Snake::AddHead(const Point location, const Direction direction, ZippedUniqueObjectList& gameObjects)
+void Snake::AddHead(const Point location, const Direction direction, ZippedUniqueObjectCollection& gameObjects)
 {
 	unsigned short width = Config::Get().snake.width;
 	const SnakeSegment newSegment(this, location, direction, width, width, Config::Get().snake.head.color);
@@ -93,7 +93,7 @@ static inline Point get_head_location()
 	return startingPoint;
 }
 
-void Snake::Init(ZippedUniqueObjectList& gameObjects)
+void Snake::Init(ZippedUniqueObjectCollection& gameObjects)
 {
 	points = 0;
 
@@ -113,7 +113,7 @@ void Snake::Init(ZippedUniqueObjectList& gameObjects)
 	)
 }
 
-void Snake::Reset(ZippedUniqueObjectList& gameObjects)
+void Snake::Reset(ZippedUniqueObjectCollection& gameObjects)
 {
 	DOLOCKED(pathMutex,
 		DOLOCKEDZ(gameObjects,
@@ -125,7 +125,7 @@ void Snake::Reset(ZippedUniqueObjectList& gameObjects)
 	)
 }
 
-void Snake::RemoveTail(ZippedUniqueObjectList& gameObjects)
+void Snake::RemoveTail(ZippedUniqueObjectCollection& gameObjects)
 {
 	DOLOCKED(pathMutex,
 		DOLOCKEDZ(gameObjects,
@@ -135,7 +135,7 @@ void Snake::RemoveTail(ZippedUniqueObjectList& gameObjects)
 	)
 }
 
-void Snake::ChangeDirection(const Direction newDirection, ZippedUniqueObjectList& gameObjects)
+void Snake::ChangeDirection(const Direction newDirection, ZippedUniqueObjectCollection& gameObjects)
 {
 	DOLOCKED(pathMutex,
 		Direction& oldDirection = Head().direction;
@@ -175,7 +175,7 @@ static Direction get_turned_direction(const Direction direction, const Direction
 	return Direction::empty;
 }
 
-void Snake::Turn(const Direction turn, ZippedUniqueObjectList& gameObjects)
+void Snake::Turn(const Direction turn, ZippedUniqueObjectCollection& gameObjects)
 {
 	DOLOCKED(pathMutex,
 		const Direction direction = Head().direction;
@@ -184,7 +184,7 @@ void Snake::Turn(const Direction turn, ZippedUniqueObjectList& gameObjects)
 	ChangeDirection(get_turned_direction(direction, turn), gameObjects);
 }
 
-void Snake::Update(ZippedUniqueObjectList& gameObjects)
+void Snake::Update(ZippedUniqueObjectCollection& gameObjects)
 {
 	if(pointTimer.ResetIfHasElapsed(Config::Get().pointGainPeriod))
 	{
@@ -241,10 +241,10 @@ void SumUp(const _T change, _X& original, const _X min)
 
 void Snake::EatFood(const Food& foodObj)
 {
-	const Config::SnakeData& snakeData = Config::Get().snake;
+	const Config::SnakeConfig& snakeConfig = Config::Get().snake;
 
-	const double baseUncappedGrowth = targetLength * snakeData.growthRate;
-	const double baseRealGrowth = std::min((double)snakeData.growthCap, baseUncappedGrowth);
+	const double baseUncappedGrowth = targetLength * snakeConfig.growthRate;
+	const double baseRealGrowth = std::min((double)snakeConfig.growthCap, baseUncappedGrowth);
 	const long growthAmount = intRound(baseRealGrowth * foodObj.GetLengthFactor());
 	const long long pointChange = foodObj.GetPointChange();
 	const short speedChange = foodObj.GetSpeedChange();
@@ -252,8 +252,8 @@ void Snake::EatFood(const Food& foodObj)
 
 	DOLOCKED(attribMutex,
 		SumUp(pointChange, points, defaultPoints);
-		SumUp(growthAmount, targetLength, snakeData.startingLength);
-		SumUp(speedChange, speed, snakeData.startingSpeed);
+		SumUp(growthAmount, targetLength, snakeConfig.startingLength);
+		SumUp(speedChange, speed, snakeConfig.startingSpeed);
 	)
 
 	Logger::Debug(boost::format("Growing by %1%") % growthAmount);

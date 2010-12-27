@@ -1,6 +1,6 @@
 #pragma once
 
-#include "UniqueObjectList.hpp"
+#include "UniqueObjectCollection.hpp"
 
 // do _stuffToDo_ while _obj_'s internal mutexes are locked
 #define DOLOCKEDZ(obj, stuffToDo) \
@@ -10,11 +10,11 @@
 		) \
 	)
 
-struct ZippedUniqueObjectList
+struct ZippedUniqueObjectCollection
 {
 	// apply _func_ to _graphics_ and _physics_
 #define DOBOTH(func) graphics.func; physics.func;
-	UniqueObjectList graphics, physics;
+	UniqueObjectCollection graphics, physics;
 
 	inline void Add(WorldObject& obj)
 	{

@@ -15,7 +15,7 @@ add_executable(GingerbreadPrototype
 	Config__ConfigScope.cpp
 	Config__ConfigScope__ScopeCollection.cpp
 	Config__defaultConfig.cpp
-	Config__SpawnsData.cpp
+	Config__SpawnCollectionConfig.cpp
 	custom_algorithm.hpp
 	Direction.cpp
 	Direction.hpp
@@ -55,15 +55,15 @@ add_executable(GingerbreadPrototype
 	Spawn.hpp
 	Timer.cpp
 	Timer.hpp
-	UniqueObjectList.cpp
-	UniqueObjectList.hpp
+	UniqueObjectCollection.cpp
+	UniqueObjectCollection.hpp
 	Vector2D.cpp
 	Vector2D.hpp
 	Wall.cpp
 	Wall.hpp
 	WorldObject.cpp
 	WorldObject.hpp
-	ZippedUniqueObjectList.hpp
+	ZippedUniqueObjectCollection.hpp
 )
 
 target_link_libraries(GingerbreadPrototype

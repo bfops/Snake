@@ -22,23 +22,23 @@
 #pragma warning(pop)
 #endif
 
-struct ZippedUniqueObjectList;
+struct ZippedUniqueObjectCollection;
 
 class GameWorld
 {
 public:
 	typedef std::auto_ptr<Spawn> SpawnPtr;
-	typedef std::list<SpawnPtr> SpawnList;
+	typedef std::list<SpawnPtr> SpawnCollection;
 	// a spawn list whose key is expiry time
-	typedef std::map<Clock::TimeType, SpawnList> FunctionalSpawnList;
-	typedef std::vector<Wall> WallList;
+	typedef std::map<Clock::TimeType, SpawnCollection> FunctionalSpawnCollection;
+	typedef std::vector<Wall> WallCollection;
 
 private:
 	void SpawnLoop();
 
-	ZippedUniqueObjectList& gameObjects;
+	ZippedUniqueObjectCollection& gameObjects;
 
-	FunctionalSpawnList spawns;
+	FunctionalSpawnCollection spawns;
 	Mutex spawnMutex;
 
 	boost::thread spawnThread;
@@ -48,12 +48,12 @@ private:
 
 	Snake player;
 
-	WallList walls;
+	WallCollection walls;
 
 	void Init();
 
 public:
-	GameWorld(ZippedUniqueObjectList& gameObjects);
+	GameWorld(ZippedUniqueObjectCollection& gameObjects);
 
 	void Update();
 	void Reset();

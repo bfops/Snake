@@ -17,7 +17,7 @@ class WorldObject;
 
 // maintain a unique list of WorldObject*s, with
 // debug-only assertations of uniqueness
-class UniqueObjectList
+class UniqueObjectCollection
 {
 public:
 	typedef std::vector<WorldObject*> CollectionType;
@@ -30,8 +30,8 @@ private:
 public:
 	RecursiveMutex mutex;
 
-	UniqueObjectList();
-	UniqueObjectList(const UniqueObjectList& obj);
+	UniqueObjectCollection();
+	UniqueObjectCollection(const UniqueObjectCollection& obj);
 
 	void Add(WorldObject&);
 	void Remove(WorldObject&);
@@ -45,13 +45,13 @@ public:
 	template<typename Iter>
 	inline void AddRange(const Iter begin, const Iter end)
 	{
-		std::for_each(begin, end, boost::bind(&UniqueObjectList::Add, this, _1));
+		std::for_each(begin, end, boost::bind(&UniqueObjectCollection::Add, this, _1));
 	}
 
 	// remove the objects from _begin_ to _end_ from this list
 	template<typename Iter>
 	inline void RemoveRange(const Iter begin, const Iter end)
 	{
-		std::for_each(begin, end, boost::bind(&UniqueObjectList::Remove, this, _1));
+		std::for_each(begin, end, boost::bind(&UniqueObjectCollection::Remove, this, _1));
 	}
 };

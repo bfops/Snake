@@ -40,18 +40,18 @@ const Config::ConfigScope Config::GetConfigLoader(const std::string& filename)
 	return Config::ConfigScope(defaultConfig);
 }
 
-Config::ColorData::operator Color24() const
+Config::ColorConfig::operator Color24() const
 {
 	return Color24(r, g, b);
 }
 
-Config::BoundsData::operator Bounds() const
+Config::BoundsConfig::operator Bounds() const
 {
 	return Bounds(min, max);
 }
 
 Config::Config(const ConfigScope in) :
-	wallsData("walls", "wall", &in), screen(&in), spawns(&in), snake(&in), resources(&in)
+	wallsConfig("walls", "wall", &in), screen(&in), spawns(&in), snake(&in), resources(&in)
 {
 	in.GetField("music", music);
 	in.GetField("sound", sound);
@@ -67,7 +67,7 @@ Config::ConfigLoadable::ConfigLoadable(const std::string& scopeName, const Confi
 }
 
 
-Config::ColorData::ColorData(const ConfigScope* in) :
+Config::ColorConfig::ColorConfig(const ConfigScope* in) :
 	ConfigLoadable("color", in)
 {
 	in->GetField("r", r);
@@ -75,7 +75,7 @@ Config::ColorData::ColorData(const ConfigScope* in) :
 	in->GetField("b", b);
 }
 
-Config::BoundsData::BoundsData(const ConfigScope* in) :
+Config::BoundsConfig::BoundsConfig(const ConfigScope* in) :
 	ConfigLoadable("bounds", in)
 {
 	const ConfigScope* const minScope = in->GetScope("min");
@@ -86,7 +86,7 @@ Config::BoundsData::BoundsData(const ConfigScope* in) :
 		maxScope->GetField("y", max.y);
 }
 
-Config::SnakeData::SnakeData(const ConfigScope* in) :
+Config::SnakeConfig::SnakeConfig(const ConfigScope* in) :
 	ConfigLoadable("snake", in), color(in), head(in)
 {
 	in->GetField("startingLength", startingLength);
@@ -98,7 +98,7 @@ Config::SnakeData::SnakeData(const ConfigScope* in) :
 	in->GetField("growthRate", growthRate);
 }
 
-Config::SnakeData::Head::Head(const ConfigScope* in) :
+Config::SnakeConfig::Head::Head(const ConfigScope* in) :
 	ConfigLoadable("head", in), color(in)
 {
 }
@@ -112,12 +112,12 @@ Config::Resources::Resources(const ConfigScope* in) :
 	in->GetField("theme", theme);
 }
 
-Config::WallData::WallData(const ConfigScope* in) :
+Config::WallConfig::WallConfig(const ConfigScope* in) :
 	ConfigLoadable("wall", in), bounds(in), color(in)
 {
 }
 
-Config::ScreenData::ScreenData(const ConfigScope* in) :
+Config::ScreenConfig::ScreenConfig(const ConfigScope* in) :
 	ConfigLoadable("screen", in), bgColor(in)
 {
 	in->GetField("w", w);
@@ -125,24 +125,24 @@ Config::ScreenData::ScreenData(const ConfigScope* in) :
 }
 
 template <typename _T>
-static void add_to_spawns(Config::SpawnsData::SpawnList& spawns, const _T& spawn)
+static void add_to_spawns(Config::SpawnCollectionConfig::SpawnCollection& spawns, const _T& spawn)
 {
-	spawns.push_back(Config::SpawnsData::SpawnPtr(new _T(spawn)));
+	spawns.push_back(Config::SpawnCollectionConfig::SpawnPtr(new _T(spawn)));
 }
 
-Config::SpawnsData::SpawnsData(const ConfigScope* in) :
+Config::SpawnCollectionConfig::SpawnCollectionConfig(const ConfigScope* in) :
 	ConfigLoadable("spawns", in), bounds(in)
 {
 	in->GetField("period", period);
 	
 	// add both types of spawns to the communal spawn info list
-	const LoadableList<FoodData> foods("foods", "food", in);
-	const LoadableList<MineData> mines("mines", "mine", in);
-	for_each(foods.begin(), foods.end(), boost::bind(&add_to_spawns<FoodData>, boost::ref(spawnsData), _1));
-	for_each(mines.begin(), mines.end(), boost::bind(&add_to_spawns<MineData>, boost::ref(spawnsData), _1));
+	const LoadableCollection<FoodConfig> foods("foods", "food", in);
+	const LoadableCollection<MineConfig> mines("mines", "mine", in);
+	for_each(foods.begin(), foods.end(), boost::bind(&add_to_spawns<FoodConfig>, boost::ref(spawnsConfig), _1));
+	for_each(mines.begin(), mines.end(), boost::bind(&add_to_spawns<MineConfig>, boost::ref(spawnsConfig), _1));
 }
 
-Config::SpawnsData::SpawnData::SpawnData(const std::string& scopeName, const ConfigScope*& in) :
+Config::SpawnCollectionConfig::SpawnConfig::SpawnConfig(const std::string& scopeName, const ConfigScope*& in) :
 	ConfigLoadable(scopeName, in), color(in)
 {
 	in->GetField("size", size);
@@ -151,15 +151,15 @@ Config::SpawnsData::SpawnData::SpawnData(const std::string& scopeName, const Con
 	in->GetField("rate", rate);
 }
 
-Config::SpawnsData::FoodData::FoodData(const ConfigScope* in) :
-	SpawnData("food", in)
+Config::SpawnCollectionConfig::FoodConfig::FoodConfig(const ConfigScope* in) :
+	SpawnConfig("food", in)
 {
 	in->GetField("points", points);
 	in->GetField("lengthFactor", lengthFactor);
 	in->GetField("speedChange", speedChange);
 }
 
-Config::SpawnsData::MineData::MineData(const ConfigScope* in) :
-	SpawnData("mine", in)
+Config::SpawnCollectionConfig::MineConfig::MineConfig(const ConfigScope* in) :
+	SpawnConfig("mine", in)
 {
 }

@@ -9,7 +9,7 @@
 #include "Mine.hpp"
 #include "Physics.hpp"
 #include "Wall.hpp"
-#include "ZippedUniqueObjectList.hpp"
+#include "ZippedUniqueObjectCollection.hpp"
 
 #ifdef MSVC
 #pragma warning(push, 0)
@@ -31,14 +31,14 @@ using boost::format;
 using boost::thread;
 using boost::minstd_rand0;
 
-static void make_new_wall(GameWorld::WallList& walls, const Config::WallData& wallData)
+static void make_new_wall(GameWorld::WallCollection& walls, const Config::WallConfig& wallConfig)
 {
-	walls.push_back(Wall(wallData.bounds, wallData.color));
+	walls.push_back(Wall(wallConfig.bounds, wallConfig.color));
 }
 
-static inline void make_walls(GameWorld::WallList& walls)
+static inline void make_walls(GameWorld::WallCollection& walls)
 {
-	for_each(Config::Get().wallsData.begin(), Config::Get().wallsData.end(),
+	for_each(Config::Get().wallsConfig.begin(), Config::Get().wallsConfig.end(),
 		boost::bind(&make_new_wall, boost::ref(walls), _1));
 }
 
@@ -78,34 +78,34 @@ static bool probability_hit(unsigned int& randnum, const double probability, con
 	return false;
 }
 
-void remove_ptr_from_game_objects(const GameWorld::SpawnPtr& ptr, ZippedUniqueObjectList& gameObjects)
+void remove_ptr_from_game_objects(const GameWorld::SpawnPtr& ptr, ZippedUniqueObjectCollection& gameObjects)
 {
 	gameObjects.Remove(*ptr);
 }
 
-void remove_pair_from_game_objects(const GameWorld::FunctionalSpawnList::value_type& pair,
-	ZippedUniqueObjectList& gameObjects)
+void remove_pair_from_game_objects(const GameWorld::FunctionalSpawnCollection::value_type& pair,
+	ZippedUniqueObjectCollection& gameObjects)
 {
 	for_each(pair.second.begin(), pair.second.end(),
 		boost::bind(&remove_ptr_from_game_objects, _1, boost::ref(gameObjects)));
 }
 
-static GameWorld::SpawnPtr get_new_spawn(const Config::SpawnsData::SpawnData& spawnData)
+static GameWorld::SpawnPtr get_new_spawn(const Config::SpawnCollectionConfig::SpawnConfig& spawnConfig)
 {
 	const Bounds& spawnBounds = Config::Get().spawns.bounds;
 	minstd_rand0 rand(time(NULL));
 
 	// get random number between the worldBounds
 #define GETSIZEDRANDOM(m) (rand() % ( \
-	(spawnBounds.max.m - spawnBounds.min.m) - (spawnData.size + spawnData.cushion) + 1) + spawnBounds.min.m)
+	(spawnBounds.max.m - spawnBounds.min.m) - (spawnConfig.size + spawnConfig.cushion) + 1) + spawnBounds.min.m)
 
 	Point location(GETSIZEDRANDOM(x), GETSIZEDRANDOM(y));
 #undef GETSIZEDRANDOM
 
-	return spawnData.ConstructSpawn(location);
+	return spawnConfig.ConstructSpawn(location);
 }
 
-static inline const Config::SpawnsData::SpawnData* get_spawn_data()
+static inline const Config::SpawnCollectionConfig::SpawnConfig* get_spawn_data()
 {
 	minstd_rand0 rand(time(NULL));
 
@@ -113,8 +113,8 @@ static inline const Config::SpawnsData::SpawnData* get_spawn_data()
 	const unsigned long randMax = 1000;
 	unsigned int randnum = rand() % (randMax + 1);
 
-	const Config::SpawnsData::SpawnList& spawnsData = Config::Get().spawns.spawnsData;
-	for(Config::SpawnsData::SpawnList::const_iterator i = spawnsData.begin(), end = spawnsData.end();
+	const Config::SpawnCollectionConfig::SpawnCollection& spawnsConfig = Config::Get().spawns.spawnsConfig;
+	for(Config::SpawnCollectionConfig::SpawnCollection::const_iterator i = spawnsConfig.begin(), end = spawnsConfig.end();
 		i != end; ++i)
 		if(probability_hit(randnum, (*i)->rate, randMax))
 			return &**i;
@@ -130,24 +130,24 @@ void GameWorld::SpawnLoop()
 	{
 		if(spawnTimer.ResetIfHasElapsed(Config::Get().spawns.period))
 		{
-			const Config::SpawnsData::SpawnData* const spawnData = get_spawn_data();
-			if(spawnData)
+			const Config::SpawnCollectionConfig::SpawnConfig* const spawnConfig = get_spawn_data();
+			if(spawnConfig)
 			{
 				SpawnPtr spawn;
 				do
 				{
-					spawn = get_new_spawn(*spawnData);
+					spawn = get_new_spawn(*spawnConfig);
 					SDL_Delay(10);
 				}
 				while(Physics::AnyCollide(*spawn, gameObjects.physics));
 
-				spawn->ShrinkDown(spawnData->size);
+				spawn->ShrinkDown(spawnConfig->size);
 
 				// TODO: remove collided spawns
 				DOLOCKEDZ(gameObjects,
 					DOLOCKED(spawnMutex,
-						const Clock::TimeType expiryTime = Clock::Get().GetTime() + spawnData->expiry;
-						SpawnList& equalSpawns = spawns[expiryTime];
+						const Clock::TimeType expiryTime = Clock::Get().GetTime() + spawnConfig->expiry;
+						SpawnCollection& equalSpawns = spawns[expiryTime];
 						equalSpawns.push_back(SpawnPtr(spawn));
 						gameObjects.Add(*equalSpawns.back());
 
@@ -162,7 +162,7 @@ void GameWorld::SpawnLoop()
 		DOLOCKED(spawnMutex,
 			if(spawns.size() > 0)
 			{
-				const FunctionalSpawnList::value_type& firstSet = *spawns.begin();
+				const FunctionalSpawnCollection::value_type& firstSet = *spawns.begin();
 
 				if(firstSet.first < Clock::Get().GetTime())
 				{
@@ -191,7 +191,7 @@ void GameWorld::Init()
 	spawnThread = thread(boost::bind(&GameWorld::SpawnLoop, this));
 }
 
-GameWorld::GameWorld(ZippedUniqueObjectList& _gameObjects) :
+GameWorld::GameWorld(ZippedUniqueObjectCollection& _gameObjects) :
 	gameObjects(_gameObjects), player(gameObjects)
 {
 	make_walls(walls);

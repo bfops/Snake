@@ -10,7 +10,7 @@
 #include "Screen.hpp"
 #include "SDLInitializer.hpp"
 #include "Timer.hpp"
-#include "ZippedUniqueObjectList.hpp"
+#include "ZippedUniqueObjectCollection.hpp"
 
 #ifdef MSVC
 #pragma warning(push, 0)
@@ -39,7 +39,7 @@ static EventHandler::MouseCallbackType default_mouse_handler;
 static EventHandler::MouseCallbackType paused_mouse_handler;
 
 static const char* windowTitle("ReWritable's Snake");
-static std::auto_ptr<ZippedUniqueObjectList> gameObjects;
+static std::auto_ptr<ZippedUniqueObjectCollection> gameObjects;
 static std::auto_ptr<GameWorld> gameWorld;
 
 typedef std::list<const std::string> SoundQueue;
@@ -60,8 +60,8 @@ bool quit, lost, paused;
 
 int main(int, char*[])
 {
-	typedef std::list<Sound> SoundList;
-	SoundList sounds;
+	typedef std::list<Sound> SoundCollection;
+	SoundCollection sounds;
 	quit = lost = paused = false;
 
 	SDLInitializer keepSDLInitialized;
@@ -69,7 +69,7 @@ int main(int, char*[])
 	SDL_WM_SetCaption(windowTitle, windowTitle);
 	SDL_ShowCursor(SDL_DISABLE);
 
-	gameObjects = std::auto_ptr<ZippedUniqueObjectList>(new ZippedUniqueObjectList());
+	gameObjects = std::auto_ptr<ZippedUniqueObjectCollection>(new ZippedUniqueObjectCollection());
 	gameWorld = std::auto_ptr<GameWorld>(new GameWorld(*gameObjects));
 
 	DOLOCKED(EventHandler::mutex,

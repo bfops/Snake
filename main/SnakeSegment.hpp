@@ -6,7 +6,7 @@
 class Food;
 struct Line;
 class Snake;
-struct ZippedUniqueObjectList;
+struct ZippedUniqueObjectCollection;
 
 // rectangular segment of snake
 class SnakeSegment : public WorldObject

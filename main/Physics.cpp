@@ -4,7 +4,7 @@
 #include "Common.hpp"
 #include "collision.h"
 #include "GameWorld.hpp"
-#include "UniqueObjectList.hpp"
+#include "UniqueObjectCollection.hpp"
 
 #ifdef MSVC
 #pragma warning(push, 0)
@@ -52,28 +52,28 @@ namespace Physics
 	}
 
 	static inline void collide_with_subsequent_objects(GameWorld* const world,
-		const UniqueObjectList::const_iterator collider, const UniqueObjectList::const_iterator end)
+		const UniqueObjectCollection::const_iterator collider, const UniqueObjectCollection::const_iterator end)
 	{
 		for_each(collider + 1, end, bind(&handle_potential_collision, world, *collider, _1));
 	}
 
-	void Update(GameWorld& world, const UniqueObjectList& realPhysicsObjects)
+	void Update(GameWorld& world, const UniqueObjectCollection& realPhysicsObjects)
 	{
 		if(realPhysicsObjects.begin() == realPhysicsObjects.end())
 			return;
 
-		const UniqueObjectList physicsObjects(realPhysicsObjects);
+		const UniqueObjectCollection physicsObjects(realPhysicsObjects);
 
 		// don't try the last gameObject, since all have been checked against it
-		for(UniqueObjectList::const_iterator collider = physicsObjects.begin(),
+		for(UniqueObjectCollection::const_iterator collider = physicsObjects.begin(),
 			end = physicsObjects.end() - 1; collider != end; ++collider)
 			collide_with_subsequent_objects(&world, collider, physicsObjects.end());
 	}
 
-	bool AnyCollide(const WorldObject& obj, const UniqueObjectList& physicsObjects)
+	bool AnyCollide(const WorldObject& obj, const UniqueObjectCollection& physicsObjects)
 	{
 		DOLOCKED(physicsObjects.mutex,
-			for(UniqueObjectList::const_iterator collider = physicsObjects.begin(),
+			for(UniqueObjectCollection::const_iterator collider = physicsObjects.begin(),
 				end = physicsObjects.end(); collider != end; ++collider)
 			{
 				if(does_collide(obj, **collider))

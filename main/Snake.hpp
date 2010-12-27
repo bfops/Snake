@@ -17,7 +17,7 @@
 class Direction;
 class GameWorld;
 class Food;
-struct ZippedUniqueObjectList;
+struct ZippedUniqueObjectCollection;
 
 class Snake
 {
@@ -42,8 +42,8 @@ private:
 	// player points
 	unsigned long long points;
 	
-	void AddSegment(ZippedUniqueObjectList& gameObjects);
-	void AddHead(Point location, Direction directionOfTravel, ZippedUniqueObjectList& gameObjects);
+	void AddSegment(ZippedUniqueObjectCollection& gameObjects);
+	void AddHead(Point location, Direction directionOfTravel, ZippedUniqueObjectCollection& gameObjects);
 	
 	// return the segment to elongate
 	SnakeSegment& Growable();
@@ -54,21 +54,21 @@ private:
 	// return the last segment
 	SnakeSegment& Tail();
 
-	void Init(ZippedUniqueObjectList& gameObjects);
+	void Init(ZippedUniqueObjectCollection& gameObjects);
 
 public:
-	Snake(ZippedUniqueObjectList& gameObjects);
+	Snake(ZippedUniqueObjectCollection& gameObjects);
 
-	void Reset(ZippedUniqueObjectList& gameObjects);
+	void Reset(ZippedUniqueObjectCollection& gameObjects);
 
-	void RemoveTail(ZippedUniqueObjectList& gameObjects);
+	void RemoveTail(ZippedUniqueObjectCollection& gameObjects);
 
 	// change the Snake's direction to that provided
-	void ChangeDirection(Direction newDirection, ZippedUniqueObjectList& gameObjects);
+	void ChangeDirection(Direction newDirection, ZippedUniqueObjectCollection& gameObjects);
 	// turn the snake relative to the direction provided
-	void Turn(Direction turnDirection, ZippedUniqueObjectList& gameObjects);
+	void Turn(Direction turnDirection, ZippedUniqueObjectCollection& gameObjects);
 
-	void Update(ZippedUniqueObjectList& gameObjects);
+	void Update(ZippedUniqueObjectCollection& gameObjects);
 
 	void EatFood(const Food&);
 };

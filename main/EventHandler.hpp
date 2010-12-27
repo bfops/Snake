@@ -12,7 +12,7 @@
 #pragma warning(pop)
 #endif
 
-struct ZippedUniqueObjectList;
+struct ZippedUniqueObjectCollection;
 
 // when specific events happen, it redirects calls to their
 // respective callback functions.
