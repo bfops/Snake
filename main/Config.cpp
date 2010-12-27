@@ -30,7 +30,7 @@ const Config& Config::Get()
 	return gameConfig;
 }
 
-Config::ConfigScope Config::GetConfigLoader(const std::string& filename)
+const Config::ConfigScope Config::GetConfigLoader(const std::string& filename)
 {
 	std::ifstream configFile(filename);
 	if(configFile.is_open())
@@ -50,7 +50,7 @@ Config::BoundsData::operator Bounds() const
 	return Bounds(min, max);
 }
 
-Config::Config(ConfigScope in) :
+Config::Config(const ConfigScope in) :
 	wallsData("walls", "wall", &in), screen(&in), spawns(&in), snake(&in), resources(&in)
 {
 	in.GetField("music", music);
@@ -61,13 +61,13 @@ Config::Config(ConfigScope in) :
 	in.GetField("pointGainAmount", pointGainAmount);
 }
 
-Config::ConfigLoadable::ConfigLoadable(const std::string& scopeName, ConfigScope*& in)
+Config::ConfigLoadable::ConfigLoadable(const std::string& scopeName, const ConfigScope*& in)
 {
 	in = in->GetScope(scopeName);
 }
 
 
-Config::ColorData::ColorData(ConfigScope* in) :
+Config::ColorData::ColorData(const ConfigScope* in) :
 	ConfigLoadable("color", in)
 {
 	in->GetField("r", r);
@@ -75,18 +75,18 @@ Config::ColorData::ColorData(ConfigScope* in) :
 	in->GetField("b", b);
 }
 
-Config::BoundsData::BoundsData(ConfigScope* in) :
+Config::BoundsData::BoundsData(const ConfigScope* in) :
 	ConfigLoadable("bounds", in)
 {
-	ConfigScope* const minScope = in->GetScope("min");
+	const ConfigScope* const minScope = in->GetScope("min");
 		minScope->GetField("x", min.x);
 		minScope->GetField("y", min.y);
-	ConfigScope* const maxScope = in->GetScope("max");
+	const ConfigScope* const maxScope = in->GetScope("max");
 		maxScope->GetField("x", max.x);
 		maxScope->GetField("y", max.y);
 }
 
-Config::SnakeData::SnakeData(ConfigScope* in) :
+Config::SnakeData::SnakeData(const ConfigScope* in) :
 	ConfigLoadable("snake", in), color(in), head(in)
 {
 	in->GetField("startingLength", startingLength);
@@ -98,12 +98,12 @@ Config::SnakeData::SnakeData(ConfigScope* in) :
 	in->GetField("growthRate", growthRate);
 }
 
-Config::SnakeData::Head::Head(ConfigScope* in) :
+Config::SnakeData::Head::Head(const ConfigScope* in) :
 	ConfigLoadable("head", in), color(in)
 {
 }
 
-Config::Resources::Resources(ConfigScope* in) :
+Config::Resources::Resources(const ConfigScope* in) :
 	ConfigLoadable("resources", in)
 {
 	in->GetField("eat", eat);
@@ -112,12 +112,12 @@ Config::Resources::Resources(ConfigScope* in) :
 	in->GetField("theme", theme);
 }
 
-Config::WallData::WallData(ConfigScope* in) :
+Config::WallData::WallData(const ConfigScope* in) :
 	ConfigLoadable("wall", in), bounds(in), color(in)
 {
 }
 
-Config::ScreenData::ScreenData(ConfigScope* in) :
+Config::ScreenData::ScreenData(const ConfigScope* in) :
 	ConfigLoadable("screen", in), bgColor(in)
 {
 	in->GetField("w", w);
@@ -130,7 +130,7 @@ static void add_to_spawns(Config::SpawnsData::SpawnList& spawns, const _T& spawn
 	spawns.push_back(Config::SpawnsData::SpawnPtr(new _T(spawn)));
 }
 
-Config::SpawnsData::SpawnsData(ConfigScope* in) :
+Config::SpawnsData::SpawnsData(const ConfigScope* in) :
 	ConfigLoadable("spawns", in), bounds(in)
 {
 	in->GetField("period", period);
@@ -142,7 +142,7 @@ Config::SpawnsData::SpawnsData(ConfigScope* in) :
 	for_each(mines.begin(), mines.end(), boost::bind(&add_to_spawns<MineData>, boost::ref(spawnsData), _1));
 }
 
-Config::SpawnsData::SpawnData::SpawnData(const std::string& scopeName, ConfigScope*& in) :
+Config::SpawnsData::SpawnData::SpawnData(const std::string& scopeName, const ConfigScope*& in) :
 	ConfigLoadable(scopeName, in), color(in)
 {
 	in->GetField("size", size);
@@ -151,7 +151,7 @@ Config::SpawnsData::SpawnData::SpawnData(const std::string& scopeName, ConfigSco
 	in->GetField("rate", rate);
 }
 
-Config::SpawnsData::FoodData::FoodData(ConfigScope* in) :
+Config::SpawnsData::FoodData::FoodData(const ConfigScope* in) :
 	SpawnData("food", in)
 {
 	in->GetField("points", points);
@@ -159,7 +159,7 @@ Config::SpawnsData::FoodData::FoodData(ConfigScope* in) :
 	in->GetField("speedChange", speedChange);
 }
 
-Config::SpawnsData::MineData::MineData(ConfigScope* in) :
+Config::SpawnsData::MineData::MineData(const ConfigScope* in) :
 	SpawnData("mine", in)
 {
 }

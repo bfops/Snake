@@ -27,13 +27,30 @@ struct Config
 	class ConfigScope
 	{
 	public:
+		class ScopeCollection
+		{
+		public:
+			// a simple collection of same-typed scopes
+			typedef std::vector<ConfigScope> RawScopeCollection;
+
+		private:
+			RawScopeCollection collection;
+			mutable unsigned long lastIndex;
+
+		public:
+			ScopeCollection();
+
+			void Add(const ConfigScope& elem);
+			// return true iff there is a scope to be gotten
+			bool HasNextScope() const;
+			// get the next scope, and advance the "next" pointer
+			const ConfigScope& GetNextScope() const;
+		};
+
 		// map field name to field value
 		typedef std::map<std::string, std::string> FieldMap;
-		// a collection of same-typed scopes
-		typedef std::vector<ConfigScope> ScopeCollection;
-		// a ScopeCollection which remembers position
-		typedef std::pair<ScopeCollection, unsigned long> MemoryScopeCollection;
-		typedef std::map<std::string, MemoryScopeCollection> ScopeMap;
+		// map scope name to scope collection
+		typedef std::map<std::string, ScopeCollection> ScopeMap;
 
 	private:
 		// _bracketCount_ is the count of curly braces
@@ -51,7 +68,7 @@ struct Config
 		ConfigScope(std::istream& configInput);
 
 		bool PeekScope(const std::string& scopeName) const;
-		ConfigScope* GetScope(const std::string& scopeName);
+		const ConfigScope* GetScope(const std::string& scopeName) const;
 	
 		// get _fieldName_'s value in the current scope and store in _dest_
 		template <typename _T>
@@ -87,7 +104,7 @@ public:
 	// recurses into the right scope via construction
 	struct ConfigLoadable
 	{
-		ConfigLoadable(const std::string& scopeName, ConfigScope*& in);
+		ConfigLoadable(const std::string& scopeName, const ConfigScope*& in);
 	};
 
 	template <typename _T>
@@ -99,7 +116,7 @@ public:
 
 		List list;
 
-		LoadableList(const std::string& listName, const std::string& elementsName, ConfigScope* in) :
+		LoadableList(const std::string& listName, const std::string& elementsName, const ConfigScope* in) :
 			ConfigLoadable(listName, in)
 		{
 			while(in->PeekScope(elementsName))
@@ -116,7 +133,7 @@ public:
 	{
 		Color24::ColorType r, g, b;
 
-		ColorData(ConfigScope* in);
+		ColorData(const ConfigScope* in);
 
 		operator Color24() const;
 	};
@@ -125,7 +142,7 @@ public:
 	{
 		Point min, max;
 
-		BoundsData(ConfigScope* in);
+		BoundsData(const ConfigScope* in);
 
 		operator Bounds() const;
 	};
@@ -136,7 +153,7 @@ public:
 		{
 			ColorData color;
 
-			Head(ConfigScope* in);
+			Head(const ConfigScope* in);
 		};
 
 		Head head;
@@ -152,7 +169,7 @@ public:
 
 		ColorData color;
 
-		SnakeData(ConfigScope* in);
+		SnakeData(const ConfigScope* in);
 	};
 
 	// resource paths
@@ -166,7 +183,7 @@ public:
 		// musical
 		std::string theme;
 
-		Resources(ConfigScope* in);
+		Resources(const ConfigScope* in);
 	};
 	
 	struct WallData : public ConfigLoadable
@@ -174,7 +191,7 @@ public:
 		BoundsData bounds;
 		ColorData color;
 
-		WallData(ConfigScope* in);
+		WallData(const ConfigScope* in);
 	};
 
 	struct ScreenData : public ConfigLoadable
@@ -182,7 +199,7 @@ public:
 		unsigned long w, h;
 		ColorData bgColor;
 
-		ScreenData(ConfigScope* in);
+		ScreenData(const ConfigScope* in);
 	};
 
 	struct SpawnsData : public ConfigLoadable
@@ -199,7 +216,7 @@ public:
 			// spawn rate
 			double rate;
 
-			SpawnData(const std::string& spawnScope, ConfigScope*& in);
+			SpawnData(const std::string& spawnScope, const ConfigScope*& in);
 
 			virtual GameWorld::SpawnPtr ConstructSpawn(Point location) const = 0;
 		};
@@ -210,14 +227,14 @@ public:
 			double lengthFactor;
 			short speedChange;
 
-			FoodData(ConfigScope* in);
+			FoodData(const ConfigScope* in);
 
 			GameWorld::SpawnPtr ConstructSpawn(Point location) const;
 		};
 
 		struct MineData : public SpawnData
 		{
-			MineData(ConfigScope* in);
+			MineData(const ConfigScope* in);
 
 			GameWorld::SpawnPtr ConstructSpawn(Point location) const;
 		};
@@ -230,7 +247,7 @@ public:
 		unsigned int period;
 		SpawnList spawnsData;
 
-		SpawnsData(ConfigScope* in);
+		SpawnsData(const ConfigScope* in);
 	};
 
 	// whether or not music/sound is on
@@ -251,5 +268,5 @@ public:
 	// get the (only) configuration data
 	static const Config& Get();
 
-	static ConfigScope GetConfigLoader(const std::string& configFileName);
+	static const ConfigScope GetConfigLoader(const std::string& configFileName);
 };

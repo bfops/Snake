@@ -49,11 +49,9 @@ void Config::ConfigScope::Init(std::istream& in, long& bracketCount)
 void Config::ConfigScope::EnterScope(std::istream& in, long& bracketCount)
 {
 	const std::string scopeType = get(in);
-	MemoryScopeCollection& memoryScopeCollection = subscopes[scopeType];
-	ScopeCollection& scopes = memoryScopeCollection.first;
+	ScopeCollection& scopeCollection = subscopes[scopeType];
 	// allocate a new subscope with this name
-	scopes.push_back(ConfigScope(in, bracketCount));
-	memoryScopeCollection.second = 0;
+	scopeCollection.Add(ConfigScope(in, bracketCount));
 }
 
 Config::ConfigScope::ConfigScope(std::istream& in)
@@ -74,13 +72,12 @@ bool Config::ConfigScope::PeekScope(const std::string& name) const
 	if(index == subscopes.end())
 		return false;
 
-	const ScopeCollection& scopes = index->second.first;
-	const unsigned long currentScopeIndex = index->second.second;
+	const ScopeCollection& scopeCollection = index->second;
 
-	return (currentScopeIndex < scopes.size());
+	return scopeCollection.HasNextScope();
 }
 
-Config::ConfigScope* Config::ConfigScope::GetScope(const std::string& name)
+const Config::ConfigScope* Config::ConfigScope::GetScope(const std::string& name) const
 {
 	if(!PeekScope(name))
 	{
@@ -88,10 +85,8 @@ Config::ConfigScope* Config::ConfigScope::GetScope(const std::string& name)
 		return NULL;
 	}
 
-	const ScopeMap::iterator index = subscopes.find(name);
+	const ScopeMap::const_iterator index = subscopes.find(name);
+	const ScopeCollection& scopeCollection = index->second;
 
-	ScopeCollection& scopes = index->second.first;
-	const unsigned long currentScopeIndex = index->second.second++;
-
-	return &scopes[currentScopeIndex];
+	return &scopeCollection.GetNextScope();
 }
