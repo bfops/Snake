@@ -116,6 +116,7 @@ int main(int, char*[])
 	physicsThread.join();
 	gameThread.join();
 
+	for_each(sounds.begin(), sounds.end(), boost::bind(&Sound::Stop, _1));
 	sounds.clear();
 
 	return 0;

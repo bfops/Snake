@@ -19,8 +19,8 @@ private:
 
 public:
 	Sound(const std::string& filename);
-	Sound(Sound&);
-	~Sound();
+
+	void Stop() const;
 
 	bool IsDone() const;
 };
