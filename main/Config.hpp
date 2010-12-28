@@ -12,7 +12,6 @@ class ConfigScope;
 #pragma warning(push, 0)
 #endif
 
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -97,7 +96,7 @@ private:
 	Config(ConfigScope);
 
 	static const Config gameConfig;
-	static std::stringstream GetDefaultConfig();
+	static std::string GetDefaultConfig();
 
 public:
 	// recurses into the right config scope via construction

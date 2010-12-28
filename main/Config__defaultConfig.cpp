@@ -1,8 +1,8 @@
 #include "Config.hpp"
 
-std::stringstream Config::GetDefaultConfig()
+std::string Config::GetDefaultConfig()
 {
-	return std::stringstream(std::string("\n\
+	return std::string("\n\
 music 1\n\
 sound 1\n\
 FPS 60\n\
@@ -56,17 +56,17 @@ FPS 60\n\
 			{ color r 127 g 255 b 127 }\n\
 		}\n\
 		{ food\n\
-			size 15 cushion 2 expiry 40000 0.3\n\
+			size 15 cushion 2 expiry 40000 rate 0.3\n\
 			lengthFactor 1 points 100 speedChange 0\n\
 			{ color r 0 g 255 b 255 }\n\
 		}\n\
 		{ food\n\
-			size 14 cushion 0 expiry 150000 0.4\n\
+			size 14 cushion 0 expiry 150000 rate 0.4\n\
 			lengthFactor 3 points 400 speedChange 5\n\
 			{ color r 200 g 0 b 0 }\n\
 		}\n\
 		{ food\n\
-			size 10 cushion 10 expiry 15000 0.05\n\
+			size 10 cushion 10 expiry 15000 rate 0.05\n\
 			lengthFactor 0 points 0 speedChange -30\n\
 			{ color r 255 g 255 b 0 }\n\
 		}\n\
@@ -87,5 +87,5 @@ pointGainAmount 15\n\
 	{ head { color r 127 g 127 b 127 } }\n\
 	{ color r 0 g 255 b 0 }\n\
 }\n\
-"));
+");
 }

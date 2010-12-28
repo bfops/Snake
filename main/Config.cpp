@@ -36,7 +36,7 @@ const Config::ConfigScope Config::GetConfigLoader(const std::string& filename)
 	if(configFile.is_open())
 		return Config::ConfigScope(configFile);
 
-	std::stringstream defaultConfig = GetDefaultConfig();
+	std::stringstream defaultConfig(GetDefaultConfig());
 	return Config::ConfigScope(defaultConfig);
 }
 
