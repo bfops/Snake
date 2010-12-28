@@ -13,6 +13,7 @@
 #pragma warning(push, 0)
 #endif
 
+#include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
 #include <list>
 #include <memory>
@@ -27,7 +28,7 @@ struct ZippedUniqueObjectCollection;
 class GameWorld
 {
 public:
-	typedef std::auto_ptr<Spawn> SpawnPtr;
+	typedef boost::shared_ptr<Spawn> SpawnPtr;
 	typedef std::list<SpawnPtr> SpawnCollection;
 	// a spawn list whose key is expiry time
 	typedef std::map<Clock::TimeType, SpawnCollection> FunctionalSpawnCollection;

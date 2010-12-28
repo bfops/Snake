@@ -244,7 +244,7 @@ public:
 			GameWorld::SpawnPtr ConstructSpawn(Point location) const;
 		};
 
-		typedef std::auto_ptr<SpawnConfig> SpawnPtr;
+		typedef boost::shared_ptr<SpawnConfig> SpawnPtr;
 		typedef std::vector<SpawnPtr> SpawnCollection;
 		
 		// spawn bounds
