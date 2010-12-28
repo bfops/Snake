@@ -6,7 +6,24 @@
 static std::string get(std::istream& in)
 {
 	std::string gotten;
-	in >> gotten;
+	char c = '\0';
+	do
+	{
+		if(in.eof())
+			return gotten;
+
+		in.get(c);
+	}
+	while(c == ' ' || c == '\n' || c == '\t');
+	while(c != ' ' && c != '\n' && c != '\t')
+	{
+		gotten += c;
+		
+		if(in.eof())
+			return gotten;
+
+		in.get(c);
+	}
 
 	return gotten;
 }
