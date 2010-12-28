@@ -85,8 +85,7 @@ struct Config
 			std::stringstream(result->second) >> dest;
 		}
 		// special template for getting byte numbers
-		template <>
-		void GetField<Uint8>(const std::string& fieldName, Uint8& dest) const
+		void GetField(const std::string& fieldName, Uint8& dest) const
 		{
 			unsigned short dummy;
 			GetField(fieldName, dummy);

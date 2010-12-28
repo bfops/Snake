@@ -32,7 +32,7 @@ const Config& Config::Get()
 
 const Config::ConfigScope Config::GetConfigLoader(const std::string& filename)
 {
-	std::ifstream configFile(filename);
+	std::ifstream configFile(filename.c_str());
 	if(configFile.is_open())
 		return Config::ConfigScope(configFile);
 

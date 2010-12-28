@@ -8,7 +8,7 @@ struct Color24;
 class Spawn : public WorldObject
 {
 public:
-	Spawn::Spawn(ObjectType spawnType, Point location, unsigned short size, Color24);
+	Spawn(ObjectType spawnType, Point location, unsigned short size, Color24);
 	virtual ~Spawn();
 
 	void ShrinkDown(unsigned short newSize);
