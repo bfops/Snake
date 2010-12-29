@@ -16,16 +16,14 @@
 #pragma warning(pop)
 #endif
 
-using boost::bind;
-using boost::ref;
-
 namespace Graphics
 {
 	void Update(const UniqueObjectCollection& graphicsObjects, const Screen& target)
 	{
 		target.Clear();
 
-		for_each(graphicsObjects.begin(), graphicsObjects.end(), bind(&WorldObject::Draw, _1, ref(target)));
+		for_each(graphicsObjects.begin(), graphicsObjects.end(),
+			bind(&WorldObject::Draw, _1, boost::ref(target)));
 
 		target.Update();
 	}

@@ -18,8 +18,6 @@
 #pragma warning(pop)
 #endif
 
-using boost::minstd_rand;
-
 const static Direction directions[] = {Direction::left, Direction::right, Direction::up, Direction::down};
 
 Snake::Snake(ZippedUniqueObjectCollection& gameObjects)
@@ -77,7 +75,7 @@ SnakeSegment& Snake::Shrinkable()
 
 static inline Direction get_random_direction()
 {
-	const uint32_t randomNumber = minstd_rand(time(NULL))();
+	const uint32_t randomNumber = boost::minstd_rand(time(NULL))();
 	return directions[randomNumber % countof(directions)];
 }
 

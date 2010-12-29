@@ -35,7 +35,7 @@ Sound::Sound(const std::string& filename)
 	}
 }
 
-void Sound::Stop() const;
+void Sound::Stop() const
 {
 	if(sound)
 		Mix_FreeChunk(sound);

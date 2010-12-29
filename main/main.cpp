@@ -26,8 +26,6 @@
 #pragma warning(pop)
 #endif
 
-using boost::thread;
-
 static EventHandler::QuitCallbackType quit_handler;
 static EventHandler::LossCallbackType loss_handler;
 static EventHandler::PauseCallbackType default_pause_handler;
@@ -83,8 +81,8 @@ int main(int, char*[])
 	Timer screenUpdate;
 	const Screen screen(Config::Get().screen.w, Config::Get().screen.h);
 
-	thread physicsThread(physics_loop);
-	thread gameThread(game_loop);
+	boost::thread physicsThread(physics_loop);
+	boost::thread gameThread(game_loop);
 
 	while(!quit)
 	{

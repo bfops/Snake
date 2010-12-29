@@ -27,10 +27,6 @@
 #pragma warning(pop)
 #endif
 
-using boost::format;
-using boost::thread;
-using boost::minstd_rand0;
-
 static void make_new_wall(GameWorld::WallCollection& walls, const Config::WallConfig& wallConfig)
 {
 	walls.push_back(Wall(wallConfig.bounds, wallConfig.color));
@@ -93,7 +89,7 @@ void remove_pair_from_game_objects(const GameWorld::FunctionalSpawnCollection::v
 static GameWorld::SpawnPtr get_new_spawn(const Config::SpawnCollectionConfig::SpawnConfig& spawnConfig)
 {
 	const Bounds& spawnBounds = Config::Get().spawns.bounds;
-	minstd_rand0 rand(time(NULL));
+	boost::minstd_rand rand(time(NULL));
 
 	// get random number between the worldBounds
 #define GETSIZEDRANDOM(m) (rand() % ( \
@@ -107,7 +103,7 @@ static GameWorld::SpawnPtr get_new_spawn(const Config::SpawnCollectionConfig::Sp
 
 static inline const Config::SpawnCollectionConfig::SpawnConfig* get_spawn_data()
 {
-	minstd_rand0 rand(time(NULL));
+	boost::minstd_rand rand(time(NULL));
 
 	// food appearance rates can't have a higher resolution than 1 / randMax
 	const unsigned long randMax = 1000;
@@ -188,7 +184,7 @@ void GameWorld::SpawnLoop()
 void GameWorld::Init()
 {
 	reset = false;
-	spawnThread = thread(boost::bind(&GameWorld::SpawnLoop, this));
+	spawnThread = boost::thread(boost::bind(&GameWorld::SpawnLoop, this));
 }
 
 GameWorld::GameWorld(ZippedUniqueObjectCollection& _gameObjects) :
