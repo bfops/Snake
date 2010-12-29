@@ -231,7 +231,7 @@ template <typename _T, typename _X>
 void SumUp(const _T change, _X& original, const _X min)
 {
 	// if the change is so negative that it exceeds our gain
-	if(change < 0 && -change > original - min)
+	if(change < 0 && static_cast<_X>(-change) > original - min)
 		original = min;
 	else
 		original += change;
