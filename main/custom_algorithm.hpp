@@ -15,8 +15,7 @@
 #pragma warning(pop)
 #endif
 
-// O(1) removal of *_i_ from _v_
-// Will not maintain relative element order
+// O(1) removal of *_i_ from _v_. Will not maintain relative element order.
 template <typename _T>
 void unordered_remove(std::vector<_T>& v, const typename std::vector<_T>::iterator i)
 {
@@ -26,8 +25,7 @@ void unordered_remove(std::vector<_T>& v, const typename std::vector<_T>::iterat
 	v.pop_back();
 }
 
-// unordered_remove the first element equal to _val_ from _v_
-// returns true iff an element was removed
+// unordered_remove the first element equal to _val_ from _v_ returns true iff an element was removed
 template <typename _T>
 bool unordered_find_and_remove(std::vector<_T>& v, const _T& val)
 {
@@ -39,16 +37,14 @@ bool unordered_find_and_remove(std::vector<_T>& v, const _T& val)
 	return true;
 }
 
-// Returns true iff _predicate_ is true for every element
-// between _begin_ and _end_ (not including end)
+// Returns true iff _predicate_ is true for every element between _begin_ and _end_ (not including end)
 template <typename IterType, typename PredType>
 inline bool all(IterType begin, IterType end, PredType predicate)
 {
 	return std::find_if(begin, end, std::unary_negate<PredType>(predicate)) == end;
 }
 
-// Returns true iff _predicate_ is true for any element
-// between _begin_ and _end_ (not including end)
+// Returns true iff _predicate_ is true for any element between _begin_ and _end_ (not including end)
 template <typename IterType, typename PredType>
 inline bool any(IterType begin, IterType end, PredType predicate)
 {
