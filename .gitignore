@@ -3,7 +3,7 @@ build/
 ipch/
 Debug/
 x64/
-Win32
+Win32/
 Release/
 RelWithDebInfo/
 CMakeFiles/

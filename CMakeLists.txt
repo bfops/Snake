@@ -11,7 +11,6 @@ set(BOOST_PACKAGES filesystem date_time program_options serialization signals th
 find_package(Boost ${BOOST_VERSION} REQUIRED COMPONENTS ${BOOST_PACKAGES} REQUIRED)
 find_package(SDL REQUIRED)
 find_package(SDL_mixer REQUIRED)
-find_package(OpenGL)
 
 include_directories(${Boost_INCLUDE_DIR} ${SDL_INCLUDE_DIR} ${SDLMIXER_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
@@ -25,8 +24,7 @@ if(MSVC)
 	)
 else(MSVC)
 	add_definitions(
-		-pipe -fsigned-char -Werror -march=native
-		-pedantic -pedantic-errors -Wall -Wno-long-long
+		-pipe -fsigned-char -Werror -march=native -pedantic -pedantic-errors -Wall -Wno-long-long
 	)
 
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
