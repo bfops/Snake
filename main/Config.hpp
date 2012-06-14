@@ -160,6 +160,8 @@ public:
 			Head(const ConfigScope* in);
 		};
 
+		ColorConfig color;
+
 		Head head;
 		unsigned long startingLength;
 		unsigned short width;
@@ -170,8 +172,6 @@ public:
 
 		double growthRate;
 		unsigned long growthCap;
-
-		ColorConfig color;
 
 		SnakeConfig(const ConfigScope* in);
 	};

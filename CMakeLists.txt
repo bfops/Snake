@@ -24,7 +24,7 @@ if(MSVC)
 	)
 else(MSVC)
 	add_definitions(
-		-pipe -fsigned-char -Werror -march=native -pedantic -pedantic-errors -Wall -Wno-long-long
+		-pipe -fsigned-char -march=native -pedantic -pedantic-errors -Wall -Wno-long-long
 	)
 
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")

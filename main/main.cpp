@@ -40,7 +40,7 @@ static const char* windowTitle("ReWritable's Snake");
 static std::auto_ptr<ZippedUniqueObjectCollection> gameObjects;
 static std::auto_ptr<GameWorld> gameWorld;
 
-typedef std::list<const std::string> SoundQueue;
+typedef std::list<std::string> SoundQueue;
 static Mutex soundMutex;
 static SoundQueue soundQueue;
 
